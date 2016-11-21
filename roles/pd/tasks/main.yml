@@ -1,0 +1,40 @@
+---
+# tasks file for pd
+
+- name: create deploy directories
+  file: path={{ item }} state=directory recurse=yes mode=0755
+  with_items:
+  - "{{ deploy_dir }}/bin"
+  - "{{ deploy_dir }}/scripts"
+  - "{{ deploy_dir }}/conf"
+  - "{{ deploy_dir }}/backup"
+  - "{{ pd_log_dir }}"
+  - "{{ pd_data_dir }}"
+  - "{{ pd_status_dir }}"
+  
+- name: deploy supervise binary
+  copy: src="{{ resources_dir }}/bin/{{ item }}" dest="{{ deploy_dir }}/bin/" mode=0755
+  with_items:
+  - supervise
+  - svc
+  - svstat
+
+- name: deply pd binary
+  copy: src="{{ resources_dir }}/bin/pd-server" dest="{{ deploy_dir }}/bin/" mode=0755
+
+- name: create pd data directory
+  file: path={{pd_data_dir}} state=directory mode=0755
+
+- name: create pd configuration file
+  template: src=pd.toml.j2 dest={{ deploy_dir }}/conf/pd.toml mode=0644
+
+- name: create pd startup script
+  template: src=start_pd.sh.j2 dest={{ deploy_dir }}/scripts/run_pd.sh mode=0755
+
+  #file: path={{ deploy_dir }}/scripts/run_pd.sh state=absent
+
+- name: create pd startup script v2
+  template: src={{ item }}.j2 dest={{ deploy_dir }}/scripts/{{ item }} mode=0755
+  with_items:
+  - start_{{ role_name }}.sh
+  - stop_{{ role_name }}.sh

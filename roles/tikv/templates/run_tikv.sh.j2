@@ -1,0 +1,30 @@
+#!/bin/bash
+ulimit -n 1000000
+{% set my_ip = ansible_default_ipv4.address -%}
+
+{# my id in tikv cluster #}
+{% set my_peer_id = groups.tikv_servers.index(inventory_hostname) + 1 -%}
+
+{% set all_pd = [] -%}
+{% set pd_hosts = groups.pd_servers %}
+{% for host in pd_hosts -%}
+  {% set pd_ip = hostvars[host]['ansible_default_ipv4']['address'] -%}
+  {% set pd_port = hostvars[host]['pd_client_port'] -%}
+  {% set _ = all_pd.append("%s:%s" % (pd_ip, pd_port)) -%}
+{% endfor -%}
+
+export ADDR="{{ my_ip }}:{{ tikv_port }}"
+export PD_CLUSTER="{{ all_pd | join(',') }}"
+export RUST_BACKTRACE=1
+
+cd "{{ deploy_dir }}" || exit 1
+
+nohup bin/supervise "{{ tikv_status_dir }}" \
+    bin/tikv-server \
+    --addr "${ADDR}" \
+    --pd "${PD_CLUSTER}" \
+    --store "{{ tikv_data_dir }}" \
+    --capacity "{{ tikv_capacity }}" \
+    --config conf/tikv.toml \
+    -L info \
+    --log-file "{{ tikv_log_dir }}/{{ tikv_log_filename }}" &>/dev/null &

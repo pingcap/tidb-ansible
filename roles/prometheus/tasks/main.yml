@@ -1,0 +1,43 @@
+---
+
+- name: create deploy directories
+  file: path={{ item }} state=directory recurse=yes mode=0755
+  with_items:
+  - "{{ deploy_dir }}/bin"
+  - "{{ deploy_dir }}/scripts"
+  - "{{ deploy_dir }}/conf"
+  - "{{ deploy_dir }}/backup"
+  - "{{ prometheus_log_dir }}"
+  - "{{ prometheus_data_dir }}"
+  - "{{ prometheus_status_dir }}"
+
+- name: deploy supervise binary
+  copy: src="{{ resources_dir }}/bin/{{ item }}" dest="{{ deploy_dir }}/bin/" mode=0755
+  with_items:
+  - supervise
+  - svc
+  - svstat
+
+- name: deply prometheus binary
+  copy: src="{{ resources_dir }}/bin/prometheus" dest="{{ deploy_dir }}/bin/" mode=0755
+
+- name: create prometheus configuration file
+  template: src=prometheus.yml.j2 dest={{ deploy_dir }}/conf/prometheus.yml mode=0644
+
+- name: copy prometheus alert rules file
+  copy: >
+    src=alert.rules
+    dest="{{ deploy_dir }}/conf/alert.rules"
+    mode=0644
+#  register: alert_rules
+
+# why sed not works?!
+- name: set alert rules label
+  replace: >
+    dest="{{ deploy_dir }}/conf/alert.rules"
+    regexp="ENV_LABELS_ENV"
+    replace="{{ alert_label }}"
+#  when: alert_rules.changed
+
+- name: create prometheus startup script
+  template: src=run_prometheus.sh.j2 dest={{ deploy_dir }}/scripts/run_prometheus.sh mode=0755

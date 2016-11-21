@@ -1,0 +1,11 @@
+#!/bin/bash
+set -e
+
+cd "{{ deploy_dir }}" || exit 1
+
+bin/svstat "{{ node_exporter_status_dir }}"
+
+nohup bin/supervise "{{ node_exporter_status_dir }}" \
+      bin/node_exporter --web.listen-address=":{{ node_exporter_port }}" \
+      --log.level="{{ node_exporter_log_level }}" \
+      >>"{{ node_exporter_log_dir }}/{{ node_exporter_log_filename }}" 2>&1 &

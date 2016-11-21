@@ -1,0 +1,61 @@
+ALERT tidb_tikvclient_region_err
+  IF sum(rate(tidb_tikvclient_region_err_total{type="server_is_busy"}[1m])) > 0
+  FOR 1m
+  LABELS { env = "ENV_LABELS_ENV" }
+  ANNOTATIONS {
+    summary = "tidb_server is busy on {{$labels.instance}}",
+    description = " alert: sum(rate(tidb_tikvclient_region_err_total{type='server_is_busy'}[1m]))  instance: {{ $labels.instance }}    vales: {{ $value }} ",
+  }
+
+ALERT tikv_raft_process_ready
+  IF sum(rate(tikv_raftstore_raft_process_nanos_total{type="ready"}[1m])) by (type, instance) / 1000000000> 1
+  FOR 1m
+  LABELS { env = "ENV_LABELS_ENV" }
+  ANNOTATIONS {
+    summary = "",
+    description = "alert:sum(rate(tikv_raftstore_raft_process_nanos_total{type='ready'[1m])) by (type, instance) / 1000000000 instance: {{ $labels.instance }}   vales: {{ $value }}",
+  }
+
+ALERT tikv_keepalive
+  IF sum(rate(tikv_pd_msg_send_duration_seconds_count[1m])) by (instance) == 0
+  FOR 1m
+  LABELS { env = "ENV_LABELS_ENV" }
+  ANNOTATIONS {
+    summary = "",
+    description = "alert:sum(rate(tikv_pd_msg_send_duration_seconds_count[1m])) by (instance)   instance {{ $labels.instance }} vales:{{ $value }}",
+  }
+
+ALERT etcd_disk_fsync
+  IF sum(rate(etcd_disk_wal_fsync_duration_seconds_count[1m])) by (instance)  == 0
+  FOR 1m
+  LABELS { env = "ENV_LABELS_ENV" }
+  ANNOTATIONS {
+    summary = "",
+    description = "alert: sum(rate(etcd_disk_wal_fsync_duration_seconds_count[1m])) by (instance)   instance: {{ $labels.instance }}   vales:{{ $value }}",
+  }
+
+ALERT raft_sotre_msg
+  IF sum(rate(tikv_server_raft_store_msg_total{type="unreachable"}[1m])) > 10
+  FOR 1m
+  LABELS {env = "ENV_LABELS_ENV"}
+  ANNOTATIONS {
+    description = "alert: sum(rate(tikv_server_raft_store_msg_total{type='unreachable'}[1m])) > 10  vales:{{ $value }}"
+  }
+
+ALERT tikv_channel_full_total
+  IF sum(rate(tikv_channel_full_total[1m])) by (type, instance) >0
+  FOR 1s
+  LABELS { env = "ENV_LABELS_ENV" }
+  ANNOTATIONS {
+    summary = "tikv channel full",
+    description = "alert: sum(rate(tikv_channel_full_total[1m])) by (type, instance)  instance: {{ $labels.instance }}  vales: {{ $value }}",
+  }
+
+ALERT tidb_binlog_no_event
+  IF sum(rate(binlog_drainer_event[1m])) == 0
+  FOR 30m
+  LABELS { env = "ENV_LABELS_ENV" }
+  ANNOTATIONS {
+    summary = "drainer binlog haven't got any event for 1m",
+    description = "alert: binlog_drainer_evnet  vales: {{ $value }}",
+  }

@@ -1,0 +1,29 @@
+---
+# tasks file for pd
+
+- name: create deploy directories
+  file: path={{ item }} state=directory recurse=yes mode=0755
+  with_items:
+  - "{{ deploy_dir }}/bin"
+  - "{{ deploy_dir }}/scripts"
+  - "{{ deploy_dir }}/conf"
+  - "{{ deploy_dir }}/backup"
+  - "{{ tikv_log_dir }}"
+  - "{{ tikv_data_dir }}"
+  - "{{ tikv_status_dir }}"
+  
+- name: deploy supervise binary
+  copy: src="{{ resources_dir }}/bin/{{ item }}" dest="{{ deploy_dir }}/bin/" mode=0755
+  with_items:
+  - supervise
+  - svc
+  - svstat
+
+- name: deply tikv binary
+  copy: src="{{ resources_dir }}/bin/tikv-server" dest="{{ deploy_dir }}/bin/" mode=0755
+
+- name: create tikv configuration file
+  template: src=tikv.toml.j2 dest={{ deploy_dir }}/conf/tikv.toml mode=0644
+
+- name: create tikv startup script
+  template: src=run_tikv.sh.j2 dest={{ deploy_dir }}/scripts/run_tikv.sh mode=0755

@@ -1,0 +1,67 @@
+{% set my_ip = ansible_default_ipv4.address -%}
+
+{# my id in pd cluster #}
+{% set my_peer_id = groups.pd_servers.index(inventory_hostname) + 1 -%}
+
+{% set all_pd = [] -%}
+
+{% for host in groups.pd_servers -%}
+  {% set other_ip = hostvars[host]['ansible_default_ipv4']['address'] -%}
+  {% set other_port = hostvars[host]['pd_peer_port'] -%}
+  {% set other_pd_name_surfix = groups.pd_servers.index(host) + 1 -%}
+  {% set other_pd_name = pd_name_prefix ~ other_pd_name_surfix -%}
+  {% set _ = all_pd.append("%s=http://%s:%s" % (other_pd_name, other_ip, other_port)) -%}
+{% endfor -%}
+
+{% set metric_host = hostvars[groups.monitoring_servers[0]]['ansible_default_ipv4']['address'] if groups.monitoring_servers else "" -%}
+{% set metric_port = hostvars[groups.monitoring_servers[0]].pushgateway_port if groups.monitoring_servers else ''-%}
+
+{% set metric_interval = "0s" if metric_host == "" else pd_metric_interval -%}
+
+# PD Configuration.
+# WARNING: This file was auto-generated. Do not edit!
+#          All your edit might be overwritten! 
+
+name = "{{ pd_name_prefix }}{{ my_peer_id }}"
+data-dir = "{{ pd_data_dir}}"
+
+client-urls = "http://{{ my_ip }}:{{ pd_client_port }}"
+# if not set, fallback to use ${client-urls}
+advertise-client-urls = ""
+
+peer-urls = "http://{{ my_ip }}:{{ pd_peer_port }}"
+# if not set, fallback to use ${peer-urls}
+advertise-peer-urls = ""
+
+initial-cluster = "{{ all_pd | join(',') }}"
+initial-cluster-state = "new"
+
+lease = 3
+log-level = "info"
+tso-save-interval = "3s"
+max-peer-count = 3
+
+log-file = "{{ pd_log_dir }}/{{ pd_log_filename }}"
+
+[balance]
+min-capacity-used-ratio = 0.1
+max-capacity-used-ratio = 0.9
+max-leader-count = 10
+max-sending-snap-count = 3
+max-receiving-snap-count = 3
+max-applying-snap-count = 3
+max-diff-score-fraction = 0.1
+balance-interval = 30
+max-balance-count = 16
+max-balance-retry-per-loop = 10
+max-balance-count-per-loop = 3
+max-transfer-wait-count = 3
+max-peer-down-duration = "30m"
+max-store-down-duration = "10m"
+
+[metric]
+# prometheus client push interval, set "0s" to disable prometheus.
+interval = "{{ metric_interval }}"
+
+# prometheus pushgateway address, leaves it empty will disable prometheus.
+address = "{{ metric_host }}:{{ metric_port }}"

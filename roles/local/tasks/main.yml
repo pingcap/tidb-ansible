@@ -1,0 +1,34 @@
+---
+
+- name: create downloads and resources directories
+  file: path="{{ item }}" state=directory mode=0755
+  with_items:
+  - "{{ downloads_dir }}"
+  - "{{ resources_dir }}"
+  - "{{ resources_dir }}/bin"
+
+- name: download latest tidb binary
+  shell: >
+    curl -q -C -
+    -o "{{ downloads_dir }}/tidb-latest-linux-amd64.tar.gz"
+    -z "{{ downloads_dir }}/tidb-latest-linux-amd64.tar.gz"
+    http://download.pingcap.org/tidb-latest-linux-amd64.tar.gz
+  args:
+    warn: no
+
+- name: unarchive tidb binary
+  shell: tar xzf "{{ downloads_dir }}/tidb-latest-linux-amd64.tar.gz"
+  args:
+    chdir: "{{ downloads_dir }}"
+    warn: no
+
+- name: compress each binary
+  shell: >
+    gzip -c "{{ downloads_dir }}/tidb-latest-linux-amd64/bin/{{ item }}" > "{{ resources_dir }}/bin/{{ item }}.gz"
+  with_items:
+    - tidb-server
+    - pd-server
+    - tikv-server
+
+- name: clean up download dir
+  file: path="{{ downloads_dir }}/tidb-latest-linux-amd64*" state=absent

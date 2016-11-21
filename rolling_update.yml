@@ -1,0 +1,32 @@
+---
+# Copyright 2016 PingCAP, Inc.
+
+# The playbook of TiDB
+
+# basic kernel parameter & monitoring
+
+- hosts: all
+  vars:
+    tuning_kernel_parameters: false
+  roles:
+  - common
+
+- name: deploy PD cluster 
+  hosts: pd_servers
+  roles:
+  - pd
+
+- name: deploy TiKV cluster
+  hosts: tikv_servers
+  roles:
+  - tikv
+
+- name: deploy TiDB cluster
+  hosts: tidb_servers
+  roles:
+  - tidb
+
+# TODO:
+# - pump
+# - cistern
+# - drainer

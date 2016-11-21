@@ -1,0 +1,32 @@
+#!/bin/bash
+ulimit -n 40960
+
+# WARNING: This file was auto-generated. Do not edit!
+#          All your edit might be overwritten! 
+
+{% set all_pd = [] -%}
+{% set pd_hosts = groups.pd_servers %}
+{% for host in pd_hosts -%}
+  {% set pd_ip = hostvars[host]['ansible_default_ipv4']['address']-%}
+  {% set pd_port = hostvars[host]['pd_client_port'] -%}
+  {% set _ = all_pd.append("%s:%s" % (pd_ip, pd_port)) -%}
+{% endfor -%}
+
+{% set metric_host = groups.monitoring_servers[0] if groups.monitoring_servers else "" -%}
+{% set metric_port = hostvars[metric_host].pushgateway_port if metric_host else "" -%}
+{% set metric_addr = metric_host ~ ":" ~ metric_port if metric_host else "" -%}
+{% set metric_interval = tidb_metric_interval if metric_host else "" -%}
+
+cd "{{ deploy_dir }}" || exit 1
+
+
+nohup bin/supervise "{{ tidb_status_dir }}" \
+    bin/tidb-server \
+    -P {{ tidb_port }} \
+    --store=tikv --path="{{ all_pd | join(',') }}"\
+    -L="{{ tidb_log_level }}" --log-file="{{ tidb_log_dir }}/{{ tidb_log_filename }}" \
+    --status="{{ tidb_status_port }}" --metrics-addr="{{ metric_addr }}" --metrics-interval={{ tidb_metric_interval }} \
+    --lease 10 >/dev/null 2>&1 &
+
+# TODO: binlog support
+#   --binlog-socket=status/pump.sock

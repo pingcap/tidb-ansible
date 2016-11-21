@@ -1,0 +1,29 @@
+---
+# Variables here are applicable to all host groups
+
+
+####  normal user with sudo privilege
+#ansible_user: tidb
+
+
+#### root user deployment to a normal user 
+#ansible_user: root
+#ansible_become: true
+#ansible_become_user: tidb
+
+
+deploy_user: "{{ ansible_become_user | default(ansible_user) }}"
+
+deploy_dir: /home/{{ deploy_user }}/deploy
+
+
+status_dir: "{{ deploy_dir}}/status"
+
+# Local
+downloads_dir: "{{ playbook_dir }}/downloads"
+resources_dir: "{{ playbook_dir }}/resources"
+
+monitoring_group_name: test-cluster
+
+# ***** DO NOT CHANGE TO true *****
+i_know_what_i_am_doing_and_want_to_do_clean_up: false

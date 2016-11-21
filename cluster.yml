@@ -1,0 +1,74 @@
+---
+# Copyright 2016 PingCAP, Inc.
+# The Playbook of TiDB
+
+# basic kernel parameter & monitoring
+
+- name: initializing deployment target
+  hosts: all
+  roles:
+  - common
+
+- name: deploying monitoring agent
+  hosts: monitored_servers
+  roles:
+  - node_exporter
+
+- name: deploying monitoring server
+  hosts: monitoring_servers
+  roles:
+  - pushgateway
+  - prometheus
+  - grafana
+
+# deploying TiDB cluster
+
+- name: deploying PD cluster 
+  hosts: pd_servers
+  roles:
+  - pd
+
+- name: deploying TiKV cluster
+  hosts: tikv_servers
+  roles:
+  - tikv
+
+- name: deploying TiDB cluster
+  hosts: tidb_servers
+  roles:
+  - tidb
+
+- name: deploying load balance server
+  hosts: lb_servers
+  roles:
+  - haproxy
+
+
+# ** For test only! **
+- name: cleaning all
+  hosts: all
+  gather_facts: false
+  tasks:
+  - name: clean all
+    file:  path="{{ deploy_dir }}/{{ item }}" state=absent
+    with_items:
+    - bin
+    - scripts
+    - log
+    - conf
+    - status
+    when: i_know_what_i_am_doing_and_want_to_do_clean_up
+
+
+# TODO:
+# - pump
+# - cistern
+# - drainer
+# - hosts: cistern_servers
+
+#   roles:
+#   - cistern
+
+# - hosts: drainer_servers
+#   roles:
+#   - drainer

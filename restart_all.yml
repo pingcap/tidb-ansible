@@ -1,0 +1,43 @@
+---
+# Copyright 2016 PingCAP, Inc.
+
+# The playbook of TiDB
+
+# basic kernel parameter & monitoring
+
+- hosts: monitored_servers
+  tasks:
+    - name: start node_exporter
+      shell: cd {{ deploy_dir }} && ./scripts/run_node_exporter.sh
+
+- hosts: monitoring_servers
+  tasks:
+  - name: start {{ item }}
+    shell: cd {{ deploy_dir }} && ./scripts/run_{{ item }}.sh
+    with_items:
+    - pushgateway
+    - prometheus
+
+
+- hosts: pd_servers
+  tasks:
+  - name: start {{ item }}
+    shell: cd {{ deploy_dir }} && ./scripts/run_{{ item }}.sh
+    with_items:
+    - pd
+
+- hosts: tikv_servers
+  tasks:
+  - name: start {{ item }}
+    shell: cd {{ deploy_dir }} && ./scripts/run_{{ item }}.sh
+    with_items:
+    - tikv
+
+
+- hosts: tidb_servers
+  tasks:
+  - name: start {{ item }}
+    shell: cd {{ deploy_dir }} && ./scripts/run_{{ item }}.sh
+    with_items:
+    - tidb
+    

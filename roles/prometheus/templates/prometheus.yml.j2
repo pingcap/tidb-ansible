@@ -1,0 +1,41 @@
+---
+global:
+  scrape_interval:     15s # By default, scrape targets every 15 seconds.
+  evaluation_interval: 15s # By default, scrape targets every 15 seconds.
+  # scrape_timeout is set to the global default (10s).
+
+  # Attach these extra labels to all timeseries collected by this Prometheus instance.
+  labels:
+{% for item in prometheus_extra_labels %}
+    {{ item.label }}: "{{ item.value }}"
+{% endfor %}
+
+{% set pushgateway_host = groups.monitoring_servers[0] if groups.monitoring_servers else "" -%}
+{% set pushgateway_port = hostvars[groups.monitoring_servers[0]].pushgateway_port if groups.monitoring_servers else ''-%}
+
+
+scrape_configs:
+{% if pushgateway_host %}
+  - job_name: 'cluster'
+    scrape_interval: 5s
+    honor_labels: true
+    static_configs:
+      - targets: ['{{ pushgateway_host }}:{{ pushgateway_port }}']
+        labels:
+          group: '{{ monitoring_group_name }}'
+{% endif %}
+
+  - job_name: "node"
+    scrape_interval: "15s"
+    static_configs:
+      - targets:
+{% for host in groups['monitored_servers'] -%}
+  {% set ip = hostvars[host]['ansible_default_ipv4']['address'] or host -%}
+  {# % set ip = host -% #}
+  {% set node_port = hostvars[host]['node_exporter_port'] %}
+        - '{{ ip }}:{{ node_port }}'
+{% endfor %}
+
+# Load and evaluate rules in this file every 'evaluation_interval' seconds.
+rule_files:
+  - 'alert.rules'
