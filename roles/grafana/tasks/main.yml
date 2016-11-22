@@ -1,19 +1,19 @@
 ---
 
-- name: create deploy directories
+- name: create deploy directories part 1
   file: path="{{ item }}" state=directory mode=0755
   with_items:
   - "{{ deploy_dir }}/opt"
-  - "{{ grafana_log_dir }}"
-  - "{{ grafana_status_dir }}"
-  - "{{ grafana_data_dir }}"
-  - "{{ grafana_dashboards_dir }}"
 
 - name: deploy grafana binary
-  unarchive: creates="{{ deploy_dir }}/opt/grafana" src={{ downloads_dir }}/grafana.tar.gz dest={{ deploy_dir }}/opt/
+  unarchive: >
+    creates="{{ deploy_dir }}/opt/grafana/bin/grafana-server"
+    src={{ downloads_dir }}/grafana.tar.gz dest={{ deploy_dir }}/opt/
 
 - name: rename grafana deploy dir
-  shell: creates="{{ deploy_dir }}/opt/grafana" mv {{ deploy_dir }}/opt/grafana-3.1.1-* "{{ deploy_dir }}/opt/grafana"
+  shell: >
+    creates="{{ deploy_dir }}/opt/grafana/bin/grafana-server"
+    mv {{ deploy_dir }}/opt/grafana-3.1.1-* "{{ deploy_dir }}/opt/grafana"
 
 - name: deploy supervise binary
   copy: src="{{ resources_dir }}/bin/{{ item }}" dest="{{ deploy_dir }}/bin/" mode=0755
@@ -22,18 +22,25 @@
   - svc
   - svstat
 
+- name: create deploy directories part 2
+  file: path="{{ item }}" state=directory mode=0755
+  with_items:
+  - "{{ grafana_log_dir }}"
+  - "{{ grafana_status_dir }}"
+  - "{{ grafana_data_dir }}"
+  - "{{ grafana_dashboards_dir }}"
+
 - name: create grafana configuration file
   template: src=grafana.ini.j2 dest={{ deploy_dir }}/opt/grafana/conf/grafana.ini mode=0644
 
-- name: import grafana dashboards
-  copy: >
-    creates="{{ grafana_dashboards_dir }}/{{ item }}"
-    src={{ item }} dest="{{ grafana_dashboards_dir }}/{{ item }}"
-  with_items:
-  - pd-grafana.json
-  - tidb-binlog.json
-  - tidb-grafana.json
-  - tikv.json
+# FIXME: how to add datasource first
+#- name: import grafana dashboards
+#  copy: src={{ item }} dest="{{ grafana_dashboards_dir }}/{{ item }}"
+#  with_items:
+#  - pd.json
+#  - tidb-binlog.json
+#  - tidb.json
+#  - tikv.json
 
 - name: create grafana startup script v2
   template: src={{ item }}.j2 dest={{ deploy_dir }}/scripts/{{ item }} mode=0755
