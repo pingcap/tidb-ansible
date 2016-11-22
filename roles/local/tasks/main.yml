@@ -9,19 +9,66 @@
 
 - name: download latest tidb binary
   shell: >
-    curl -q -C -
-    -o "{{ downloads_dir }}/tidb-latest-linux-amd64.tar.gz"
-    -z "{{ downloads_dir }}/tidb-latest-linux-amd64.tar.gz"
+    curl -L
+    -o "{{ downloads_dir }}/tidb.tar.gz"
+    -z "{{ downloads_dir }}/tidb.tar.gz"
     http://download.pingcap.org/tidb-latest-linux-amd64.tar.gz
   args:
     warn: no
 
-- name: unarchive tidb binary
-  shell: tar xzf "{{ downloads_dir }}/tidb-latest-linux-amd64.tar.gz"
+- name: download monitoring tools
+  shell: >
+    curl -L
+    -o "{{ downloads_dir }}/{{ item.name }}.tar.gz"
+    -z "{{ downloads_dir }}/{{ item.name }}.tar.gz"
+    "{{ item.url }}"
+  with_items:
+    - { name: alertmanager, url: "http://og66pdz33.bkt.clouddn.com/alertmanager-0.5.0.linux-amd64.tar.gz" }
+    - { name: prometheus, url:  "http://og66pdz33.bkt.clouddn.com/prometheus-1.3.1.linux-amd64.tar.gz" }
+    - { name: node_exporter, url: "http://og66pdz33.bkt.clouddn.com/node_exporter-0.13.0-rc.2.linux-amd64.tar.gz" }
+    - { name: pushgateway, url: "http://og66pdz33.bkt.clouddn.com/pushgateway-0.3.1.linux-amd64.tar.gz" }
+    - { name: grafana, url: "http://og66pdz33.bkt.clouddn.com/grafana-3.1.1-1470047149.linux-x64.tar.gz" }
+    - { name: daemontools, url: "http://download.pingcap.org/daemontools-0.53.tar.gz" }
+
+- name: unarchive binary
+  shell: tar xzf {{ item }}.tar.gz
   args:
     chdir: "{{ downloads_dir }}"
     warn: no
+  with_items:
+    - tidb
+    - alertmanager
+    - prometheus
+    - node_exporter
+    - pushgateway
+    - daemontools
 
+- name: cp tidb binary
+  shell: >
+    cp -v "{{ downloads_dir }}/tidb-latest-linux-amd64/bin/{{ item }}" "{{ resources_dir }}/bin/{{ item }}"
+  with_items:
+    - tidb-server
+    - pd-server
+    - tikv-server
+
+- name: cp monitoring binary
+  shell: >
+    cp -v {{ downloads_dir }}/{{ item }}-*/{{ item }} "{{ resources_dir }}/bin/{{ item }}"
+  with_items:
+    - alertmanager
+    - prometheus
+    - node_exporter
+    - pushgateway
+
+- name: cp daemontools binary
+  shell: >
+    cp -v {{ downloads_dir }}/daemontools-*/bin/{{ item }} "{{ resources_dir }}/bin/"
+  with_items:
+    - supervise
+    - svstat
+    - svc
+
+# TODO
 - name: compress each binary
   shell: >
     gzip -c "{{ downloads_dir }}/tidb-latest-linux-amd64/bin/{{ item }}" > "{{ resources_dir }}/bin/{{ item }}.gz"
@@ -30,5 +77,9 @@
     - pd-server
     - tikv-server
 
+
 - name: clean up download dir
-  file: path="{{ downloads_dir }}/tidb-latest-linux-amd64*" state=absent
+  shell: >
+    cd "{{ downloads_dir }}" && ls -1 | grep -v tar.gz | xargs rm -rf ./{} \;
+
+
