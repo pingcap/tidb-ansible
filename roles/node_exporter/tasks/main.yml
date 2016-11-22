@@ -1,7 +1,7 @@
 ---
 
 - name: create deploy directories
-  file: creates="{{ item }}" path={{ item }} state=directory recurse=yes mode=0755
+  file: path={{ item }} state=directory mode=0755
   with_items:
   - "{{ deploy_dir }}/bin"
   - "{{ deploy_dir }}/scripts"
@@ -19,10 +19,7 @@
 - name: deply node_exporter binary
   copy: src="{{ resources_dir }}/bin/node_exporter" dest="{{ deploy_dir }}/bin" mode=0755
 
-- name: create node_exporter startup script
-  template: src=run_node_exporter.sh.j2 dest={{ deploy_dir }}/scripts/run_node_exporter.sh mode=0755
-
-- name: create {{ role_bame }} startup script v2
+- name: create {{ role_name }} startup script v2
   template: src={{ item }}.j2 dest={{ deploy_dir }}/scripts/{{ item }} mode=0755
   with_items:
   - start_{{ role_name }}.sh

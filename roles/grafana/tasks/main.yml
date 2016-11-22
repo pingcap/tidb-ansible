@@ -1,7 +1,7 @@
 ---
 
 - name: create deploy directories
-  file: creates="{{ item }}" path="{{ item }}" state=directory mode=0755
+  file: path="{{ item }}" state=directory mode=0755
   with_items:
   - "{{ deploy_dir }}/opt"
   - "{{ grafana_log_dir }}"
@@ -16,9 +16,7 @@
   shell: creates="{{ deploy_dir }}/opt/grafana" mv {{ deploy_dir }}/opt/grafana-3.1.1-* "{{ deploy_dir }}/opt/grafana"
 
 - name: deploy supervise binary
-  copy: >
-    creates="{{ deploy_dir }}/bin/{{ item }}"
-    src="{{ resources_dir }}/bin/{{ item }}" dest="{{ deploy_dir }}/bin/" mode=0755
+  copy: src="{{ resources_dir }}/bin/{{ item }}" dest="{{ deploy_dir }}/bin/" mode=0755
   with_items:
   - supervise
   - svc

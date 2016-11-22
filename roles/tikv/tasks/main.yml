@@ -2,7 +2,7 @@
 # tasks file for pd
 
 - name: create deploy directories
-  file: path={{ item }} state=directory recurse=yes mode=0755
+  file: path={{ item }} state=directory mode=0755
   with_items:
   - "{{ deploy_dir }}/bin"
   - "{{ deploy_dir }}/scripts"
@@ -24,9 +24,6 @@
 
 - name: create tikv configuration file
   template: src=tikv.toml.j2 dest={{ deploy_dir }}/conf/tikv.toml mode=0644
-
-- name: create tikv startup script
-  template: src=run_tikv.sh.j2 dest={{ deploy_dir }}/scripts/run_tikv.sh mode=0755
 
 - name: create tikv startup script v2
   template: src={{ item }}.j2 dest={{ deploy_dir }}/scripts/{{ item }} mode=0755

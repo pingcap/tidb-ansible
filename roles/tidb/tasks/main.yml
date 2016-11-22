@@ -2,7 +2,7 @@
 # tasks file for tidb
 
 - name: create deploy directories
-  file: path="{{ item }}" state=directory recurse=yes mode=0755
+  file: path="{{ item }}" state=directory mode=0755
   with_items:
   - "{{ deploy_dir }}/bin"
   - "{{ deploy_dir }}/scripts"
@@ -21,9 +21,6 @@
   copy: src="{{ resources_dir }}/bin/tidb-server" dest="{{ deploy_dir }}/bin/" mode=0755
 
 # TiDB has no configuration file
-
-- name: create tidb startup script
-  template: src=run_tidb.sh.j2 dest={{ deploy_dir }}/scripts/run_tidb.sh mode=0755
 
 - name: create tidb startup script v2
   template: src={{ item }}.j2 dest={{ deploy_dir }}/scripts/{{ item }} mode=0755
