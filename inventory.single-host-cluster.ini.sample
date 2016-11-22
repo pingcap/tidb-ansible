@@ -1,0 +1,31 @@
+[tidb_servers]
+db ansible_host=192.168.1.38 deploy_dir=/home/tidb/deploy/tidb tidb_port=4001
+
+[tikv_servers]
+a ansible_host=192.168.1.38 deploy_dir=/home/tidb/deploy/tikv1 tikv_port=10086
+b ansible_host=192.168.1.38 deploy_dir=/home/tidb/deploy/tikv2 tikv_port=10087
+c ansible_host=192.168.1.38 deploy_dir=/home/tidb/deploy/tikv3 tikv_port=10088
+
+[pd_servers]
+g ansible_host=192.168.1.38 deploy_dir=/home/tidb/deploy/pd1 pd_peer_port=1380  pd_client_port=1379
+h ansible_host=192.168.1.38 deploy_dir=/home/tidb/deploy/pd2 pd_peer_port=2380  pd_client_port=2379
+i ansible_host=192.168.1.38 deploy_dir=/home/tidb/deploy/pd3 pd_peer_port=3380  pd_client_port=3379
+
+[monitoring_servers]
+#192.168.199.118
+
+
+[monitored_servers:children]
+#tidb_servers
+#tikv_servers
+#pd_servers
+
+# FIXME: for single machine deployment
+#        tuning kernel parameters will run multiple times
+[all:vars]
+tuning_kernel_parameters = false
+
+ansible_user: tidb
+
+[tikv_servers:vars]
+tikv_capacity = 5GB
