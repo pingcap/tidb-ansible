@@ -26,7 +26,7 @@ nohup bin/supervise "{{ tidb_status_dir }}" \
     --store=tikv --path="{{ all_pd | join(',') }}"\
     -L="{{ tidb_log_level }}" --log-file="{{ tidb_log_dir }}/{{ tidb_log_filename }}" \
     --status="{{ tidb_status_port }}" --metrics-addr="{{ metric_addr }}" --metrics-interval={{ tidb_metric_interval }} \
-    --lease 10 >/dev/null 2>&1 &
+    --lease 1 >/dev/null 2>&1 &
 
 # TODO: binlog support
 #   --binlog-socket=status/pump.sock
