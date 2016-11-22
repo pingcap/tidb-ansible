@@ -7,37 +7,38 @@
 
 - hosts: monitored_servers
   tasks:
-    - name: start node_exporter
-      shell: cd {{ deploy_dir }} && ./scripts/run_node_exporter.sh
+    - name: restart node_exporter
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
 
 - hosts: monitoring_servers
   tasks:
-  - name: start {{ item }}
-    shell: cd {{ deploy_dir }} && ./scripts/run_{{ item }}.sh
+  - name: restart {{ item }}
+    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
     with_items:
     - pushgateway
     - prometheus
+    - grafana
 
 
 - hosts: pd_servers
   tasks:
-  - name: start {{ item }}
-    shell: cd {{ deploy_dir }} && ./scripts/run_{{ item }}.sh
+  - name: restart {{ item }}
+    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
     with_items:
     - pd
 
 - hosts: tikv_servers
   tasks:
-  - name: start {{ item }}
-    shell: cd {{ deploy_dir }} && ./scripts/run_{{ item }}.sh
+  - name: restart {{ item }}
+    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
     with_items:
     - tikv
 
 
 - hosts: tidb_servers
   tasks:
-  - name: start {{ item }}
-    shell: cd {{ deploy_dir }} && ./scripts/run_{{ item }}.sh
+  - name: restart {{ item }}
+    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
     with_items:
     - tidb
     

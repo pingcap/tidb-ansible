@@ -16,15 +16,51 @@
   roles:
   - pd
 
+- name: restart PD cluster
+  hosts: pd_servers
+  tasks:
+  - name: restart {{ item }}
+    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
+    with_items:
+    - pd
+  
+  - name: wait PD up
+    wait_for: host={{ ansible_default_ipv4.address }} port={{ pd_client_port }} delay=10 state=present
+
+
 - name: deploy TiKV cluster
   hosts: tikv_servers
   roles:
   - tikv
 
+- name: restart TiKV cluster
+  hosts: tikv_servers
+  tasks:
+  - name: restart {{ item }}
+    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
+    with_items:
+    - tikv
+  
+  - name: wait PD up
+    wait_for: host={{ ansible_default_ipv4.address }} port={{ tikv_port }} delay=10 state=present
+
+
 - name: deploy TiDB cluster
   hosts: tidb_servers
   roles:
   - tidb
+
+- name: restart TiDB cluster
+  hosts: tidb_servers
+  tasks:
+  - name: restart {{ item }}
+    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
+    with_items:
+    - tidb
+  
+  - name: wait PD up
+    wait_for: host={{ ansible_default_ipv4.address }} port={{ tidb_port }} delay=10 state=present
+
 
 # TODO:
 # - pump
