@@ -4,8 +4,3 @@ ulimit -n 40960
 
 cd "{{ deploy_dir }}" || exit 1
 
-nohup bin/supervise "{{ pushgateway_status_dir }}" \
-      bin/pushgateway \
-      --log.level="{{ pushgateway_log_level }}" \
-      --web.listen-address=":{{ pushgateway_port }}" \
-      >"{{ pushgateway_log_dir }}/{{ pushgateway_log_filename }}" 2>&1 &

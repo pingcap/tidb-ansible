@@ -1,6 +1,6 @@
 #!/bin/bash
 
-{% set status_dir = pd_status_dir -%}
+{% set status_dir = grafana_status_dir -%}
 
 cd "{{ deploy_dir }}" || exit 1
 
@@ -12,7 +12,7 @@ if [ -e "{{ status_dir }}/pid" ]; then
     _pid=$(cat "{{ status_dir }}/pid")
     if [ "$(basename "$(readlink /proc/${_pid}/exe)")" == "supervise" ]; then
         kill ${_pid}
-        rm -f "{{ status_dir }}/*"
+        rm -f "{{ status_dir}}/*"
     fi
 fi
 

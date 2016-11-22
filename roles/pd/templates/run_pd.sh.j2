@@ -7,8 +7,8 @@ ulimit -n 40960
 
 {% set all_pd = [] -%}
 {% for host in groups.pd_servers -%}
-  {% set other_ip = hostvars[host]['ansible_default_ipv4']['address'] -%}
-  {% set other_port = hostvars[host]['pd_peer_port'] -%}
+  {% set other_ip = hostvars[host].ansible_default_ipv4.address -%}
+  {% set other_port = hostvars[host].pd_peer_port -%}
   {% set other_pd_name_surfix = groups.pd_servers.index(host) + 1 -%}
   {% set other_pd_name = pd_name_prefix ~ other_pd_name_surfix -%}
   {% set _ = all_pd.append("%s=http://%s:%s" % (other_pd_name, other_ip, other_port)) -%}

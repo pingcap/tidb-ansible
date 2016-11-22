@@ -1,7 +1,7 @@
 ---
 
 - name: create deploy directories
-  file: path={{ item }} state=directory recurse=yes mode=0755
+  file: creates="{{ item }}" path={{ item }} state=directory recurse=yes mode=0755
   with_items:
   - "{{ deploy_dir }}/bin"
   - "{{ deploy_dir }}/scripts"

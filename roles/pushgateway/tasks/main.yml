@@ -19,5 +19,8 @@
 - name: deply pushgateway binary
   copy: src="{{ resources_dir }}/bin/pushgateway" dest="{{ deploy_dir }}/bin/" mode=0755
 
-- name: create pd startup script
-  template: src=run_pushgateway.sh.j2 dest={{ deploy_dir }}/scripts/run_pushgateway.sh mode=0755
+- name: create pushgateway startup script v2
+  template: src={{ item }}.j2 dest={{ deploy_dir }}/scripts/{{ item }} mode=0755
+  with_items:
+  - start_{{ role_name }}.sh
+  - stop_{{ role_name }}.sh

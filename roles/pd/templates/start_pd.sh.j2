@@ -5,6 +5,8 @@ ulimit -n 40960
 # WARNING: This file was auto-generated. Do not edit!
 #          All your edit might be overwritten! 
 
+{% set status_dir = pd_status_dir -%}
+
 {% set my_ip = ansible_default_ipv4.address -%}
 {# my id in pd cluster #}
 {% set my_peer_id = groups.pd_servers.index(inventory_hostname) + 1 -%}
@@ -17,10 +19,6 @@ ulimit -n 40960
   {% set other_pd_name = pd_name_prefix ~ other_pd_name_surfix -%}
   {% set _ = all_pd.append("%s=http://%s:%s" % (other_pd_name, other_ip, other_port)) -%}
 {% endfor -%}
-
-{% set status_dir = pd_status_dir -%}
-
-cd "{{ deploy_dir }}" || exit 1
 
 # running as root?
 if [ "$(id -u)" -eq 0 ]; then
@@ -54,7 +52,9 @@ if [ -e "{{ status_dir }}/pid" ]; then
     # rm -f "{{ status_dir }}/pid"
 fi
 
-nohup bin/supervise "{{ status_dir}}" \
+cd "{{ deploy_dir }}" || exit 1
+
+nohup bin/supervise "{{ status_dir }}" \
     bin/pd-server \
     --name="{{ pd_name_prefix }}{{ my_peer_id }}" \
     --client-urls="http://{{ my_ip }}:{{ pd_client_port }}" \

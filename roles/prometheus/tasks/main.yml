@@ -41,3 +41,9 @@
 
 - name: create prometheus startup script
   template: src=run_prometheus.sh.j2 dest={{ deploy_dir }}/scripts/run_prometheus.sh mode=0755
+
+- name: create prometheus startup script v2
+  template: src={{ item }}.j2 dest={{ deploy_dir }}/scripts/{{ item }} mode=0755
+  with_items:
+  - start_{{ role_name }}.sh
+  - stop_{{ role_name }}.sh

@@ -5,7 +5,20 @@ ulimit -n 40960
 # WARNING: This file was auto-generated. Do not edit!
 #          All your edit might be overwritten! 
 
-{% set status_dir = prometheus_status_dir -%}
+{% set status_dir = tikv_status_dir -%}
+
+{% set my_ip = ansible_default_ipv4.address -%}
+
+{# my id in tikv cluster #}
+{% set my_peer_id = groups.tikv_servers.index(inventory_hostname) + 1 -%}
+
+{% set all_pd = [] -%}
+{% set pd_hosts = groups.pd_servers %}
+{% for host in pd_hosts -%}
+  {% set pd_ip = hostvars[host].ansible_default_ipv4.address -%}
+  {% set pd_port = hostvars[host].pd_client_port -%}
+  {% set _ = all_pd.append("%s:%s" % (pd_ip, pd_port)) -%}
+{% endfor -%}
 
 # running as root?
 if [ "$(id -u)" -eq 0 ]; then
@@ -39,15 +52,20 @@ if [ -e "{{ status_dir }}/pid" ]; then
     # rm -f "{{ status_dir }}/pid"
 fi
 
+
 cd "{{ deploy_dir }}" || exit 1
 
+export RUST_BACKTRACE=1
+
 nohup bin/supervise "{{ status_dir }}" \
-      bin/prometheus \
-      --config.file="{{ deploy_dir }}/conf/prometheus.yml" \
-      --web.listen-address=":{{ prometheus_port }}" \
-      --log.level="{{ prometheus_log_level }}" \
-      --storage.local.path="{{ prometheus_data_dir }}" \
-      >>"{{ prometheus_log_dir }}/{{ prometheus_log_filename }}" 2>&1 &
+    bin/tikv-server \
+    --addr "{{ my_ip }}:{{ tikv_port }}" \
+    --pd "{{ all_pd | join(',') }}" \
+    --store "{{ tikv_data_dir }}" \
+    --capacity "{{ tikv_capacity }}" \
+    --config conf/tikv.toml \
+    -L info \
+    --log-file "{{ tikv_log_dir }}/{{ tikv_log_filename }}" &>/dev/null &
 
 echo $! > "{{ status_dir }}/pid"
 echo "ok: started!"

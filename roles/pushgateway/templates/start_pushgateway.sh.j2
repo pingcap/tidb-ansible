@@ -5,7 +5,7 @@ ulimit -n 40960
 # WARNING: This file was auto-generated. Do not edit!
 #          All your edit might be overwritten! 
 
-{% set status_dir = prometheus_status_dir -%}
+{% set status_dir = pushgateway_status_dir -%}
 
 # running as root?
 if [ "$(id -u)" -eq 0 ]; then
@@ -39,15 +39,14 @@ if [ -e "{{ status_dir }}/pid" ]; then
     # rm -f "{{ status_dir }}/pid"
 fi
 
+
 cd "{{ deploy_dir }}" || exit 1
 
 nohup bin/supervise "{{ status_dir }}" \
-      bin/prometheus \
-      --config.file="{{ deploy_dir }}/conf/prometheus.yml" \
-      --web.listen-address=":{{ prometheus_port }}" \
-      --log.level="{{ prometheus_log_level }}" \
-      --storage.local.path="{{ prometheus_data_dir }}" \
-      >>"{{ prometheus_log_dir }}/{{ prometheus_log_filename }}" 2>&1 &
+      bin/pushgateway \
+      --log.level="{{ pushgateway_log_level }}" \
+      --web.listen-address=":{{ pushgateway_port }}" \
+      >>"{{ pushgateway_log_dir }}/{{ pushgateway_log_filename }}" 2>&1 &
 
 echo $! > "{{ status_dir }}/pid"
 echo "ok: started!"
