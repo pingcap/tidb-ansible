@@ -11,7 +11,7 @@
     with_items:
     - pd
   - name: wait PD up
-    wait_for: host={{ ansible_default_ipv4.address }} port={{ pd_client_port }} delay=10 state=present
+    wait_for: host={{ ansible_default_ipv4.address }} port={{ pd_client_port }} state=present
 
 - hosts: tikv_servers
   tasks:
@@ -20,7 +20,7 @@
     with_items:
     - tikv
   - name: wait TiKV up
-    wait_for: host={{ ansible_default_ipv4.address }} port={{ tikv_port }} delay=10 state=present
+    wait_for: host={{ ansible_default_ipv4.address }} port={{ tikv_port }} state=present
 
 
 - hosts: tidb_servers
@@ -31,5 +31,5 @@
     - tidb
 
   - name: wait TiDB up
-    wait_for: host={{ ansible_default_ipv4.address }} port={{ tidb_port }} delay=10 state=present
+    wait_for: host={{ ansible_default_ipv4.address }} port={{ tidb_port }} state=present
     
