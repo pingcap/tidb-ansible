@@ -1,0 +1,59 @@
+---
+# Copyright 2016 PingCAP, Inc.
+
+# The playbook of TiDB
+
+# basic kernel parameter & monitoring
+
+- name: TiDB cluster
+  hosts: tidb_servers
+  # roles:
+  # - tidb
+  tasks:
+  - name: stop TiDB
+    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+    with_items:
+    - tidb
+
+  - name: wait TiDB down
+    wait_for: host={{ ansible_default_ipv4.address }} port={{ tidb_port }} state=stopped
+
+
+- name: TiKV cluster
+  hosts: tikv_servers
+  # roles:
+  # - tikv
+  tasks:
+  - name: stop TiKV
+    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+    with_items:
+    - tikv
+
+  - name: wait TiKV down
+    wait_for: host={{ ansible_default_ipv4.address }} port={{ tikv_port }} state=stopped
+
+  - name: clean TiKV data
+    file: path={{ tikv_data_dir }} state=absent
+
+  - name: create new TiKV data dir
+    file: path={{ tikv_data_dir }} state=directory mode=0755
+
+
+- name: PD cluster
+  hosts: pd_servers
+  # roles:
+  # - pd
+  tasks:
+  - name: stop PD
+    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+    with_items:
+    - pd
+
+  - name: wait PD down
+    wait_for: host={{ ansible_default_ipv4.address }} port={{ pd_client_port }} state=stopped
+
+  - name: clean PD data
+    file: path={{ pd_data_dir }} state=absent
+
+  - name: create new PD data dir
+    file: path={{ pd_data_dir }} state=directory mode=0755
