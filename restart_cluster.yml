@@ -1,0 +1,28 @@
+---
+# Copyright 2016 PingCAP, Inc.
+
+# The playbook of TiDB
+
+
+- hosts: pd_servers
+  tasks:
+  - name: restart {{ item }}
+    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
+    with_items:
+    - pd
+
+- hosts: tikv_servers
+  tasks:
+  - name: restart {{ item }}
+    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
+    with_items:
+    - tikv
+
+
+- hosts: tidb_servers
+  tasks:
+  - name: restart {{ item }}
+    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
+    with_items:
+    - tidb
+    
