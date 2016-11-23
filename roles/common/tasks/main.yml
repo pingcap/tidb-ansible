@@ -117,3 +117,9 @@
 #      rm -rv {{ status_dir }}/$dir
 #    done
 #    killall supervise; true
+
+- name: all start all scripts
+  template: src={{ item }}.j2 dest={{ deploy_dir }}/{{ item }} mode=0755
+  with_items:
+  - start_all.sh
+  - stop_all.sh
