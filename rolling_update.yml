@@ -3,15 +3,13 @@
 
 # The playbook of TiDB
 
-# basic kernel parameter & monitoring
-
 - hosts: all
   vars:
     tuning_kernel_parameters: false
   roles:
   - common
 
-- name: deploy PD cluster 
+- name: deploy PD cluster
   hosts: pd_servers
   roles:
   - pd
@@ -23,7 +21,7 @@
     shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
     with_items:
     - pd
-  
+
   - name: wait PD up
     wait_for: host={{ ansible_default_ipv4.address }} port={{ pd_client_port }} state=present
 
@@ -40,7 +38,7 @@
     shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
     with_items:
     - tikv
-  
+
   - name: wait TiKV up
     wait_for: host={{ ansible_default_ipv4.address }} port={{ tikv_port }} state=present
 
@@ -57,7 +55,7 @@
     shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
     with_items:
     - tidb
-  
+
   - name: wait TiDB up
     wait_for: host={{ ansible_default_ipv4.address }} port={{ tidb_port }} state=present
 

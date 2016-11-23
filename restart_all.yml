@@ -7,6 +7,8 @@
   tasks:
     - name: restart node_exporter
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
+      with_items:
+      - node_exporter
 
 - hosts: monitoring_servers
   tasks:
