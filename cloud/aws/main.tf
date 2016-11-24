@@ -70,11 +70,9 @@ resource "aws_instance" "tikv" {
   tags {
     Name = "tikv-${count.index}"
   }
-  root_block_device {
-    volume_type = "gp2"		# io1: consistent performance for both random and sequential IO operation; gp2: general purpose
-    volume_size = "${var.root_size["tikv"]}"
-    delete_on_termination = true
-    # device_name = "/dev/xvda"
+  ephemeral_block_device {
+    device_name = "xvdb"
+    virtual_name = "ephemeral0"
   }
   provisioner "file" {
     source = "ustc-ubuntu-sources.list"
@@ -83,8 +81,10 @@ resource "aws_instance" "tikv" {
   provisioner "remote-exec" {
     inline = [
       "sudo cp /tmp/sources.list /etc/apt/sources.list",
-      "sudo timedatectl set-timezone Asia/Shanghai",
+      "sudo timedatectl set-timezone ${var.timezone}",
       "sudo apt-get update && sudo apt-get install -y ntp",
+      "sudo umount /mnt || true",
+      "sudo mkdir -p /data && sudo mount /dev/xvdb /data",
     ]
   }
 }
@@ -104,11 +104,9 @@ resource "aws_instance" "tidb" {
   tags {
     Name = "tidb-${count.index}"
   }
-  root_block_device {
-    volume_type = "gp2"		# io1: consistent performance for both random and sequential IO operation; gp2: general purpose
-    volume_size = "${var.root_size["tidb"]}"
-    delete_on_termination = true
-    # device_name = "/dev/xvda"
+  ephemeral_block_device {
+    device_name = "xvdb"
+    virtual_name = "ephemeral0"
   }
   provisioner "file" {
     source = "ustc-ubuntu-sources.list"
@@ -117,8 +115,10 @@ resource "aws_instance" "tidb" {
   provisioner "remote-exec" {
     inline = [
       "sudo cp /tmp/sources.list /etc/apt/sources.list",
-      "sudo timedatectl set-timezone Asia/Shanghai",
+      "sudo timedatectl set-timezone ${var.timezone}",
       "sudo apt-get update && sudo apt-get install -y ntp",
+      "sudo umount /mnt || true",
+      "sudo mkdir -p /data && sudo mount /dev/xvdb /data",
     ]
   }
 }
@@ -139,11 +139,9 @@ resource "aws_instance" "tidb" {
 #   tags {
 #     Name = "pd-${count.index}"
 #   }
-#   root_block_device {
-#     volume_type = "gp2"		# io1: consistent performance for both random and sequential IO operation; gp2: general purpose
-#     volume_size = "${var.root_size["pd"]}"
-#     delete_on_termination = true
-#     # device_name = "/dev/xvda"
+#   ephemeral_block_device {
+#     device_name = "xvdb"
+#     virtual_name = "ephemeral0"
 #   }
 #   provisioner "file" {
 #     source = "ustc-ubuntu-sources.list"
@@ -152,8 +150,10 @@ resource "aws_instance" "tidb" {
 #   provisioner "remote-exec" {
 #     inline = [
 #       "sudo cp /tmp/sources.list /etc/apt/sources.list",
-#       "sudo timedatectl set-timezone Asia/Shanghai",
+#       "sudo timedatectl set-timezone ${var.timezone}",
 #       "sudo apt-get update && sudo apt-get install -y ntp",
+#       "sudo umount /mnt || true",
+#        "sudo mkdir -p /data && sudo mount /dev/xvdb /data",
 #     ]
 #   }
 # }
