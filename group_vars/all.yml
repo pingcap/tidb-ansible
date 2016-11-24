@@ -14,7 +14,9 @@
 
 deploy_user: "{{ ansible_become_user | default(ansible_user) }}"
 
-deploy_dir: /home/{{ deploy_user }}/deploy
+default_deploy_dir: /home/{{ deploy_user }}/deploy
+
+deploy_dir: "{{ custom_deploy_dir | default(default_deploy_dir) }}"
 
 
 status_dir: "{{ deploy_dir}}/status"
