@@ -56,6 +56,10 @@ variable "user" {
   }
 }
 
+variable "timezone" {
+  default = "Asia/Shanghai"
+}
+
 
 variable "servers" { 		# number of servers
   default = {
@@ -67,16 +71,8 @@ variable "servers" { 		# number of servers
 
 variable "instance_type" {
   default = {
-    pd = "t2.micro"
-    tikv = "t2.micro"
-    tidb = "t2.micro"
-  }
-}
-
-variable "root_size" {		# unit: gigabyte
-  default = {
-    tikv = "10"
-    tidb = "10"
-    pd = "10"
+    pd = "c3.4xlarge"
+    tikv = "c3.4xlarge"
+    tidb = "c3.4xlarge"
   }
 }
