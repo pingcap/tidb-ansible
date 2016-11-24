@@ -45,7 +45,7 @@ We use [Terraform](https://www.terraform.io) to start and destroy machines on AW
    listed types only provide EBS.
 
    | Type       | CPU                                               | Memory(GiB) | Storage(GiB)  | Price(¥/hour) |
-   |------------+---------------------------------------------------+-------------+---------------+---------------|
+   |------------|---------------------------------------------------|-------------|---------------|---------------|
    | m3.medium  | 3 ECUs, 1 vCPUs, 2.5 GHz, Intel Xeon E5-2670v2    |        3.75 | 1x4 (SSD)     |         0.868 |
    | m3.large   | 6.5 ECUs, 2 vCPUs, 2.5 GHz, Intel Xeon E5-2670v2  |         7.5 | 1x32 (SSD)    |         1.735 |
    | m3.xlarge  | 13 ECUs, 4 vCPUs, 2.5 GHz, Intel Xeon E5-2670v2   |          15 | 2x40 (SSD)    |         3.471 |
