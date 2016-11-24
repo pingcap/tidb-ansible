@@ -1,0 +1,10 @@
+---
+
+- name: load data source
+  shell: >
+    chdir={{ grafana_data_dir }}
+    curl -X POST -d @data_source.json --header 'Content-Type: application/json' 
+    http://admin:admin@localhost:3000/api/datasources 
+#  register: import_data_source
+
+

@@ -119,7 +119,17 @@
 #    killall supervise; true
 
 - name: create top deploy dir
-  file: path="{{ deploy_dir }}" state=directory mode=0755
+  file: path="{{ deploy_dir }}" state=directory mode=0755 owner={{ deploy_user }}
+  when:
+    - ansible_user != 'root'
+  become: true  
+
+- name: create top deploy dir via root
+  file: path="{{ deploy_dir }}" state=directory mode=0755 owner={{ deploy_user }}
+  when:
+    - ansible_user == 'root'
+  become: false
+
 
 - name: all start all scripts
   template: src={{ item }}.j2 dest={{ deploy_dir }}/{{ item }} mode=0755
