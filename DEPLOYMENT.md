@@ -1,11 +1,17 @@
 # Ansible-TiDB 部署指南
 v0.0.1 by wangshuyu [项目地址](https://github.com/pingcap/tidb-ansible)
 
+当前工作状态：
+- 在Ansible处理AWS机器的状态
+- 处理grafana监控
+- RPi3 aarch64 架构部署尝试
+- 上线版本记录（回滚尝试）
+
 ## 概述
 Ansilbe 是一个集群部署工具。部署的主机可以是本地或者远程虚拟机，也可以是远程物理机。
-一个完整的TiDB集群包括TiKV，PD，TiDB以及负载均衡模块、集群监控模块、数据备份（同步）模块。
+一个完整的 TiDB 集群包括 TiKV，PD，TiDB 以及负载均衡模块、集群监控模块、数据备份（同步）模块。
 
-由于TiDB集群天然的复杂性（此处应有一坨图），导致了部署成了难题。本 Ansible-TiDB 工具为集群的快速部署、
+由于 TiDB 集群天然的复杂性（此处应有一坨图），导致了部署成了难题。本 Ansible-TiDB 工具为集群的快速部署、
 监控模块的快速配置提供了可能，并对实际上线过程中的滚动升级提供有限支持。
 
 ## 前置条件
@@ -81,7 +87,7 @@ brew install ansible
 
 ```bash
 docker run -v `pwd`:/playbook --rm -it williamyeh/ansible:ubuntu16.04 /bin/bash
-cd /playbook #  
+cd /playbook #
 ```
 
 > 注意以上目录将当前工作目录挂载为容器中 ``/playbook``。
@@ -131,7 +137,7 @@ inventory 文件修改完成后，保存，并确认 ``ansible.cfg`` 的 invento
 
 ```bash
 # 检查所有机器列表
-ansible all --list-hosts 
+ansible all --list-hosts
 
 # 检查机器权限
 ansible all -m ping
@@ -218,16 +224,19 @@ ansible all -m shell -a 'pstree 用户名'
 
 ## 滚动升级
 
-TODO
+滚动升级方案涉及到如下内容：
 
-## Trouble Shooting 
+- 上线前后版本（binary/配置）记录
+- 部分上线/全集群上线
+- 模块替换
+- 模块重启
+- 模块存活检测
 
-TODO
+
+## Trouble Shooting
+
+个人观点:越自动，越难排查。
 
 ## 存在问题
 
-TODO
-
-
-
-
+迷失在配置中？
