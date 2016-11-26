@@ -83,7 +83,7 @@ brew install ansible
 
 #### Docker
 
-根据自己的平台，安装并配置 Docker。
+根据自己的平台，安装并配置 Docker。不过目前该镜像没有 wget/curl/git 组件，需要自己安装。
 
 ```bash
 docker run -v `pwd`:/playbook --rm -it williamyeh/ansible:ubuntu16.04 /bin/bash
@@ -232,6 +232,11 @@ ansible all -m shell -a 'pstree 用户名'
 - 模块重启
 - 模块存活检测
 
+请定制 ``rolling_update.yml`` 文件，更新 resources 目录下的 binary，然后执行
+
+```bash
+ansible-playbook rolling_update.yml
+```
 
 ## Trouble Shooting
 
