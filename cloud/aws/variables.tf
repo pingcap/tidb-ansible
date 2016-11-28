@@ -40,7 +40,7 @@ variable "prometheus_port" {
 
 variable "ami" {
   default = {
-    ubuntu = "ami-0220b23b"	# ubuntu
+    ubuntu = "ami-fd528690"	# ubuntu
     ec2 = "ami-7c15c111"	# amz linux
     debian = "ami-da69a1b7"
     redhat = "ami-52d1183f"
@@ -54,10 +54,6 @@ variable "user" {
     ec2 = "ec2-user"
     debian = "admin"
   }
-}
-
-variable "timezone" {
-  default = "Asia/Shanghai"
 }
 
 

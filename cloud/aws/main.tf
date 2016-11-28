@@ -52,6 +52,12 @@ resource "aws_security_group" "tidb" {
     protocol = "tcp"
     cidr_blocks = ["${var.cidr_blocks["office"]}"]
   }
+  ingress {
+    from_port = 10080
+    to_port = 10080
+    protocol = "tcp"
+    cidr_blocks = ["${var.cidr_blocks["office"]}"]
+  }
 }
 
 
@@ -75,16 +81,13 @@ resource "aws_instance" "tikv" {
     virtual_name = "ephemeral0"
   }
   provisioner "file" {
-    source = "ustc-ubuntu-sources.list"
-    destination = "/tmp/sources.list"
+    source = "files/mount-data-disk.sh"
+    destination = "/tmp/mount-data-disk.sh"
   }
   provisioner "remote-exec" {
     inline = [
-      "sudo cp /tmp/sources.list /etc/apt/sources.list",
-      "sudo timedatectl set-timezone ${var.timezone}",
-      "sudo apt-get update && sudo apt-get install -y ntp",
-      "sudo umount /mnt || true",
-      "sudo mkdir -p /data && sudo mount /dev/xvdb /data",
+      "chmod +x /tmp/mount-data-disk.sh",
+      "/tmp/mount-data-disk.sh"
     ]
   }
 }
@@ -109,16 +112,13 @@ resource "aws_instance" "tidb" {
     virtual_name = "ephemeral0"
   }
   provisioner "file" {
-    source = "ustc-ubuntu-sources.list"
-    destination = "/tmp/sources.list"
+    source = "files/mount-data-disk.sh"
+    destination = "/tmp/mount-data-disk.sh"
   }
   provisioner "remote-exec" {
     inline = [
-      "sudo cp /tmp/sources.list /etc/apt/sources.list",
-      "sudo timedatectl set-timezone ${var.timezone}",
-      "sudo apt-get update && sudo apt-get install -y ntp",
-      "sudo umount /mnt || true",
-      "sudo mkdir -p /data && sudo mount /dev/xvdb /data",
+      "chmod +x /tmp/mount-data-disk.sh",
+      "/tmp/mount-data-disk.sh"
     ]
   }
 }
@@ -144,16 +144,13 @@ resource "aws_instance" "tidb" {
 #     virtual_name = "ephemeral0"
 #   }
 #   provisioner "file" {
-#     source = "ustc-ubuntu-sources.list"
-#     destination = "/tmp/sources.list"
+#     source = "files/mount-data-disk.sh"
+#     destination = "/tmp/mount-data-disk.sh"
 #   }
 #   provisioner "remote-exec" {
 #     inline = [
-#       "sudo cp /tmp/sources.list /etc/apt/sources.list",
-#       "sudo timedatectl set-timezone ${var.timezone}",
-#       "sudo apt-get update && sudo apt-get install -y ntp",
-#       "sudo umount /mnt || true",
-#        "sudo mkdir -p /data && sudo mount /dev/xvdb /data",
+#       "chmod +x /tmp/mount-data-disk.sh",
+#       "/tmp/mount-data-disk.sh"
 #     ]
 #   }
 # }

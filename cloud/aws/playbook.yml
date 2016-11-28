@@ -1,0 +1,62 @@
+---
+
+- hosts: default
+  become: yes
+  tasks:
+    - name: Using ustc mirror
+      copy:
+        src=ustc-ubuntu-sources.list
+        dest=/etc/apt/sources.list
+
+    - name: Upgrade system
+      apt: update_cache=yes upgrade=yes
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Install essential packages # for kubernetes
+      apt:
+        name='{{ item }}'
+        state=present
+        install_recommends=no
+        update_cache=yes
+      with_items:
+        - openssl
+        - curl
+        - tar
+        - git
+        - socat
+        - python-yaml
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: Install ntpd
+      apt: name=ntp state=present
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: Ensure ntpd service enabled
+      service: name=ntp enabled=yes
+
+    - name: Set timezone
+      copy: content='Asia/Shanghai' dest=/etc/timezone
+            owner=root group=root mode=0644
+      when: ansible_distribution == 'Ubuntu'
+
+    # - name: Add dockerproject key
+    #   apt_key:
+    #     keyserver=hkp://p80.pool.sks-keyservers.net:80
+    #     id=58118E89F3A912897C070ADBF76221572C52609D
+    #   when: ansible_distribution == 'Ubuntu'
+
+    # - name: Add dockerproject repo for ubuntu
+    #   apt_repository:
+    #     repo='deb https://apt.dockerproject.org/repo ubuntu-trusty main'
+    #     state=present
+    #   when: ansible_distribution == 'Ubuntu'
+
+    # - name: Install docker
+    #   apt:
+    #     name=docker-engine
+    #     state=latest
+    #     install_recommends=no
+    #     update_cache=yes
+    #   when: ansible_distribution == 'Ubuntu'
+
+# TODO: Install perf/flamegraph/systemtap
