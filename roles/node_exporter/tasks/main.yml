@@ -9,13 +9,6 @@
   - "{{ node_exporter_log_dir }}"
   - "{{ node_exporter_status_dir }}"
 
-- name: deploy supervise binary
-  copy: src="{{ resources_dir }}/bin/{{ item }}" dest="{{ deploy_dir }}/bin/" mode=0755
-  with_items:
-  - supervise
-  - svc
-  - svstat
-
 - name: deply node_exporter binary
   copy: src="{{ resources_dir }}/bin/node_exporter" dest="{{ deploy_dir }}/bin" mode=0755
 

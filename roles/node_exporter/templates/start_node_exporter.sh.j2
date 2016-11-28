@@ -1,13 +1,11 @@
 #!/bin/bash
 ulimit -n 40960
 
-
 # WARNING: This file was auto-generated. Do not edit!
 #          All your edit might be overwritten! 
+cd "{{ deploy_dir }}" || exit 1
 
 {% set status_dir = node_exporter_status_dir -%}
-
-cd "{{ deploy_dir }}" || exit 1
 
 # running as root?
 if [ "$(id -u)" -eq 0 ]; then
@@ -42,9 +40,9 @@ if [ -e "{{ status_dir }}/pid" ]; then
 fi
 
 nohup bin/supervise "{{ status_dir }}" \
-      bin/node_exporter --web.listen-address=":{{ node_exporter_port }}" \
-      --log.level="{{ node_exporter_log_level }}" \
-      >>"{{ node_exporter_log_dir }}/{{ node_exporter_log_filename }}" 2>&1 &
+    bin/node_exporter --web.listen-address=":{{ node_exporter_port }}" \
+    --log.level="{{ node_exporter_log_level }}" \
+    >>"{{ node_exporter_log_dir }}/{{ node_exporter_log_filename }}" 2>&1 &
 
 echo $! > "{{ status_dir }}/pid"
 echo "ok: started!"

@@ -5,126 +5,30 @@
 #   tags:
 #   - ntp
 
+# FIXME: block + include + become not works
 - block:
-  - name: setting kernel params
-    sysctl: name="{{ item.name }}" value="{{ item.value }}" state=present
-    with_items:
-      - { name: 'net.core.somaxconn', value: 32768 }
-      - { name: 'vm.swappiness', value: 0 }
-      - { name: 'net.ipv4.tcp_syncookies', value: 0 }
-      - { name: 'fs.file-max', value: 1000000 }
-
-  - name: update /etc/security/limits.conf file (1/4)
-    lineinfile: >
-      dest=/etc/security/limits.conf
-      insertbefore='# End of file'
-      line='{{ deploy_user }}        soft        nofile        1000000'
-      state=present
-
-  - name: update /etc/security/limits.conf file (2/4)
-    lineinfile: >
-      dest=/etc/security/limits.conf
-      insertbefore='# End of file'
-      line='{{ deploy_user }}        hard        nofile        1000000'
-      state=present
-
-  - name: update /etc/security/limits.conf file (3/4)
-    lineinfile: >
-      dest=/etc/security/limits.conf
-      insertbefore='# End of file'
-      line='{{ deploy_user }}        soft        core        unlimited'
-      state=present
-
-  - name: update /etc/security/limits.conf file (4/4)
-    lineinfile: >
-      dest=/etc/security/limits.conf
-      insertbefore='# End of file'
-      line='{{ deploy_user }}        soft        stack        10240'
-      state=present
-
-  - name: swap - disable swap
-    shell: "[ $(swapon -s | wc -l) -eq 1 ] || swapoff -a"
-    ignore_errors: yes
-    register: swapoff_result
-    changed_when: "swapoff_result.rc == 0"
+    - include: ./kernel_params_as_root.yml
   when:
     - ansible_user == 'root'
     - tuning_kernel_parameters
-  become: false
+
 
 - block:
-  - name: setting kernel params
-    sysctl: name="{{ item.name }}" value="{{ item.value }}" state=present
-    with_items:
-      - { name: 'net.core.somaxconn', value: 32768 }
-      - { name: 'vm.swappiness', value: 0 }
-      - { name: 'net.ipv4.tcp_syncookies', value: 0 }
-      - { name: 'fs.file-max', value: 1000000 }
-
-  - name: update /etc/security/limits.conf file (1/4)
-    lineinfile: >
-      dest=/etc/security/limits.conf
-      insertbefore='# End of file'
-      line='{{ deploy_user }}        soft        nofile        1000000'
-      state=present
-
-  - name: update /etc/security/limits.conf file (2/4)
-    lineinfile: >
-      dest=/etc/security/limits.conf
-      insertbefore='# End of file'
-      line='{{ deploy_user }}        hard        nofile        1000000'
-      state=present
-
-  - name: update /etc/security/limits.conf file (3/4)
-    lineinfile: >
-      dest=/etc/security/limits.conf
-      insertbefore='# End of file'
-      line='{{ deploy_user }}        soft        core        unlimited'
-      state=present
-
-  - name: update /etc/security/limits.conf file (4/4)
-    lineinfile: >
-      dest=/etc/security/limits.conf
-      insertbefore='# End of file'
-      line='{{ deploy_user }}        soft        stack        10240'
-      state=present
-
-  - name: swap - disable swap
-    shell: "[ $(swapon -s | wc -l) -eq 1 ] || swapoff -a"
-    ignore_errors: yes
-    register: swapoff_result
-    changed_when: "swapoff_result.rc == 0"
-
+    - include: ./kernel_params_as_normal_user.yml
   when:
     - ansible_user != 'root'
     - tuning_kernel_parameters
-  become: true
 
 - name: create account
   user: name={{ deploy_user }}
-
-#- name: deploy supervise binary
-#  copy: src="{{ resources_dir }}/bin/{{ item }}" dest="{{ deploy_dir }}/bin/" mode=0755
-#  with_items:
-#  - supervise
-#  - svc
-#  - svstat
-
-#- name: stop all
-#  shell: |
-#    for dir in $(ls {{ status_dir }}); do
-#      {{ deploy_dir }}/bin/svc -d {{ status_dir }}/$dir
-#      rm -rv {{ status_dir }}/$dir
-#    done
-#    killall supervise; true
 
 - name: create top deploy dir
   file: path="{{ deploy_dir }}" state=directory mode=0755 owner={{ deploy_user }}
   when:
     - ansible_user != 'root'
-  become: true  
+  become: true
 
-- name: create top deploy dir via root
+- name: create top deploy dir when under root
   file: path="{{ deploy_dir }}" state=directory mode=0755 owner={{ deploy_user }}
   when:
     - ansible_user == 'root'

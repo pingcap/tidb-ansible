@@ -12,7 +12,7 @@
 
 - hosts: monitoring_servers
   tasks:
-  - name: restart {{ item }}
+  - name: restart monitoring modules
     shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
     with_items:
     - pushgateway
@@ -22,14 +22,14 @@
 
 - hosts: pd_servers
   tasks:
-  - name: restart {{ item }}
+  - name: restart PD
     shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
     with_items:
     - pd
 
 - hosts: tikv_servers
   tasks:
-  - name: restart {{ item }}
+  - name: restart TiKV
     shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
     with_items:
     - tikv
@@ -37,7 +37,7 @@
 
 - hosts: tidb_servers
   tasks:
-  - name: restart {{ item }}
+  - name: restart TiDB
     shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
     with_items:
     - tidb

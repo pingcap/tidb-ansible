@@ -4,6 +4,7 @@ ulimit -n 40960
 
 # WARNING: This file was auto-generated. Do not edit!
 #          All your edit might be overwritten! 
+cd "{{ deploy_dir }}" || exit 1
 
 {% set status_dir = pushgateway_status_dir -%}
 
@@ -39,14 +40,11 @@ if [ -e "{{ status_dir }}/pid" ]; then
     # rm -f "{{ status_dir }}/pid"
 fi
 
-
-cd "{{ deploy_dir }}" || exit 1
-
 nohup bin/supervise "{{ status_dir }}" \
-      bin/pushgateway \
-      --log.level="{{ pushgateway_log_level }}" \
-      --web.listen-address=":{{ pushgateway_port }}" \
-      >>"{{ pushgateway_log_dir }}/{{ pushgateway_log_filename }}" 2>&1 &
+    bin/pushgateway \
+    --log.level="{{ pushgateway_log_level }}" \
+    --web.listen-address=":{{ pushgateway_port }}" \
+    >>"{{ pushgateway_log_dir }}/{{ pushgateway_log_filename }}" 2>&1 &
 
 echo $! > "{{ status_dir }}/pid"
 echo "ok: started!"

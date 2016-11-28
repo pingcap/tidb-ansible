@@ -4,6 +4,7 @@ ulimit -n 40960
 
 # WARNING: This file was auto-generated. Do not edit!
 #          All your edit might be overwritten! 
+cd "{{ deploy_dir }}" || exit 1
 
 {% set status_dir = tidb_status_dir -%}
 
@@ -53,15 +54,13 @@ if [ -e "{{ status_dir }}/pid" ]; then
     # rm -f "{{ status_dir }}/pid"
 fi
 
-cd "{{ deploy_dir }}" || exit 1
-
 nohup bin/supervise "{{ status_dir }}" \
     bin/tidb-server \
     -P {{ tidb_port }} \
     --store=tikv --path="{{ all_pd | join(',') }}"\
     -L="{{ tidb_log_level }}" --log-file="{{ tidb_log_dir }}/{{ tidb_log_filename }}" \
     --status="{{ tidb_status_port }}" --metrics-addr="{{ metric_addr }}" --metrics-interval={{ metric_interval }} \
-    --lease 1 >/dev/null 2>&1 &
+    --lease 10 >/dev/null 2>&1 &
 
 echo $! > "{{ status_dir }}/pid"
 echo "ok: started!"

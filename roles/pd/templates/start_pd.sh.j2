@@ -1,9 +1,9 @@
 #!/bin/bash
 ulimit -n 40960
 
-
 # WARNING: This file was auto-generated. Do not edit!
 #          All your edit might be overwritten! 
+cd "{{ deploy_dir }}" || exit 1
 
 {% set status_dir = pd_status_dir -%}
 
@@ -51,8 +51,6 @@ if [ -e "{{ status_dir }}/pid" ]; then
     fi
     # rm -f "{{ status_dir }}/pid"
 fi
-
-cd "{{ deploy_dir }}" || exit 1
 
 nohup bin/supervise "{{ status_dir }}" \
     bin/pd-server \

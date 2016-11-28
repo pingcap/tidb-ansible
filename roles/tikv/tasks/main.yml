@@ -11,13 +11,6 @@
   - "{{ tikv_log_dir }}"
   - "{{ tikv_data_dir }}"
   - "{{ tikv_status_dir }}"
-  
-- name: deploy supervise binary
-  copy: src="{{ resources_dir }}/bin/{{ item }}" dest="{{ deploy_dir }}/bin/" mode=0755
-  with_items:
-  - supervise
-  - svc
-  - svstat
 
 - name: deply tikv binary
   copy: src="{{ resources_dir }}/bin/tikv-server" dest="{{ deploy_dir }}/bin/" mode=0755

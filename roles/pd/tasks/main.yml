@@ -11,13 +11,6 @@
   - "{{ pd_log_dir }}"
   - "{{ pd_data_dir }}"
   - "{{ pd_status_dir }}"
-  
-- name: deploy supervise binary
-  copy: src="{{ resources_dir }}/bin/{{ item }}" dest="{{ deploy_dir }}/bin/" mode=0755
-  with_items:
-  - supervise
-  - svc
-  - svstat
 
 - name: deply pd binary
   copy: src="{{ resources_dir }}/bin/pd-server" dest="{{ deploy_dir }}/bin/" mode=0755
