@@ -10,9 +10,9 @@ global:
     {{ item.label }}: "{{ item.value }}"
 {% endfor %}
 
-{% set pushgateway_host = hostvars[groups.monitoring_servers[0]].ansible_default_ipv4.address if groups.monitoring_servers else "" -%}
-{% set pushgateway_port = hostvars[groups.monitoring_servers[0]].pushgateway_port if groups.monitoring_servers else ''-%}
-
+{% set pushgateway_host = hostvars[groups.monitoring_servers[0]].ansible_default_ipv4.address 
+    if groups.get('monitoring_servers', []) else '' -%}
+{% set pushgateway_port = hostvars[groups.monitoring_servers[0]].pushgateway_port if pushgateway_host else '' -%}
 
 scrape_configs:
 {% if pushgateway_host %}
@@ -29,7 +29,7 @@ scrape_configs:
     scrape_interval: "15s"
     static_configs:
       - targets:
-{% for host in groups['monitored_servers'] -%}
+{% for host in groups.get('monitored_servers', []) -%}
   {% set ip = hostvars[host]['ansible_default_ipv4']['address'] or host -%}
   {# % set ip = host -% #}
   {% set node_port = hostvars[host]['node_exporter_port'] %}

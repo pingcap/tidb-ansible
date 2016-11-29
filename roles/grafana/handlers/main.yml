@@ -1,5 +1,11 @@
 ---
 
+- name: restart grafana
+  shell: >
+    cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
+  with_items:
+    - grafana
+
 # reentrant as if same data source name
 - name: load data source
   shell: >

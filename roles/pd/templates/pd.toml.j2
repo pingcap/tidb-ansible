@@ -13,10 +13,11 @@
   {% set _ = all_pd.append("%s=http://%s:%s" % (other_pd_name, other_ip, other_port)) -%}
 {% endfor -%}
 
-{% set metric_host = hostvars[groups.monitoring_servers[0]].ansible_default_ipv4.address if groups.monitoring_servers else "" -%}
-{% set metric_port = hostvars[groups.monitoring_servers[0]].pushgateway_port if groups.monitoring_servers else ''-%}
 
-{% set metric_interval = "0s" if metric_host == "" else pd_metric_interval -%}
+{% set metric_host = hostvars[groups.monitoring_servers[0]].ansible_default_ipv4.address 
+    if groups.get('monitoring_servers', []) else '' -%}
+{% set metric_port = hostvars[groups.monitoring_servers[0]].pushgateway_port if metric_host else '' -%}
+{% set metric_interval = pd_metric_interval if metric_host else "0s" -%}
 
 # PD Configuration.
 # WARNING: This file was auto-generated. Do not edit!
