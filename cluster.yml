@@ -6,16 +6,19 @@
 
 - name: initializing deployment target
   hosts: all
+  gather_facts: true
   roles:
   - common
 
 - name: deploying monitoring agent
   hosts: monitored_servers
+  gather_facts: false
   roles:
   - node_exporter
 
 - name: deploying monitoring server
   hosts: monitoring_servers
+  gather_facts: false
   roles:
   - pushgateway
   - prometheus
@@ -25,34 +28,30 @@
 
 - name: deploying PD cluster
   hosts: pd_servers
+  gather_facts: false
   roles:
   - pd
 
 - name: deploying TiKV cluster
   hosts: tikv_servers
+  gather_facts: false
   roles:
   - tikv
 
 - name: deploying TiDB cluster
   hosts: tidb_servers
+  gather_facts: false
   roles:
+#  - pump
   - tidb
+
+#- name: deploying binlog server
+#  hosts: binlog_servers
+#  roles:
+#  - cistern
+#  - drainer
 
 #- name: deploying load balance server
 #  hosts: lb_servers
 #  roles:
 #  - haproxy
-
-
-# TODO:
-# - pump
-# - cistern
-# - drainer
-# - hosts: cistern_servers
-
-#   roles:
-#   - cistern
-
-# - hosts: drainer_servers
-#   roles:
-#   - drainer

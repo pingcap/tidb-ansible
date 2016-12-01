@@ -7,19 +7,6 @@ cd "{{ deploy_dir }}" || exit 1
 
 {% set status_dir = tikv_status_dir -%}
 
-{% set my_ip = ansible_default_ipv4.address -%}
-
-{# my id in tikv cluster #}
-{% set my_peer_id = groups.tikv_servers.index(inventory_hostname) + 1 -%}
-
-{% set all_pd = [] -%}
-{% set pd_hosts = groups.pd_servers %}
-{% for host in pd_hosts -%}
-  {% set pd_ip = hostvars[host].ansible_default_ipv4.address -%}
-  {% set pd_port = hostvars[host].pd_client_port -%}
-  {% set _ = all_pd.append("%s:%s" % (pd_ip, pd_port)) -%}
-{% endfor -%}
-
 # running as root?
 if [ "$(id -u)" -eq 0 ]; then
     echo "warning: run as root is dangerous! try switch to user: {{ deploy_user }}!"
@@ -52,17 +39,7 @@ if [ -e "{{ status_dir }}/pid" ]; then
     # rm -f "{{ status_dir }}/pid"
 fi
 
-export RUST_BACKTRACE=1
-
-nohup bin/supervise "{{ status_dir }}" \
-    bin/tikv-server \
-    --addr "{{ my_ip }}:{{ tikv_port }}" \
-    --pd "{{ all_pd | join(',') }}" \
-    --store "{{ tikv_data_dir }}" \
-    --capacity "{{ tikv_capacity }}" \
-    --config conf/tikv.toml \
-    -L info \
-    --log-file "{{ tikv_log_dir }}/{{ tikv_log_filename }}" &>/dev/null &
+nohup bin/supervise "{{ status_dir }}" scripts/exec_tikv.sh &>/dev/null &
 
 echo $! > "{{ status_dir }}/pid"
 echo "ok: started!"

@@ -2,65 +2,70 @@
 # Copyright 2016 PingCAP, Inc.
 
 # The playbook of TiDB
-
-- hosts: all
+- name: gather all facts
+  hosts: all
+  gather_facts: true
+  tags:
+    - always
+  roles:
+    - common
   vars:
     tuning_kernel_parameters: false
-  roles:
-  - common
 
-- name: deploy PD cluster
-  hosts: pd_servers
-  roles:
-  - pd
 
-- name: restart PD cluster
+- name: rolling update PD cluster
   hosts: pd_servers
-  tasks:
-  - name: restart PD
-    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
-    with_items:
+  gather_facts: false
+  serial: 1
+  tags:
     - pd
-
-  - name: wait PD up
-    wait_for: host={{ ansible_default_ipv4.address }} port={{ pd_client_port }} state=present
-
-
-- name: deploy TiKV cluster
-  hosts: tikv_servers
   roles:
-  - tikv
-
-- name: restart TiKV cluster
-  hosts: tikv_servers
+    - pd
   tasks:
-  - name: restart TiKV
-    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
-    with_items:
+    - name: restart PD
+      tags:
+        - restart
+      shell: cd {{ deploy_dir }}/scripts && ./stop_pd.sh; ./start_pd.sh
+
+    - name: wait PD up
+      tags:
+        - restart
+      wait_for: host={{ ansible_default_ipv4.address }} port={{ pd_client_port }} state=present
+
+- name: rolling update TiKV cluster
+  hosts: tikv_servers
+  gather_facts: false
+  serial: 1
+  tags:
     - tikv
-
-  - name: wait TiKV up
-    wait_for: host={{ ansible_default_ipv4.address }} port={{ tikv_port }} state=present
-
-
-- name: deploy TiDB cluster
-  hosts: tidb_servers
   roles:
-  - tidb
-
-- name: restart TiDB cluster
-  hosts: tidb_servers
+    - tikv
   tasks:
-  - name: restart TiDB
-    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
-    with_items:
+    - name: restart TiKV
+      tags:
+        - restart
+      shell: cd {{ deploy_dir }}/scripts && ./stop_tikv.sh; ./start_tikv.sh
+
+    - name: wait TiKV up
+      tags:
+        - restart
+      wait_for: host={{ ansible_default_ipv4.address }} port={{ tikv_port }} state=present
+
+- name: rolling update TiDB cluster
+  hosts: tidb_servers
+  gather_facts: false
+  serial: 1
+  tags:
     - tidb
+  roles:
+    - tidb
+  tasks:
+    - name: restart TiDB
+      tags:
+        - restart
+      shell: cd {{ deploy_dir }}/scripts && ./stop_tidb.sh; ./start_tidb.sh
 
-  - name: wait TiDB up
-    wait_for: host={{ ansible_default_ipv4.address }} port={{ tidb_port }} state=present
-
-
-# TODO:
-# - pump
-# - cistern
-# - drainer
+    - name: wait TiDB up
+      tags:
+        - restart
+      wait_for: host={{ ansible_default_ipv4.address }} port={{ tidb_port }} state=present

@@ -30,16 +30,7 @@
 - name: push data source file
   template: src=data_source.json.j2 dest={{ grafana_data_dir }}/data_source.json mode=0644
 
-# FIXME: how to add datasource first
-- name: import grafana dashboards
-  copy: src={{ item }} dest="{{ grafana_dashboards_dir }}/{{ item }}"
-  with_items:
-  - pd.json
-  - tidb-binlog.json
-  - tidb.json
-  - tikv.json
-
-- name: create grafana startup script v2
+- name: create grafana startup script
   template: src={{ item }}.j2 dest={{ deploy_dir }}/scripts/{{ item }} mode=0755
   with_items:
   - start_{{ role_name }}.sh

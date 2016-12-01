@@ -2,7 +2,7 @@
 
 cd "{{ deploy_dir }}" || exit 1
 
-{% set status_dir = tikv_status_dir -%}
+{% set status_dir = pump_status_dir -%}
 
 # try down
 bin/svc -d "{{ status_dir }}" &>/dev/null || true
@@ -24,7 +24,5 @@ if echo "${_check}" | grep 'up pid' &>/dev/null; then
         kill ${_pid}
     fi
 fi
-
-echo -n "sync ... "; sync; echo "done!"
 
 echo "ok: stopped!"

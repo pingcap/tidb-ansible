@@ -6,6 +6,7 @@
   with_items:
   - "{{ deploy_dir }}/bin"
   - "{{ status_dir }}"
+  when: not skip_supervise
 
 - name: deploy supervise binary
   copy: src="{{ resources_dir }}/bin/{{ item }}" dest="{{ deploy_dir }}/bin/" mode=0755
@@ -13,3 +14,4 @@
   - supervise
   - svc
   - svstat
+  when: not skip_supervise
