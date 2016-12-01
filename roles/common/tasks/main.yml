@@ -29,7 +29,7 @@
 - name: environment check (supervise)
   stat: path="{{ deploy_dir }}"/bin/supervise get_md5=false get_checksum=false
   register: supervise_st
-  when: deploy_dir_st.stat.isdir
+  when: deploy_dir_st.stat.isdir is defined and deploy_dir_st.stat.isdir 
 
 - name: config skip variables
   set_fact:
