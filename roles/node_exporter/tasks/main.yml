@@ -6,10 +6,10 @@
   - "{{ node_exporter_log_dir }}"
   - "{{ node_exporter_status_dir }}"
 
-- name: deply node_exporter binary
+- name: deploy node_exporter binary
   copy: src="{{ resources_dir }}/bin/node_exporter" dest="{{ deploy_dir }}/bin" mode=0755
 
-- name: create {{ role_name }} startup script v2
+- name: create {{ role_name }} startup script
   template: src={{ item }}.j2 dest={{ deploy_dir }}/scripts/{{ item }} mode=0755
   with_items:
   - start_{{ role_name }}.sh
