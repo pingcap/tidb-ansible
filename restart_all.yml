@@ -3,7 +3,13 @@
 
 # The playbook of TiDB
 
+- name: initializing deployment target
+  hosts: all
+  gather_facts: true
+  roles: []
+
 - hosts: monitored_servers
+  gather_facts: false
   tasks:
     - name: restart node_exporter
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
@@ -11,6 +17,7 @@
       - node_exporter
 
 - hosts: monitoring_servers
+  gather_facts: false
   tasks:
   - name: restart monitoring modules
     shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
@@ -21,6 +28,7 @@
 
 
 - hosts: pd_servers
+  gather_facts: false
   tasks:
   - name: restart PD
     shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
@@ -28,6 +36,7 @@
     - pd
 
 - hosts: tikv_servers
+  gather_facts: false
   tasks:
   - name: restart TiKV
     shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
@@ -36,9 +45,43 @@
 
 
 - hosts: tidb_servers
+  gather_facts: false
   tasks:
   - name: restart TiDB
     shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
     with_items:
     - tidb
-    
+
+- hosts: monitoring_servers
+  gather_facts: true
+  # FIXME: must introduce this to load all variables
+  roles:
+    - { role: grafana, skip_supervise: true }
+  tasks:
+    - name: import grafana data source
+      shell: >
+        chdir={{ grafana_data_dir }}
+        curl -q -X POST -d @data_source.json --header 'Content-Type: application/json'
+        "http://{{ grafana_admin_user }}:{{ grafana_admin_password }}@localhost:{{ grafana_port }}/api/datasources"
+
+    - name: import grafana dashboards - prepare config
+      delegate_to: localhost
+      template: src=grafana.dest.json.j2 dest={{ playbook_dir }}/scripts/dests.json
+      vars:
+        - grafana_dest_config:
+            name: "{{ monitoring_group_name | title }}"
+            url: "http://{{ inventory_hostname }}:{{ grafana_port }}/"
+            user: "{{ grafana_admin_user }}"
+            password: "{{ grafana_admin_password }}"
+            datasource: "{{ monitoring_group_name }}"
+            titles:
+              node: "{{ monitoring_group_name | title }}-Node-Export"
+              pd: "{{ monitoring_group_name | title }}-PD"
+              tidb: "{{ monitoring_group_name | title }}-TiDB"
+              tikv: "{{ monitoring_group_name | title }}-TiKV"
+
+    - name: import grafana dashboards - run import script
+      delegate_to: localhost
+      shell: >-
+        chdir={{ playbook_dir }}/scripts
+        ./grafana-config-copy.py
