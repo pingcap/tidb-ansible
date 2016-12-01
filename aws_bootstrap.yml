@@ -2,46 +2,101 @@
 
 # This play book is intend for one pass execution
 
-- name: do host preparation
-  hosts: aws
+- name: "Group nodes by OS distribution"
+  hosts: all
+  gather_facts: true
   tasks:
+    - name: group hosts by distribution
+      group_by: key="{{ ansible_distribution }}-{{ ansible_distribution_version }}"
+      changed_when: false
+
+- name: Set Time Zone
+  hosts: Ubuntu-14.04
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Set timezone variables
+      copy: content='Asia/Chongqing'
+            dest=/etc/timezone
+            owner=root
+            group=root
+            mode=0644
+            backup=yes
+      notify:
+        - update timezone
+  handlers:
+    - name: update timezone
+      command: dpkg-reconfigure --frontend noninteractive tzdata
+
+- name: do AWS host preparation
+  hosts: Ubuntu-*
+  gather_facts: false
+  tasks:
+    - name: disable apt key check
+      lineinfile: >
+        dest=/etc/apt/apt.conf.d/99skipkeycheck line="APT::Get::AllowUnauthenticated "true";"
+        create=yes
+      become: true
+      
     - name: change apt mirror.list
-      copy: src={{ resources_dir }}/aws/sources.list dest=/etc/apt/sources.list mode=0644
+      copy: src=sources.list dest=/etc/apt/sources.list mode=0644
+      become: true
+ 
+    - name: add apt-fast to apt sources.list.d
+      lineinfile: >
+        dest=/etc/apt/sources.list.d/saiarcot895-myppa-trusty.list
+        line="deb http://ppa.launchpad.net/saiarcot895/myppa/ubuntu trusty main" 
+        create=yes
       become: true
 
-    - name: install apt-metalink
-      copy: src={{ resources_dir }}/aws/apt-metalink dest=/usr/bin/apt-metalink mode=0755
-      become: true
-
-    - name: add apt-fast repository
-      shell: >-
-        sudo add-apt-repository ppa:saiarcot895/myppa
-
-    - name: install dependencies
-      apt: name={{ item }} update_cache=yes cache_valid_time=3600
+    - name: install apt-fast
+      apt: name={{ item }} update_cache=yes
       become: true
       with_items:
         - apt-fast
 
-    - name: prepare install docker, add key
-      shell: >-
-        apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
-      become: true
-
     - name: add docker to apt sources.list.d
-      shell: >-
-        echo "deb https://mirrors.tuna.tsinghua.edu.cn/docker/apt/repo ubuntu-trusty main" | tee /etc/apt/sources.list.d/docker.list
+      lineinfile: > 
+        dest=/etc/apt/sources.list.d/docker.list
+        line="deb https://mirrors.tuna.tsinghua.edu.cn/docker/apt/repo ubuntu-trusty main"
+        create=yes 
       become: true
 
-
-    - name: install packages
+    - name: install docker
       shell: >-
-        apt-fast update
+        creates=/usr/bin/docker
+        apt-fast -y update;
         apt-fast -y install docker-engine
       become: true
-      with_items:
-        - docker-engine
 
     - name: add user to docker group
-      user: name=ubuntu groupds=docker append=yes
+      user: name=ubuntu groups=docker append=yes
+      become: true
+
+    - name: install perf/systemtab/unzip/ntp
+      shell: >-
+        apt-fast -y install linux-tools-$(uname -r) systemtap unzip ntp
+
+    - name: install FlameGraph - create dir
+      file: path=/opt/FlameGraph state=directory mode=0755
+      become: true
+
+    - name: install FlameGraph - install scripts
+      unarchive:
+        creates: /opt/FlameGraph/flamegraph.pl
+        src: "{{ resources_dir }}/FlameGraph.zip"
+        dest: /opt/FlameGraph/
+        mode: 0755
+        exclude:
+          - demos
+          - docs
+          - test
+      become: true
+
+    - name: install FlameGraph - change dir
+      shell: >-
+        creates=/opt/FlameGraph/flamegraph.pl
+        chdir=/opt/FlameGraph
+        mv ./FlameGraph-master/* ./ && 
+        rm -r ./FlameGraph-master
       become: true

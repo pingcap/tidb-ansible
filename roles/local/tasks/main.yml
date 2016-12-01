@@ -27,6 +27,11 @@
     - { name: grafana-4.0.0, url: "http://og66pdz33.bkt.clouddn.com/grafana-4.0.0-1479719016beta2.linux-x64.tar.gz" }
     - { name: daemontools-0.53, url: "http://download.pingcap.org/daemontools-0.53.tar.gz" }
 
+- name: download FlameGraph master
+  get_url: >
+    url=https://github.com/brendangregg/FlameGraph/archive/master.zip
+    dest={{ resources_dir }}/FlameGraph.zip
+
 - name: unarchive binary
   shell: tar xzf {{ item }}-*.tar.gz
   args:
