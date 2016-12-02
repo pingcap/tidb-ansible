@@ -132,7 +132,7 @@ resource "aws_instance" "tidb" {
 #   key_name = "${var.ssh_key_name}"
 #   count = "${var.servers["pd"]}"
 #   subnet_id = "${var.subnet["a"]}"
-#   security_groups = ["${aws_security_group.tidb.id}"]
+#   vpc_security_group_ids = ["${aws_security_group.tidb.id}"]
 #   connection {
 #     user = "ubuntu"
 #     agent = false
