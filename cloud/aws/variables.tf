@@ -56,6 +56,7 @@ variable "user" {
   }
 }
 
+variable "creator" {}
 
 variable "servers" { 		# number of servers
   default = {

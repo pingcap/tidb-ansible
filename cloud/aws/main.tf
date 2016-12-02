@@ -75,6 +75,7 @@ resource "aws_instance" "tikv" {
   }
   tags {
     Name = "tikv-${count.index}"
+    Creator = "${var.creator}"	# For AWS console management
   }
   ephemeral_block_device {
     device_name = "xvdb"
@@ -106,6 +107,7 @@ resource "aws_instance" "tidb" {
   }
   tags {
     Name = "tidb-${count.index}"
+    Creator = "${var.creator}"
   }
   ephemeral_block_device {
     device_name = "xvdb"
@@ -138,6 +140,7 @@ resource "aws_instance" "tidb" {
 #   }
 #   tags {
 #     Name = "pd-${count.index}"
+#     Creator = "${var.creator}"
 #   }
 #   ephemeral_block_device {
 #     device_name = "xvdb"
