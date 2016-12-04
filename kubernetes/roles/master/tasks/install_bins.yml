@@ -1,0 +1,16 @@
+---
+- name: Extract kubernetes
+  unarchive:
+    src="{{ binaries_dir }}/kubernetes-amd64_{{ kube_version }}.tar.gz"
+    dest="{{ install_path }}"
+    copy=no
+
+- name: Create symlinks
+  file:
+    src="{{ install_path }}/kubernetes-amd64_{{ kube_version }}/{{ item }}"
+    dest="{{ bin_dir }}/{{ item }}"
+    state=link
+    force=yes
+    mode=0755
+  with_items:
+    - "{{ kube_master_binaries }}"

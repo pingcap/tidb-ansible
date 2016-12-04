@@ -1,0 +1,37 @@
+---
+- name: Install systemd services
+  copy:
+    src="{{ item }}.service"
+    dest="/etc/systemd/system/{{ item }}.service"
+    force=yes
+  register: "{{ item }}_service"
+  notify:
+    - reload systemd
+  with_items:
+    - kube-apiserver
+    - kube-controller-manager
+    - kube-scheduler
+    - kubelet
+
+- name: Install systemd config files
+  copy:
+    src="environ/{{ item }}"
+    dest="{{ kube_config_dir }}/{{ item }}"
+    force=yes
+  register: "{{ item }}_default"
+  notify:
+    - reload systemd
+  with_items:
+    - apiserver
+    - config
+    - scheduler
+    - controller-manager
+    - kubelet
+
+- name: Install Systemd tmpfiles
+  copy:
+    src="tmpfiles.d/kubernetes.conf"
+    dest=/usr/lib/tmpfiles.d/kubernetes.conf
+    force=yes
+  notify:
+    - reload systemd

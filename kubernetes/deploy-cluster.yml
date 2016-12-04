@@ -1,0 +1,46 @@
+---
+# This playbook deploys a kubernetes cluster
+# with the default addons.
+
+- hosts: all
+  gather_facts: false
+  become: yes
+  roles:
+    - pre-ansible
+  tags:
+    - pre-ansible
+
+- hosts: all
+  become: yes
+  roles:
+    - { role: vagrant, when: vagrant is defined }
+  tags:
+    - vagrant
+
+# Install etcd
+- include: deploy-etcd.yml
+
+# Install docker
+- include: deploy-docker.yml
+
+# install flannel
+- hosts:
+    - masters
+    - nodes
+  become: yes
+  roles:
+    - { role: flannel, when: networking == 'flannel' }
+  tags:
+    - network-service-install
+
+# install kube master services
+- include: deploy-master.yml
+
+# launch addons, like dns
+- include: deploy-addons.yml
+
+# install kubernetes on the nodes
+- include: deploy-node.yml
+
+# deploy tidb cluster on kubernetes
+- include: deploy-tidb.yml

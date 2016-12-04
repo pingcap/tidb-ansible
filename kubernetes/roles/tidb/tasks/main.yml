@@ -1,0 +1,26 @@
+---
+- name: Ensure TiDB install_path exist
+  file:
+    path="{{ tidb_path }}"
+    recurse=yes
+    state=directory
+    owner=root
+    group=root
+    mode=0755
+
+- name: Copy TiDB yaml files to master
+  template:
+    src="{{ item }}.j2"
+    dest="{{ tidb_path }}/{{ item }}"
+    group=root
+    owner=root
+    mode=0644
+  with_items:
+    - namespace.yaml
+    - pd.yaml
+    - tidb.yaml
+    - tikv.yaml
+
+- name: Deploy tidb cluster
+  command: "{{ bin_dir }}/kubectl create -f {{ tidb_path }}"
+  become: no

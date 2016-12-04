@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-config
+  namespace: kube-system
+  labels:
+    k8s-app: grafana
+    version: v3
+    kubernetes.io/cluster-service: "true"
+data:
+  grafana.ini: |
+    [server]
+    root_url = http://{{ groups['masters'][0] }}:8080/api/v1/proxy/namespaces/kube-system/services/grafana-monitoring
+    [auth.anonymous]
+    enabled = true

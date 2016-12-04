@@ -1,0 +1,58 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: prom-node-exporter
+  namespace: kube-system
+  labels:
+    k8s-app: node-exporter-monitoring
+    kubernetes.io/cluster-service: "true"
+spec:
+  template:
+    metadata:
+      name: prom-node-exporter
+      labels:
+        name: prom-node-exporter
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9100"
+    spec:
+      hostPID: true
+      hostIPC: true
+      hostNetwork: true
+      containers:
+        - name: prom-node-exporter
+          image: prom/node-exporter:v0.13.0
+          securityContext:
+            privileged: true
+          ports:
+          - containerPort: 9100
+            protocol: TCP
+          args:
+            - -collector.procfs
+            - /host/proc
+            - collector.sysfs
+            - /host/sys
+            - collector.filesystem.ignored-mount-points
+            - '"^/(sys|proc|dev|host|etc)($|/)"'
+          volumeMounts:
+            - name: dev
+              mountPath: /host/dev
+            - name: proc
+              mountPath: /host/proc
+            - name: sys
+              mountPath: /host/sys
+            - name: rootfs
+              mountPath: /rootfs
+      volumes:
+        - name: proc
+          hostPath:
+            path: /proc
+        - name: dev
+          hostPath:
+            path: /dev
+        - name: sys
+          hostPath:
+            path: /sys
+        - name: rootfs
+          hostPath:
+            path: /

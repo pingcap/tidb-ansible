@@ -1,0 +1,44 @@
+---
+- name: Get os_version from /etc/os-release
+  raw: "grep '^VERSION_ID=' /etc/os-release | sed s'/VERSION_ID=//'"
+  register: os_version
+  always_run: yes
+
+- name: Get distro name from /etc/os-release
+  raw: "grep '^NAME=' /etc/os-release | sed s'/NAME=//'"
+  register: distro
+  always_run: yes
+
+- name: Set the init_system fact
+  set_fact:
+    init_system: upstart
+
+- name: Determine if systemd
+  raw: "test -d /run/systemd/system"
+  register: t
+  changed_when: false
+  failed_when: false
+  always_run: yes
+
+- name: Set the init_system fact
+  set_fact:
+    init_system: systemd
+  when: t.rc == 0               # return code is 0
+
+- name: Determine if Atomic
+  raw: "test -f /run/ostree-booted"
+  register: s
+  changed_when: false
+  failed_when: false
+  always_run: yes
+
+- name: Set the is_atomic fact
+  set_fact:
+    is_atomic: true
+  when: s.rc == 0
+
+- name: Copy binaries to remote machine
+  copy: src={{ local_binaries }} dest=/opt/binaries.tar.gz
+
+- name: Extract binaries file
+  unarchive: src=/opt/binaries.tar.gz dest={{ install_path }} copy=no

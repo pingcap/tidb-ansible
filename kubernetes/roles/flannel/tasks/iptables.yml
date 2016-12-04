@@ -1,0 +1,29 @@
+---
+- name: Get iptables rules
+  command: iptables -L --wait
+  register: iptablesrules
+  always_run: yes
+
+- name: Enable iptables at boot
+  service: name=iptables enabled=yes state=started
+  when: ansible_distribution == "Centos" or ansible_distribution == "Redhat"
+
+- name: Enable iptables at boot
+  service: name=ufw enabled=yes state=started
+  when: ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
+
+- name: Open vxlan port with iptables
+  command: /sbin/iptables -I INPUT 1 -p udp --dport 8472
+           -j ACCEPT -m comment --comment "vxlan"
+
+- name: Allow flanneld subnet traffic with iptables
+  command: /sbin/iptables -I FORWARD 1 -i flannel.1
+           -j ACCEPT -m comment --comment "flannel subnet"
+
+- name: Allow DNATed packets through to flanneld
+  command: /sbin/iptables -I FORWARD 1 -o flannel.1
+           -j ACCEPT -m comment --comment "flannel subnet"
+
+- name: Save iptables rules
+  command: service iptables save
+  when: ansible_distribution == "Centos" or ansible_distribution == "Redhat"

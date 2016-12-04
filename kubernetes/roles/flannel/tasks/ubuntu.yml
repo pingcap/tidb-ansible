@@ -1,0 +1,13 @@
+---
+- name: Configure Docker to use Flannel network
+  lineinfile:
+    dest="{{ docker_config_dir }}/docker"
+    state=present
+    line="{{ item.line }}"
+    regexp="{{ item.regexp }}"
+  with_items:
+    - { line: '. /run/flannel/subnet.env', regexp: '. /run/flannel/subnet.env' }
+    - { line: 'DOCKER_OPTS="--bip ${FLANNEL_SUBNET} --mtu ${FLANNEL_MTU}"',regexp: '^DOCKER_OPTS=' }
+  when: docker_config_dir is defined # only config docker when docker installed
+  notify:
+    - restart flannel

@@ -1,0 +1,208 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pd
+  namespace: pingcap-tidb
+spec:
+  type: NodePort
+  ports:
+  - name: client
+    port: 2379
+    protocol: TCP
+    targetPort: 2379
+    nodePort: 30080
+  selector:
+    app: pd-cluster
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    peer_no: pd-peer1
+  name: pd1
+  namespace: pingcap-tidb
+spec:
+  ports:
+  - name: peer
+    port: 2380
+    protocol: TCP
+    targetPort: 2380
+  selector:
+    peer_no: pd-peer1
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    peer_no: pd-peer2
+  name: pd2
+  namespace: pingcap-tidb
+spec:
+  ports:
+  - name: peer
+    port: 2380
+    protocol: TCP
+    targetPort: 2380
+  selector:
+    peer_no: pd-peer2
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    peer_no: pd-peer3
+  name: pd3
+  namespace: pingcap-tidb
+spec:
+  ports:
+  - name: peer
+    port: 2380
+    protocol: TCP
+    targetPort: 2380
+  selector:
+    peer_no: pd-peer3
+
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: pd-cluster
+    peer_no: pd-peer1
+  name: pd-pod1
+  namespace: pingcap-tidb
+  # annotations: # currently tidb only support metrics pushing
+  #   prometheus.io/scrape: "true"
+  #   prometheus.io/port: "10080"
+spec:
+  containers:
+  - image: pingcap/pd:{{ pd_version }}
+    name: pd-container1
+    env:
+    - name: MY_POD_IP
+      valueFrom:
+        fieldRef:
+          fieldPath: status.podIP
+    args:
+    - --name=pd1
+    - --client-urls=http://0.0.0.0:2379
+    - --peer-urls=http://0.0.0.0:2380
+    - --advertise-client-urls=http://$(MY_POD_IP):2379
+    - --advertise-peer-urls=http://pd1:2380
+    - --initial-cluster
+    - pd1=http://pd1:2380,pd2=http://pd2:2380,pd3=http://pd3:2380
+    ports:
+    - containerPort: 2379
+      name: etcd-server
+      protocol: TCP
+    - containerPort: 2380
+      name: peer
+      protocol: TCP
+    volumeMounts:
+    - name: timestamp
+      mountPath: /etc/localtime
+  volumes:
+  - name: timestamp
+    hostPath:
+      path: /etc/localtime
+  restartPolicy: OnFailure
+
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: pd-cluster
+    peer_no: pd-peer2
+  name: pd-pod2
+  namespace: pingcap-tidb
+  # annotations: # currently tidb only support metrics pushing
+  #   prometheus.io/scrape: "true"
+  #   prometheus.io/port: "10080"
+spec:
+  containers:
+  - image: pingcap/pd:{{ pd_version }}
+    name: pd-container2
+    env:
+    - name: MY_POD_IP
+      valueFrom:
+        fieldRef:
+          fieldPath: status.podIP
+    args:
+    - --name=pd2
+    - --client-urls=http://0.0.0.0:2379
+    - --peer-urls=http://0.0.0.0:2380
+    - --advertise-client-urls=http://$(MY_POD_IP):2379
+    - --advertise-peer-urls=http://pd2:2380
+    - --initial-cluster
+    - pd1=http://pd1:2380,pd2=http://pd2:2380,pd3=http://pd3:2380
+    ports:
+    - containerPort: 2379
+      name: etcd-server
+      protocol: TCP
+    - containerPort: 2380
+      name: peer
+      protocol: TCP
+    volumeMounts:
+    - name: timestamp
+      mountPath: /etc/localtime
+  volumes:
+  - name: timestamp
+    hostPath:
+      path: /etc/localtime
+  restartPolicy: OnFailure
+
+
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: pd-cluster
+    peer_no: pd-peer3
+  name: pd-pod3
+  namespace: pingcap-tidb
+  # annotations: # currently tidb only support metrics pushing
+  #   prometheus.io/scrape: "true"
+  #   prometheus.io/port: "10080"
+spec:
+  containers:
+  - image: pingcap/pd:{{ pd_version }}
+    name: pd-container3
+    env:
+    - name: MY_POD_IP
+      valueFrom:
+        fieldRef:
+          fieldPath: status.podIP
+    args:
+    - --name=pd3
+    - --client-urls=http://0.0.0.0:2379
+    - --peer-urls=http://0.0.0.0:2380
+    - --advertise-client-urls=http://$(MY_POD_IP):2379
+    - --advertise-peer-urls=http://pd3:2380
+    - --initial-cluster
+    - pd1=http://pd1:2380,pd2=http://pd2:2380,pd3=http://pd3:2380
+    ports:
+    - containerPort: 2379
+      name: etcd-server
+      protocol: TCP
+    - containerPort: 2380
+      name: peer
+      protocol: TCP
+    volumeMounts:
+    - name: timestamp
+      mountPath: /etc/localtime
+  volumes:
+  - name: timestamp
+    hostPath:
+      path: /etc/localtime
+  restartPolicy: OnFailure

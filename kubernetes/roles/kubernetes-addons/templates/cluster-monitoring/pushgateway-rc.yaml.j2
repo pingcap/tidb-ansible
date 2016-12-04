@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: pushgateway-monitoring
+  namespace: kube-system
+  labels:
+    k8s-app: pushgateway-monitoring
+    version: v0.3.1
+    kubernetes.io/cluster-service: "true"
+spec:
+  replicas: 1
+  selector:
+    k8s-app: pushgateway-monitoring
+    version: v0.3.1
+  template:
+    metadata:
+      labels:
+        k8s-app: pushgateway-monitoring
+        version: v0.3.1
+        kubernetes.io/cluster-service: "true"
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9091"
+    spec:
+      containers:
+      - image: prom/pushgateway:v0.3.1
+        name: pushgateway-monitoring
+        resources:
+          limits:
+            cpu: 100m
+          requests:
+            cpu: 100m
+        ports:
+        - name: pushgateway
+          containerPort: 9091
+          protocol: TCP

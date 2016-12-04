@@ -1,0 +1,25 @@
+---
+- name: Install essential packages
+  yum:
+    name='{{ item }}'
+    state=present
+  with_items:
+    - openssl
+    - curl
+    - git
+    - tar
+    - socat
+
+- name: Add dockerproject repository
+  yum_repository:
+    name: Docker Repository
+    baseurl: https://yum.dockerproject.org/repo/main/centos/7/
+    enabled: 1
+    gpgcheck: 1
+    gpgkey: https://yum.dockerproject.org/gpg
+
+- name: Install docker
+  yum:
+    name=docker-engine
+    state=latest
+    update_cache=yes

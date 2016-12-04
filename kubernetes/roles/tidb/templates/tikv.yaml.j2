@@ -1,0 +1,33 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: tikv
+  namespace: pingcap-tidb
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        run: tikv
+      # annotations:
+      #   prometheus.io/scrape: "true"
+      #   prometheus.io/port: "20160"
+    spec:
+      containers:
+      - name: tikv
+        image: pingcap/tikv:{{ tikv_version }}
+        ports:
+        - containerPort: 20160
+        env:
+        - name: MY_POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        args: ["--store=/data", "--addr=0.0.0.0:20160", "--advertise-addr=$(MY_POD_IP):20160", "--pd=pd:2379"]
+        volumeMounts:
+        - name: timestamp
+          mountPath: /etc/localtime
+      volumes:
+      - name: timestamp
+        hostPath:
+          path: /etc/localtime

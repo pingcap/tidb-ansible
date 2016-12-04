@@ -1,0 +1,53 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/trusty64"
+  config.vm.box_check_update = false
+
+  config.vm.define "kube-master" do |s|
+    s.vm.network "private_network", ip: "10.7.0.10"
+    s.vm.network "forwarded_port", guest: 80, host: 38080
+    s.vm.hostname = "kube-master"
+    s.vm.provider "virtualbox" do |v|
+      v.name = "kube-master"
+      v.memory = 1024
+      v.cpus = 1
+    end
+  end
+
+  (1..3).each do |n|
+    config.vm.define "kube-node#{n}" do |s|
+      s.vm.network "private_network", ip: "10.7.0.1#{n}"
+      s.vm.hostname = "kube-node#{n}"
+      s.vm.provider "virtualbox" do |v|
+        v.name = "kube-node#{n}"
+        v.memory = 1024
+        v.cpus = 1
+      end
+    end
+  end
+
+  config.vm.provision "ansible" do |ansible|
+    ansible.extra_vars = {
+     vagrant: true,
+     vagrant_install: true,     # if you use a box with docker/socat pre-installed you can set this to false to avoid re-installing them
+     flannel_opts: "--iface=eth1",
+     etcd_interface: "eth1",
+     kube_apiserver_bind_address: "10.7.0.10",
+     public_iface: "eth1",
+     mirror_site: "ustc",
+   }
+   # copy group_vars to inventory path
+   vagrant_inventory_directory = ".vagrant/provisioners/ansible/inventory"
+   FileUtils.mkdir_p(vagrant_inventory_directory)
+   FileUtils.copy_entry "../inventory/group_vars", File.join(vagrant_inventory_directory, "group_vars")
+   ansible.groups = {          # auto-generate inventory
+     "masters" => ["kube-master"],
+     "nodes" => ["kube-node1", "kube-node2", "kube-node3"],
+     "etcd" => ["kube-master"]
+   }
+   ansible.playbook = "../deploy-cluster.yml"
+  end
+
+end

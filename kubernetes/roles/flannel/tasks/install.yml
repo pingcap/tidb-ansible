@@ -1,0 +1,31 @@
+---
+- name: Ensure bin_dir exist
+  file:
+    path="{{ bin_dir }}"
+    state=directory
+    recurse=yes
+
+- name: Extract tar file
+  unarchive:
+    src="{{ binaries_dir }}/flannel-{{ flannel_version }}-linux-amd64.tar.gz"
+    dest="{{ install_path }}"
+    copy=no
+
+- name: Create symlinks
+  file:
+    src="{{ install_path }}/flannel-{{ flannel_version}}/{{ item }}"
+    dest="{{ bin_dir }}/{{ item }}"
+    state=link
+    force=yes
+    mode=0755
+  with_items:
+    - flanneld
+    - mk-docker-opts.sh
+
+- name: Setup systemd service
+  include: systemd-service.yml
+  when: init_system == "systemd"
+
+- name: Setup upstart service
+  include: upstart-service.yml
+  when: init_system == "upstart"
