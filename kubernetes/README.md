@@ -12,7 +12,7 @@ This project uses lots of code from [kubernetes-contrib](https://github.com/kube
 
 * All machines (master/node) must have docker, socat, python-yaml installed.
 
-* Download tidb-kube-binaries.tar.gz from [here](http://download.pingcap.net/tidb-kube-binaries.tar.gz). This tarball contains docker images from gcr.io and DockerHub and etcd/flannel binary release and easy-rsa
+* Download tidb-kube-binaries.tar.gz from [here](http://download.pingcap.org/tidb-kube-binaries.tar.gz). This tarball contains docker images from gcr.io and DockerHub and etcd/flannel binary release and easy-rsa
 
 *Note:* Currently only ubuntu trusty is tested, other OS maybe also works but not promised, and they will be tested very soon.
 
