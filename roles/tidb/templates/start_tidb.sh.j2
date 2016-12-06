@@ -61,13 +61,16 @@ fi
 nohup bin/supervise "{{ status_dir }}" \
     bin/tidb-server \
     -P {{ tidb_port }} \
-    --store=tikv --path="{{ all_pd | join(',') }}?disableGC=true"\
+    --store=tikv --path="{{ all_pd | join(',') }}" \
     -L="{{ tidb_log_level }}" --log-file="{{ tidb_log_dir }}/{{ tidb_log_filename }}" \
-    --status="{{ tidb_status_port }}" --metrics-addr="{{ metric_addr }}" --metrics-interval={{ metric_interval }} \
+    --status="{{ tidb_status_port }}" \
+{% if metric_host % }
+    --metrics-addr="{{ metric_addr }}" --metrics-interval={{ metric_interval }} \
+{% endif %}
 {% if groups.binlog_servers is defined and groups.binlog_servers %}
     --binlog-socket="{{ pump_socket }}" \
 {% endif %}
-    --lease 10 >/dev/null 2>&1 &
+    --lease "{{ tidb_lease }}" >/dev/null 2>&1 &
 
 echo $! > "{{ status_dir }}/pid"
 echo "ok: started!"

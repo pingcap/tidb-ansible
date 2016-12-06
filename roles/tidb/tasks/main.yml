@@ -15,3 +15,7 @@
   with_items:
   - start_{{ role_name }}.sh
   - stop_{{ role_name }}.sh
+
+- name: prepare firewalld white list
+  set_fact:
+    firewalld_ports: "{{ [tidb_port ~ '/tcp', tidb_status_port ~ '/tcp'] + firewalld_ports }}"

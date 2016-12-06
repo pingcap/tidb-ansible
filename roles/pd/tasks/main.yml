@@ -20,10 +20,13 @@
 - name: create pd startup script
   template: src=start_pd.sh.j2 dest={{ deploy_dir }}/scripts/run_pd.sh mode=0755
 
-  #file: path={{ deploy_dir }}/scripts/run_pd.sh state=absent
-
-- name: create pd startup script v2
+  - name: create pd startup script
   template: src={{ item }}.j2 dest={{ deploy_dir }}/scripts/{{ item }} mode=0755
   with_items:
   - start_{{ role_name }}.sh
   - stop_{{ role_name }}.sh
+
+- name: prepare firewalld white list
+  set_fact:
+    firewalld_ports: "{{ [pd_peer_port ~ '/tcp', pd_client_port ~ '/tcp'] + firewalld_ports }}"
+

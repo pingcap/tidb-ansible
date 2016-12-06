@@ -1,7 +1,8 @@
 ---
 # Copyright 2016 PingCAP, Inc.
 
-# The playbook of TiDB
+# The rolling update playbook of TiDB
+
 - name: gather all facts
   hosts: all
   gather_facts: true
@@ -20,17 +21,28 @@
   tags:
     - pd
   roles:
-    - pd
+    - { role: pd, targs: ["deploy"] }
   tasks:
-    - name: restart PD
+    - name: stop PD
       tags:
         - restart
-      shell: cd {{ deploy_dir }}/scripts && ./stop_pd.sh; ./start_pd.sh
+      shell: cd {{ deploy_dir }}/scripts && ./stop_pd.sh
+
+    - name: wait PD down
+      tags:
+        - restart
+      wait_for: host={{ ansible_default_ipv4.address }} port={{ pd_client_port }} state=stopped
+
+    - name: start PD
+      tags:
+        - restart
+      shell: cd {{ deploy_dir }}/scripts && ./start_pd.sh
 
     - name: wait PD up
       tags:
         - restart
       wait_for: host={{ ansible_default_ipv4.address }} port={{ pd_client_port }} state=present
+
 
 - name: rolling update TiKV cluster
   hosts: tikv_servers
@@ -39,17 +51,28 @@
   tags:
     - tikv
   roles:
-    - tikv
+    - { role: tikv, tags: ["deploy"] }
   tasks:
-    - name: restart TiKV
+    - name: stop TiKV
       tags:
         - restart
-      shell: cd {{ deploy_dir }}/scripts && ./stop_tikv.sh; ./start_tikv.sh
+      shell: cd {{ deploy_dir }}/scripts && ./stop_tikv.sh;
+
+    - name: wait TiKV down
+      tags:
+        - restart
+      wait_for: host={{ ansible_default_ipv4.address }} port={{ tikv_port }} state=stopped
+
+    - name: start TiKV
+      tags:
+        - restart
+      shell: cd {{ deploy_dir }}/scripts && ./start_tikv.sh
 
     - name: wait TiKV up
       tags:
         - restart
-      wait_for: host={{ ansible_default_ipv4.address }} port={{ tikv_port }} state=present
+      wait_for: host={{ ansible_default_ipv4.address }} port={{ tikv_port }} state=present delay=20
+
 
 - name: rolling update TiDB cluster
   hosts: tidb_servers
@@ -58,12 +81,22 @@
   tags:
     - tidb
   roles:
-    - tidb
+    - { role: tidb, tags: ["deploy"] }
   tasks:
-    - name: restart TiDB
+    - name: stop TiDB
       tags:
         - restart
-      shell: cd {{ deploy_dir }}/scripts && ./stop_tidb.sh; ./start_tidb.sh
+      shell: cd {{ deploy_dir }}/scripts && ./stop_tidb.sh;
+
+    - name: wait TiDB down
+      tags:
+        - restart
+      wait_for: host={{ ansible_default_ipv4.address }} port={{ tidb_port }} state=stopped
+
+    - name: start TiDB
+      tags:
+        - restart
+      shell: cd {{ deploy_dir }}/scripts && ./start_tidb.sh
 
     - name: wait TiDB up
       tags:

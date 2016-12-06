@@ -6,15 +6,12 @@
 #   - ntp
 
 # FIXME: block + include + become not works
-- block:
-    - include: ./kernel_params_as_root.yml
+- include: ./kernel_params_as_root.yml
   when:
     - ansible_user == 'root'
     - tuning_kernel_parameters
 
-
-- block:
-    - include: ./kernel_params_as_normal_user.yml
+- include: ./kernel_params_as_normal_user.yml
   when:
     - ansible_user != 'root'
     - tuning_kernel_parameters

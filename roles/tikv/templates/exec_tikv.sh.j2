@@ -25,7 +25,8 @@ echo ok
 echo $stat
 
 exec bin/tikv-server \
-    --addr "{{ my_ip }}:{{ tikv_port }}" \
+    --addr "0.0.0.0:{{ tikv_port }}" \
+    --advertise-addr "{{ my_ip }}:{{ tikv_port }}" \
     --pd "{{ all_pd | join(',') }}" \
     --store "{{ tikv_data_dir }}" \
     --capacity "{{ tikv_capacity }}" \

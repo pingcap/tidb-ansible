@@ -26,13 +26,13 @@
 name = "{{ pd_name_prefix }}{{ my_peer_id }}"
 data-dir = "{{ pd_data_dir}}"
 
-client-urls = "http://{{ my_ip }}:{{ pd_client_port }}"
+client-urls = "http://0.0.0.0:{{ pd_client_port }}"
 # if not set, fallback to use ${client-urls}
-advertise-client-urls = ""
+advertise-client-urls = "http://{{ my_ip }}:{{ pd_client_port }}"
 
-peer-urls = "http://{{ my_ip }}:{{ pd_peer_port }}"
+peer-urls = "http://0.0.0.0:{{ pd_peer_port }}"
 # if not set, fallback to use ${peer-urls}
-advertise-peer-urls = ""
+advertise-peer-urls = "http://{{ my_ip }}:{{ pd_peer_port }}"
 
 initial-cluster = "{{ all_pd | join(',') }}"
 initial-cluster-state = "new"
@@ -45,7 +45,7 @@ max-peer-count = 3
 log-file = "{{ pd_log_dir }}/{{ pd_log_filename }}"
 
 [balance]
-min-capacity-used-ratio = 0.1
+min-capacity-used-ratio = 0.01
 max-capacity-used-ratio = 0.9
 max-leader-count = 10
 max-sending-snap-count = 3

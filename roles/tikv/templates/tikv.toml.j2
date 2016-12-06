@@ -12,7 +12,7 @@
 {% set metric_host = hostvars[groups.monitoring_servers[0]].ansible_default_ipv4.address
     if groups.get('monitoring_servers', []) else '' -%}
 {% set metric_port = hostvars[groups.monitoring_servers[0]].pushgateway_port if metric_host else ''-%}
-{% set metric_interval = tikv_metric_interval if metric_host else "0s" %}
+{% set metric_interval = tikv_metric_interval if metric_host else "0s" -%}
 
 # TiKV config template
 #  Human-readable big numbers:
@@ -23,9 +23,9 @@
 
 [server]
 # listening address.
-addr = "{{ my_ip }}:{{ tikv_port }}"
+addr = "0.0.0.0:{{ tikv_port }}"
 # leave empty, fallback to use addr
-# advertise-addr = ""
+advertise-addr = "{{ my_ip }}:{{ tikv_port }}"
 
 # set which dsn to use, warning: default is rocksdb without persistent.
 dsn = "rocksdb"
