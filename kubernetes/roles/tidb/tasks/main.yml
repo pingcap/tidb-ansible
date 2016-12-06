@@ -22,5 +22,10 @@
     - tikv.yaml
 
 - name: Deploy tidb cluster
-  command: "{{ bin_dir }}/kubectl create -f {{ tidb_path }}"
+  command: "{{ bin_dir }}/kubectl create -f {{ tidb_path }}/{{ item }}"
   become: no
+  with_items:                   # Note: keep the following order
+    - namespace.yaml
+    - pd.yaml
+    - tidb.yaml
+    - tikv.yaml
