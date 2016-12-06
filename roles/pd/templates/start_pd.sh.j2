@@ -2,7 +2,7 @@
 ulimit -n 40960
 
 # WARNING: This file was auto-generated. Do not edit!
-#          All your edit might be overwritten! 
+#          All your edit might be overwritten!
 cd "{{ deploy_dir }}" || exit 1
 
 {% set status_dir = pd_status_dir -%}
@@ -58,7 +58,7 @@ nohup bin/supervise "{{ status_dir }}" \
     --client-urls="http://0.0.0.0:{{ pd_client_port }}" \
     --advertise-client-urls="http://{{ my_ip }}:{{ pd_client_port }}" \
     --peer-urls="http://0.0.0.0:{{ pd_peer_port }}" \
-    --advertise-peer-urls="http://{{ my_ip }}:{{ pd_peer_port }}"
+    --advertise-peer-urls="http://{{ my_ip }}:{{ pd_peer_port }}" \
     --data-dir="{{ pd_data_dir }}" \
     --initial-cluster="{{ all_pd | join(',') }}" \
     --config=conf/pd.toml \
