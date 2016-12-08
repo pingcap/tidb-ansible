@@ -62,20 +62,35 @@
         create=yes 
       become: true
 
+    - name: update apt cache
+      shell: apt-fast -y update
+
+    # --skip-tags docker
     - name: install docker
+      tags:
+        - docker
       shell: >-
         creates=/usr/bin/docker
-        apt-fast -y update;
         apt-fast -y install docker-engine
       become: true
 
     - name: add user to docker group
+      tags:
+        - docker
       user: name=ubuntu groups=docker append=yes
       become: true
 
-    - name: install perf/systemtab/unzip/ntp
+    - name: install perf/systemtab/unzip/ntp/zip
       shell: >-
-        apt-fast -y install linux-tools-$(uname -r) systemtap unzip ntp
+        apt-fast -y install linux-tools-$(uname -r) systemtap unzip ntp zip
+
+    - name: add user to docker group
+      user: name=ubuntu groups=stapusr append=yes
+      become: true
+
+    - name: add user to docker group
+      user: name=ubuntu groups=stapdev append=yes
+      become: true
 
     - name: install FlameGraph - create dir
       file: path=/opt/FlameGraph state=directory mode=0755

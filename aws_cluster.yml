@@ -3,17 +3,66 @@
 # The Playbook of TiDB
 
 # use ec2.py dynamic inventory
+# adapter for AWS ec2 machines
 
-#    - meta: refresh_inventory
+- name: perpare inventory
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - fail: msg="ec2 group not found, please use the right inventory"
+      when: "{{ not ((groups.ec2 is defined) and groups.ec2) }}"
+
+    - fail: msg="tidb servers not found"
+      when: "{{ not ((groups.tag_Type_tidb is defined) and groups.tag_Type_tidb) }}"
+
+    - fail: msg="pd servers not found"
+      when: "{{ not ((groups.tag_Type_pd is defined) and groups.tag_Type_pd) }}"
+
+    - fail: msg="tikv servers not found"
+      when: "{{ not ((groups.tag_Type_tikv is defined) and groups.tag_Type_tikv) }}"
+
+    - name: add tidb server group
+      add_host:
+        groups: tidb_servers
+        hostname: "{{ item }}"
+      with_items: "{{ groups.tag_Type_tidb }}"
+    
+    - name: add pd server group
+      add_host:
+        groups: pd_servers
+        hostname: "{{ item }}"
+      with_items: "{{ groups.tag_Type_pd }}"
+
+    - name: add tikv server group
+      add_host:
+        groups: tikv_servers
+        hostname: "{{ item }}"
+      with_items: "{{ groups.tag_Type_tikv }}"
+
+    - name: add monitoring server group
+      add_host:
+        groups: monitoring_servers
+        hostname: "{{ item }}"
+      with_items: "{{ groups.tag_Type_monitoring }}"
+
+    - name: add monitored server if monitoring enables
+      add_host:
+        groups: monitoring_servers
+        hostname: "{{ item }}"
+      with_items: "{{ groups.tidb_servers + groups.pd_servers + groups.tikv_servers + groups.monitoring_servers }}"
+      when: "{{ (groups.monitoring_servers is defined) and groups.monitored_servers }}"
 
 - name: prepare inventory config stage 1
   hosts: localhost
+  gather_facts: false
   tasks:
     - name: Gather EC2 facts.
       ec2_remote_facts:
         region: cn-north-1
         filters:
+          instance-state-name: running
           "tag:ManagedBy": ansible
+          "tag:Creator": andelf
       register: aws_ec2_facts
 
     - name: set up deploy servers
@@ -27,6 +76,7 @@
       add_host:
         groups: monitoring_servers
         hostname: "{{ groups.tidb_servers[0] }}"
+      when: groups.monitoring_servers is defined and groups.monitoring_servers
 
     - name: set up monitored servers
       add_host:
@@ -38,98 +88,10 @@
     - name: write local inventory file to aws.ini.new
       template: src=aws.inventory.ini.j2 dest={{ playbook_dir }}/aws.ini.new
 
-
-- name: initializing deployment target
+- name: set fact for all generated inventory
   hosts: all
-  roles:
-  - common
-
-- name: deploying monitoring agent
-  hosts: monitored_servers
-  roles:
-    - node_exporter
   tasks:
-    - name: restart node_exporter
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
-      with_items:
-      - node_exporter
+    - set_fact:
+        ansible_user: ubuntu
 
-    - name: wait NodeExporter up
-      wait_for: host={{ ansible_default_ipv4.address }} port={{ node_exporter_port }} state=present
-
-# monitoring control machine
-
-- name: deploying monitoring server
-  hosts: monitoring_servers
-  roles:
-    - pushgateway
-    - prometheus
-    - grafana
-  tasks:
-    - name: restart monitoring modules
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
-      with_items:
-        - pushgateway
-        - prometheus
-        - grafana
-
-    - name: wait monitoring modules up
-      wait_for: host={{ ansible_default_ipv4.address }} port={{ item }} state=present
-      with_items:
-        - "{{ pushgateway_port }}"
-        - "{{ prometheus_port }}"
-
-    - name: wait grafana up
-      wait_for: host={{ ansible_default_ipv4.address }} port={{ grafana_port }} state=present
-      notify:
-        - import grafana data source
-        - import grafana dashboards
-
-
-  # deploying TiDB cluster
-
-- name: deploying PD cluster
-  hosts: pd_servers
-  roles:
-  - pd
-  tasks:
-  - name: restart PD
-    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
-    with_items:
-    - pd
-
-  - name: wait PD up
-    wait_for: host={{ ansible_default_ipv4.address }} port={{ pd_client_port }} state=present
-
-- name: deploying TiKV cluster
-  hosts: tikv_servers
-  roles:
-  - tikv
-  tasks:
-  - name: restart TiKV
-    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
-    with_items:
-    - tikv
-
-  - name: wait TiKV up
-    wait_for: host={{ ansible_default_ipv4.address }} port={{ tikv_port }} state=present
-
-- name: deploying TiDB cluster
-  hosts: tidb_servers
-  roles:
-  - { role: pump, when: "groups.binlog_servers | default(False)" }
-  - tidb
-  tasks:
-  - name: restart pump
-    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
-    when: "groups.binlog_servers | default(False)"
-    with_items:
-    - pump
-
-  - name: restart TiDB
-    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
-    with_items:
-    - tidb
-
-  - name: wait TiDB up
-    wait_for: host={{ ansible_default_ipv4.address }} port={{ tidb_port }} state=present
+- include: cluster.yml

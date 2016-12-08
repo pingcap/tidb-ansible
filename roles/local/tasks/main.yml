@@ -24,7 +24,7 @@
     - { name: prometheus-1.3.1, url:  "http://og66pdz33.bkt.clouddn.com/prometheus-1.3.1.linux-amd64.tar.gz" }
     - { name: node_exporter-0.13.0, url: "http://og66pdz33.bkt.clouddn.com/node_exporter-0.13.0-rc.2.linux-amd64.tar.gz" }
     - { name: pushgateway-0.3.1, url: "http://og66pdz33.bkt.clouddn.com/pushgateway-0.3.1.linux-amd64.tar.gz" }
-    - { name: grafana-4.0.0, url: "http://og66pdz33.bkt.clouddn.com/grafana-4.0.0-1479719016beta2.linux-x64.tar.gz" }
+    - { name: grafana-4.0.1, url: "http://og66pdz33.bkt.clouddn.com/grafana-4.0.1-1480694114.linux-x64.tar.gz" }
     - { name: daemontools-0.53, url: "http://download.pingcap.org/daemontools-0.53.tar.gz" }
 
 - name: download FlameGraph master
@@ -33,7 +33,7 @@
     dest={{ resources_dir }}/FlameGraph.zip
 
 - name: unarchive binary
-  shell: tar xzf {{ item }}-*.tar.gz
+  shell: ls -1 {{ item }}-*.tar.gz | xargs -n1 tar xzf 
   args:
     chdir: "{{ downloads_dir }}"
     warn: no

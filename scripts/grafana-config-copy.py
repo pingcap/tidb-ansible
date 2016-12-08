@@ -24,7 +24,7 @@ except:
 # use a viewer key
 src = dict(
     name="gaea-cluster1",
-    url="http://office.pingcap.net:33000/",
+    url="http://aws.pingcap.net:8000/grafana/",
     key="eyJrIjoiNXZ2dVJaWXQ1TDIxWDBzNnpmaHU0aHpJc05YQmg5Y3kiLCJuIjoicmVhZG9ubHktZXhwb3J0LWtleSIsImlkIjoxfQ==",
     dashboards={"node": 'gaiya-node-export',
                 "pd"  : 'gaiya-pd',
