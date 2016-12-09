@@ -7,20 +7,23 @@
     resource_tags:
       Name: sre-vpc-ansible
       ManagedBy: ansible
+      Creator: andelf
     subnets:
       - cidr: 172.233.1.0/24
         az: cn-north-1a
         resource_tags:
           Name: "sre-subnet-1a"
           Environment: "test"
-          ManagedBy: "ansible"
+          ManagedBy: ansible
+          Creator: andelf
           Tier: "db"
       - cidr: 172.233.2.0/24
         az: cn-north-1b
         resource_tags:
           Name: "sre-subnet-1b"
           Environment: "test"
-          ManagedBy: "ansible"
+          ManagedBy: ansible
+          Creator: andelf
           Tier: "db"
     internet_gateway: yes       # assign internet
     route_tables:
@@ -40,7 +43,7 @@
     description: AWS VPC security group for SRE team
     vpc_id: "{{ vpc.vpc_id }}"
     rules:
-      # 
+      #
       - proto: tcp
         from_port: 0
         to_port: 0
@@ -74,6 +77,7 @@
     region: cn-north-1
   register: security_group
 
+
 - name: tikv servers
   ec2:
     region: cn-north-1
@@ -83,15 +87,16 @@
     image: ami-0220b23b
     wait: yes
     wait_timeout: 500
-#    count: 1
+#   count: 1
     instance_tags:
-      Name: sre-tikv
-      ManagedBy: "ansible"
+      Name: sre-tikv-c1
+      ManagedBy: ansible
+      Creator: andelf
       Type: tikv
     count_tag:
       Type: tikv
-      ManagedBy: "ansible"      
-    exact_count: 4
+      ManagedBy: ansible
+    exact_count: 3
     vpc_subnet_id: "{{ vpc.subnets[0].id }}" # cn-north-1a
     assign_public_ip: yes
 
@@ -105,15 +110,16 @@
     image: ami-0220b23b
     wait: yes
     wait_timeout: 500
-#    count: 1
+#   count: 1
     instance_tags:
-      Name: sre-pd
-      ManagedBy: "ansible"
+      Name: sre-pd-c1
+      ManagedBy: ansible
+      Creator: andelf
       Type: pd
     count_tag:
       Type: pd
-      ManagedBy: "ansible"      
-    exact_count: 1
+      ManagedBy: ansible
+    exact_count: 3
     vpc_subnet_id: "{{ vpc.subnets[0].id }}" # cn-north-1a
     assign_public_ip: yes
 
@@ -126,14 +132,39 @@
     image: ami-0220b23b
     wait: yes
     wait_timeout: 500
-#    count: 1
+#   count: 1
     instance_tags:
-      Name: sre-tidb
-      ManagedBy: "ansible"
+      Name: sre-tidb-c1
+      ManagedBy: ansible
+      Creator: andelf
       Type: tidb
     count_tag:
       Type: tidb
-      ManagedBy: "ansible"      
+      ManagedBy: ansible
     exact_count: 1
     vpc_subnet_id: "{{ vpc.subnets[0].id }}" # cn-north-1a
     assign_public_ip: yes
+
+
+- name: monitoring servers
+  ec2:
+    region: cn-north-1
+    key_name: pingcap
+    group: sre-sg-ansible       # or group_id
+    instance_type: m3.medium
+    image: ami-0220b23b
+    wait: yes
+    wait_timeout: 500
+#   count: 1
+    instance_tags:
+      Name: sre-mon-c1
+      ManagedBy: ansible
+      Creator: andelf
+      Type: monitoring
+    count_tag:
+      Type: monitoring
+      ManagedBy: ansible
+    exact_count: 1
+    vpc_subnet_id: "{{ vpc.subnets[0].id }}" # cn-north-1a
+    assign_public_ip: yes
+
