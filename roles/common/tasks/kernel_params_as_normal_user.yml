@@ -15,7 +15,7 @@
     dest=/etc/security/limits.conf
     insertbefore='# End of file'
     line='{{ deploy_user }}        soft        nofile        1000000'
-    state=present
+    state=absent
 
 - name: update /etc/security/limits.conf file (2/4)
   become: true
@@ -23,15 +23,15 @@
     dest=/etc/security/limits.conf
     insertbefore='# End of file'
     line='{{ deploy_user }}        hard        nofile        1000000'
-    state=present
+    state=absent
 
 - name: update /etc/security/limits.conf file (3/4)
   become: true
   lineinfile: >
     dest=/etc/security/limits.conf
     insertbefore='# End of file'
-    line='{{ deploy_user }}        soft        core        unlimited'
-    state=present
+    line='{{ deploy_user }}        soft        core          unlimited'
+    state=absent
 
 - name: update /etc/security/limits.conf file (4/4)
   become: true
@@ -39,7 +39,19 @@
     dest=/etc/security/limits.conf
     insertbefore='# End of file'
     line='{{ deploy_user }}        soft        stack        10240'
-    state=present
+    state=absent
+
+- name: update /etc/security/limits.conf
+  become: true
+  blockinfile:
+    dest: /etc/security/limits.conf
+    insertbefore: '# End of file'
+    block: |
+      {{ deploy_user }}        soft        nofile        1000000
+      {{ deploy_user }}        hard        nofile        1000000
+      {{ deploy_user }}        soft        core          unlimited
+      {{ deploy_user }}        soft        stack         10240
+
 
 - name: swap - disable swap
   become: true

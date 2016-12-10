@@ -7,6 +7,7 @@
 
 # FIXME: block + include + become not works
 - include: ./kernel_params_as_root.yml
+  become: false
   when:
     - ansible_user == 'root'
     - tuning_kernel_parameters
@@ -63,7 +64,7 @@
     - "{{ deploy_dir }}/bin"
     - "{{ deploy_dir }}/scripts"
     - "{{ deploy_dir }}/conf"
-    - "{{ deploy_dir }}/backup"
+    - "{{ backup_dir }}"
   when:
     - not skip_supervise
 

@@ -1,6 +1,5 @@
 {% set my_ip = ansible_default_ipv4.address -%}
 
-{# my id in pd cluster #}
 {% set my_peer_id = groups.pd_servers.index(inventory_hostname) + 1 -%}
 
 {% set all_pd = [] -%}
@@ -12,7 +11,6 @@
   {% set other_pd_name = pd_name_prefix ~ other_pd_name_surfix -%}
   {% set _ = all_pd.append("%s=http://%s:%s" % (other_pd_name, other_ip, other_port)) -%}
 {% endfor -%}
-
 
 {% set metric_host = hostvars[groups.monitoring_servers[0]].ansible_default_ipv4.address 
     if groups.get('monitoring_servers', []) else '' -%}
@@ -44,25 +42,21 @@ max-peer-count = 3
 
 log-file = "{{ pd_log_dir }}/{{ pd_log_filename }}"
 
-[balance]
-min-capacity-used-ratio = 0.01
-max-capacity-used-ratio = 0.9
-max-leader-count = 10
-max-sending-snap-count = 3
-max-receiving-snap-count = 3
-max-applying-snap-count = 3
-max-diff-score-fraction = 0.1
-balance-interval = 30
-max-balance-count = 16
-max-balance-retry-per-loop = 10
-max-balance-count-per-loop = 3
-max-transfer-wait-count = 3
-max-peer-down-duration = "30m"
-max-store-down-duration = "10m"
-
 [metric]
 # prometheus client push interval, set "0s" to disable prometheus.
 interval = "{{ metric_interval }}"
 
 # prometheus pushgateway address, leaves it empty will disable prometheus.
 address = "{{ metric_host }}:{{ metric_port }}"
+
+[schedule]
+
+min-region-count = 10
+min-leader-count = 10
+max-snapshot-count = 3
+min-balance-diff-ratio = 0.01
+max-store-down-duration = "30m"
+leader-schedule-limit = 8
+leader-schedule-interval = "10s"
+storage-schedule-limit = 4
+storage-schedule-interval = "30s"

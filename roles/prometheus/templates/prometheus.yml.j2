@@ -18,7 +18,7 @@ scrape_configs:
 {% if pushgateway_host %}
   - job_name: 'cluster'
     scrape_interval: 5s
-    honor_labels: true
+    honor_labels: true # don't overwrite job & instance labels
     static_configs:
       - targets: ['{{ pushgateway_host }}:{{ pushgateway_port }}']
         labels:

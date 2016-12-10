@@ -8,14 +8,24 @@
   - "{{ tikv_data_dir }}"
   - "{{ tikv_status_dir }}"
 
-- name: deply tikv binary
-  copy: src="{{ resources_dir }}/bin/tikv-server" dest="{{ deploy_dir }}/bin/" mode=0755
+- name: deply binary
+  copy: src="{{ resources_dir }}/bin/tikv-server" dest="{{ deploy_dir }}/bin/" mode=0755 backup=yes
+  register: tikv_binary
 
-- name: create tikv configuration file
-  template: src=tikv.toml.j2 dest={{ deploy_dir }}/conf/tikv.toml mode=0644
+- name: backup bianry file
+  command: mv "{{ tikv_binary.backup_file }}" "{{ backup_dir }}"
+  when: tikv_binary.changed
 
-- name: create tikv startup script
-  template: src={{ item }}.j2 dest={{ deploy_dir }}/scripts/{{ item }} mode=0755
+- name: create config file
+  template: src=tikv.toml.j2 dest={{ deploy_dir }}/conf/tikv.toml mode=0644 backup=yes
+  register: tikv_conf
+
+- name: backup conf file
+  command: mv "{{ tikv_conf.backup_file }}" "{{ backup_dir }}"
+  when: tikv_conf.changed
+
+- name: create startup script
+  template: src={{ item }}.j2 dest={{ deploy_dir }}/scripts/{{ item }} mode=0755 backup=yes
   with_items:
   - exec_{{ role_name }}.sh
   - start_{{ role_name }}.sh

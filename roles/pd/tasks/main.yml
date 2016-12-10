@@ -7,21 +7,31 @@
   - "{{ pd_log_dir }}"
   - "{{ pd_data_dir }}"
   - "{{ pd_status_dir }}"
+  - "{{ deploy_dir }}/conf/pd.toml.d"
 
-- name: deply pd binary
-  copy: src="{{ resources_dir }}/bin/pd-server" dest="{{ deploy_dir }}/bin/" mode=0755
+- name: deply binary
+  copy: src="{{ resources_dir }}/bin/pd-server" dest="{{ deploy_dir }}/bin/" mode=0755 backup=yes
+  register: pd_binary
 
-- name: create pd data directory
-  file: path={{pd_data_dir}} state=directory mode=0755
+- name: backup bianry file
+  command: mv "{{ pd_binary.backup_file }}" "{{ backup_dir }}"
+  when: pd_binary.changed
 
-- name: create pd configuration file
-  template: src=pd.toml.j2 dest={{ deploy_dir }}/conf/pd.toml mode=0644
+#- name: create config file
+#  template: src=pd.toml.j2 dest={{ deploy_dir }}/conf/pd.toml.d/0 mode=0644
+ 
 
-- name: create pd startup script
-  template: src=start_pd.sh.j2 dest={{ deploy_dir }}/scripts/run_pd.sh mode=0755
 
-- name: create pd startup script
-  template: src={{ item }}.j2 dest={{ deploy_dir }}/scripts/{{ item }} mode=0755
+- name: create configuration file
+  template: src=pd.toml.j2 dest={{ deploy_dir }}/conf/pd.toml mode=0644 backup=yes
+  register: pd_conf
+
+- name: backup conf file
+  command: mv "{{ pd_conf.backup_file }}" "{{ backup_dir }}"
+  when: pd_conf.changed
+
+- name: create startup script
+  template: src={{ item }}.j2 dest={{ deploy_dir }}/scripts/{{ item }} mode=0755 backup=yes
   with_items:
   - start_{{ role_name }}.sh
   - stop_{{ role_name }}.sh
