@@ -9,38 +9,6 @@
     - { name: 'net.ipv4.tcp_syncookies', value: 0 }
     - { name: 'fs.file-max', value: 1000000 }
 
-- name: update /etc/security/limits.conf file (1/4)
-  become: true
-  lineinfile: >
-    dest=/etc/security/limits.conf
-    insertbefore='# End of file'
-    line='{{ deploy_user }}        soft        nofile        1000000'
-    state=absent
-
-- name: update /etc/security/limits.conf file (2/4)
-  become: true
-  lineinfile: >
-    dest=/etc/security/limits.conf
-    insertbefore='# End of file'
-    line='{{ deploy_user }}        hard        nofile        1000000'
-    state=absent
-
-- name: update /etc/security/limits.conf file (3/4)
-  become: true
-  lineinfile: >
-    dest=/etc/security/limits.conf
-    insertbefore='# End of file'
-    line='{{ deploy_user }}        soft        core          unlimited'
-    state=absent
-
-- name: update /etc/security/limits.conf file (4/4)
-  become: true
-  lineinfile: >
-    dest=/etc/security/limits.conf
-    insertbefore='# End of file'
-    line='{{ deploy_user }}        soft        stack        10240'
-    state=absent
-
 - name: update /etc/security/limits.conf
   become: true
   blockinfile:
