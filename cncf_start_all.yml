@@ -8,18 +8,19 @@
   gather_facts: true
   roles: []
 
-- hosts: monitored_servers
-  gather_facts: false
-  tasks:
-    - name: restart node_exporter
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
-      with_items:
-      - node_exporter
+#- hosts: monitored_servers
+#  gather_facts: false
+#  tasks:
+#    - name: start node_exporter
+#      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
+#      with_items:
+#      - node_exporter
+
 
 - hosts: monitoring_servers
   gather_facts: false
   tasks:
-  - name: restart monitoring modules
+  - name: start monitoring modules
     shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
     with_items:
     - pushgateway
@@ -30,7 +31,7 @@
 - hosts: pd_servers
   gather_facts: false
   tasks:
-  - name: restart PD
+  - name: start PD
     shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
     with_items:
     - pd
@@ -38,7 +39,7 @@
 - hosts: tikv_servers
   gather_facts: false
   tasks:
-  - name: restart TiKV
+  - name: start TiKV
     shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
     with_items:
     - tikv
@@ -47,7 +48,7 @@
 - hosts: tidb_servers
   gather_facts: false
   tasks:
-  - name: restart TiDB
+  - name: start TiDB
     shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
     with_items:
     - tidb
