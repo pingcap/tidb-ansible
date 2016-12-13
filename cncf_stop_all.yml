@@ -12,15 +12,17 @@
   gather_facts: false
   tasks:
     - name: restart node_exporter
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh;
       with_items:
       - node_exporter
+      ignore_errors: true
+
 
 - hosts: monitoring_servers
   gather_facts: false
   tasks:
   - name: restart monitoring modules
-    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
+    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh;
     with_items:
     - pushgateway
     - prometheus
@@ -31,7 +33,7 @@
   gather_facts: false
   tasks:
   - name: restart PD
-    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
+    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh;
     with_items:
     - pd
 
@@ -39,7 +41,7 @@
   gather_facts: false
   tasks:
   - name: restart TiKV
-    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
+    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh;
     with_items:
     - tikv
 
@@ -48,6 +50,6 @@
   gather_facts: false
   tasks:
   - name: restart TiDB
-    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
+    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh;
     with_items:
     - tidb

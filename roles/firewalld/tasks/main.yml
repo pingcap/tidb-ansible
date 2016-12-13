@@ -4,7 +4,7 @@
 - debug: var=firewalld_ports
 
 - name: Determine if firewalld is running
-  command: firewall-cmd --state
+  command: bash -c 'firewall-cmd --state || exit 0' 
   register: firewalld_running
   ignore_errors: true
   changed_when: false
@@ -14,6 +14,6 @@
     port: '{{item}}'
     permanent: true
     state: enabled
-  when: firewalld_running.rc == 0
+  when: firewalld_running.stdout.strip() == "running"
   with_items: "{{ firewalld_ports }}"
   notify: reload firewalld

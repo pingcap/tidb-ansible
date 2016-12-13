@@ -12,14 +12,14 @@
   {% set _ = all_pd.append("%s=http://%s:%s" % (other_pd_name, other_ip, other_port)) -%}
 {% endfor -%}
 
-{% set metric_host = hostvars[groups.monitoring_servers[0]].ansible_default_ipv4.address 
+{% set metric_host = hostvars[groups.monitoring_servers[0]].ansible_default_ipv4.address
     if groups.get('monitoring_servers', []) else '' -%}
 {% set metric_port = hostvars[groups.monitoring_servers[0]].pushgateway_port if metric_host else '' -%}
 {% set metric_interval = pd_metric_interval if metric_host else "0s" -%}
 
 # PD Configuration.
 # WARNING: This file was auto-generated. Do not edit!
-#          All your edit might be overwritten! 
+#          All your edit might be overwritten!
 
 name = "{{ pd_name_prefix }}{{ my_peer_id }}"
 data-dir = "{{ pd_data_dir}}"
@@ -53,10 +53,10 @@ address = "{{ metric_host }}:{{ metric_port }}"
 
 min-region-count = 10
 min-leader-count = 10
-max-snapshot-count = 3
-min-balance-diff-ratio = 0.01
+max-snapshot-count = 10
+min-balance-diff-ratio = 0.001
 max-store-down-duration = "30m"
-leader-schedule-limit = 8
-leader-schedule-interval = "10s"
-storage-schedule-limit = 4
-storage-schedule-interval = "30s"
+leader-schedule-limit = 64
+leader-schedule-interval = "3s"
+storage-schedule-limit = 64
+storage-schedule-interval = "3s"
