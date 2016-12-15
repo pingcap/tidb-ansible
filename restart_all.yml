@@ -24,7 +24,6 @@
     with_items:
     - pushgateway
     - prometheus
-    - grafana
 
 
 - hosts: pd_servers
@@ -52,12 +51,17 @@
     with_items:
     - tidb
 
-- hosts: monitoring_servers
+- hosts: grafana_servers
   gather_facts: true
   # FIXME: must introduce this to load all variables
   roles:
     - { role: grafana, skip_supervise: true }
   tasks:
+    - name: restart monitoring modules
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
+      with_items:
+        - grafana
+
     - name: import grafana data source
       shell: >
         chdir={{ grafana_data_dir }}
