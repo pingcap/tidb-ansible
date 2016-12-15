@@ -10,6 +10,7 @@ WIP
 - http://download.pingcap.org/tidb-latest-linux-amd64-centos6.tar.gz
 - http://download.pingcap.org/binlog-latest-linux-amd64.tar.gz
 - http://download.pingcap.org/tidb-tools-latest-linux-amd64.tar.gz
+- http://download.pingcap.org/sysbench-static-linux-amd64.tar.gz
 
 Above binaries will be automatically downloaded by:
 

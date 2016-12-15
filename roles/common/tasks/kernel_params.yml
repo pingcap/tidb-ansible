@@ -1,7 +1,6 @@
 ---
 
 - name: setting kernel params
-  become: false
   sysctl: name="{{ item.name }}" value="{{ item.value }}" state=present
   with_items:
     - { name: 'net.core.somaxconn', value: 32768 }
@@ -10,7 +9,6 @@
     - { name: 'fs.file-max', value: 1000000 }
 
 - name: update /etc/security/limits.conf
-  become: false
   blockinfile:
     dest: /etc/security/limits.conf
     insertbefore: '# End of file'
@@ -21,8 +19,7 @@
       {{ deploy_user }}        soft        stack         10240
 
 - name: swap - disable swap
-  become: false
-  shell: "[ $(swapon -s | wc -l) -ge 1 ] || (swapoff -a && return 1)"
+  shell: "[ $(swapon -s | wc -l) -ge 1 ] || (swapoff -a && exit 1)"
   ignore_errors: yes
   register: swapoff_result
   changed_when: "swapoff_result.rc != 0"

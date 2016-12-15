@@ -22,6 +22,10 @@
   roles:
   - pushgateway
   - prometheus
+
+- name: deploying grafana
+  hosts: grafana_servers
+  roles:
   - grafana
 
 # deploying TiDB cluster
@@ -50,7 +54,8 @@
   hosts: all
   gather_facts: false
   roles:
-  - firewalld
+  - role: firewalld
+    when: ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'
 
 #- name: deploying binlog server
 #  hosts: binlog_servers

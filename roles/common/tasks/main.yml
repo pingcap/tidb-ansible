@@ -5,14 +5,18 @@
 #   tags:
 #   - ntp
 
-# FIXME: block + include + become not works
-- include: ./kernel_params_as_root.yml
+# FIXME: include + become not works
+- include: ./kernel_params.yml
   become: false
+  become_user: root
   when:
     - ansible_user == 'root'
     - tuning_kernel_parameters
+  vars: # ugly workaround
+    - ansible_become: false
+    - ansible_become_user: root    
 
-- include: ./kernel_params_as_normal_user.yml
+- include: ./kernel_params.yml
   become: true
   when:
     - ansible_user != 'root'

@@ -10,9 +10,6 @@
     - always
   roles:
     - common
-  vars:
-    tuning_kernel_parameters: false
-
 
 - name: rolling update PD cluster
   hosts: pd_servers
@@ -21,8 +18,8 @@
   tags:
     - pd
   roles:
-    - { role: pd, targs: ["deploy"] }
-  tasks:
+    - { role: pd, tags: ["deploy"] }
+  post_tasks:
     - name: stop PD
       tags:
         - restart
@@ -52,7 +49,7 @@
     - tikv
   roles:
     - { role: tikv, tags: ["deploy"] }
-  tasks:
+  post_tasks:
     - name: stop TiKV
       tags:
         - restart
@@ -82,7 +79,7 @@
     - tidb
   roles:
     - { role: tidb, tags: ["deploy"] }
-  tasks:
+  post_tasks:
     - name: stop TiDB
       tags:
         - restart
