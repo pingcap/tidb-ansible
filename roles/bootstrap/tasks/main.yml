@@ -1,0 +1,21 @@
+---
+# bootstrap a machine and begin deployment
+
+- name: group hosts by distribution
+  group_by: key="{{ ansible_distribution }}-{{ ansible_distribution_version }}"
+  changed_when: false
+
+# FIXME: include + become not works
+- include: ./kernel_params.yml
+  become: false
+  become_user: root
+  when:
+    - ansible_user == 'root'
+  vars: # ugly workaround
+    - ansible_become: false
+    - ansible_become_user: root
+
+- include: ./kernel_params.yml
+  become: true
+  when:
+    - ansible_user != 'root'

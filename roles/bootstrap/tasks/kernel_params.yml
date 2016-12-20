@@ -7,6 +7,7 @@
     - { name: 'vm.swappiness', value: 0 }
     - { name: 'net.ipv4.tcp_syncookies', value: 0 }
     - { name: 'fs.file-max', value: 1000000 }
+  when: tuning_kernel_parameters
 
 - name: update /etc/security/limits.conf
   blockinfile:
@@ -17,9 +18,29 @@
       {{ deploy_user }}        hard        nofile        1000000
       {{ deploy_user }}        soft        core          unlimited
       {{ deploy_user }}        soft        stack         10240
+  when: tuning_kernel_parameters
 
 - name: swap - disable swap
   shell: "[ $(swapon -s | wc -l) -ge 1 ] || (swapoff -a && exit 1)"
   ignore_errors: yes
   register: swapoff_result
   changed_when: "swapoff_result.rc != 0"
+
+- name: create account
+  user: name={{ deploy_user }}
+
+- name: create top deploy dir when under root
+  file: path="{{ deploy_dir }}" state=directory mode=0755 owner={{ deploy_user }}
+
+- name: set timezone to Asia/Shanghai
+  timezone: name=Asia/Shanghai
+
+- name: set hostname if hostname is not distinguishable
+  hostname: name=ip-{{ ansible_default_ipv4.address | replace(".","-") }}
+  register: hostname_set
+
+- name: set hostname in hosts file
+  lineinfile: dest=/etc/hosts line='127.0.0.1     ip-{{ ansible_default_ipv4.address | replace(\".\",\"-\") }}'
+
+
+

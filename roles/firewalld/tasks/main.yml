@@ -1,10 +1,11 @@
 ---
 # Tasks to configure firewalld rules
 
-- debug: var=firewalld_ports
+- name: All enabled portes
+  debug: var=firewalld_ports
 
 - name: Determine if firewalld is running
-  command: bash -c 'firewall-cmd --state || exit 0' 
+  command: bash -c 'firewall-cmd --state || exit 0'
   register: firewalld_running
   ignore_errors: true
   changed_when: false

@@ -1,0 +1,17 @@
+---
+
+# This play book is intend for one pass execution
+
+- name: initializing deployment target
+  hosts: localhsot
+  gather_facts: false
+  roles:
+    - check_config_static
+
+- name: check node config
+  hosts: all
+  gather_facts: true
+  roles:
+    - bootstrap
+    - check_config_dynamic
+

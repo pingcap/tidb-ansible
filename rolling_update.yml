@@ -3,12 +3,20 @@
 
 # The rolling update playbook of TiDB
 
-- name: gather all facts
+- name: check config locally
+  hosts: localhost
+  tags:
+    - always
+  roles:
+    - check_config_static
+
+- name: gather all facts, and check dest
   hosts: all
   gather_facts: true
   tags:
     - always
   roles:
+    - check_config_dynamic
     - common
 
 - name: rolling update PD cluster

@@ -22,7 +22,7 @@
 
 - name: create configuration file if not exist
   template: src=prometheus.yml.j2 dest={{ deploy_dir }}/conf/prometheus.yml mode=0644
-  when: not st_conf.stat.exists
+#  when: not st_conf.stat.exists
 
 - name: copy alert rules file if not exist
   copy: src=alert.rules dest="{{ deploy_dir }}/conf/alert.rules" mode=0644
@@ -36,7 +36,7 @@
     replace="{{ alert_label }}"
   when: alert_rules_result.changed
 
-- name: create prometheus startup script v2
+- name: create prometheus startup script
   template: src={{ item }}.j2 dest={{ deploy_dir }}/scripts/{{ item }} mode=0755
   with_items:
   - start_{{ role_name }}.sh
