@@ -56,11 +56,6 @@
 #   register: result
 #   ignore_errors: true
 
-# - name: Preflight check - User must be on Tower 2.4.x to upgrade to 3.0.x
-#   fail:
-#     msg: 'Please upgrade to 2.4.x before upgrading to 3.0.x'
-#   when: "result.content is defined and result.content | b64decode | version_compare('2.4', '<')"
-
 - name: Check swap
   debug:
     msg: Swap is on, for best performance, turn swap off

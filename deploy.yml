@@ -2,10 +2,9 @@
 # Copyright 2016 PingCAP, Inc.
 # The Playbook of TiDB
 
-# basic kernel parameter & monitoring
-
 - name: check config locally
   hosts: localhost
+  gather_facts: false
   roles:
     - check_config_static
 
@@ -13,26 +12,26 @@
   hosts: all
   gather_facts: true
   roles:
-  - check_config_dynamic
-  - common
+    - check_config_dynamic
+    - common
 
 - name: deploying monitoring agent
   hosts: monitored_servers
   gather_facts: false
   roles:
-  - { role: node_exporter, when: "groups.monitoring_servers | default(False)" }
+    - { role: node_exporter, when: "groups.monitoring_servers | default(False)" }
 
 - name: deploying monitoring server
   hosts: monitoring_servers
   gather_facts: false
   roles:
-  - pushgateway
-  - prometheus
+    - pushgateway
+    - prometheus
 
 - name: deploying grafana
   hosts: grafana_servers
   roles:
-  - grafana
+    - grafana
 
 # deploying TiDB cluster
 
@@ -40,28 +39,28 @@
   hosts: pd_servers
   gather_facts: false
   roles:
-  - pd
+    - pd
 
 - name: deploying TiKV cluster
   hosts: tikv_servers
   gather_facts: false
   roles:
-  - tikv
+    - tikv
 
 - name: deploying TiDB cluster
   hosts: tidb_servers
   gather_facts: false
   roles:
 #  - pump
-  - tidb
+    - tidb
 
 
 - name: finalizing deployment target
   hosts: all
   gather_facts: false
   roles:
-  - role: firewalld
-    when: ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'
+    - role: firewalld
+      when: ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'
 
 #- name: deploying binlog server
 #  hosts: binlog_servers

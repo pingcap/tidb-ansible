@@ -3,13 +3,27 @@
 
 # The playbook of TiDB
 
-- name: initializing deployment target
+- name: check config locally
+  hosts: localhost
+  gather_facts: false
+  tags:
+    - always
+  roles:
+    - check_config_static
+
+- name: gather all facts, and check dest
   hosts: all
   gather_facts: true
-  roles: []
+  tags:
+    - always
+  roles:
+    - check_config_dynamic
+    - common
 
 - hosts: monitored_servers
   gather_facts: false
+  tags:
+    - node_exporter
   tasks:
     - name: restart node_exporter
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
@@ -18,6 +32,9 @@
 
 - hosts: monitoring_servers
   gather_facts: false
+  tags:
+    - pushgateway
+    - prometheus
   tasks:
   - name: restart monitoring modules
     shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
@@ -28,6 +45,8 @@
 
 - hosts: pd_servers
   gather_facts: false
+  tags:
+    - pd
   tasks:
   - name: restart PD
     shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
@@ -36,6 +55,8 @@
 
 - hosts: tikv_servers
   gather_facts: false
+  tags:
+    - tikv
   tasks:
   - name: restart TiKV
     shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
@@ -45,6 +66,8 @@
 
 - hosts: tidb_servers
   gather_facts: false
+  tags:
+    - tidb
   tasks:
   - name: restart TiDB
     shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
@@ -54,6 +77,8 @@
 - hosts: grafana_servers
   gather_facts: true
   # FIXME: must introduce this to load all variables
+  tags:
+    - grafana
   roles:
     - { role: grafana, skip_supervise: true }
   tasks:
@@ -62,12 +87,17 @@
       with_items:
         - grafana
 
+    - name: wait grafana up
+      tags:
+        - restart
+      wait_for: host={{ ansible_default_ipv4.address }} port={{ grafana_port }} state=present
+
     - name: import grafana data source
       shell: >
         chdir={{ grafana_data_dir }}
         warn=no
         curl -q -X POST -d @data_source.json --header 'Content-Type: application/json'
-        "http://{{ grafana_admin_user }}:{{ grafana_admin_password }}@localhost:{{ grafana_port }}/api/datasources"      
+        "http://{{ grafana_admin_user }}:{{ grafana_admin_password }}@127.0.0.1:{{ grafana_port }}/api/datasources"
 
     - name: import grafana dashboards - prepare config
       delegate_to: localhost
@@ -81,7 +111,7 @@
             datasource: "{{ monitoring_group_name }}"
             titles:
               node: "{{ monitoring_group_name | title }}-Node-Export"
-              pd: "{{ monitoring_group_name | title }}-PD"
+              pd:   "{{ monitoring_group_name | title }}-PD"
               tidb: "{{ monitoring_group_name | title }}-TiDB"
               tikv: "{{ monitoring_group_name | title }}-TiKV"
 
