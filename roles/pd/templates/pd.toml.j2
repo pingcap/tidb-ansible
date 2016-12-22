@@ -49,14 +49,16 @@ interval = "{{ metric_interval }}"
 # prometheus pushgateway address, leaves it empty will disable prometheus.
 address = "{{ metric_host }}:{{ metric_port }}"
 
-[schedule]
 
+[schedule]
 min-region-count = 10
 min-leader-count = 10
-max-snapshot-count = 10
-min-balance-diff-ratio = 0.001
+max-snapshot-count = 3
+min-balance-diff-ratio = 0.01
 max-store-down-duration = "30m"
-leader-schedule-limit = 64
-leader-schedule-interval = "3s"
-storage-schedule-limit = 64
-storage-schedule-interval = "3s"
+leader-schedule-limit = 8
+leader-schedule-interval = "10s"
+storage-schedule-limit = 4
+storage-schedule-interval = "30s"
+replica-schedule-limit = 8
+replica-schedule-interval = "10s"

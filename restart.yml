@@ -42,7 +42,6 @@
     - pushgateway
     - prometheus
 
-
 - hosts: pd_servers
   gather_facts: false
   tags:
@@ -81,7 +80,7 @@
     - grafana
   roles:
     - { role: grafana, skip_supervise: true }
-  tasks:
+  post_tasks:
     - name: restart monitoring modules
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
       with_items:

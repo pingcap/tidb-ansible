@@ -48,7 +48,7 @@
 - name: Preflight check - Does deploy dir have appropriate permissions?
   fail:
     msg: 'The permissions on {{ deploy_dir }} ({{ vl_st.stat.mode }}) prevent successful installation. {{ deploy_dir }} must be world-readable.'
-  when: not vl_st.stat.roth
+  when: vl_st.stat.roth is defined and not vl_st.stat.roth
 
 # - name: Preflight check - Read in tidb version
 #   slurp:
