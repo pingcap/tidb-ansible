@@ -55,6 +55,17 @@ end-point-concurrency = 8
 # pd endpoints
 endpoints = "{{ all_pd | join(',') }}"
 
+[metric]
+# the Prometheus client push interval.
+# Setting the value to 0s stops Prometheus client from pushing.
+interval = "{{ metric_interval }}"
+
+# the Prometheus pushgateway address. Leaving it empty stops Prometheus client from pushing.
+address = "{{ metric_host ~ ":" ~ metric_port if metric_host else "" }}"
+
+# the Prometheus client push job name. Note: A node id will automatically append,
+# e.g., "tikv_1".
+job = "{{ tikv_metric_job_name_prefix }}"
 
 [raftstore]
 # notify capacity, 40960 is suitable for about 7000 regions.

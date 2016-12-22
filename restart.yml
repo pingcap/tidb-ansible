@@ -29,6 +29,8 @@
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
       with_items:
       - node_exporter
+    - name: wait up
+      wait_for: host={{ ansible_default_ipv4.address }} port={{ node_exporter_port }} state=present
 
 - hosts: monitoring_servers
   gather_facts: false
@@ -36,31 +38,39 @@
     - pushgateway
     - prometheus
   tasks:
-  - name: restart monitoring modules
-    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
-    with_items:
-    - pushgateway
-    - prometheus
+    - name: restart monitoring modules
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
+      with_items:
+        - pushgateway
+        - prometheus
+    - name: wait pushgateway up
+      wait_for: host={{ ansible_default_ipv4.address }} port={{ pushgateway_port }} state=present
+    - name: wait prometheus up
+      wait_for: host={{ ansible_default_ipv4.address }} port={{ prometheus_port }} state=present
 
 - hosts: pd_servers
   gather_facts: false
   tags:
     - pd
   tasks:
-  - name: restart PD
-    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
-    with_items:
-    - pd
+    - name: restart PD
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
+      with_items:
+        - pd
+    - name: wait up
+      wait_for: host={{ ansible_default_ipv4.address }} port={{ pd_client_port }} state=present
 
 - hosts: tikv_servers
   gather_facts: false
   tags:
     - tikv
   tasks:
-  - name: restart TiKV
-    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
-    with_items:
-    - tikv
+    - name: restart TiKV
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
+      with_items:
+        - tikv
+    - name: wait up
+      wait_for: host={{ ansible_default_ipv4.address }} port={{ tikv_port }} state=present
 
 
 - hosts: tidb_servers
@@ -68,10 +78,12 @@
   tags:
     - tidb
   tasks:
-  - name: restart TiDB
-    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
-    with_items:
-    - tidb
+    - name: restart TiDB
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
+      with_items:
+        - tidb
+    - name: wait up
+      wait_for: host={{ ansible_default_ipv4.address }} port={{ tidb_port }} state=present
 
 - hosts: grafana_servers
   gather_facts: true
@@ -87,8 +99,6 @@
         - grafana
 
     - name: wait grafana up
-      tags:
-        - restart
       wait_for: host={{ ansible_default_ipv4.address }} port={{ grafana_port }} state=present
 
     - name: import grafana data source
