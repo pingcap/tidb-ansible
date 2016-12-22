@@ -55,9 +55,9 @@ fi
 nohup bin/supervise "{{ status_dir }}" \
     bin/pd-server \
     --name="{{ pd_name_prefix }}{{ my_peer_id }}" \
-    --client-urls="http://0.0.0.0:{{ pd_client_port }}" \
+    --client-urls="http://{{ my_ip }}:{{ pd_client_port }}" \
     --advertise-client-urls="http://{{ my_ip }}:{{ pd_client_port }}" \
-    --peer-urls="http://0.0.0.0:{{ pd_peer_port }}" \
+    --peer-urls="http://{{ my_ip }}:{{ pd_peer_port }}" \
     --advertise-peer-urls="http://{{ my_ip }}:{{ pd_peer_port }}" \
     --data-dir="{{ pd_data_dir }}" \
     --initial-cluster="{{ all_pd | join(',') }}" \
