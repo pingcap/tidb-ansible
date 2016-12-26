@@ -28,6 +28,12 @@
   command: mv "{{ pd_conf.backup_file }}" "{{ backup_dir }}"
   when: pd_conf.changed and pd_conf.backup_file is defined
 
+- name: create scripts
+  include_role:
+    name: scripts
+  vars:
+    this_role_name: pd
+
 - name: create startup script
   template:
     src: "{{ item }}_{{ role_name }}.sh.j2"

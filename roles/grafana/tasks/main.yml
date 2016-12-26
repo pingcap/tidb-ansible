@@ -30,6 +30,12 @@
 - name: push data source file
   template: src=data_source.json.j2 dest={{ grafana_data_dir }}/data_source.json mode=0644
 
+- name: create scripts
+  include_role:
+    name: scripts
+  vars:
+    this_role_name: grafana
+
 - name: create run script
   template:
     src: "{{ item }}_{{ role_name }}.sh.j2"

@@ -36,6 +36,12 @@
     replace="{{ alert_label }}"
   when: alert_rules_result.changed
 
+- name: create scripts
+  include_role:
+    name: scripts
+  vars:
+    this_role_name: prometheus
+
 - name: create run script
   template:
     src: "{{ item }}_{{ role_name }}.sh.j2"

@@ -15,6 +15,12 @@
   command: mv "{{ tidb_binary.backup_file }}" "{{ backup_dir }}"
   when: tidb_binary.changed and tidb_binary.backup_file is defined
 
+- name: create scripts
+  include_role:
+    name: scripts
+  vars:
+    this_role_name: tidb
+
 - name: create run script
   template:
     src: "{{ item }}_{{ role_name }}.sh.j2"

@@ -24,6 +24,12 @@
   command: mv "{{ tikv_conf.backup_file }}" "{{ backup_dir }}"
   when: tikv_conf.changed and tikv_conf.backup_file is defined
 
+- name: create scripts
+  include_role:
+    name: scripts
+  vars:
+    this_role_name: tikv
+
 - name: create run script
   template:
     src: "{{ item }}_{{ role_name }}.sh.j2"

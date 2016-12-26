@@ -11,6 +11,12 @@
 - name: deply pump binary
   copy: src="{{ resources_dir }}/bin/pump" dest="{{ deploy_dir }}/bin/" mode=0755
 
+- name: create scripts
+  include_role:
+    name: scripts
+  vars:
+    this_role_name: pump
+
 - name: create run script
   template:
     src: "{{ item }}_{{ role_name }}.sh.j2"
