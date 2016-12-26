@@ -6,7 +6,7 @@
   with_items:
   - "{{ pd_log_dir }}"
   - "{{ pd_data_dir }}"
-  - "{{ pd_status_dir }}"
+  - "{{ deploy_dir }}/status/{{ role_name }}"
   - "{{ deploy_dir }}/conf/pd.toml.d"
 
 - name: deply binary
@@ -19,7 +19,7 @@
 
 #- name: create config file
 #  template: src=pd.toml.j2 dest={{ deploy_dir }}/conf/pd.toml.d/0 mode=0644
- 
+
 - name: create configuration file
   template: src=pd.toml.j2 dest={{ deploy_dir }}/conf/pd.toml mode=0644 backup=yes
   register: pd_conf
@@ -29,12 +29,18 @@
   when: pd_conf.changed and pd_conf.backup_file is defined
 
 - name: create startup script
-  template: src={{ item }}.j2 dest={{ deploy_dir }}/scripts/{{ item }} mode=0755 backup=yes
+  template:
+    src: "{{ item }}_{{ role_name }}.sh.j2"
+    dest: "{{ deploy_dir }}/scripts/{{ item }}_{{ role_name }}.sh"
+    mode: "0755"
+    backup: yes
   with_items:
-  - start_{{ role_name }}.sh
-  - stop_{{ role_name }}.sh
+    - run
+  vars:
+    role_status_dir: status/{{ role_name }}
 
 - name: prepare firewalld white list
   set_fact:
     firewalld_ports: "{{ [pd_peer_port ~ '/tcp', pd_client_port ~ '/tcp'] + firewalld_ports }}"
+  when: has_firewalld
 

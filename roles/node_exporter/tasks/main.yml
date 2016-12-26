@@ -4,16 +4,21 @@
   file: path={{ item }} state=directory mode=0755
   with_items:
   - "{{ node_exporter_log_dir }}"
-  - "{{ node_exporter_status_dir }}"
+  - "{{ deploy_dir }}/status/{{ role_name }}"
 
 - name: deploy node_exporter binary
   copy: src="{{ resources_dir }}/bin/node_exporter" dest="{{ deploy_dir }}/bin" mode=0755
 
-- name: create {{ role_name }} startup script
-  template: src={{ item }}.j2 dest={{ deploy_dir }}/scripts/{{ item }} mode=0755
+- name: create run script
+  template:
+    src: "{{ item }}_{{ role_name }}.sh.j2"
+    dest: "{{ deploy_dir }}/scripts/{{ item }}_{{ role_name }}.sh"
+    mode: "0755"
+    backup: yes
   with_items:
-  - start_{{ role_name }}.sh
-  - stop_{{ role_name }}.sh
+    - run
+  vars:
+    role_status_dir: status/{{ role_name }}
 
 - name: prepare firewalld white list
   set_fact:

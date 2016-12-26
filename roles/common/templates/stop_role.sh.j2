@@ -1,0 +1,32 @@
+#!/bin/bash
+set -e
+
+DEPLOY_USER={{ deploy_user }}
+STATUS_DIR={{ role_status_dir }}
+DEPLOY_DIR={{ deploy_dir }}
+
+cd "${DEPLOY_DIR}" || exit 1
+
+# try down
+bin/svc -d "${STATUS_DIR}" &>/dev/null || true
+
+# check by supervise pid
+if [ -e "${STATUS_DIR}/pid" ]; then
+    _pid=$(cat "${STATUS_DIR}/pid")
+    if [ "$(basename "$(readlink /proc/${_pid}/exe)")" == "supervise" ]; then
+        kill ${_pid}
+        rm -f "${STATUS_DIR}/*"
+    fi
+fi
+
+# check by svstat
+_check=$(bin/svstat "${STATUS_DIR}" 2>/dev/null)
+if echo "${_check}" | grep 'up pid' &>/dev/null; then
+    _pid=$(echo "${_check}" | cut -d' ' -f 4)
+    if [ "$(readlink /proc/${_pid}/cwd)" == "${DEPLOY_DIR}" ]; then
+        kill ${_pid}
+    fi
+fi
+
+echo -n "sync ... "; sync; echo "done!"
+echo "ok: stopped!"

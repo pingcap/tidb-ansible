@@ -7,13 +7,23 @@
   - "{{ resources_dir }}"
   - "{{ resources_dir }}/bin"
 
+- name: detect GFW
+  shell: >
+    warn=no
+    curl -s --connect-timeout 2 google.com 2>/dev/null >/dev/null; echo $?
+  changed_when: false
+  register: gfw_st
+
+- name: set gfw fact
+  set_fact: under_gfw={{ gfw_st.stdout.strip() != '0' }}
+
 - name: download tidb binary
-  get_url: url={{ item.url }} dest={{ downloads_dir }}/{{ item.name }}.tar.gz force=yes
+  get_url: url={{ item.url }} dest={{ downloads_dir }}/{{ item.name }}.tar.gz force=yes validate_certs=no
   with_items: "{{ tidb_urls }}"
 
 - name: download binary
-  get_url: url={{ item.url }} dest={{ downloads_dir }}/{{ item.name }}.tar.gz
-  with_items: "{{ package_urls }}"
+  get_url: url={{ item.url }} dest={{ downloads_dir }}/{{ item.name }}.tar.gz validate_certs=no
+  with_items: "{{ package_urls_under_gfw if under_gfw else package_urls }}"
 
 - name: download FlameGraph master
   get_url: >
@@ -49,6 +59,7 @@
     - pump
     - cistern
     - drainer
+  when: enable_binlog | default(false)
 
 - name: cp monitoring binary
   shell: >

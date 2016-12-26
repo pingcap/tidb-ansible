@@ -35,12 +35,12 @@ advertise-peer-urls = "http://{{ my_ip }}:{{ pd_peer_port }}"
 initial-cluster = "{{ all_pd | join(',') }}"
 initial-cluster-state = "new"
 
+log-level = "{{ pd_log_level }}""
+log-file = "{{ pd_log_dir }}/{{ pd_log_filename }}"
+
 lease = 3
-log-level = "info"
 tso-save-interval = "3s"
 max-peer-count = 3
-
-log-file = "{{ pd_log_dir }}/{{ pd_log_filename }}"
 
 [metric]
 # prometheus client push interval, set "0s" to disable prometheus.
@@ -48,7 +48,6 @@ interval = "{{ metric_interval }}"
 
 # prometheus pushgateway address, leaves it empty will disable prometheus.
 address = "{{ metric_host }}:{{ metric_port }}"
-
 
 [schedule]
 min-region-count = 10

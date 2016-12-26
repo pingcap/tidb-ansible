@@ -1,0 +1,33 @@
+#!/bin/bash
+set -e
+ulimit -n 40960
+
+# WARNING: This file was auto-generated. Do not edit!
+#          All your edit might be overwritten!
+DEPLOY_DIR={{ deploy_dir }}
+
+cd "${DEPLOY_DIR}" || exit 1
+
+{% set my_ip = ansible_default_ipv4.address -%}
+{% set my_peer_id = groups.pd_servers.index(inventory_hostname) + 1 -%}
+
+{% set all_pd = [] -%}
+{% for host in groups.pd_servers -%}
+  {% set other_ip = hostvars[host]['ansible_default_ipv4']['address'] -%}
+  {% set other_port = hostvars[host]['pd_peer_port'] -%}
+  {% set other_pd_name_surfix = groups.pd_servers.index(host) + 1 -%}
+  {% set other_pd_name = pd_name_prefix ~ other_pd_name_surfix -%}
+  {% set _ = all_pd.append("%s=http://%s:%s" % (other_pd_name, other_ip, other_port)) -%}
+{% endfor -%}
+
+exec bin/pd-server \
+    --name="{{ pd_name_prefix }}{{ my_peer_id }}" \
+    --client-urls="http://{{ my_ip }}:{{ pd_client_port }}" \
+    --advertise-client-urls="http://{{ my_ip }}:{{ pd_client_port }}" \
+    --peer-urls="http://{{ my_ip }}:{{ pd_peer_port }}" \
+    --advertise-peer-urls="http://{{ my_ip }}:{{ pd_peer_port }}" \
+    --data-dir="{{ pd_data_dir }}" \
+    --initial-cluster="{{ all_pd | join(',') }}" \
+    --config=conf/pd.toml \
+    -L "{{ pd_log_level }}" \
+    --log-file="{{ pd_log_dir }}/{{ pd_log_filename }}"

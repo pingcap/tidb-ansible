@@ -68,6 +68,10 @@
         from_port: 9090 # prometheus
         to_port: 9091   # pushgateway
         cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 5601
+        to_port: 5601
+        cidr_ip: 0.0.0.0/0
     # outbound
     rules_egress:
       - proto: -1
@@ -167,4 +171,3 @@
     exact_count: 1
     vpc_subnet_id: "{{ vpc.subnets[0].id }}" # cn-north-1a
     assign_public_ip: yes
-

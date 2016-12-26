@@ -6,7 +6,7 @@
   changed_when: false
 
 # FIXME: include + become not works
-- include: ./kernel_params.yml
+- include: root_tasks.yml
   become: false
   become_user: root
   when:
@@ -15,7 +15,7 @@
     - ansible_become: false
     - ansible_become_user: root
 
-- include: ./kernel_params.yml
+- include: root_tasks.yml
   become: true
   when:
     - ansible_user != 'root'

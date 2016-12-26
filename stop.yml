@@ -1,0 +1,84 @@
+---
+# Copyright 2016 PingCAP, Inc.
+
+# The playbook of TiDB
+
+- name: check config locally
+  hosts: localhost
+  gather_facts: false
+  tags:
+    - always
+  roles:
+    - check_config_static
+
+- name: gather all facts, and check dest
+  hosts: all
+  gather_facts: true
+  tags:
+    - always
+  roles:
+    - check_config_dynamic
+
+- hosts: monitored_servers
+  gather_facts: false
+  tags:
+    - node_exporter
+  tasks:
+    - name: stop node_exporter
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      with_items:
+      - node_exporter
+
+- hosts: monitoring_servers
+  gather_facts: false
+  tags:
+    - pushgateway
+    - prometheus
+  tasks:
+    - name: stop monitoring modules
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      with_items:
+        - pushgateway
+        - prometheus
+
+- hosts: pd_servers
+  gather_facts: false
+  tags:
+    - pd
+  tasks:
+    - name: stop PD
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      with_items:
+        - pd
+
+- hosts: tikv_servers
+  gather_facts: false
+  tags:
+    - tikv
+  tasks:
+    - name: stop TiKV
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      with_items:
+        - tikv
+
+
+- hosts: tidb_servers
+  gather_facts: false
+  tags:
+    - tidb
+  tasks:
+    - name: stop TiDB
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      with_items:
+        - tidb
+
+- hosts: grafana_servers
+  gather_facts: true
+  # FIXME: must introduce this to load all variables
+  tags:
+    - grafana
+  tasks:
+    - name: stop monitoring modules
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      with_items:
+        - grafana

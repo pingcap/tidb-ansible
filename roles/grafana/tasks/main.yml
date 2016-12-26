@@ -1,6 +1,6 @@
 ---
 
-- name: create deploy directories part 1
+- name: create deploy directories (1/2)
   file: path="{{ item }}" state=directory mode=0755
   with_items:
   - "{{ deploy_dir }}/opt"
@@ -15,14 +15,14 @@
     creates="{{ deploy_dir }}/opt/grafana/bin/grafana-server"
     mv {{ deploy_dir }}/opt/grafana-4.0.2-* "{{ deploy_dir }}/opt/grafana"
 
-- name: create deploy directories part 2
+- name: create deploy directories (2/2)
   file: path="{{ item }}" state=directory mode=0755
   with_items:
   - "{{ grafana_log_dir }}"
-  - "{{ grafana_status_dir }}"
   - "{{ grafana_data_dir }}"
   - "{{ grafana_dashboards_dir }}"
   - "{{ grafana_plugins_dir }}"
+  - "{{ deploy_dir }}/status/{{ role_name }}"
 
 - name: create grafana configuration file
   template: src=grafana.ini.j2 dest={{ deploy_dir }}/opt/grafana/conf/grafana.ini mode=0644
@@ -30,12 +30,18 @@
 - name: push data source file
   template: src=data_source.json.j2 dest={{ grafana_data_dir }}/data_source.json mode=0644
 
-- name: create grafana startup script
-  template: src={{ item }}.j2 dest={{ deploy_dir }}/scripts/{{ item }} mode=0755
+- name: create run script
+  template:
+    src: "{{ item }}_{{ role_name }}.sh.j2"
+    dest: "{{ deploy_dir }}/scripts/{{ item }}_{{ role_name }}.sh"
+    mode: "0755"
+    backup: yes
   with_items:
-  - start_{{ role_name }}.sh
-  - stop_{{ role_name }}.sh
+    - run
+  vars:
+    role_status_dir: status/{{ role_name }}
 
 - name: prepare firewalld white list
   set_fact:
     firewalld_ports: "{{ [grafana_port ~ '/tcp'] + firewalld_ports }}"
+  when: has_firewalld

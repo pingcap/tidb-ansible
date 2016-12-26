@@ -1,43 +1,15 @@
 ---
 # Common Tasks
 
-- name: environment check (deploy dir)
-  stat: path={{ deploy_dir }} get_md5=false get_checksum=false
-  register: deploy_dir_st
-
-- name: environment check (supervise)
-  stat: path={{ deploy_dir }}/bin/supervise get_md5=false get_checksum=false
-  register: supervise_st
-  when: deploy_dir_st.stat.isdir is defined and deploy_dir_st.stat.isdir
-
-- name: config skip variables (default)
-  set_fact:
-    skip_create_deploy_dir: false
-    skip_supervise: false
-
-- name: config skip variables
-  set_fact:
-    skip_create_deploy_dir: true
-  when:
-    - deploy_dir_st.stat.writeable is defined
-    - deploy_dir_st.stat.writeable
-    - deploy_dir_st.stat.readable
-    - deploy_dir_st.stat.isdir
-
-- name: config skip variables
-  set_fact:
-    skip_supervise: true
-  when:
-    - supervise_st.stat.executable is defined
-    - supervise_st.stat.executable
-
-- name: create deploy directories
-  file: path={{ item }} state=directory mode=0755
+- name: create startup script - common start/stop
+  template:
+    src: "{{ item }}_role.sh.j2"
+    dest: "{{ deploy_dir }}/scripts/{{ item }}_{{ this_role_name }}.sh"
+    mode: "0755"
+    backup: yes
   with_items:
-    - "{{ deploy_dir }}"
-    - "{{ deploy_dir }}/bin"
-    - "{{ deploy_dir }}/scripts"
-    - "{{ deploy_dir }}/conf"
-    - "{{ backup_dir }}"
-  when: not skip_supervise
+    - start
+    - stop
+  vars:
+    role_status_dir: status/{{ this_role_name }}
 

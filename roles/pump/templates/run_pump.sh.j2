@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+ulimit -n 40960
+
+# WARNING: This file was auto-generated. Do not edit!
+#          All your edit might be overwritten!
+{% set my_ip = ansible_default_ipv4.address -%}
+
+exec bin/pump \
+    --addr="{{ my_ip }}:{{ pump_port }}" \
+    --advertise-addr="{{ my_ip }}:{{ pump_port }}" \
+    --data-dir="{{ pump_data_dir }}" \
+    --socket="{{ pump_socket }}" \
+    --log-file="{{ pump_log_dir }}/{{ pump_log_filename }}" \
+    --metrics-addr="{{ metric_addr }}" --metrics-interval={{ metric_interval }}
