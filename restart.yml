@@ -25,11 +25,13 @@
     - node_exporter
   tasks:
     - name: restart node_exporter
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
+      shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
       with_items:
       - node_exporter
     - name: wait up
-      wait_for: host={{ ansible_default_ipv4.address }} port={{ node_exporter_port }} state=present
+      wait_for: |
+        host={{ ansible_default_ipv4.address }} port={{ node_exporter_port }} state=present
+        send='GET /metrics HTTP/1.0\r\n\r\n' search_regex='200 OK'
 
 - hosts: monitoring_servers
   gather_facts: false
@@ -38,14 +40,18 @@
     - prometheus
   tasks:
     - name: restart monitoring modules
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
+      shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
       with_items:
         - pushgateway
         - prometheus
     - name: wait pushgateway up
-      wait_for: host={{ ansible_default_ipv4.address }} port={{ pushgateway_port }} state=present
+      wait_for: |
+        host={{ ansible_default_ipv4.address }} port={{ pushgateway_port }} state=present
+        send='GET /metrics HTTP/1.0\r\n\r\n' search_regex='200 OK'
     - name: wait prometheus up
-      wait_for: host={{ ansible_default_ipv4.address }} port={{ prometheus_port }} state=present
+      wait_for: |
+        host={{ ansible_default_ipv4.address }} port={{ prometheus_port }} state=present
+        send='GET /metrics HTTP/1.0\r\n\r\n' search_regex='200 OK'
 
 - hosts: pd_servers
   gather_facts: false
@@ -53,11 +59,13 @@
     - pd
   tasks:
     - name: restart PD
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
+      shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
       with_items:
         - pd
     - name: wait up
-      wait_for: host={{ ansible_default_ipv4.address }} port={{ pd_client_port }} state=present
+      wait_for: |
+        host={{ ansible_default_ipv4.address }} port={{ pd_client_port }} state=present
+        send='GET /pd/api/v1/members HTTP/1.0\r\n\r\n' search_regex='200 OK'
 
 - hosts: tikv_servers
   gather_facts: false
@@ -65,12 +73,13 @@
     - tikv
   tasks:
     - name: restart TiKV
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
+      shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
       with_items:
         - tikv
     - name: wait up
-      wait_for: host={{ ansible_default_ipv4.address }} port={{ tikv_port }} state=present
-
+      wait_for_pid: |
+        pid_file={{ deploy_dir }}/status/tikv.pid timeout=300
+        thread_name_regex='endpoint' state=present
 
 - hosts: tidb_servers
   gather_facts: false
@@ -78,11 +87,13 @@
     - tidb
   tasks:
     - name: restart TiDB
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
+      shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
       with_items:
         - tidb
     - name: wait up
-      wait_for: host={{ ansible_default_ipv4.address }} port={{ tidb_port }} state=present
+      wait_for: |
+        host={{ ansible_default_ipv4.address }} port={{ tidb_port }} state=present
+        search_regex='TiDB-1.0'
 
 - hosts: grafana_servers
   gather_facts: true
@@ -93,7 +104,7 @@
     - { role: grafana, skip_supervise: true }
   post_tasks:
     - name: restart monitoring modules
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh; ./start_{{ item }}.sh
+      shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
       with_items:
         - grafana
 

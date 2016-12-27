@@ -19,6 +19,7 @@
   roles:
     - check_config_dynamic
 
+
 - name: rolling update PD cluster
   hosts: pd_servers
   gather_facts: false
@@ -44,9 +45,9 @@
       shell: cd {{ deploy_dir }}/scripts && ./start_pd.sh
 
     - name: wait PD up
-      tags:
-        - restart
-      wait_for: host={{ ansible_default_ipv4.address }} port={{ pd_client_port }} state=present
+      wait_for: |
+        host={{ ansible_default_ipv4.address }} port={{ pd_client_port }} state=present
+        send='GET /pd/api/v1/members HTTP/1.0\r\n\r\n' search_regex='200 OK'
 
 
 - name: rolling update TiKV cluster
@@ -76,7 +77,9 @@
     - name: wait TiKV up
       tags:
         - restart
-      wait_for: host={{ ansible_default_ipv4.address }} port={{ tikv_port }} state=present delay=20
+      wait_for_pid: |
+        pid_file={{ deploy_dir }}/status/tikv.pid timeout=300
+        thread_name_regex='endpoint' state=present
 
 
 - name: rolling update TiDB cluster
@@ -106,4 +109,6 @@
     - name: wait TiDB up
       tags:
         - restart
-      wait_for: host={{ ansible_default_ipv4.address }} port={{ tidb_port }} state=present
+      wait_for: |
+        host={{ ansible_default_ipv4.address }} port={{ tidb_port }} state=present
+        search_regex='TiDB-1.0'
