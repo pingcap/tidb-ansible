@@ -7,6 +7,16 @@
   - "{{ resources_dir }}"
   - "{{ resources_dir }}/bin"
 
+- name: detect outbound network
+  shell: >
+    warn=no
+    curl -s --connect-timeout 2 baidu.com 2>/dev/null >/dev/null; echo $?
+  changed_when: false
+  register: outbound_network_st
+
+- name: set outbound network fact
+  set_fact: has_outbound_network={{ outbound_network_st.stdout.strip() == '0' }}
+
 - name: detect GFW
   shell: >
     warn=no
@@ -14,21 +24,24 @@
   changed_when: false
   register: gfw_st
 
-- name: set gfw fact
+- name: set GFW fact
   set_fact: under_gfw={{ gfw_st.stdout.strip() != '0' }}
 
 - name: download tidb binary
   get_url: url={{ item.url }} dest={{ downloads_dir }}/{{ item.name }}.tar.gz force=yes validate_certs=no
   with_items: "{{ tidb_urls }}"
+  when: has_outbound_network
 
-- name: download binary
+- name: download other binary
   get_url: url={{ item.url }} dest={{ downloads_dir }}/{{ item.name }}.tar.gz validate_certs=no
   with_items: "{{ package_urls_under_gfw if under_gfw else package_urls }}"
+  when: has_outbound_network
 
 - name: download FlameGraph master
   get_url: >
     url=https://github.com/brendangregg/FlameGraph/archive/master.zip
     dest={{ resources_dir }}/FlameGraph.zip
+  when: has_outbound_network
 
 - name: unarchive binary
   shell: ls -1 {{ item }}-*.tar.gz | xargs -n1 tar xzf

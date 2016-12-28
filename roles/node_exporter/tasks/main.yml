@@ -29,3 +29,4 @@
 - name: prepare firewalld white list
   set_fact:
     firewalld_ports: "{{ [node_exporter_port ~ '/tcp'] + firewalld_ports }}"
+  when: has_firewalld
