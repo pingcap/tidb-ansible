@@ -10,6 +10,43 @@
       group_by: key="{{ ansible_distribution }}-{{ ansible_distribution_version }}"
       changed_when: false
 
+
+- name: authorized access
+  hosts: all
+  gather_facts: true
+  tags:
+    - ssh
+  tasks:
+    - name: generate rsa key if not exists
+      shell: |
+        yes n | ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa || echo ok
+    - name: Slup
+      slurp:
+        src: ".ssh/id_rsa.pub"
+      register: rsa_pub_result
+
+    - set_fact:
+        rsa_pub_key: "{{ rsa_pub_result.content | b64decode | trim }}"
+
+
+    - name: add to authrized_keys
+      authorized_key:
+        user: "{{ ansible_user }}"
+        key: "{{ hostvars[item].rsa_pub_key }}"
+      with_items: "{{ groups.all }}"
+
+#        ssh-keygen -R {{ item }};
+    - name: add to know_hosts
+      shell: |
+        ssh-keygen -R {{ hostvars[item].ansible_hostname }};
+        ssh-keygen -R {{ hostvars[item].ansible_default_ipv4.address }};
+        ssh-keygen -R {{ hostvars[item].ansible_hostname }},{{ hostvars[item].ansible_default_ipv4.address }};
+        (ssh-keyscan -H {{ hostvars[item].ansible_hostname }};
+         ssh-keyscan -H {{ hostvars[item].ansible_default_ipv4.address }};
+         ssh-keyscan -H {{ hostvars[item].ansible_hostname }},{{ hostvars[item].ansible_default_ipv4.address }}) | uniq >> ~/.ssh/known_hosts
+      with_items: "{{ groups.all }}"
+
+
 - name: Set Time Zone
   hosts: Ubuntu-14.04
   gather_facts: false
@@ -82,7 +119,7 @@
 
     - name: install perf/systemtab/unzip/ntp/zip
       shell: >-
-        apt-fast -y install linux-tools-$(uname -r) systemtap unzip ntp zip
+        apt-fast -y install linux-tools-$(uname -r) systemtap unzip ntp zip iotop htop sysstat
 
     - name: add user to docker group
       user: name=ubuntu groups=stapusr append=yes
@@ -90,28 +127,4 @@
 
     - name: add user to docker group
       user: name=ubuntu groups=stapdev append=yes
-      become: true
-
-    - name: install FlameGraph - create dir
-      file: path=/opt/FlameGraph state=directory mode=0755
-      become: true
-
-    - name: install FlameGraph - install scripts
-      unarchive:
-        creates: /opt/FlameGraph/flamegraph.pl
-        src: "{{ resources_dir }}/FlameGraph.zip"
-        dest: /opt/FlameGraph/
-        mode: 0755
-        exclude:
-          - demos
-          - docs
-          - test
-      become: true
-
-    - name: install FlameGraph - change dir
-      shell: >-
-        creates=/opt/FlameGraph/flamegraph.pl
-        chdir=/opt/FlameGraph
-        mv ./FlameGraph-master/* ./ && 
-        rm -r ./FlameGraph-master
       become: true

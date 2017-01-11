@@ -7,7 +7,7 @@
     resource_tags:
       Name: sre-vpc-ansible
       ManagedBy: ansible
-      Creator: andelf
+      Creator: "{{ creator }}"
     subnets:
       - cidr: 172.233.1.0/24
         az: cn-north-1a
@@ -15,7 +15,7 @@
           Name: "sre-subnet-1a"
           Environment: "test"
           ManagedBy: ansible
-          Creator: andelf
+          Creator: "{{ creator }}"
           Tier: "db"
       - cidr: 172.233.2.0/24
         az: cn-north-1b
@@ -23,7 +23,7 @@
           Name: "sre-subnet-1b"
           Environment: "test"
           ManagedBy: ansible
-          Creator: andelf
+          Creator: "{{ creator }}"
           Tier: "db"
     internet_gateway: yes       # assign internet
     route_tables:
@@ -60,17 +60,29 @@
         from_port: 3000
         to_port: 3000
         cidr_ip: 0.0.0.0/0
+      # - proto: tcp
+      #   from_port: 4000
+      #   to_port: 4000
+      #   cidr_ip: 0.0.0.0/0
       - proto: tcp
-        from_port: 4000
-        to_port: 4000
+        from_port: 9000
+        to_port: 9050
         cidr_ip: 0.0.0.0/0
       - proto: tcp
         from_port: 9090 # prometheus
         to_port: 9091   # pushgateway
         cidr_ip: 0.0.0.0/0
       - proto: tcp
+        from_port: 9200
+        to_port: 9200
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
         from_port: 5601
         to_port: 5601
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 50000
+        to_port: 51000
         cidr_ip: 0.0.0.0/0
     # outbound
     rules_egress:
@@ -81,6 +93,8 @@
     region: cn-north-1
   register: security_group
 
+# CentOS 7: ami-c9a06aa4
+# Ubuntu: ami-0220b23b
 
 - name: tikv servers
   ec2:
@@ -91,16 +105,21 @@
     image: ami-0220b23b
     wait: yes
     wait_timeout: 500
+    volumes:
+      - device_name: /dev/xvdb
+        volume_type: gp2
+        volume_size: 80
+    vpc_subnet_id: subnet-2
 #   count: 1
     instance_tags:
-      Name: sre-tikv-c1
-      ManagedBy: ansible
-      Creator: andelf
+      Name: sre-tikv-c2
+      ManagedBy: "{{ managed_by }}"
+      Creator: "{{ creator }}"
       Type: tikv
     count_tag:
       Type: tikv
-      ManagedBy: ansible
-    exact_count: 3
+      ManagedBy: "{{ managed_by }}"
+    exact_count: 5
     vpc_subnet_id: "{{ vpc.subnets[0].id }}" # cn-north-1a
     assign_public_ip: yes
 
@@ -116,14 +135,14 @@
     wait_timeout: 500
 #   count: 1
     instance_tags:
-      Name: sre-pd-c1
-      ManagedBy: ansible
-      Creator: andelf
+      Name: sre-pd-c2
+      ManagedBy: "{{ managed_by }}"
+      Creator: "{{ creator }}"
       Type: pd
     count_tag:
       Type: pd
-      ManagedBy: ansible
-    exact_count: 3
+      ManagedBy: "{{ managed_by }}"
+    exact_count: 1
     vpc_subnet_id: "{{ vpc.subnets[0].id }}" # cn-north-1a
     assign_public_ip: yes
 
@@ -139,12 +158,12 @@
 #   count: 1
     instance_tags:
       Name: sre-tidb-c1
-      ManagedBy: ansible
-      Creator: andelf
+      ManagedBy: "{{ managed_by }}"
+      Creator: "{{ creator }}"
       Type: tidb
     count_tag:
       Type: tidb
-      ManagedBy: ansible
+      ManagedBy: "{{ managed_by }}"
     exact_count: 1
     vpc_subnet_id: "{{ vpc.subnets[0].id }}" # cn-north-1a
     assign_public_ip: yes
@@ -155,19 +174,23 @@
     region: cn-north-1
     key_name: pingcap
     group: sre-sg-ansible       # or group_id
-    instance_type: m3.medium
+    instance_type: t2.large
     image: ami-0220b23b
     wait: yes
     wait_timeout: 500
 #   count: 1
+    volumes:
+      - device_name: /dev/xvdb
+        volume_type: gp2
+        volume_size: 80
     instance_tags:
       Name: sre-mon-c1
-      ManagedBy: ansible
-      Creator: andelf
+      ManagedBy: "{{ managed_by }}"
+      Creator: "{{ creator }}"
       Type: monitoring
     count_tag:
       Type: monitoring
-      ManagedBy: ansible
+      ManagedBy: "{{ managed_by }}"
     exact_count: 1
     vpc_subnet_id: "{{ vpc.subnets[0].id }}" # cn-north-1a
     assign_public_ip: yes

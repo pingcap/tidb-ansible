@@ -4,11 +4,14 @@
   hosts: localhost
   connection: local
   gather_facts: false
+  pre_tasks:
+    - include_vars:
+        file: "{{ playbook_dir }}/vars.yml"
   tasks:
     - name: gather vpc net facts
       ec2_vpc_net_facts:
         filters:
-          "tag:ManagedBy": ansible
+          "tag:ManagedBy": "{{ managed_by }}"
         region: cn-north-1
       register: vpc_facts
 
