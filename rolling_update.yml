@@ -4,6 +4,7 @@
 # The rolling update playbook of TiDB
 
 - name: check config locally
+  any_errors_fatal: true
   hosts: localhost
   tags:
     - always
@@ -11,6 +12,7 @@
     - check_config_static
 
 - name: gather all facts, and check dest
+  any_errors_fatal: true
   hosts: all
   any_errors_fatal: true
   tags:

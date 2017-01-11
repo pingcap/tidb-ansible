@@ -2,20 +2,20 @@
 # Common Tasks
 
 - name: Ensure only one monitoring host exists
-  fail: msg="One, or no monitoring host may be specified. Primaries {{ groups['monitoring_server] }}"
+  fail: msg="One, or no monitoring host may be specified."
   when: "groups.get('monitoring_servers', [])|length > 1"
 
 - name: Warn if TiDB host not exists
-  debug: msg="No tidb host is specified."
+  debug: msg="No tidb host is specified. This cluster will run into a RawKV mode."
   when: "groups.get('tidb_servers', []) | length == 0"
 
 - name: Ensure PD host exists
-  fail: msg="One, or more pd hosts may be specified. hosts {{ groups['pd_servers'] }}"
-  when: "groups['pd_servers'] is defined and groups['pd_servers']|length < 1"
+  fail: msg="One, or more pd hosts may be specified."
+  when: "groups.get('pd_servers', [])|length < 1"
 
 - name: Ensure TiKV host exists
-  fail: msg="One, or more tikv hosts may be specified. hosts {{ groups['tikv_servers'] }}"
-  when: "groups['tikv_servers'] is defined and groups['tikv_servers']|length < 1"
+  fail: msg="One, or more tikv hosts may be specified."
+  when: "groups.get('tikv_servers', [])|length < 1"
 
 - name: Ensure Binlog is disabled (not supported yet)
   fail: msg="Binlog deployment is not supported yet. pump/cistern/drainer will not be deployed."

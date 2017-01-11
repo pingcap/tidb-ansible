@@ -45,6 +45,7 @@ Ansilbe 是一个集群部署工具。部署的主机可以是本地或者远程
 ```bash
 git clone https://github.com/pingcap/tidb-ansible.git
 cd tidb-ansible # where the magic happens
+git checkout 1.0-dev
 ```
 
 > 建议使用 git 下载，用分支管理集群的部署配置。
@@ -155,7 +156,7 @@ ansible all -m -b shell 'whoami'
 ### 检查部署列表
 
 ```bash
-ansible-playbook cluster.yml --list-hosts
+ansible-playbook deploy.yml --list-hosts
 ```
 
 查看输出确认以上部署安排是否符合预期。
@@ -177,25 +178,25 @@ ansible-playbook local_prepare.yml
 以下命令择一执行：
 
 ```bash
-ansible-playbook cluster.yml
+ansible-playbook deploy.yml
 
 # 需要用户名密码时
-ansible-playbook cluster.yml -k -K
+ansible-playbook deploy.yml -k -K
 
 # 需要提高并发度时（10并发: forks）
-ansible-playbook cluster.yml -k -K -f 10
+ansible-playbook deploy.yml -k -K -f 10
 
 # 需要查看详细输出时
-ansible-playbook -v cluster.yml -k -K -f 10
+ansible-playbook -v deploy.yml -k -K -f 10
 
 # 觉得以上输出不够详细时
-ansible-playbook -vv cluster.yml -k -K -f 10
+ansible-playbook -vv deploy.yml -k -K -f 10
 
 # 觉得以上输出不够详细时
-ansible-playbook -vvv cluster.yml -k -K -f 10
+ansible-playbook -vvv deploy.yml -k -K -f 10
 
 # 觉得以上输出不够详细时
-ansible-playbook -vvvv cluster.yml -k -K -f 10
+ansible-playbook -vvvv deploy.yml -k -K -f 10
 
 # 觉得以上输出不够详细时
 echo sucks
@@ -206,7 +207,7 @@ echo sucks
 部署成功后，可以到目标机器检查确认。随后启动服务。
 
 ```bash
-ansible-playbook restart_all.yml
+ansible-playbook restart.yml
 ```
 
 等待一段时间后，检查集群是否成功启动：
