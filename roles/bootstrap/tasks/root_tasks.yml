@@ -21,16 +21,16 @@
   when: tuning_kernel_parameters
 
 - name: swap - disable swap
-  shell: "[ $(swapon -s | wc -l) -ge 1 ] || (swapoff -a && exit 1)"
+  shell: "([ $(swapon -s | wc -l) -ge 1 ] && (swapoff -a && echo disable)) || echo already"
   ignore_errors: yes
   register: swapoff_result
-  changed_when: "swapoff_result.rc != 0"
+  changed_when: "swapoff_result.stdout.strip() == 'disable'"
 
 - name: create account
-  user: name={{ deploy_user }}
+  user: name={{ deploy_user }} group={{ deploy_user }}
 
 - name: create top deploy dir when under root
-  file: path="{{ deploy_dir }}" state=directory mode=0755 owner={{ deploy_user }}
+  file: path="{{ deploy_dir }}" state=directory mode=0755 owner={{ deploy_user }} group={{ deploy_user }}
 
 - name: set timezone to Asia/Shanghai
   timezone: name=Asia/Shanghai
@@ -42,5 +42,21 @@
 - name: set hostname in hosts file
   lineinfile: dest=/etc/hosts line='127.0.0.1     ip-{{ ansible_default_ipv4.address | replace(\".\",\"-\") }}'
 
+# need root
+- name: determine if firewalld is running
+  command: bash -c 'firewall-cmd --state || exit 0'
+  register: firewalld_running
+  ignore_errors: true
+  changed_when: false
 
+- name: disable firewalld
+  service: name=firewalld enabled=no state=stopped
+  when: |
+    not (enable_firewalld is defined and enable_firewalld) and
+    firewalld_running.stdout.strip() == "running"
 
+- name: or to enable firewalld
+  service: name=firewalld enabled=yes state=started
+  when: |
+    enable_firewalld is defined and enable_firewalld and
+    firewalld_running.stdout.strip() != "running"

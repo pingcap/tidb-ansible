@@ -7,6 +7,7 @@
   - "{{ tikv_log_dir }}"
   - "{{ tikv_data_dir }}"
   - "{{ deploy_dir }}/status/{{ role_name }}"
+  - "{{ deploy_dir }}/conf"
 
 - name: deply binary
   copy: src="{{ resources_dir }}/bin/tikv-server" dest="{{ deploy_dir }}/bin/" mode=0755 backup=yes
@@ -44,4 +45,3 @@
 - name: prepare firewalld white list
   set_fact:
     firewalld_ports: "{{ [tikv_port ~ '/tcp'] + firewalld_ports }}"
-  when: has_firewalld

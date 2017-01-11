@@ -1,5 +1,19 @@
 ---
 
+- name: disk space check - fail when disk is full
+  raw: df -h . | tail -n1
+  register: disk_space_st
+  failed_when: " '100%' in disk_space_st.stdout "
+  changed_when: false
+
+- name: get facts
+  setup: gather_subset=network
+
+- name: Preflight check - System Time
+  fail:
+    msg: "System clock is wrong relative to current host: {{ ansible_date_time.epoch | epoch_time_diff}} seconds."
+  when: ansible_date_time.epoch | epoch_time_diff | abs > max_time_diff_seconds
+
 - name: Preflight check - Red Hat Enterprise Linux/CentOS 6 is deprecated
   debug:
     msg: "Support for running TiDB on Red Hat Enterprise Linux 6 and CentOS 6 is deprecated, and will be removed in a future release."
@@ -83,7 +97,6 @@
   set_fact:
     skip_create_deploy_dir: false
     skip_supervise: false
-    has_firewalld: false
     firewalld_ports: []
 
 - name: config skip variables
@@ -102,23 +115,5 @@
     - supervise_st.stat.executable is defined
     - supervise_st.stat.executable
 
-- name: create deploy directories
-  file: path={{ item }} state=directory mode=0755
-  with_items:
-    - "{{ deploy_dir }}"
-    - "{{ deploy_dir }}/bin"
-    - "{{ deploy_dir }}/scripts"
-    - "{{ deploy_dir }}/conf"
-    - "{{ backup_dir }}"
-  when: not skip_supervise
 
-- name: determine if firewalld is running
-  command: bash -c 'firewall-cmd --state || exit 0'
-  register: firewalld_running
-  ignore_errors: true
-  changed_when: false
 
-- name: config firewalld varables
-  set_fact:
-    has_firewalld: true
-  when: firewalld_running.stdout.strip() == "running"

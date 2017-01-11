@@ -17,9 +17,6 @@
   command: mv "{{ pd_binary.backup_file }}" "{{ backup_dir }}"
   when: pd_binary.changed and pd_binary.backup_file is defined
 
-#- name: create config file
-#  template: src=pd.toml.j2 dest={{ deploy_dir }}/conf/pd.toml.d/0 mode=0644
-
 - name: create configuration file
   template: src=pd.toml.j2 dest={{ deploy_dir }}/conf/pd.toml mode=0644 backup=yes
   register: pd_conf
@@ -48,5 +45,4 @@
 - name: prepare firewalld white list
   set_fact:
     firewalld_ports: "{{ [pd_peer_port ~ '/tcp', pd_client_port ~ '/tcp'] + firewalld_ports }}"
-  when: has_firewalld
 

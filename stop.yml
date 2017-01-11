@@ -5,7 +5,6 @@
 
 - name: check config locally
   hosts: localhost
-  gather_facts: false
   tags:
     - always
   roles:
@@ -13,14 +12,13 @@
 
 - name: gather all facts, and check dest
   hosts: all
-  gather_facts: true
+  any_errors_fatal: true
   tags:
     - always
   roles:
     - check_config_dynamic
 
 - hosts: monitored_servers
-  gather_facts: false
   tags:
     - node_exporter
   tasks:
@@ -30,7 +28,6 @@
       - node_exporter
 
 - hosts: monitoring_servers
-  gather_facts: false
   tags:
     - pushgateway
     - prometheus
@@ -42,7 +39,6 @@
         - prometheus
 
 - hosts: pd_servers
-  gather_facts: false
   tags:
     - pd
   tasks:
@@ -52,7 +48,6 @@
         - pd
 
 - hosts: tikv_servers
-  gather_facts: false
   tags:
     - tikv
   tasks:
@@ -63,7 +58,6 @@
 
 
 - hosts: tidb_servers
-  gather_facts: false
   tags:
     - tidb
   tasks:
@@ -73,7 +67,6 @@
         - tidb
 
 - hosts: grafana_servers
-  gather_facts: true
   # FIXME: must introduce this to load all variables
   tags:
     - grafana

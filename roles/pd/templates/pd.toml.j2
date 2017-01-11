@@ -21,22 +21,25 @@
 # WARNING: This file was auto-generated. Do not edit!
 #          All your edit might be overwritten!
 
-name = "{{ pd_name_prefix }}{{ my_peer_id }}"
-data-dir = "{{ pd_data_dir}}"
+# FIXME: not support server section yet
+# [server]
+# name = "{{ pd_name_prefix }}{{ my_peer_id }}"
+# data-dir = "{{ pd_data_dir}}"
 
-client-urls = "http://{{ my_ip }}:{{ pd_client_port }}"
+# client-urls = ""
 # if not set, fallback to use ${client-urls}
-advertise-client-urls = "http://{{ my_ip }}:{{ pd_client_port }}"
+# advertise-client-urls = ""
 
-peer-urls = "http://{{ my_ip }}:{{ pd_peer_port }}"
+# peer-urls = ""
 # if not set, fallback to use ${peer-urls}
-advertise-peer-urls = "http://{{ my_ip }}:{{ pd_peer_port }}"
+# advertise-peer-urls = ""
 
-initial-cluster = "{{ all_pd | join(',') }}"
-initial-cluster-state = "new"
+# initial-cluster = ""
+# initial-cluster-state = "new"
+# join = ""
 
-log-level = "{{ pd_log_level }}"
-log-file = "{{ pd_log_dir }}/{{ pd_log_filename }}"
+# log-level = ""
+# log-file = ""
 
 lease = 3
 tso-save-interval = "3s"
@@ -54,10 +57,14 @@ min-region-count = 10
 min-leader-count = 10
 max-snapshot-count = 3
 min-balance-diff-ratio = 0.01
-max-store-down-duration = "30m"
+max-store-down-duration = "1h"
 leader-schedule-limit = 8
-leader-schedule-interval = "10s"
+leader-schedule-interval = "1s"
 storage-schedule-limit = 4
-storage-schedule-interval = "30s"
+storage-schedule-interval = "1s"
 replica-schedule-limit = 8
-replica-schedule-interval = "10s"
+replica-schedule-interval = "1s"
+
+[replication]
+max-replicas = 3
+location-labels = []

@@ -3,6 +3,20 @@
 
 # The playbook of TiDB
 
+- name: check config locally
+  hosts: localhost
+  tags:
+    - always
+  roles:
+    - check_config_static
+
+- name: gather all facts, and check dest
+  hosts: all
+  tags:
+    - always
+  roles:
+    - check_config_dynamic
+
 - name: TiDB cluster
   hosts: tidb_servers
   tasks:

@@ -54,7 +54,7 @@
     - pd
   tasks:
     - name: restart PD
-      shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
+      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
       with_items:
         - pd
     - name: wait up
@@ -67,7 +67,7 @@
     - tikv
   tasks:
     - name: restart TiKV
-      shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
+      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
       with_items:
         - tikv
     - name: wait up
@@ -80,7 +80,7 @@
     - tidb
   tasks:
     - name: restart TiDB
-      shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
+      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
       with_items:
         - tidb
     - name: wait up

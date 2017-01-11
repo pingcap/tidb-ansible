@@ -1,14 +1,20 @@
 ---
 # Tasks to configure firewalld rules
 
-- name: All enabled portes
-  debug: var=firewalld_ports
+# FIXME: include + become not works
+# ugly workaround
+- include: root_tasks.yml
+  become: false
+  become_user: root
+  when:
+    - ansible_user == 'root'
+    - enable_firewalld is defined and enable_firewalld
+  vars:
+    - ansible_become: false
+    - ansible_become_user: root
 
-- name: Enable firewalld ports
-  firewalld:
-    port: '{{item}}'
-    permanent: true
-    state: enabled
-  when: has_firewalld
-  with_items: "{{ firewalld_ports }}"
-  notify: reload firewalld
+- include: root_tasks.yml
+  become: true
+  when:
+    - ansible_user != 'root'
+    - enable_firewalld is defined and enable_firewalld

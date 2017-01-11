@@ -5,7 +5,6 @@
 
 - name: check config locally
   hosts: localhost
-  gather_facts: false
   tags:
     - always
   roles:
@@ -13,16 +12,44 @@
 
 - name: gather all facts, and check dest
   hosts: all
-  gather_facts: true
+  any_errors_fatal: true
   tags:
     - always
   roles:
     - check_config_dynamic
 
+- name: rolling update NodeExporter
+  hosts: monitored_servers
+  any_errors_fatal: true
+  tags:
+    - node_exporter
+  roles:
+    - { role: node_exporter, tags: ["deploy"] }
+  post_tasks:
+    - name: stop NodeExporter
+      tags:
+        - restart
+      shell: cd {{ deploy_dir }}/scripts && ./stop_node_exporter.sh
+
+    - name: wait NodeExporter down
+      tags:
+        - restart
+      wait_for: host={{ ansible_default_ipv4.address }} port={{ node_exporter_port }} state=stopped
+
+    - name: start NodeExporter
+      tags:
+        - restart
+      shell: cd {{ deploy_dir }}/scripts && ./start_node_exporter.sh
+
+    - name: wait NodeExporter up
+      wait_for: |
+        host={{ ansible_default_ipv4.address }} port={{ node_exporter_port }} state=present
+        send='GET /metrics HTTP/1.0\r\n\r\n' search_regex='200 OK'
+
 
 - name: rolling update PD cluster
   hosts: pd_servers
-  gather_facts: false
+  any_errors_fatal: true
   serial: 1
   tags:
     - pd
@@ -52,7 +79,7 @@
 
 - name: rolling update TiKV cluster
   hosts: tikv_servers
-  gather_facts: false
+  any_errors_fatal: true
   serial: 1
   tags:
     - tikv
@@ -62,7 +89,7 @@
     - name: stop TiKV
       tags:
         - restart
-      shell: cd {{ deploy_dir }}/scripts && ./stop_tikv.sh;
+      shell: cd {{ deploy_dir }}/scripts && ./stop_tikv.sh
 
     - name: wait TiKV down
       tags:
@@ -84,7 +111,7 @@
 
 - name: rolling update TiDB cluster
   hosts: tidb_servers
-  gather_facts: false
+  any_errors_fatal: true
   serial: 1
   tags:
     - tidb
@@ -94,7 +121,7 @@
     - name: stop TiDB
       tags:
         - restart
-      shell: cd {{ deploy_dir }}/scripts && ./stop_tidb.sh;
+      shell: cd {{ deploy_dir }}/scripts && ./stop_tidb.sh
 
     - name: wait TiDB down
       tags:

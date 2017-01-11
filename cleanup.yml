@@ -3,8 +3,22 @@
 
 # The playbook of TiDB
 
+
+- name: check config locally
+  hosts: localhost
+  tags:
+    - always
+  roles:
+    - check_config_static
+
+- name: gather all facts, and check dest
+  hosts: all
+  tags:
+    - always
+  roles:
+    - check_config_dynamic
+
 - hosts: all
-  gather_facts: no
   tasks:
     - name: fuck off
       shell: >

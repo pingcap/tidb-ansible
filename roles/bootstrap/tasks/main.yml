@@ -11,6 +11,7 @@
 
 # FIXME: include + become not works
 - include: root_tasks.yml
+  static: no
   become: false
   become_user: root
   when:
@@ -20,6 +21,7 @@
     - ansible_become_user: root
 
 - include: root_tasks.yml
+  static: no
   become: true
   when:
     - ansible_user != 'root'
