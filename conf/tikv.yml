@@ -1,0 +1,225 @@
+---
+
+# yml config for tikv
+server:
+  #labels: ""
+  # log level: trace, debug, info, warn, error, off.
+  #log-level: info
+  # notify capacity, 40960 is suitable for about 7000 regions.
+  #notify-capacity: 40960
+  # maximum number of messages can be processed in one tick.
+  #messages-per-tick: 4096
+  # socket send/recv buffer size.
+  #send-buffer-size: 128KB
+  #recv-buffer-size: 128KB
+  # size of thread pool for endpoint task
+  #end-point-concurrency: 8
+  # set store capacity, if no set, use unlimited or disk size later. 0 is unlimited.
+  #capacity: 0
+  # set backup path, if not set, use "backup" under store path.
+  #backup: "/tmp/tikv/store/backup"
+
+metric:
+  # the Prometheus client push interval. Setting the value to 0s stops Prometheus client from pushing.
+  interval: 2s
+  # the Prometheus client push job name's prefix. Note: A node id will automatically append, e.g., "tikv_1".
+  #job: tikv
+
+storage:
+  # notify capacity of scheduler's channel
+  #scheduler-notify-capacity: 10240
+  # maximum number of messages can be processed in one tick
+  #scheduler-messages-per-tick: 1024
+
+  #scheduler-concurrency: 1024000
+
+  # scheduler's worker pool size
+  #scheduler-worker-pool-size: 4
+
+raftstore:
+  # notify capacity, 40960 is suitable for about 7000 regions.
+  #notify-capacity: 40960
+
+  # maximum number of messages can be processed in one tick.
+  #messages-per-tick: 4096
+
+  # Region heartbeat tick interval for reporting to pd.
+  #pd-heartbeat-tick-interval: 60s
+  # Store heartbeat tick interval for reporting to pd.
+  #pd-store-heartbeat-tick-interval: 10s
+
+  # When the region's size exceeds region-max-size, we will split the region
+  # into two which the left region's size will be region-split-size or a little
+  # bit smaller.
+  #region-max-size: "80MB"
+  #region-split-size: "64MB"
+
+  # When region size changes exceeds region-split-check-diff, we should check
+  # whether the region should be split or not.
+  #region-split-check-diff: "8MB"
+  # Interval to check region whether need to be split or not.
+  #split-region-check-tick-interval: "5s"
+
+  # Interval to gc unnecessary raft log.
+  #raft-log-gc-tick-interval: 10s
+  # A threshold to gc stale raft log, must >= 1.
+  #raft-log-gc-threshold: 50
+  # When entry count exceed this value, gc will be forced trigger.
+  #raft-log-gc-count-limit: 48000
+  # When the approximate size of raft log entries exceed this value, gc will be forced trigger.
+  # It's recommanded to set it to 3/4 of region-split-size.
+  #raft-log-gc-size-limit: 48MB
+
+  # When a peer hasn't been active for max-peer-down-duration,
+  # we will consider this peer to be down and report it to pd.
+  #max-peer-down-duration: 5m
+
+  # Interval to check whether start manual compaction for a region,
+  # 0 means disable manual compaction.
+  #region-compact-check-interval: 5m
+  # When delete keys of a region exceeds the size, a compaction will be started.
+  #region-compact-delete-keys-count: 1000000
+  # Interval to check whether start lock compaction for a region.
+  #lock-cf-compact-interval: 10m
+
+  # Interval (s) to check region whether the data are consistent.
+  #consistency-check-interval: 0
+
+rocksdb:
+  # Maximum number of concurrent background compaction jobs, submitted to
+  # the default LOW priority thread pool.
+  #max-background-compactions: 6
+
+  # Maximum number of concurrent background flush jobs
+  #max-background-flushes: 2
+
+  # Number of open files that can be used by the DB.  You may need to
+  # increase this if your database has a large working set. Value -1 means
+  # files opened are always kept open. You can estimate number of files based
+  # on target_file_size_base and target_file_size_multiplier for level-based
+  # compaction.
+  # If max-open-files: -1, RocksDB will prefetch index and filter blocks into
+  # block cache at startup, so if your database has a large working set, it will
+  # take several minutes to open the db.
+  #max-open-files: 40960
+
+  # Max size of rocksdb's MANIFEST file.
+  # For detailed explanation please refer to https://github.com/facebook/rocksdb/wiki/MANIFEST
+  #max-manifest-file-size: 20MB
+
+  # If true, the database will be created if it is missing.
+  #create-if-missing: true
+
+  # rocksdb wal recovery mode
+  # 0 : TolerateCorruptedTailRecords, tolerate incomplete record in trailing data on all logs;
+  # 1 : AbsoluteConsistency, We don't expect to find any corruption in the WAL;
+  # 2 : PointInTimeRecovery, Recover to point-in-time consistency;
+  # 3 : SkipAnyCorruptedRecords, Recovery after a disaster;
+  #wal-recovery-mode: 2
+
+  # rocksdb max total wal size
+  #max-total-wal-size: 4GB
+
+  # Rocksdb Statistics provides cumulative stats over time.
+  # Set it ture only when debugging performance, because it will introduce overhead.
+  #enable-statistics: false
+
+  # Dump statistics periodically in information logs.
+  # Same as rocksdb's default value (10 min).
+  #stats-dump-period-sec: 600
+
+  # If true, then the contents of manifest and data files are not synced
+  # to stable storage. Their contents remain in the OS buffers till the
+  # OS decides to flush them. This option is good for bulk-loading
+  # of data. Once the bulk-loading is complete, please issue a
+  # sync to the OS to flush all dirty buffers to stable storage.
+  # Default false.
+  #disable-data-sync: false
+
+  # Due to Rocksdb FAQ: https://github.com/facebook/rocksdb/wiki/RocksDB-FAQ,
+  # If you want to use rocksdb on multi disks or spinning disks, you should set value at
+  # least 2MB;
+  #compaction_readahead_size: 0
+
+  # Column Family default used to store actual data of the database.
+  defaultcf:
+    # compression method (if any) is used to compress a block.
+    #   no:     kNoCompression
+    #   snappy: kSnappyCompression
+    #   zlib:   kZlibCompression
+    #   bzip2:  kBZip2Compression
+    #   lz4:    kLZ4Compression
+    #   lz4hc:  kLZ4HCCompression
+
+    # per level compression
+    #compression-per-level: "lz4:lz4:lz4:lz4:lz4:lz4:lz4"
+
+    # Approximate size of user data packed per block.  Note that the
+    # block size specified here corresponds to uncompressed data.
+    #block-size: "64KB"
+
+    # If you're doing point lookups you definitely want to turn bloom filters on, We use
+    # bloom filters to avoid unnecessary disk reads. Default bits_per_key is 10, which
+    # yields ~1% false positive rate. Larger bits_per_key values will reduce false positive
+    # rate, but increase memory usage and space amplification.
+    #bloom-filter-bits-per-key: 10
+
+    # false means one sst file one bloom filter, true means evry block has a corresponding bloom filter
+    #block-based-bloom-filter: false
+
+    # Soft limit on number of level-0 files. We start slowing down writes at this point.
+    #level0-slowdown-writes-trigger: 12
+
+    # Maximum number of level-0 files.  We stop writes at this point.
+    #level0-stop-writes-trigger: 16
+
+    # Amount of data to build up in memory (backed by an unsorted log on disk)
+    # before converting to a sorted on-disk file.
+    #write-buffer-size: 128MB
+
+    # The maximum number of write buffers that are built up in memory.
+    #max-write-buffer-number: 5
+
+    # The minimum number of write buffers that will be merged together
+    # before writing to storage.
+    #min-write-buffer-number-to-merge: 1
+
+    # Control maximum total data size for base level (level 1).
+    #max-bytes-for-level-base: "128MB"
+
+    # Target file size for compaction.
+    #target-file-size-base: "32MB"
+
+    # block-cache used to cache uncompressed blocks, big block-cache can speed up read
+    #block-cache-size: "1GB"
+
+    # Indicating if we'd put index/filter blocks to the block cache.
+    # If not specified, each "table reader" object will pre-load index/filter block
+    # during table initialization.
+    #cache-index-and-filter-blocks: true
+
+  # options for Column Family write
+  # Column Family write used to store commit informations in MVCC model
+  writecf:
+    #compression-per-level: "lz4:lz4:lz4:lz4:lz4:lz4:lz4"
+    #block-size: "64KB"
+    #write-buffer-size: "128MB"
+    #max-write-buffer-number: 5
+    #min-write-buffer-number-to-merge: 1
+    #max-bytes-for-level-base: "128MB"
+    #target-file-size-base: "32MB"
+    #block-cache-size: "256MB"
+    #cache-index-and-filter-blocks: true
+
+  # options for Column Family raft.
+  # Column Family raft is used to store raft log and raft states.
+  raftcf:
+    #compression-per-level: "lz4:lz4:lz4:lz4:lz4:lz4:lz4"
+    #block-size: "64KB"
+    #write-buffer-size: "128MB"
+    #max-write-buffer-number: 5
+    #min-write-buffer-number-to-merge: 1
+    #max-bytes-for-level-base: "128MB"
+    #target-file-size-base: "32MB"
+    #block-cache-size: "256MB"
+

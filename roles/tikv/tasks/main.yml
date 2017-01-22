@@ -9,7 +9,7 @@
   - "{{ deploy_dir }}/status/{{ role_name }}"
   - "{{ deploy_dir }}/conf"
 
-- name: deply binary
+- name: deploy binary
   copy: src="{{ resources_dir }}/bin/tikv-server" dest="{{ deploy_dir }}/bin/" mode=0755 backup=yes
   register: tikv_binary
 
@@ -17,13 +17,35 @@
   command: mv "{{ tikv_binary.backup_file }}" "{{ backup_dir }}"
   when: tikv_binary.changed and tikv_binary.backup_file is defined
 
+- name: load customized config
+  include_vars: file={{ playbook_dir }}/conf/tikv.yml name=tikv_conf_custom
+
+- name: load default config
+  include_vars: file=default.yml name=tikv_conf_default
+
+- name: generate metrics config
+  set_fact:
+    tikv_conf_generated:
+      metric:
+        interval: "{{ tikv_metric_interval | default('15s') }}"
+        address: >-
+          {{ hostvars.get(groups.monitoring_servers.0).ansible_default_ipv4.address ~ ':' ~
+           (hostvars.get(groups.monitoring_servers.0).pushgateway_port | default('9091')) |
+           default('') }}
+
+- name: generate final config
+  set_fact:
+    tikv_conf: "{{ tikv_conf_custom | with_default_dicts(tikv_conf_generated, tikv_conf_default) }}"
+
+- debug: var=tikv_conf
+
 - name: create config file
   template: src=tikv.toml.j2 dest={{ deploy_dir }}/conf/tikv.toml mode=0644 backup=yes
-  register: tikv_conf
+  register: tikv_conf_st
 
 - name: backup conf file
-  command: mv "{{ tikv_conf.backup_file }}" "{{ backup_dir }}"
-  when: tikv_conf.changed and tikv_conf.backup_file is defined
+  command: mv "{{ tikv_conf_st.backup_file }}" "{{ backup_dir }}"
+  when: tikv_conf_st.changed and tikv_conf_st.backup_file is defined
 
 - name: create scripts
   include_role:

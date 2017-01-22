@@ -8,12 +8,12 @@
 - name: deploy grafana binary
   unarchive: >
     creates="{{ deploy_dir }}/opt/grafana/bin/grafana-server"
-    src={{ downloads_dir }}/grafana-4.0.2.tar.gz dest={{ deploy_dir }}/opt/
+    src={{ downloads_dir }}/grafana-4.1.1.tar.gz dest={{ deploy_dir }}/opt/
 
 - name: rename grafana deploy dir
   shell: >
     creates="{{ deploy_dir }}/opt/grafana/bin/grafana-server"
-    mv {{ deploy_dir }}/opt/grafana-4.0.2-* "{{ deploy_dir }}/opt/grafana"
+    mv {{ deploy_dir }}/opt/grafana-4.1.1-* "{{ deploy_dir }}/opt/grafana"
 
 - name: create deploy directories (2/2)
   file: path="{{ item }}" state=directory mode=0755

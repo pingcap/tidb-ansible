@@ -14,22 +14,16 @@ try:
 except:
     pass
 
-
-
-
 ############################################################
 ################## CONFIGURATION ###########################
 ############################################################
 
 # use a viewer key
 src = dict(
-    name="gaea-cluster1",
-    url="http://aws.pingcap.net:8000/grafana/",
-    key="eyJrIjoiNXZ2dVJaWXQ1TDIxWDBzNnpmaHU0aHpJc05YQmg5Y3kiLCJuIjoicmVhZG9ubHktZXhwb3J0LWtleSIsImlkIjoxfQ==",
-    dashboards={"node": 'gaiya-node-export',
-                "pd"  : 'gaiya-pd',
-                "tidb": 'gaiya-tidb',
-                "tikv": 'gaiya-tikv'})
+    dashboards={"node": 'node.json',
+                "pd"  : 'pd.json',
+                "tidb": 'tidb.json',
+                "tikv": 'tikv.json'})
 
 dests = [
 ]
@@ -108,12 +102,10 @@ def import_dashboard_via_user_pass(api_url, user, password, dashboard):
 
 if __name__ == '__main__':
     for type_ in src['dashboards']:
-        print("[load] from <{}>:{} of [{}]".format(
-          src['dashboards'][type_], type_, src['name']))
+        print("[load] from <{}>:{}".format(
+          src['dashboards'][type_], type_))
 
-        dashboard = export_dashboard(
-            src['url'], src['key'], src['dashboards'][type_]
-        )
+        dashboard = json.load(open(src['dashboards'][type_]))
 
         for dest in dests:
             dashboard = fill_dashboard_with_dest_config(dashboard, dest, type_)

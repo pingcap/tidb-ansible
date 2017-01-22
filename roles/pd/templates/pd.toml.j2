@@ -20,6 +20,7 @@
 # PD Configuration.
 # WARNING: This file was auto-generated. Do not edit!
 #          All your edit might be overwritten!
+# WARNING: The following configuration commented is set in run_pd.sh
 
 # FIXME: not support server section yet
 # [server]
@@ -27,11 +28,9 @@
 # data-dir = "{{ pd_data_dir}}"
 
 # client-urls = ""
-# if not set, fallback to use ${client-urls}
 # advertise-client-urls = ""
 
 # peer-urls = ""
-# if not set, fallback to use ${peer-urls}
 # advertise-peer-urls = ""
 
 # initial-cluster = ""
@@ -41,30 +40,21 @@
 # log-level = ""
 # log-file = ""
 
-lease = 3
-tso-save-interval = "3s"
-max-peer-count = 3
+{% for item, value in pd_conf.server | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
 
 [metric]
-# prometheus client push interval, set "0s" to disable prometheus.
-interval = "{{ metric_interval }}"
-
-# prometheus pushgateway address, leaves it empty will disable prometheus.
-address = "{{ metric_host }}:{{ metric_port }}"
+{% for item, value in pd_conf.metric | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
 
 [schedule]
-min-region-count = 10
-min-leader-count = 10
-max-snapshot-count = 3
-min-balance-diff-ratio = 0.01
-max-store-down-duration = "1h"
-leader-schedule-limit = 8
-leader-schedule-interval = "1s"
-storage-schedule-limit = 4
-storage-schedule-interval = "1s"
-replica-schedule-limit = 8
-replica-schedule-interval = "1s"
+{% for item, value in pd_conf.schedule | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
 
 [replication]
-max-replicas = 3
-location-labels = []
+{% for item, value in pd_conf.replication | dictsort -%}
+{{ item }} = {{ value | to_json}}
+{% endfor %}

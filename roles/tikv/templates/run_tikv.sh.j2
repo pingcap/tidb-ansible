@@ -2,7 +2,7 @@
 ulimit -n 40960
 
 # WARNING: This file was auto-generated. Do not edit!
-#          All your edit might be overwritten! 
+#          All your edit might be overwritten!
 cd "{{ deploy_dir }}" || exit 1
 
 {% set my_ip = ansible_default_ipv4.address -%}
@@ -33,5 +33,5 @@ exec bin/tikv-server \
     --store "{{ tikv_data_dir }}" \
     --capacity "{{ tikv_capacity }}" \
     --config conf/tikv.toml \
-    -L info \
+    -L "{{ tikv_log_level }}" \
     --log-file "{{ tikv_log_dir }}/{{ tikv_log_filename }}"

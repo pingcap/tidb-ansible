@@ -7,7 +7,6 @@
   - "{{ pd_log_dir }}"
   - "{{ pd_data_dir }}"
   - "{{ deploy_dir }}/status/{{ role_name }}"
-  - "{{ deploy_dir }}/conf/pd.toml.d"
 
 - name: deply binary
   copy: src="{{ resources_dir }}/bin/pd-server" dest="{{ deploy_dir }}/bin/" mode=0755 backup=yes
@@ -17,13 +16,35 @@
   command: mv "{{ pd_binary.backup_file }}" "{{ backup_dir }}"
   when: pd_binary.changed and pd_binary.backup_file is defined
 
+- name: load customized config
+  include_vars: file={{ playbook_dir }}/conf/pd.yml name=pd_conf_custom
+
+- name: load default config
+  include_vars: file=default.yml name=pd_conf_default
+
+- name: generate metrics config
+  set_fact:
+    pd_conf_generated:
+      metric:
+        interval: "{{ pd_metric_interval | default('15s') }}"
+        address: >-
+          {{ hostvars.get(groups.monitoring_servers[0]).ansible_default_ipv4.address ~ ':' ~
+           (hostvars.get(groups.monitoring_servers[0]).pushgateway_port | default('9091')) |
+            default('') }}
+
+- name: generate final config
+  set_fact:
+    pd_conf: "{{ pd_conf_custom | with_default_dicts(pd_conf_generated, pd_conf_default) }}"
+
+- debug: var=pd_conf
+
 - name: create configuration file
   template: src=pd.toml.j2 dest={{ deploy_dir }}/conf/pd.toml mode=0644 backup=yes
-  register: pd_conf
+  register: pd_conf_st
 
 - name: backup conf file
-  command: mv "{{ pd_conf.backup_file }}" "{{ backup_dir }}"
-  when: pd_conf.changed and pd_conf.backup_file is defined
+  command: mv "{{ pd_conf_st.backup_file }}" "{{ backup_dir }}"
+  when: pd_conf_st.changed and pd_conf_st.backup_file is defined
 
 - name: create scripts
   include_role:
