@@ -37,12 +37,6 @@
   with_items: "{{ package_urls_under_gfw if under_gfw else package_urls }}"
   when: has_outbound_network
 
-- name: download FlameGraph master
-  get_url: >
-    url=https://github.com/brendangregg/FlameGraph/archive/master.zip
-    dest={{ resources_dir }}/FlameGraph.zip
-  when: has_outbound_network
-
 - name: unarchive binary
   shell: ls -1 {{ item }}-*.tar.gz | xargs -n1 tar xzf
   args:
