@@ -29,8 +29,11 @@
 - name: create account
   user: name={{ deploy_user }} group={{ deploy_user }}
 
+# FIXME: bad in root
 - name: create top deploy dir when under root
   file: path="{{ deploy_dir }}" state=directory mode=0755 owner={{ deploy_user }} group={{ deploy_user }}
+
+- debug: var=deploy_user
 
 - name: set timezone to Asia/Shanghai
   timezone: name=Asia/Shanghai
@@ -38,6 +41,7 @@
 - name: set hostname if hostname is not distinguishable
   hostname: name=ip-{{ ansible_default_ipv4.address | replace(".","-") }}
   register: hostname_set
+  when: "ansible_default_ipv4.address | replace('.','-') not in ansible_hostname"
 
 - name: set hostname in hosts file
   lineinfile: dest=/etc/hosts line='127.0.0.1     ip-{{ ansible_default_ipv4.address | replace(\".\",\"-\") }}'

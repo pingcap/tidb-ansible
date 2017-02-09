@@ -9,8 +9,6 @@
 #ansible_become: true
 #ansible_become_user: tidb
 
-deploy_user: "{{ ansible_become_user | default(ansible_user) }}"
-
 # better set this in inventory file
 # deploy_dir: /home/{{ deploy_user }}/deploy
 
@@ -21,7 +19,9 @@ backup_dir: "{{ deploy_dir }}/backup"
 downloads_dir: "{{ playbook_dir }}/downloads"
 resources_dir: "{{ playbook_dir }}/resources"
 
+# Used by monitoring modules
 cluster_name: test-cluster
+
 
 
 
