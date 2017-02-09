@@ -6,7 +6,7 @@
     cidr_block: 172.233.0.0/16
     resource_tags:
       Name: sre-vpc-ansible
-      ManagedBy: ansible
+      ManagedBy: "{{ managed_by }}"
       Creator: "{{ creator }}"
     subnets:
       - cidr: 172.233.1.0/24
@@ -60,10 +60,10 @@
         from_port: 3000
         to_port: 3000
         cidr_ip: 0.0.0.0/0
-      # - proto: tcp
-      #   from_port: 4000
-      #   to_port: 4000
-      #   cidr_ip: 0.0.0.0/0
+      #- proto: tcp
+      #  from_port: 4000
+      #  to_port: 4000
+      #  cidr_ip: 0.0.0.0/0
       - proto: tcp
         from_port: 9000
         to_port: 9050
@@ -80,10 +80,6 @@
         from_port: 5601
         to_port: 5601
         cidr_ip: 0.0.0.0/0
-      - proto: tcp
-        from_port: 50000
-        to_port: 51000
-        cidr_ip: 0.0.0.0/0
     # outbound
     rules_egress:
       - proto: -1
@@ -93,23 +89,20 @@
     region: cn-north-1
   register: security_group
 
-# CentOS 7: ami-c9a06aa4
-# Ubuntu: ami-0220b23b
-
 - name: tikv servers
   ec2:
     region: cn-north-1
     key_name: pingcap
     group: sre-sg-ansible       # or group_id
-    instance_type: t2.micro
-    image: ami-0220b23b
+    instance_type: "{{ tikv_instance_type }}"
+    image: "{{ image_ami }}"
     wait: yes
     wait_timeout: 500
     volumes:
       - device_name: /dev/xvdb
         volume_type: gp2
         volume_size: 80
-    vpc_subnet_id: subnet-2
+        delete_on_termination: true
 #   count: 1
     instance_tags:
       Name: sre-tikv-c2
@@ -119,18 +112,17 @@
     count_tag:
       Type: tikv
       ManagedBy: "{{ managed_by }}"
-    exact_count: 5
+    exact_count: "{{ tikv_count }}"
     vpc_subnet_id: "{{ vpc.subnets[0].id }}" # cn-north-1a
     assign_public_ip: yes
-
 
 - name: pd servers
   ec2:
     region: cn-north-1
     key_name: pingcap
     group: sre-sg-ansible       # or group_id
-    instance_type: t2.micro
-    image: ami-0220b23b
+    instance_type: "{{ pd_instance_type }}"
+    image: "{{ image_ami }}"
     wait: yes
     wait_timeout: 500
 #   count: 1
@@ -142,7 +134,7 @@
     count_tag:
       Type: pd
       ManagedBy: "{{ managed_by }}"
-    exact_count: 1
+    exact_count: "{{ pd_count }}"
     vpc_subnet_id: "{{ vpc.subnets[0].id }}" # cn-north-1a
     assign_public_ip: yes
 
@@ -151,8 +143,8 @@
     region: cn-north-1
     key_name: pingcap
     group: sre-sg-ansible       # or group_id
-    instance_type: t2.micro
-    image: ami-0220b23b
+    instance_type: "{{ tidb_instance_type }}"
+    image: "{{ image_ami }}"
     wait: yes
     wait_timeout: 500
 #   count: 1
@@ -164,7 +156,7 @@
     count_tag:
       Type: tidb
       ManagedBy: "{{ managed_by }}"
-    exact_count: 1
+    exact_count: "{{ tidb_count }}"
     vpc_subnet_id: "{{ vpc.subnets[0].id }}" # cn-north-1a
     assign_public_ip: yes
 
@@ -174,15 +166,16 @@
     region: cn-north-1
     key_name: pingcap
     group: sre-sg-ansible       # or group_id
-    instance_type: t2.large
-    image: ami-0220b23b
+    instance_type: "{{ monitoring_instance_type }}"
+    image: "{{ image_ami }}"
     wait: yes
     wait_timeout: 500
 #   count: 1
     volumes:
       - device_name: /dev/xvdb
         volume_type: gp2
-        volume_size: 80
+        volume_size: 50
+        delete_on_termination: false
     instance_tags:
       Name: sre-mon-c1
       ManagedBy: "{{ managed_by }}"
@@ -191,6 +184,6 @@
     count_tag:
       Type: monitoring
       ManagedBy: "{{ managed_by }}"
-    exact_count: 1
+    exact_count: "{{ monitoring_count }}"
     vpc_subnet_id: "{{ vpc.subnets[0].id }}" # cn-north-1a
     assign_public_ip: yes

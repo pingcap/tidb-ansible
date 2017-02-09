@@ -1,14 +1,28 @@
 ---
 
-tikv_count: 3
-pd_count: 3
-tidb_count: 3
+tikv_count: 4
+pd_count: 1
+tidb_count: 1
 monitoring_count: 1
 
 creator: andelf
-managed_by: ansible-feather
+managed_by: ansible-wsy
 
+# CentOS 7: ami-c9a06aa4
+# Ubuntu: ami-0220b23b
 # Ubuntu 14.04
-image_ami: ami-0220b23b
+# image_ami: ami-0220b23b
+# coreos: ami-1ce93d71
+# ubuntu 16.04, hvm-ssd
+image_ami: ami-a0e136cd
 
-instance_type: m3.medium
+#instance_type: m3.medium
+tidb_instance_type: t2.large
+#　m3.medium 1　3.75　1 x 4 (SSD)
+#  m3.large  2 7.5  1 x 32 (SSD)
+pd_instance_type: t2.large
+tikv_instance_type: t2.large
+
+monitoring_instance_type: t2.large
+
+# volume must be use with EBS only
