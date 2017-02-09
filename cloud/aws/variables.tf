@@ -13,8 +13,8 @@ variable "vpc_id" {
 
 variable "subnet" {
   default = {
-    a = "subnet-21d57056"	# cn-north-1a
-    b = "subnet-de663cbb"	# cn-north-1b
+    a = "subnet-de663cbb"	# cn-north-1a
+    b = "subnet-21d57056"	# cn-north-1b
   }
 }
 
