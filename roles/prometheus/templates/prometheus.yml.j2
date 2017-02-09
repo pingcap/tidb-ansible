@@ -10,7 +10,7 @@ global:
     {{ item.label }}: "{{ item.value }}"
 {% endfor %}
 
-{% set pushgateway_host = hostvars[groups.monitoring_servers[0]].ansible_default_ipv4.address 
+{% set pushgateway_host = hostvars[groups.monitoring_servers[0]].ansible_default_ipv4.address
     if groups.get('monitoring_servers', []) else '' -%}
 {% set pushgateway_port = hostvars[groups.monitoring_servers[0]].pushgateway_port if pushgateway_host else '' -%}
 
@@ -22,7 +22,7 @@ scrape_configs:
     static_configs:
       - targets: ['{{ pushgateway_host }}:{{ pushgateway_port }}']
         labels:
-          group: '{{ monitoring_group_name }}'
+          cluster: '{{ cluster_name }}'
 {% endif %}
 
   - job_name: "node"
@@ -35,7 +35,6 @@ scrape_configs:
   {% set node_port = hostvars[host]['node_exporter_port'] %}
         - '{{ ip }}:{{ node_port }}'
 {% endfor %}
-
 
 # Load and evaluate rules in this file every 'evaluation_interval' seconds.
 rule_files:

@@ -11,6 +11,7 @@ WIP
 - http://download.pingcap.org/binlog-latest-linux-amd64.tar.gz
 - http://download.pingcap.org/tidb-tools-latest-linux-amd64.tar.gz
 - http://download.pingcap.org/sysbench-static-linux-amd64.tar.gz
+- http://download.pingcap.org/mydumper-linux-amd64.tar.gz
 - http://og66pdz33.bkt.clouddn.com/opbin.tar.gz
 
 Above binaries will be automatically downloaded by:

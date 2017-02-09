@@ -1,0 +1,41 @@
+---
+
+- name: disk space check - fail when disk is full
+  raw: df -h . | tail -n1
+  register: disk_space_st
+  failed_when: " '100%' in disk_space_st.stdout "
+  changed_when: false
+
+- name: Get os_version from /etc/os-release
+  raw: "([ -f /etc/os-release ] && grep '^VERSION_ID=' /etc/os-release | sed s'/VERSION_ID=//' | tr -d \\\") || ([ -f /etc/redhat-release ] && cat /etc/redhat-release | cut '-d ' -f3)"
+  register: os_version
+  failed_when: false
+
+# Debian GNU/Linux, Ubuntu, Fedora, CentOS, CoreOS
+- name: Get distro name from /etc/os-release
+  raw: "([ -f /etc/os-release ] && grep '^NAME=' /etc/os-release | sed s'/NAME=//' | tr -d \\\") || ([ -f /etc/redhat-release ] && cat /etc/redhat-release | cut '-d ' -f1)"
+  register: distro
+  failed_when: false
+
+- name: python check
+  raw: python --version
+  register: py_st
+  failed_when: false
+  changed_when: false
+
+- name: set has_python facts
+  set_fact:
+    has_python: true
+
+- name: set has_python facts
+  set_fact:
+    has_python: false
+  when: "'command not found' in py_st.stdout"
+
+- include: coreos.yml
+  static: no
+  when: "'CoreOS' in distro and not has_python"
+
+- include: root_tasks.yml
+  static: no
+  when: "'CoreOS' not in distro and not has_python"
