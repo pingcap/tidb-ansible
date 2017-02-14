@@ -33,7 +33,7 @@
 - name: Guess deploy_user - use become_user under root
   set_fact:
     deploy_user: "{{ ansible_become_user }}"
-  when: deploy_user == 'root' and deploy_user is not defined
+  when: deploy_user == 'root' and ansible_become_user is defined and ansible_become_user
 
 - name: Set deploy dir if not presented
   set_fact: deploy_dir="/home/{{ deploy_user }}/deploy"
