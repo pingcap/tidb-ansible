@@ -3,6 +3,17 @@
 
 - name: gather facts
   setup:
+  become: false
+  become_user: root
+  when:
+    - ansible_user == 'root'
+  vars: # ugly workaround
+    - ansible_become: false
+
+- name: gather facts
+  setup:
+  when:
+    - ansible_user != 'root'
 
 - name: group hosts by distribution
   group_by: key="{{ ansible_distribution }}-{{ ansible_distribution_version }}"
