@@ -1,0 +1,33 @@
+---
+# Copyright 2016 PingCAP, Inc.
+
+# The playbook of TiDB
+
+
+- name: check config locally
+  hosts: localhost
+  tags:
+    - always
+  roles:
+    - check_config_static
+
+- name: gather all facts, and check dest
+  hosts: all
+  tags:
+    - always
+  roles:
+    - check_config_dynamic
+
+- hosts: all
+  tasks:
+    - name: fuck off
+      shell: >
+        killall -9 supervise;
+        killall -9 node_exporter prometheus pushgateway grafana-server;
+        killall -9 tikv-server tidb-server pd-server;
+        killall -9 pump drainer cistern;
+        true
+
+    - name: fuck all
+      file: path={{ deploy_dir }} state=absent
+

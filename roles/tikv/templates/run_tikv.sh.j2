@@ -1,0 +1,37 @@
+#!/bin/bash
+ulimit -n 40960
+
+# WARNING: This file was auto-generated. Do not edit!
+#          All your edit might be overwritten!
+cd "{{ deploy_dir }}" || exit 1
+
+{% set my_ip = ansible_default_ipv4.address -%}
+
+{% set my_peer_id = groups.tikv_servers.index(inventory_hostname) + 1 -%}
+
+{% set all_pd = [] -%}
+{% set pd_hosts = groups.pd_servers %}
+{% for host in pd_hosts -%}
+  {% set pd_ip = hostvars[host].ansible_default_ipv4.address -%}
+  {% set pd_port = hostvars[host].pd_client_port -%}
+  {% set _ = all_pd.append("%s:%s" % (pd_ip, pd_port)) -%}
+{% endfor -%}
+
+export RUST_BACKTRACE=1
+
+echo -n 'sync ... '
+stat=$(time sync)
+echo ok
+echo $stat
+
+echo $$ > "status/{{ role_name }}.pid"
+
+exec bin/tikv-server \
+    --addr "0.0.0.0:{{ tikv_port }}" \
+    --advertise-addr "{{ my_ip }}:{{ tikv_port }}" \
+    --pd "{{ all_pd | join(',') }}" \
+    --store "{{ tikv_data_dir }}" \
+    --capacity "{{ tikv_capacity }}" \
+    --config conf/tikv.toml \
+    -L "{{ tikv_log_level }}" \
+    --log-file "{{ tikv_log_dir }}/{{ tikv_log_filename }}"

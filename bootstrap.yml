@@ -1,0 +1,18 @@
+---
+
+# This play book is intend for one pass execution
+
+- name: initializing deployment target
+  hosts: localhsot
+  gather_facts: false
+  roles:
+    - check_config_static
+
+- name: check node config
+  hosts: all
+  gather_facts: false
+  roles:
+    - pre-ansible
+    - bootstrap
+# FIXME: will fail when using pipeline connection
+#    - check_config_dynamic

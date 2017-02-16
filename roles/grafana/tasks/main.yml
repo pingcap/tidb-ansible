@@ -1,42 +1,5 @@
 ---
 
-- name: create deploy directories part 1
-  file: path="{{ item }}" state=directory mode=0755
-  with_items:
-  - "{{ deploy_dir }}/opt"
-
-- name: deploy grafana binary
-  unarchive: >
-    creates="{{ deploy_dir }}/opt/grafana/bin/grafana-server"
-    src={{ downloads_dir }}/grafana-4.0.1.tar.gz dest={{ deploy_dir }}/opt/
-
-- name: rename grafana deploy dir
-  shell: >
-    creates="{{ deploy_dir }}/opt/grafana/bin/grafana-server"
-    mv {{ deploy_dir }}/opt/grafana-4.0.1-* "{{ deploy_dir }}/opt/grafana"
-
-- name: create deploy directories part 2
-  file: path="{{ item }}" state=directory mode=0755
-  with_items:
-  - "{{ grafana_log_dir }}"
-  - "{{ grafana_status_dir }}"
-  - "{{ grafana_data_dir }}"
-  - "{{ grafana_dashboards_dir }}"
-  - "{{ grafana_plugins_dir }}"
-
-- name: create grafana configuration file
-  template: src=grafana.ini.j2 dest={{ deploy_dir }}/opt/grafana/conf/grafana.ini mode=0644
-
-- name: push data source file
-  template: src=data_source.json.j2 dest={{ grafana_data_dir }}/data_source.json mode=0644
-
-- name: create grafana startup script
-  template: src={{ item }}.j2 dest={{ deploy_dir }}/scripts/{{ item }} mode=0755
-  with_items:
-  - start_{{ role_name }}.sh
-  - stop_{{ role_name }}.sh
-
-- name: prepare firewalld white list
-  set_fact:
-    firewalld_ports: "{{ [grafana_port ~ '/tcp'] + firewalld_ports }}"
-  
+- include: tasks.yml
+  static: no
+  when: "grafana_exec_vars_only == false"

@@ -1,0 +1,70 @@
+---
+
+- name: CoreOS | Check python executable linkage and mark .bootstrapped
+  raw: "{{ bootstrap_script_dir }}/pypy/bin/python --version"
+  register: pypy_st
+
+- name:
+
+- name: CoreOS - detect outbound network
+  raw: curl -s --connect-timeout 4 baidu.com 2>/dev/null >/dev/null; echo $?
+  changed_when: false
+  register: outbound_network_st
+
+- name: CoreOS - set outbound network fact
+  set_fact: has_outbound_network={{ outbound_network_st.stdout.strip() == '0' }}
+
+- name: CoreOS - detect GFW
+  raw: curl -s --connect-timeout 2 google.com 2>/dev/null >/dev/null; echo $?
+  changed_when: false
+  register: gfw_st
+
+- name: CoreOS - set GFW fact
+  set_fact: under_gfw={{ gfw_st.stdout.strip() != '0' }}
+
+- name: CoreOS - use mirror if under GFW
+  set_fact:
+    pypy_download_url: "{{ pypy_download_url_under_gfw }}"
+
+- name: CoreOS | Create bootstrap directory
+  raw: sudo mkdir -p {{ bootstrap_script_dir }}
+
+- name: CoreOS | deploy pypy -
+  raw: >
+         http_proxy="{{ http_proxy|default('') }}"
+         https_proxy="{{ https_proxy|default('') }}"
+         no_proxy="{{ no_proxy|default('') }}"
+         wget -O /tmp/pypy2-v{{ pypy_version }}-linux64.tar.bz2 {{ pypy_download_url }}
+  when: has_outbound_network
+
+- name: CoreOS | Extract pypy tar to tmp
+  raw: tar -xjf /tmp/pypy2-v{{ pypy_version }}-linux64.tar.bz2 -C /tmp
+
+- name: CoreOS | Move pypy source to python bootstrap directory
+  raw: sudo mv -n /tmp/pypy2-v{{ pypy_version }}-linux64 {{ bootstrap_script_dir }}/pypy
+
+- name: CoreOS | Make pypy lib directory and link ncurses .so
+  raw: mkdir -p {{ bootstrap_script_dir }}/pypy/lib && ln -snf /lib64/libncurses.so.5.9 {{ bootstrap_script_dir }}/pypy/lib/libtinfo.so.5
+
+- name: CoreOS | Add python exec script to bootstrap directory
+  raw: >
+         printf "%s\n%s"
+         "#! /bin/bash"
+         "LD_LIBRARY_PATH={{ bootstrap_script_dir }}/pypy/lib:\$LD_LIBRARY_PATH exec {{ bootstrap_script_dir }}/pypy/bin/pypy \"\$@\""
+         > {{ bootstrap_script_dir }}/pypy/bin/python
+
+- name: CoreOS | Add exec permission to python exec script
+  raw: chmod +x {{ bootstrap_script_dir }}/pypy/bin/python
+
+- name: CoreOS | Check python executable linkage and mark .bootstrapped
+  raw: "{{ bootstrap_script_dir }}/pypy/bin/python --version"
+  register: pypy_st
+
+- name: CoreOS |
+
+
+          "PATH=\$PATH:{{ bin_dir }}"
+          > /etc/profile.d/python-path.sh
+
+- name: CoreOS | Change permissions and ownership for opt-path.sh to run as root
+  raw: chmod 0755 /etc/profile.d/python-path.sh && chown root /etc/profile.d/python-path.sh

@@ -1,0 +1,51 @@
+---
+# bootstrap a machine and begin deployment
+
+- name: gather facts
+  setup:
+  become: false
+  become_user: root
+  when:
+    - ansible_user == 'root'
+  vars: # ugly workaround
+    - ansible_become: false
+
+- name: gather facts
+  setup:
+  when:
+    - ansible_user != 'root'
+
+- name: group hosts by distribution
+  group_by: key="{{ ansible_distribution }}-{{ ansible_distribution_version }}"
+  changed_when: false
+
+# this fixes include + become
+- name: guess deploy_user - set ansible_user as default
+  set_fact:
+    deploy_user: "{{ ansible_user }}"
+  when: deploy_user is not defined
+
+- name: guess deploy_user - use become_user under root
+  set_fact:
+    deploy_user: "{{ ansible_become_user }}"
+  when: deploy_user == 'root' and ansible_become_user is defined
+
+- name: Set deploy dir if not presented
+  set_fact: deploy_dir="/home/{{ deploy_user }}/deploy"
+  when: deploy_dir is not defined
+
+- include: root_tasks.yml
+  static: no
+  become: false
+  become_user: root
+  when:
+    - ansible_user == 'root'
+  vars: # ugly workaround
+    - ansible_become: false
+    - ansible_become_user: root
+
+- include: root_tasks.yml
+  static: no
+  become: true
+  when:
+    - ansible_user != 'root'

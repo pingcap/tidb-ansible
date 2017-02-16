@@ -1,0 +1,70 @@
+---
+
+- name: test
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  pre_tasks:
+    - include_vars:
+        file: "{{ playbook_dir }}/vars.yml"
+  tasks:
+    - name: gather vpc net facts
+      ec2_vpc_net_facts:
+        filters:
+          "tag:ManagedBy": "{{ managed_by }}"
+        region: cn-north-1
+      register: vpc_facts
+
+    - name: host facts
+      ec2_remote_facts:
+        filters:
+          vpc-id: "{{ vpc_facts.vpcs[0].id }}"
+        region: cn-north-1
+      register: ec2_instances
+
+    - name: add hosts
+      add_host:
+        name: "{{ item.public_ip_address }}"
+        groups: sre-to-be-teardown
+      with_items: "{{ ec2_instances.instances }}"
+      #when: ec2_instances.skipped | defined and not ec2_instances.skipped
+
+    - debug: var=groups['sre-to-be-teardown']
+
+    - pause: prompt="Are you sure to tear these down?"
+
+- name: EC2 Instances
+  hosts: sre-to-be-teardown
+  gather_facts: false
+  tasks:
+    - name: gather facts
+      ec2_facts:
+
+    - name: Terminate instances that were previously launched
+      delegate_to: localhost
+      ec2:
+        state: 'absent'
+        instance_ids: '{{ ansible_ec2_instance_id }}'
+        region: cn-north-1
+        wait: yes
+        wait_timeout: 500
+
+- name: AWS
+  hosts: localhost
+  connection: local
+  become: false
+  gather_facts: false
+  tasks:
+    - name: terminate security group
+      ec2_group:
+        name: sre-sg-ansible
+        description: ec2 VPC security group for tidb cluster traffic
+        region: cn-north-1
+        state: absent
+
+    - name: terminate vpc
+      ec2_vpc:
+        state: absent
+        vpc_id: "{{ vpc_facts.vpcs[0].id }}"
+        resource_tags:
+        region: cn-north-1

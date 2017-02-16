@@ -1,0 +1,134 @@
+---
+
+- name: disk space check - fail when disk is full
+  raw: df -h . | tail -n1
+  register: disk_space_st
+  failed_when: " '100%' in disk_space_st.stdout "
+  changed_when: false
+
+- name: get facts
+  setup:
+  #setup: gather_subset=network
+
+- name: Preflight check - System Time
+  fail:
+    msg: "System clock is wrong relative to current host: {{ ansible_date_time.epoch | epoch_time_diff}} seconds."
+  when: ansible_date_time.epoch | epoch_time_diff | abs > max_time_diff_seconds
+
+- name: Preflight check - Red Hat Enterprise Linux/CentOS 6 is deprecated
+  debug:
+    msg: "Support for running TiDB on Red Hat Enterprise Linux 6 and CentOS 6 is deprecated, and will be removed in a future release."
+  when: "ansible_os_family == 'RedHat' and ansible_distribution_major_version == '6'"
+
+- name: Preflight check - Fail if this machine lacks sufficient RAM.
+  fail:
+    msg: This machine does not have sufficient RAM to run TiDB.
+  when: ansible_memtotal_mb < required_ram|int
+
+- name: Guess deploy_user - set ansible_user as default
+  set_fact:
+    deploy_user: "{{ ansible_user }}"
+  when: deploy_user is not defined
+
+- name: Guess deploy_user - use become_user under root
+  set_fact:
+    deploy_user: "{{ ansible_become_user }}"
+  when: deploy_user == 'root' and ansible_become_user is defined and ansible_become_user
+
+- name: Set deploy dir if not presented
+  set_fact: deploy_dir="/home/{{ deploy_user }}/deploy"
+  when: deploy_dir is not defined
+
+- name: Preflight check - Never deploy under root user
+  fail:
+    msg: Never deploy under root user
+  when: deploy_user=='root'
+
+- name: Preflight check - Get umask
+  shell: umask
+  register: umask
+  changed_when: False
+
+- name: Preflight check - Get Hard Max FD limit
+  shell: ulimit -H -n
+  register: ulimit
+  changed_when: False
+
+- name: Preflight check - Does the system have a standard umask?
+  fail:
+    msg: 'The umask of the system ({{ umask.stdout.strip() }}) prevents successful installation. We suggest a standard umask such as 0022.'
+  when: umask.stdout.strip()[-2:] not in ('00', '02', '20', '22')
+
+- name: Preflight check - Verify minimum open fds
+  fail:
+    msg: 'The default max number of file descriptors is too low {{ ulimit.stdout }} should be {{ min_open_fds }}'
+  when: ulimit.stdout|int < min_open_fds|int
+
+- name: Set deploy dir if not presented
+  set_fact: deploy_dir="/home/{{ deploy_user }}/deploy"
+  when: deploy_dir is not defined
+
+- name: Determine which mountpoint deploy dir exists on
+  shell: "df {{ deploy_dir }} | tail -n1 | awk '{print $NF}'"
+  register: deploy_partition
+  changed_when: False
+
+- name: Preflight check - Does deploy dir meet minimum disk space requirement
+  fail:
+    msg: 'The file system mounted at {{ item.mount }} does not meet minimum disk space requirement: {{ item.size_available }} < {{ minimum_deploy_space }}'
+  when: "item.mount == deploy_partition.stdout and item.size_available < minimum_deploy_space|int"
+  with_items: "{{ ansible_mounts }}"
+
+- name: Preflight check - Get deploy dir permissions
+  stat: path={{ deploy_dir }}
+  register: vl_st
+
+- name: Preflight check - Does deploy dir have appropriate permissions?
+  fail:
+    msg: 'The permissions on {{ deploy_dir }} ({{ vl_st.stat.mode }}) prevent successful installation. {{ deploy_dir }} must be world-readable.'
+  when: vl_st.stat.roth is defined and not vl_st.stat.roth
+
+# - name: Preflight check - Read in tidb version
+#   slurp:
+#     src: "{{ deploy_dir }}/.tidb_version"
+#   register: result
+#   ignore_errors: true
+
+- name: Check swap
+  debug:
+    msg: Swap is on, for best performance, turn swap off
+  when: "ansible_memory_mb.swap.total is defined and 0 < ansible_memory_mb.swap.total|int"
+
+- name: environment check (deploy dir)
+  stat: path={{ deploy_dir }} get_md5=false get_checksum=false
+  register: deploy_dir_st
+
+- name: environment check (supervise)
+  stat: path={{ deploy_dir }}/bin/supervise get_md5=false get_checksum=false
+  register: supervise_st
+  when: deploy_dir_st.stat.isdir is defined and deploy_dir_st.stat.isdir
+
+- name: config skip variables (default)
+  set_fact:
+    skip_create_deploy_dir: false
+    skip_supervise: false
+    firewalld_ports: []
+
+- name: config skip variables
+  set_fact:
+    skip_create_deploy_dir: true
+  when:
+    - deploy_dir_st.stat.writeable is defined
+    - deploy_dir_st.stat.writeable
+    - deploy_dir_st.stat.readable
+    - deploy_dir_st.stat.isdir
+
+- name: config skip variables
+  set_fact:
+    skip_supervise: true
+  when:
+    - supervise_st.stat.executable is defined
+    - supervise_st.stat.executable
+
+
+

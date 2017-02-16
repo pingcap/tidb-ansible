@@ -1,7 +1,7 @@
 {% set metric_host = hostvars[groups.monitoring_servers[0]].ansible_default_ipv4.address if groups.monitoring_servers else "" -%}
 {% set metric_port = hostvars[groups.monitoring_servers[0]].prometheus_port if groups.monitoring_servers else ''-%}
 {
-    "name":"{{ monitoring_group_name }}",
+    "name":"{{ cluster_name }}",
     "type":"prometheus",
     "access":"proxy",
     "url":"http://{{ metric_host }}:{{ metric_port }}/",

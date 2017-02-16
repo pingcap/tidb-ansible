@@ -1,61 +1,140 @@
-ALERT tidb_tikvclient_region_err
-  IF sum(rate(tidb_tikvclient_region_err_total{type="server_is_busy"}[1m])) > 0
-  FOR 1m
+# TiDB
+
+ALERT load_schema_fail
+  IF rate(tidb_domain_load_schema_total{type='failed'}[1m]) > 0
+  FOR 1s
   LABELS { env = "ENV_LABELS_ENV" }
   ANNOTATIONS {
-    summary = "tidb_server is busy on {{$labels.instance}}",
-    description = " alert: sum(rate(tidb_tikvclient_region_err_total{type='server_is_busy'}[1m]))  instance: {{ $labels.instance }}    vales: {{ $value }} ",
+    summary = "TiDB load schema fails",
+    description = "alert: rate(tidb_domain_load_schema_total{type='failed'} instance: {{ $labels.instance }} values: {{ $value }}",
   }
 
-ALERT tikv_raft_process_ready
-  IF sum(rate(tikv_raftstore_raft_process_nanos_total{type="ready"}[1m])) by (type, instance) / 1000000000> 1
+ALERT local_shema_latency
+  IF histogram_quantile(1, rate(tidb_domain_load_schema_duration_bucket[5m])) > 5
   FOR 1m
   LABELS { env = "ENV_LABELS_ENV" }
   ANNOTATIONS {
-    summary = "",
-    description = "alert:sum(rate(tikv_raftstore_raft_process_nanos_total{type='ready'[1m])) by (type, instance) / 1000000000 instance: {{ $labels.instance }}   vales: {{ $value }}",
+    summary = "TiDB load schema latency is over 5s",
+    description = "alert: histogram_quantile(1, rate(tidb_domain_load_schema_duration_bucket [5m])) instance: {{ $labels.instance }}  values: {{ $value }}",
+  }
+
+ALERT memery_abnormal
+  IF go_memstats_heap_inuse_bytes{job='tidb'} > 1000000000
+  FOR 10m
+  LABELS { env = "ENV_LABELS_ENV" }
+  ANNOTATIONS {
+    summary = "TiDB mem heap is over 1GiB",
+    description = "alert: go_memstats_heap_inuse_bytes{job='tidb'} instance: {{ $labels.instance }}  values: {{ $value }}",
+  }
+
+ALERT tidb_query_duration
+  IF histogram_quantile(0.99, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le, instance)) > 1
+  FOR 5s
+  LABELS { env = "ENV_LABELS_ENV" }
+  ANNOTATIONS {
+      summary = "TiDB query duration 99th percentile is above 1s",
+      description = "instance: {{ $labels.instance }} values: {{ $value }} alert: histogram_quantile(0.99, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le, instance)) > 1 .",
+  }
+
+ALERT tidb_tikvclient_region_err
+  IF sum(rate(tidb_tikvclient_region_err_total{type='server_is_busy'}[1m])) > 0
+  FOR 1m
+  LABELS { env = "ENV_LABELS_ENV", channels = "alerts" }
+  ANNOTATIONS {
+      summary = "TiDB server is busy",
+      description = "alert: sum(rate(tidb_tikvclient_region_err_total{type='server_is_busy'}[1m])) instance: {{ $labels.instance }} values: {{ $value }}",
+  }
+
+# TiKV
+ALERT tikv_raft_process_ready
+  IF sum(rate(tikv_raftstore_raft_process_nanos_total{type='ready'}[1m])) by (type, instance) / 1000000000 > 1
+  FOR 1m
+  LABELS { env = "ENV_LABELS_ENV" , channels = 'alerts'}
+  ANNOTATIONS {
+    summary = "TiKV raft process ready duration is above 1s",
+    description = "alert: sum(rate(tikv_raftstore_raft_process_nanos_total{type='ready'[1m])) by (type, instance) / 1000000000 instance: {{ $labels.instance }} values: {{ $value }}",
   }
 
 ALERT tikv_keepalive
   IF sum(rate(tikv_pd_msg_send_duration_seconds_count[1m])) by (instance) == 0
   FOR 1m
-  LABELS { env = "ENV_LABELS_ENV" }
+  LABELS { env = "ENV_LABELS_ENV", channels = "alerts" }
   ANNOTATIONS {
-    summary = "",
-    description = "alert:sum(rate(tikv_pd_msg_send_duration_seconds_count[1m])) by (instance)   instance {{ $labels.instance }} vales:{{ $value }}",
-  }
-
-ALERT etcd_disk_fsync
-  IF sum(rate(etcd_disk_wal_fsync_duration_seconds_count[1m])) by (instance)  == 0
-  FOR 1m
-  LABELS { env = "ENV_LABELS_ENV" }
-  ANNOTATIONS {
-    summary = "",
-    description = "alert: sum(rate(etcd_disk_wal_fsync_duration_seconds_count[1m])) by (instance)   instance: {{ $labels.instance }}   vales:{{ $value }}",
+    summary = "TiKV keepalive fails",
+    description = "alert: sum(rate(tikv_pd_msg_send_duration_seconds_count[1m])) by (instance) instance {{ $labels.instance }} values:{{ $value }}",
   }
 
 ALERT raft_sotre_msg
-  IF sum(rate(tikv_server_raft_store_msg_total{type="unreachable"}[1m])) > 10
+  IF sum(rate(tikv_server_report_failure_msg_total{type='unreachable'}[1m])) > 10
   FOR 1m
-  LABELS {env = "ENV_LABELS_ENV"}
+  LABELS {env = "ENV_LABELS_ENV", channels= 'alerts' }
   ANNOTATIONS {
-    description = "alert: sum(rate(tikv_server_raft_store_msg_total{type='unreachable'}[1m])) > 10  vales:{{ $value }}"
+    summary = "TiKV too many unreachable raft stores",
+    description = "alert: sum(rate(tikv_server_raft_store_msg_total{type='unreachable'}[1m])) > 10  values:{{ $value }}"
   }
 
 ALERT tikv_channel_full_total
-  IF sum(rate(tikv_channel_full_total[1m])) by (type, instance) >0
+  IF sum(rate(tikv_channel_full_total[1m])) by (type, instance) > 0
   FOR 1s
-  LABELS { env = "ENV_LABELS_ENV" }
+  LABELS { env = "ENV_LABELS_ENV" , channels='alerts'}
   ANNOTATIONS {
-    summary = "tikv channel full",
-    description = "alert: sum(rate(tikv_channel_full_total[1m])) by (type, instance)  instance: {{ $labels.instance }}  vales: {{ $value }}",
+    summary = "TiKV channel full",
+    description = "alert: sum(rate(tikv_channel_full_total[1m])) by (type, instance)  instance: {{ $labels.instance }}  values: {{ $value }}",
   }
 
-ALERT tidb_binlog_no_event
-  IF sum(rate(binlog_drainer_event[1m])) == 0
-  FOR 30m
+ALERT coprocessor_pending_request
+  IF sum(rate(tikv_coprocessor_pending_request[1m])) by (type,instance) > 2
+  FOR 10s
   LABELS { env = "ENV_LABELS_ENV" }
   ANNOTATIONS {
-    summary = "drainer binlog haven't got any event for 1m",
-    description = "alert: binlog_drainer_evnet  vales: {{ $value }}",
+    summary = "TiKV pending {{ $labels.type }} request is high",
+    description = "alert: sum(rate(tikv_coprocessor_pending_request[1m])) by (type,instance) > 2 type: {{ $labels.type }} instance: {{ $labels.instance }}  values: {{ $value }}",
   }
+
+ALERT tikv_scheduler_context_total
+  IF sum(tikv_scheduler_contex_total) by (job) > 300
+  FOR 2m
+  LABELS { env = "ENV_LABELS_ENV" }
+  ANNOTATIONS {
+    summary = "TiKV scheduler context total",
+    description = "alert: sum(tikv_scheduler_contex_total) by (job) > 300 instance: {{ $labels.instance }}  values: {{ $value }}",
+  }
+
+ALERT tikv_thread_cpu_seconds_total
+  IF rate(tikv_thread_cpu_seconds_total{name='raftstore'}[1m]) > 0.8
+  FOR 1m
+  LABELS { env = "ENV_LABELS_ENV" }
+  ANNOTATIONS {
+    summary = "TiKV raftstore thread CPU seconds is high",
+      description = "alert: rate(tikv_thread_cpu_seconds_total{name='raftstore'}[1m]) > 0.8 instance {{ $labels.instance }} values: {{ $value }}",
+  }
+
+ALERT tikv_thread_cpu_seconds_total
+  IF rate(tikv_thread_cpu_seconds_total{name='endpoint-pool'}[1m]) > 0.9
+  FOR 1m
+  LABELS { env = "ENV_LABELS_ENV" }
+  ANNOTATIONS {
+    summary = "TiKV endpoint-pool thread CPU seconds is high",
+    description = "alert: rate(tikv_thread_cpu_seconds_total{name='endpoint-pool'}[1m]) > 0.9 instance {{ $labels.instance }} values: {{ $value }}",
+  }
+
+ALERT tikv_thread_cpu_seconds_total
+  IF rate(tikv_thread_cpu_seconds_total{name='sched-worker-pool'}[1m]) > 0.9
+  FOR 1m
+  LABELS { env = "ENV_LABELS_ENV" }
+  ANNOTATIONS {
+    summary = "TiKV sched-worker-pool thread CPU seconds is high",
+    description = "alert: rate(tikv_thread_cpu_seconds_total{name='sched-worker-pool'}[1m]) > 0.9 instance {{ $labels.instance }} values: {{ $value }}",
+  }
+
+# PD
+ALERT etcd_disk_fsync
+  IF sum(rate(etcd_disk_wal_fsync_duration_seconds_count[1m])) by (instance) == 0
+  FOR 1m
+  LABELS { env = "ENV_LABELS_ENV", channels = "alerts" }
+  ANNOTATIONS {
+    summary = "PD etcd disk fsync is down",
+    description = "alert: sum(rate(etcd_disk_wal_fsync_duration_seconds_count[1m])) by (instance) instance: {{ $labels.instance }}   values:{{ $value }}",
+  }
+
+

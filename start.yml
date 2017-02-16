@@ -1,0 +1,134 @@
+---
+# Copyright 2016 PingCAP, Inc.
+
+# The playbook of TiDB
+
+- name: check config locally
+  hosts: localhost
+  tags:
+    - always
+  roles:
+    - check_config_static
+
+- name: gather all facts, and check dest
+  hosts: all
+  tags:
+    - always
+  roles:
+    - check_config_dynamic
+
+- hosts: monitored_servers
+  tags:
+    - node_exporter
+  tasks:
+    - name: restart node_exporter
+      shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
+      with_items:
+      - node_exporter
+    - name: wait up
+      wait_for: |
+        host={{ ansible_default_ipv4.address }} port={{ node_exporter_port }} state=present
+        send='GET /metrics HTTP/1.0\r\n\r\n' search_regex='200 OK'
+
+- hosts: monitoring_servers
+  tags:
+    - pushgateway
+    - prometheus
+  tasks:
+    - name: restart monitoring modules
+      shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
+      with_items:
+        - pushgateway
+        - prometheus
+    - name: wait pushgateway up
+      wait_for: |
+        host={{ ansible_default_ipv4.address }} port={{ pushgateway_port }} state=present
+        send='GET /metrics HTTP/1.0\r\n\r\n' search_regex='200 OK'
+    - name: wait prometheus up
+      wait_for: |
+        host={{ ansible_default_ipv4.address }} port={{ prometheus_port }} state=present
+        send='GET /metrics HTTP/1.0\r\n\r\n' search_regex='200 OK'
+
+- hosts: pd_servers
+  tags:
+    - pd
+  tasks:
+    - name: restart PD
+      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
+      with_items:
+        - pd
+    - name: wait up
+      wait_for: |
+        host={{ ansible_default_ipv4.address }} port={{ pd_client_port }} state=present
+        send='GET /pd/api/v1/members HTTP/1.0\r\n\r\n' search_regex='200 OK'
+
+- hosts: tikv_servers
+  tags:
+    - tikv
+  tasks:
+    - name: restart TiKV
+      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
+      with_items:
+        - tikv
+    - name: wait up
+      wait_for_pid: |
+        pid_file={{ deploy_dir }}/status/tikv.pid timeout=300
+        thread_name_regex='endpoint' state=present
+
+- hosts: tidb_servers
+  tags:
+    - tidb
+  tasks:
+    - name: restart TiDB
+      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
+      with_items:
+        - tidb
+    - name: wait up
+      wait_for: |
+        host={{ ansible_default_ipv4.address }} port={{ tidb_port }} state=present
+        search_regex='TiDB-1.0'
+
+- hosts: grafana_servers
+  tags:
+    - grafana
+  roles:
+    - { role: grafana, grafana_exec_vars_only: true }
+  tasks:
+    - name: restart grafana
+      shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
+      with_items:
+        - grafana
+
+    - name: wait grafana up
+      wait_for: |
+        host={{ ansible_default_ipv4.address }} port={{ grafana_port }} state=present
+        send='GET /login HTTP/1.0\r\n\r\n' search_regex='200 OK'
+
+    - name: import grafana data source
+      shell: >
+        chdir={{ grafana_data_dir }}
+        warn=no
+        curl -q -X POST -d @data_source.json --header 'Content-Type: application/json'
+        "http://{{ grafana_admin_user }}:{{ grafana_admin_password }}@127.0.0.1:{{ grafana_port }}/api/datasources"
+
+    - name: import grafana dashboards - prepare config
+      delegate_to: localhost
+      template: src=grafana.dest.json.j2 dest={{ playbook_dir }}/scripts/dests.json
+      vars:
+        - grafana_dest_config:
+            name: "{{ cluster_name | title }}"
+            url: "http://{{ inventory_hostname }}:{{ grafana_port }}/"
+            user: "{{ grafana_admin_user }}"
+            password: "{{ grafana_admin_password }}"
+            datasource: "{{ cluster_name }}"
+            titles:
+              node: "{{ cluster_name | title }}-Node-Export"
+              pd:   "{{ cluster_name | title }}-PD"
+              tidb: "{{ cluster_name | title }}-TiDB"
+              tikv: "{{ cluster_name | title }}-TiKV"
+
+    - name: import grafana dashboards - run import script
+      delegate_to: localhost
+      shell: >-
+        chdir={{ playbook_dir }}/scripts
+        ./grafana-config-copy.py

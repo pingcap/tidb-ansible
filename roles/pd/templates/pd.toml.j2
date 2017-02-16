@@ -1,6 +1,5 @@
 {% set my_ip = ansible_default_ipv4.address -%}
 
-{# my id in pd cluster #}
 {% set my_peer_id = groups.pd_servers.index(inventory_hostname) + 1 -%}
 
 {% set all_pd = [] -%}
@@ -13,56 +12,49 @@
   {% set _ = all_pd.append("%s=http://%s:%s" % (other_pd_name, other_ip, other_port)) -%}
 {% endfor -%}
 
-
-{% set metric_host = hostvars[groups.monitoring_servers[0]].ansible_default_ipv4.address 
+{% set metric_host = hostvars[groups.monitoring_servers[0]].ansible_default_ipv4.address
     if groups.get('monitoring_servers', []) else '' -%}
 {% set metric_port = hostvars[groups.monitoring_servers[0]].pushgateway_port if metric_host else '' -%}
 {% set metric_interval = pd_metric_interval if metric_host else "0s" -%}
 
 # PD Configuration.
 # WARNING: This file was auto-generated. Do not edit!
-#          All your edit might be overwritten! 
+#          All your edit might be overwritten!
+# WARNING: The following configuration commented is set in run_pd.sh
 
-name = "{{ pd_name_prefix }}{{ my_peer_id }}"
-data-dir = "{{ pd_data_dir}}"
+# FIXME: not support server section yet
+# [server]
+# name = "{{ pd_name_prefix }}{{ my_peer_id }}"
+# data-dir = "{{ pd_data_dir}}"
 
-client-urls = "http://0.0.0.0:{{ pd_client_port }}"
-# if not set, fallback to use ${client-urls}
-advertise-client-urls = "http://{{ my_ip }}:{{ pd_client_port }}"
+# client-urls = ""
+# advertise-client-urls = ""
 
-peer-urls = "http://0.0.0.0:{{ pd_peer_port }}"
-# if not set, fallback to use ${peer-urls}
-advertise-peer-urls = "http://{{ my_ip }}:{{ pd_peer_port }}"
+# peer-urls = ""
+# advertise-peer-urls = ""
 
-initial-cluster = "{{ all_pd | join(',') }}"
-initial-cluster-state = "new"
+# initial-cluster = ""
+# initial-cluster-state = "new"
+# join = ""
 
-lease = 3
-log-level = "info"
-tso-save-interval = "3s"
-max-peer-count = 3
+# log-level = ""
+# log-file = ""
 
-log-file = "{{ pd_log_dir }}/{{ pd_log_filename }}"
-
-[balance]
-min-capacity-used-ratio = 0.01
-max-capacity-used-ratio = 0.9
-max-leader-count = 10
-max-sending-snap-count = 3
-max-receiving-snap-count = 3
-max-applying-snap-count = 3
-max-diff-score-fraction = 0.1
-balance-interval = 30
-max-balance-count = 16
-max-balance-retry-per-loop = 10
-max-balance-count-per-loop = 3
-max-transfer-wait-count = 3
-max-peer-down-duration = "30m"
-max-store-down-duration = "10m"
+{% for item, value in pd_conf.server | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
 
 [metric]
-# prometheus client push interval, set "0s" to disable prometheus.
-interval = "{{ metric_interval }}"
+{% for item, value in pd_conf.metric | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
 
-# prometheus pushgateway address, leaves it empty will disable prometheus.
-address = "{{ metric_host }}:{{ metric_port }}"
+[schedule]
+{% for item, value in pd_conf.schedule | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+
+[replication]
+{% for item, value in pd_conf.replication | dictsort -%}
+{{ item }} = {{ value | to_json}}
+{% endfor %}

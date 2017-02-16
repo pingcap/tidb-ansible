@@ -1,0 +1,11 @@
+#!/bin/bash
+set -e
+ulimit -n 40960
+
+# WARNING: This file was auto-generated. Do not edit!
+#          All your edit might be overwritten!
+exec > >(tee -i -a "{{ node_exporter_log_dir }}/{{ node_exporter_log_filename }}")
+exec 2>&1
+
+exec bin/node_exporter --web.listen-address=":{{ node_exporter_port }}" \
+    --log.level="{{ node_exporter_log_level }}"
