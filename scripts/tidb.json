@@ -23,14 +23,14 @@
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.80, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le))", 
-              "step": 4, 
+              "step": 10, 
               "refId": "A", 
               "legendFormat": "average"
             }, 
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.80, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le, instance))", 
-              "step": 4, 
+              "step": 10, 
               "refId": "B", 
               "legendFormat": "{{instance}}"
             }
@@ -105,14 +105,14 @@
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.95, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le))", 
-              "step": 4, 
+              "step": 10, 
               "refId": "A", 
               "legendFormat": "average"
             }, 
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.95, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le, instance))", 
-              "step": 4, 
+              "step": 10, 
               "refId": "B", 
               "legendFormat": "{{ instance }}"
             }
@@ -192,14 +192,14 @@
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.99, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le))", 
-              "step": 4, 
+              "step": 10, 
               "refId": "B", 
               "legendFormat": "average"
             }, 
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.99, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le, instance))", 
-              "step": 4, 
+              "step": 10, 
               "refId": "A", 
               "legendFormat": "{{instance}}"
             }
@@ -274,7 +274,7 @@
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.999999, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le, instance))", 
-              "step": 4, 
+              "step": 10, 
               "refId": "A", 
               "legendFormat": "{{instance}}"
             }
@@ -376,7 +376,7 @@
             {
               "intervalFactor": 2, 
               "expr": "rate(tidb_server_query_total[1m])", 
-              "step": 2, 
+              "step": 4, 
               "refId": "A", 
               "legendFormat": "{{instance}} {{type}} {{status}}"
             }
@@ -459,14 +459,14 @@
             {
               "intervalFactor": 2, 
               "expr": "sum(rate(tidb_server_query_total[1m])) by (type)", 
-              "step": 4, 
+              "step": 10, 
               "refId": "A", 
               "legendFormat": "{{type}}"
             }, 
             {
               "intervalFactor": 3, 
               "expr": "sum(rate(tidb_server_query_total{type=\"query_succ\"}[1m]  offset 1d))", 
-              "step": 6, 
+              "step": 15, 
               "refId": "B", 
               "legendFormat": "yesterday"
             }
@@ -548,7 +548,7 @@
             {
               "intervalFactor": 2, 
               "expr": "sum(irate(tidb_executor_statement_node_total[1m])) by (type)", 
-              "step": 2, 
+              "step": 4, 
               "refId": "A", 
               "legendFormat": "{{type}}"
             }
@@ -2759,7 +2759,7 @@
   "hideControls": false, 
   "title": "Aws-Cluster-TiDB", 
   "editable": true, 
-  "refresh": false, 
+  "refresh": "30s", 
   "annotations": {
     "list": []
   }, 
@@ -2789,10 +2789,10 @@
       "1d"
     ]
   }, 
-  "version": 5, 
+  "version": 8, 
   "time": {
-    "to": "2017-02-16T15:31:47.743Z", 
-    "from": "2017-02-16T15:09:12.295Z"
+    "to": "now", 
+    "from": "now-30m"
   }, 
   "timezone": "browser", 
   "schemaVersion": 14, 
