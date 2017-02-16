@@ -23,14 +23,14 @@
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.80, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le))", 
-              "step": 10, 
+              "step": 4, 
               "refId": "A", 
               "legendFormat": "average"
             }, 
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.80, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le, instance))", 
-              "step": 10, 
+              "step": 4, 
               "refId": "B", 
               "legendFormat": "{{instance}}"
             }
@@ -105,14 +105,14 @@
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.95, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le))", 
-              "step": 10, 
+              "step": 4, 
               "refId": "A", 
               "legendFormat": "average"
             }, 
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.95, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le, instance))", 
-              "step": 10, 
+              "step": 4, 
               "refId": "B", 
               "legendFormat": "{{ instance }}"
             }
@@ -192,14 +192,14 @@
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.99, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le))", 
-              "step": 10, 
+              "step": 4, 
               "refId": "B", 
               "legendFormat": "average"
             }, 
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.99, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le, instance))", 
-              "step": 10, 
+              "step": 4, 
               "refId": "A", 
               "legendFormat": "{{instance}}"
             }
@@ -274,7 +274,7 @@
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.999999, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le, instance))", 
-              "step": 10, 
+              "step": 4, 
               "refId": "A", 
               "legendFormat": "{{instance}}"
             }
@@ -376,7 +376,7 @@
             {
               "intervalFactor": 2, 
               "expr": "rate(tidb_server_query_total[1m])", 
-              "step": 4, 
+              "step": 2, 
               "refId": "A", 
               "legendFormat": "{{instance}} {{type}} {{status}}"
             }
@@ -459,14 +459,14 @@
             {
               "intervalFactor": 2, 
               "expr": "sum(rate(tidb_server_query_total[1m])) by (type)", 
-              "step": 10, 
+              "step": 4, 
               "refId": "A", 
               "legendFormat": "{{type}}"
             }, 
             {
               "intervalFactor": 3, 
               "expr": "sum(rate(tidb_server_query_total{type=\"query_succ\"}[1m]  offset 1d))", 
-              "step": 15, 
+              "step": 6, 
               "refId": "B", 
               "legendFormat": "yesterday"
             }
@@ -515,7 +515,7 @@
           "timeFrom": null, 
           "links": [], 
           "thresholds": [], 
-          "nullPointMode": "connected", 
+          "nullPointMode": "null as zero", 
           "renderer": "flot", 
           "linewidth": 1, 
           "steppedLine": false, 
@@ -548,7 +548,7 @@
             {
               "intervalFactor": 2, 
               "expr": "sum(irate(tidb_executor_statement_node_total[1m])) by (type)", 
-              "step": 4, 
+              "step": 2, 
               "refId": "A", 
               "legendFormat": "{{type}}"
             }
@@ -600,7 +600,7 @@
       "repeat": null, 
       "titleSize": "h6", 
       "repeatIteration": null, 
-      "title": "New row", 
+      "title": "Query", 
       "height": "250px", 
       "repeatRowId": null, 
       "panels": [
@@ -609,7 +609,7 @@
           "timeFrom": null, 
           "links": [], 
           "thresholds": [], 
-          "nullPointMode": "connected", 
+          "nullPointMode": "null as zero", 
           "renderer": "flot", 
           "id": 8, 
           "linewidth": 1, 
@@ -707,10 +707,10 @@
               "fill": true
             }
           ], 
-          "nullPointMode": "connected", 
+          "nullPointMode": "null as zero", 
           "renderer": "flot", 
           "id": 3, 
-          "linewidth": 2, 
+          "linewidth": 1, 
           "steppedLine": false, 
           "targets": [
             {
@@ -784,14 +784,14 @@
           "pointradius": 5
         }
       ], 
-      "showTitle": false, 
+      "showTitle": true, 
       "collapse": false
     }, 
     {
       "repeat": null, 
       "titleSize": "h6", 
       "repeatIteration": null, 
-      "title": "New row", 
+      "title": "Distsql", 
       "height": "250px", 
       "repeatRowId": null, 
       "panels": [
@@ -804,7 +804,7 @@
             }
           ], 
           "thresholds": [], 
-          "nullPointMode": "connected", 
+          "nullPointMode": "null as zero", 
           "renderer": "flot", 
           "id": 12, 
           "linewidth": 2, 
@@ -882,7 +882,7 @@
           "timeFrom": null, 
           "links": [], 
           "thresholds": [], 
-          "nullPointMode": "connected", 
+          "nullPointMode": "null as zero", 
           "renderer": "flot", 
           "id": 14, 
           "linewidth": 2, 
@@ -955,14 +955,14 @@
           "pointradius": 5
         }
       ], 
-      "showTitle": false, 
-      "collapse": false
+      "showTitle": true, 
+      "collapse": true
     }, 
     {
       "repeat": null, 
       "titleSize": "h6", 
       "repeatIteration": null, 
-      "title": "New row", 
+      "title": "Coprocessor", 
       "height": "250px", 
       "repeatRowId": null, 
       "panels": [
@@ -971,7 +971,7 @@
           "timeFrom": null, 
           "links": [], 
           "thresholds": [], 
-          "nullPointMode": "connected", 
+          "nullPointMode": "null as zero", 
           "renderer": "flot", 
           "id": 40, 
           "linewidth": 2, 
@@ -1002,10 +1002,12 @@
             "max": false, 
             "show": true, 
             "current": false, 
+            "hideEmpty": true, 
             "values": true, 
             "alignAsTable": true, 
             "avg": false, 
-            "sortDesc": true
+            "sortDesc": true, 
+            "hideZero": true
           }, 
           "yaxes": [
             {
@@ -1050,7 +1052,7 @@
           "timeFrom": null, 
           "links": [], 
           "thresholds": [], 
-          "nullPointMode": "connected", 
+          "nullPointMode": "null as zero", 
           "renderer": "flot", 
           "id": 41, 
           "linewidth": 2, 
@@ -1125,14 +1127,14 @@
           "pointradius": 5
         }
       ], 
-      "showTitle": false, 
-      "collapse": false
+      "showTitle": true, 
+      "collapse": true
     }, 
     {
       "repeat": null, 
       "titleSize": "h6", 
       "repeatIteration": null, 
-      "title": "New row", 
+      "title": "KV", 
       "height": "250px", 
       "repeatRowId": null, 
       "panels": [
@@ -1141,7 +1143,7 @@
           "timeFrom": null, 
           "links": [], 
           "thresholds": [], 
-          "nullPointMode": "connected", 
+          "nullPointMode": "null as zero", 
           "renderer": "flot", 
           "id": 5, 
           "linewidth": 2, 
@@ -1222,7 +1224,7 @@
           "timeFrom": null, 
           "links": [], 
           "thresholds": [], 
-          "nullPointMode": "connected", 
+          "nullPointMode": "null as zero", 
           "renderer": "flot", 
           "id": 4, 
           "linewidth": 2, 
@@ -1293,95 +1295,6 @@
           "points": false, 
           "datasource": "aws-cluster", 
           "pointradius": 5
-        }
-      ], 
-      "showTitle": false, 
-      "collapse": false
-    }, 
-    {
-      "repeat": null, 
-      "titleSize": "h6", 
-      "repeatIteration": null, 
-      "title": "DDL", 
-      "height": "250px", 
-      "repeatRowId": null, 
-      "panels": [
-        {
-          "bars": false, 
-          "timeFrom": null, 
-          "links": [], 
-          "thresholds": [], 
-          "nullPointMode": "connected", 
-          "renderer": "flot", 
-          "id": 22, 
-          "linewidth": 2, 
-          "steppedLine": false, 
-          "targets": [
-            {
-              "intervalFactor": 2, 
-              "expr": "histogram_quantile(0.999, sum(rate(tidb_tikvclient_txn_cmd_seconds_bucket[1m])) by (le, type))", 
-              "step": 4, 
-              "refId": "A", 
-              "legendFormat": "{{type}}"
-            }
-          ], 
-          "fill": 1, 
-          "span": 6, 
-          "title": "KV Cmd Seconds 9999", 
-          "tooltip": {
-            "sort": 0, 
-            "shared": true, 
-            "value_type": "cumulative", 
-            "msResolution": false
-          }, 
-          "legend": {
-            "rightSide": true, 
-            "total": false, 
-            "min": false, 
-            "max": false, 
-            "show": true, 
-            "current": false, 
-            "values": false, 
-            "alignAsTable": true, 
-            "avg": false
-          }, 
-          "yaxes": [
-            {
-              "logBase": 1, 
-              "show": true, 
-              "max": null, 
-              "format": "s", 
-              "min": null, 
-              "label": null
-            }, 
-            {
-              "logBase": 1, 
-              "show": true, 
-              "max": null, 
-              "format": "short", 
-              "min": null, 
-              "label": null
-            }
-          ], 
-          "xaxis": {
-            "show": true, 
-            "values": [], 
-            "mode": "time", 
-            "name": null
-          }, 
-          "seriesOverrides": [], 
-          "percentage": false, 
-          "type": "graph", 
-          "error": false, 
-          "editable": true, 
-          "grid": {}, 
-          "stack": false, 
-          "timeShift": null, 
-          "aliasColors": {}, 
-          "lines": true, 
-          "points": false, 
-          "datasource": "aws-cluster", 
-          "pointradius": 5
         }, 
         {
           "bars": false, 
@@ -1390,21 +1303,21 @@
           "thresholds": [], 
           "nullPointMode": "null as zero", 
           "renderer": "flot", 
-          "id": 18, 
+          "id": 6, 
           "linewidth": 2, 
           "steppedLine": false, 
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "histogram_quantile(0.99, sum(rate(tidb_tikvclient_txn_cmd_seconds_bucket[1m])) by (le, type))", 
-              "step": 4, 
+              "expr": "histogram_quantile(0.9999, sum(rate(tidb_tikvclient_backoff_seconds_bucket[1m])) by (instance, le))", 
+              "step": 120, 
               "refId": "A", 
-              "legendFormat": "{{type}}"
+              "legendFormat": "{{instance}}"
             }
           ], 
           "fill": 1, 
           "span": 6, 
-          "title": "KV Cmd Seconds 99", 
+          "title": "KV Retry Seconds 9999", 
           "tooltip": {
             "sort": 0, 
             "shared": true, 
@@ -1412,17 +1325,17 @@
             "msResolution": false
           }, 
           "legend": {
+            "sort": null, 
             "rightSide": true, 
             "total": false, 
             "min": false, 
             "max": true, 
             "show": true, 
-            "current": true, 
-            "hideEmpty": true, 
+            "current": false, 
             "values": true, 
             "alignAsTable": true, 
             "avg": false, 
-            "hideZero": true
+            "sortDesc": null
           }, 
           "yaxes": [
             {
@@ -1548,21 +1461,21 @@
           "thresholds": [], 
           "nullPointMode": "null as zero", 
           "renderer": "flot", 
-          "id": 6, 
-          "linewidth": 2, 
+          "id": 18, 
+          "linewidth": 1, 
           "steppedLine": false, 
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "histogram_quantile(0.9999, sum(rate(tidb_tikvclient_backoff_seconds_bucket[1m])) by (instance, le))", 
+              "expr": "histogram_quantile(0.99, sum(rate(tidb_tikvclient_txn_cmd_seconds_bucket[1m])) by (le, type))", 
               "step": 4, 
               "refId": "A", 
-              "legendFormat": "{{instance}}"
+              "legendFormat": "{{type}}"
             }
           ], 
           "fill": 1, 
           "span": 6, 
-          "title": "KV Retry Seconds 9999", 
+          "title": "KV Cmd Seconds 99", 
           "tooltip": {
             "sort": 0, 
             "shared": true, 
@@ -1570,17 +1483,94 @@
             "msResolution": false
           }, 
           "legend": {
-            "sort": null, 
             "rightSide": true, 
             "total": false, 
             "min": false, 
             "max": true, 
             "show": true, 
-            "current": false, 
+            "current": true, 
+            "hideEmpty": true, 
             "values": true, 
             "alignAsTable": true, 
             "avg": false, 
-            "sortDesc": null
+            "hideZero": true
+          }, 
+          "yaxes": [
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "s", 
+              "min": null, 
+              "label": null
+            }, 
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "short", 
+              "min": null, 
+              "label": null
+            }
+          ], 
+          "xaxis": {
+            "show": true, 
+            "values": [], 
+            "mode": "time", 
+            "name": null
+          }, 
+          "seriesOverrides": [], 
+          "percentage": false, 
+          "type": "graph", 
+          "error": false, 
+          "editable": true, 
+          "grid": {}, 
+          "stack": false, 
+          "timeShift": null, 
+          "aliasColors": {}, 
+          "lines": true, 
+          "points": false, 
+          "datasource": "aws-cluster", 
+          "pointradius": 5
+        }, 
+        {
+          "bars": false, 
+          "timeFrom": null, 
+          "links": [], 
+          "thresholds": [], 
+          "nullPointMode": "null as zero", 
+          "renderer": "flot", 
+          "id": 22, 
+          "linewidth": 2, 
+          "steppedLine": false, 
+          "targets": [
+            {
+              "intervalFactor": 2, 
+              "expr": "histogram_quantile(0.999, sum(rate(tidb_tikvclient_txn_cmd_seconds_bucket[1m])) by (le, type))", 
+              "step": 10, 
+              "refId": "A", 
+              "legendFormat": "{{type}}"
+            }
+          ], 
+          "fill": 1, 
+          "span": 6, 
+          "title": "KV Cmd Seconds 9999", 
+          "tooltip": {
+            "sort": 0, 
+            "shared": true, 
+            "value_type": "cumulative", 
+            "msResolution": false
+          }, 
+          "legend": {
+            "rightSide": true, 
+            "total": false, 
+            "min": false, 
+            "max": false, 
+            "show": true, 
+            "current": false, 
+            "values": false, 
+            "alignAsTable": true, 
+            "avg": false
           }, 
           "yaxes": [
             {
@@ -1621,14 +1611,14 @@
           "pointradius": 5
         }
       ], 
-      "showTitle": false, 
-      "collapse": false
+      "showTitle": true, 
+      "collapse": true
     }, 
     {
       "repeat": null, 
       "titleSize": "h6", 
       "repeatIteration": null, 
-      "title": "Dashboard Row", 
+      "title": "KV 2", 
       "height": 250, 
       "repeatRowId": null, 
       "panels": [
@@ -1637,7 +1627,7 @@
           "timeFrom": null, 
           "links": [], 
           "thresholds": [], 
-          "nullPointMode": "connected", 
+          "nullPointMode": "null as zero", 
           "renderer": "flot", 
           "id": 33, 
           "linewidth": 2, 
@@ -1716,7 +1706,7 @@
           "timeFrom": null, 
           "links": [], 
           "thresholds": [], 
-          "nullPointMode": "connected", 
+          "nullPointMode": "null as zero", 
           "renderer": "flot", 
           "id": 34, 
           "linewidth": 2, 
@@ -1795,7 +1785,7 @@
           "timeFrom": null, 
           "links": [], 
           "thresholds": [], 
-          "nullPointMode": "connected", 
+          "nullPointMode": "null as zero", 
           "renderer": "flot", 
           "id": 11, 
           "linewidth": 2, 
@@ -1875,7 +1865,7 @@
           "timeFrom": null, 
           "links": [], 
           "thresholds": [], 
-          "nullPointMode": "connected", 
+          "nullPointMode": "null as zero", 
           "renderer": "flot", 
           "id": 32, 
           "linewidth": 2, 
@@ -1951,14 +1941,14 @@
           "pointradius": 5
         }
       ], 
-      "showTitle": false, 
-      "collapse": false
+      "showTitle": true, 
+      "collapse": true
     }, 
     {
       "repeat": null, 
       "titleSize": "h6", 
       "repeatIteration": null, 
-      "title": "New row", 
+      "title": "PD Client", 
       "height": "250px", 
       "repeatRowId": null, 
       "panels": [
@@ -1967,7 +1957,7 @@
           "timeFrom": null, 
           "links": [], 
           "thresholds": [], 
-          "nullPointMode": "connected", 
+          "nullPointMode": "null as zero", 
           "renderer": "flot", 
           "id": 20, 
           "linewidth": 2, 
@@ -1976,7 +1966,7 @@
             {
               "intervalFactor": 2, 
               "expr": "sum(rate(pd_client_cmd_cmds_total[1m])) by (type)", 
-              "step": 10, 
+              "step": 4, 
               "refId": "A", 
               "legendFormat": "{{type}}"
             }
@@ -2051,7 +2041,7 @@
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.999, sum(rate(pd_client_cmd_handle_cmds_duration_seconds_bucket[1m])) by (le, type))", 
-              "step": 10, 
+              "step": 4, 
               "refId": "A", 
               "legendFormat": "{{type}}"
             }
@@ -2117,7 +2107,7 @@
           "timeFrom": null, 
           "links": [], 
           "thresholds": [], 
-          "nullPointMode": "connected", 
+          "nullPointMode": "null as zero", 
           "renderer": "flot", 
           "id": 43, 
           "linewidth": 2, 
@@ -2126,7 +2116,7 @@
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.99999, sum(rate(pd_client_cmd_handle_failed_cmds_duration_seconds_bucket[1m])) by (le))", 
-              "step": 10, 
+              "step": 4, 
               "refId": "A", 
               "legendFormat": "duration"
             }
@@ -2188,14 +2178,14 @@
           "pointradius": 5
         }
       ], 
-      "showTitle": false, 
-      "collapse": false
+      "showTitle": true, 
+      "collapse": true
     }, 
     {
       "repeat": null, 
       "titleSize": "h6", 
       "repeatIteration": null, 
-      "title": "Dashboard Row", 
+      "title": "Schema Load", 
       "height": 250, 
       "repeatRowId": null, 
       "panels": [
@@ -2204,7 +2194,7 @@
           "timeFrom": null, 
           "links": [], 
           "thresholds": [], 
-          "nullPointMode": "connected", 
+          "nullPointMode": "null as zero", 
           "renderer": "flot", 
           "id": 27, 
           "linewidth": 1, 
@@ -2213,7 +2203,7 @@
             {
               "expr": "histogram_quantile(1, rate( tidb_server_load_schema_duration_bucket[30s]))", 
               "metric": "", 
-              "step": 10, 
+              "step": 4, 
               "legendFormat": "{{instance}}", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -2280,7 +2270,7 @@
           "timeFrom": null, 
           "links": [], 
           "thresholds": [], 
-          "nullPointMode": "connected", 
+          "nullPointMode": "null as zero", 
           "renderer": "flot", 
           "id": 28, 
           "linewidth": 1, 
@@ -2289,7 +2279,7 @@
             {
               "expr": "tidb_server_load_schema_total", 
               "metric": "tidb_server_", 
-              "step": 10, 
+              "step": 4, 
               "legendFormat": "{{instance}} - {{type}}", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -2356,7 +2346,7 @@
           "timeFrom": null, 
           "links": [], 
           "thresholds": [], 
-          "nullPointMode": "connected", 
+          "nullPointMode": "null as zero", 
           "renderer": "flot", 
           "id": 29, 
           "linewidth": 1, 
@@ -2365,7 +2355,7 @@
             {
               "expr": "rate(tidb_server_schema_lease_error_counter[1m])", 
               "metric": "tidb_server_", 
-              "step": 10, 
+              "step": 4, 
               "legendFormat": "{{instance}}-{{type}}", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -2428,14 +2418,14 @@
           "pointradius": 5
         }
       ], 
-      "showTitle": false, 
-      "collapse": false
+      "showTitle": true, 
+      "collapse": true
     }, 
     {
       "repeat": null, 
       "titleSize": "h6", 
       "repeatIteration": null, 
-      "title": "New row", 
+      "title": "DDL", 
       "height": "250px", 
       "repeatRowId": null, 
       "panels": [
@@ -2444,7 +2434,7 @@
           "timeFrom": null, 
           "links": [], 
           "thresholds": [], 
-          "nullPointMode": "connected", 
+          "nullPointMode": "null as zero", 
           "renderer": "flot", 
           "id": 9, 
           "linewidth": 2, 
@@ -2453,7 +2443,7 @@
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.95, sum(rate(tidb_ddl_handle_job_duration_seconds_bucket[1m])) by (le))", 
-              "step": 10, 
+              "step": 4, 
               "refId": "A", 
               "legendFormat": "ddl handle job duration"
             }
@@ -2519,7 +2509,7 @@
           "timeFrom": null, 
           "links": [], 
           "thresholds": [], 
-          "nullPointMode": "connected", 
+          "nullPointMode": "null as zero", 
           "renderer": "flot", 
           "id": 7, 
           "linewidth": 2, 
@@ -2528,7 +2518,7 @@
             {
               "expr": "histogram_quantile(0.95, sum(rate(tidb_ddl_batch_add_or_del_data_succ_bucket[1m])) by (le))", 
               "metric": "tidb_ddl_ba", 
-              "step": 10, 
+              "step": 4, 
               "legendFormat": "ddl batch", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -2598,7 +2588,7 @@
           "timeFrom": null, 
           "links": [], 
           "thresholds": [], 
-          "nullPointMode": "connected", 
+          "nullPointMode": "null as zero", 
           "renderer": "flot", 
           "id": 36, 
           "linewidth": 1, 
@@ -2607,7 +2597,7 @@
             {
               "intervalFactor": 2, 
               "expr": "sum(rate(tidb_server_session_retry[1m]))", 
-              "step": 10, 
+              "step": 4, 
               "refId": "A", 
               "legendFormat": "session retry"
             }
@@ -2673,7 +2663,7 @@
           "timeFrom": null, 
           "links": [], 
           "thresholds": [], 
-          "nullPointMode": "connected", 
+          "nullPointMode": "null as zero", 
           "renderer": "flot", 
           "id": 38, 
           "linewidth": 2, 
@@ -2750,8 +2740,8 @@
           "pointradius": 5
         }
       ], 
-      "showTitle": false, 
-      "collapse": false
+      "showTitle": true, 
+      "collapse": true
     }
   ], 
   "templating": {
@@ -2769,7 +2759,7 @@
   "hideControls": false, 
   "title": "Aws-Cluster-TiDB", 
   "editable": true, 
-  "refresh": "30s", 
+  "refresh": false, 
   "annotations": {
     "list": []
   }, 
@@ -2799,10 +2789,10 @@
       "1d"
     ]
   }, 
-  "version": 4, 
+  "version": 5, 
   "time": {
-    "to": "now", 
-    "from": "now-30m"
+    "to": "2017-02-16T15:31:47.743Z", 
+    "from": "2017-02-16T15:09:12.295Z"
   }, 
   "timezone": "browser", 
   "schemaVersion": 14, 
