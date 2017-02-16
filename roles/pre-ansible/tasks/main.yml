@@ -8,14 +8,21 @@
 
 - name: Get os_version from /etc/os-release
   raw: "([ -f /etc/os-release ] && grep '^VERSION_ID=' /etc/os-release | sed s'/VERSION_ID=//' | tr -d \\\") || ([ -f /etc/redhat-release ] && cat /etc/redhat-release | cut '-d ' -f3)"
-  register: os_version
-  failed_when: false
+  register: os_version_st
+
+- name: set os_version facts
+  set_fact:
+    os_version: "{{ os_version_st.stdout | trim }}"
 
 # Debian GNU/Linux, Ubuntu, Fedora, CentOS, CoreOS
 - name: Get distro name from /etc/os-release
   raw: "([ -f /etc/os-release ] && grep '^NAME=' /etc/os-release | sed s'/NAME=//' | tr -d \\\") || ([ -f /etc/redhat-release ] && cat /etc/redhat-release | cut '-d ' -f1)"
-  register: distro
+  register: distro_st
   failed_when: false
+
+- name: set distro facts
+  set_fact:
+    distro: "{{ distro_st.stdout | trim }}"
 
 - name: python check
   raw: python --version
@@ -41,3 +48,4 @@
   when:
     - "'CoreOS' not in distro"
     - "not has_python"
+
