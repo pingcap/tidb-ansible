@@ -25,7 +25,9 @@
   - "{{ deploy_dir }}/status/{{ role_name }}"
 
 - name: create grafana configuration file
-  template: src=grafana.ini.j2 dest={{ deploy_dir }}/opt/grafana/conf/grafana.ini mode=0644
+  template: >
+    creates="{{ deploy_dir }}/opt/grafana/conf/grafana.ini"
+    src=grafana.ini.j2 dest={{ deploy_dir }}/opt/grafana/conf/grafana.ini mode=0644
 
 - name: push data source file
   template: src=data_source.json.j2 dest={{ grafana_data_dir }}/data_source.json mode=0644
