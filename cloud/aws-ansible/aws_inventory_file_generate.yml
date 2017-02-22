@@ -2,7 +2,7 @@
 # Copyright 2016 PingCAP, Inc.
 # The Playbook of TiDB
 
-# Generates 
+# Generates
 
 - name: prepare inventory config
   hosts: localhost
@@ -34,7 +34,9 @@
       add_host:
         groups: monitoring_servers
         hostname: "{{ groups.tidb_servers[0] }}"
-      when: not (groups.monitoring_servers is defined and groups.monitoring_servers)
+      when:
+        - not (groups.monitoring_servers is defined and groups.monitoring_servers)
+        - groups.tidb_servers is defined and groups.tidb_servers
 
     - name: set up monitored servers
       add_host:

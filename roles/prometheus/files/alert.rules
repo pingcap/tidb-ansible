@@ -127,6 +127,15 @@ ALERT tikv_thread_cpu_seconds_total
     description = "alert: rate(tikv_thread_cpu_seconds_total{name='sched-worker-pool'}[1m]) > 0.9 instance {{ $labels.instance }} values: {{ $value }}",
   }
 
+ALERT tikv_leader_drops
+  IF delta(tikv_pd_heartbeat_tick_total{type="leader"}[30s]) < -10
+  FOR 1s
+  LABELS { env = "ENV_LABELS_ENV", channels = "alerts" }
+  ANNOTATIONS {
+    summary = "TiKV leader drops",
+    description = "alert: delta(tikv_pd_heartbeat_tick_total{type="leader"}[30s]) > 10 instance: {{ $labels.instance }}   values:{{ $value }}",
+  }
+
 # PD
 ALERT etcd_disk_fsync
   IF sum(rate(etcd_disk_wal_fsync_duration_seconds_count[1m])) by (instance) == 0

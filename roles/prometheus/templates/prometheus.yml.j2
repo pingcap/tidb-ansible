@@ -3,8 +3,6 @@ global:
   scrape_interval:     15s # By default, scrape targets every 15 seconds.
   evaluation_interval: 15s # By default, scrape targets every 15 seconds.
   # scrape_timeout is set to the global default (10s).
-
-  # Attach these extra labels to all timeseries collected by this Prometheus instance.
   labels:
 {% for item in prometheus_extra_labels %}
     {{ item.label }}: "{{ item.value }}"
@@ -17,7 +15,7 @@ global:
 scrape_configs:
 {% if pushgateway_host %}
   - job_name: 'cluster'
-    scrape_interval: 5s
+    scrape_interval: 3s
     honor_labels: true # don't overwrite job & instance labels
     static_configs:
       - targets: ['{{ pushgateway_host }}:{{ pushgateway_port }}']
@@ -25,11 +23,33 @@ scrape_configs:
           cluster: '{{ cluster_name }}'
 {% endif %}
 
-  - job_name: "node"
+  - job_name: "tikv-node"
     scrape_interval: "15s"
     static_configs:
       - targets:
-{% for host in groups.get('monitored_servers', []) -%}
+{% for host in groups.get('tikv_servers', []) -%}
+  {% set ip = hostvars[host]['ansible_default_ipv4']['address'] or host -%}
+  {# % set ip = host -% #}
+  {% set node_port = hostvars[host]['node_exporter_port'] %}
+        - '{{ ip }}:{{ node_port }}'
+{% endfor %}
+
+  - job_name: "pd-node"
+    scrape_interval: "15s"
+    static_configs:
+      - targets:
+{% for host in groups.get('pd_servers', []) -%}
+  {% set ip = hostvars[host]['ansible_default_ipv4']['address'] or host -%}
+  {# % set ip = host -% #}
+  {% set node_port = hostvars[host]['node_exporter_port'] %}
+        - '{{ ip }}:{{ node_port }}'
+{% endfor %}
+
+  - job_name: "tidb-node"
+    scrape_interval: "15s"
+    static_configs:
+      - targets:
+{% for host in groups.get('tidb_servers', []) -%}
   {% set ip = hostvars[host]['ansible_default_ipv4']['address'] or host -%}
   {# % set ip = host -% #}
   {% set node_port = hostvars[host]['node_exporter_port'] %}

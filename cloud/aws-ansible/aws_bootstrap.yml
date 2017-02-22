@@ -66,7 +66,7 @@
       command: dpkg-reconfigure --frontend noninteractive tzdata
 
 - name: do AWS host preparation
-  hosts: Ubuntu-*
+  hosts: Ubuntu-14.04
   gather_facts: false
   tasks:
     - name: disable apt key check
@@ -74,15 +74,15 @@
         dest=/etc/apt/apt.conf.d/99skipkeycheck line="APT::Get::AllowUnauthenticated "true";"
         create=yes
       become: true
-      
+
     - name: change apt mirror.list
       copy: src=sources.list dest=/etc/apt/sources.list mode=0644
       become: true
- 
+
     - name: add apt-fast to apt sources.list.d
       lineinfile: >
         dest=/etc/apt/sources.list.d/saiarcot895-myppa-trusty.list
-        line="deb http://ppa.launchpad.net/saiarcot895/myppa/ubuntu trusty main" 
+        line="deb http://ppa.launchpad.net/saiarcot895/myppa/ubuntu trusty main"
         create=yes
       become: true
 
@@ -93,10 +93,10 @@
         - apt-fast
 
     - name: add docker to apt sources.list.d
-      lineinfile: > 
+      lineinfile: >
         dest=/etc/apt/sources.list.d/docker.list
         line="deb https://mirrors.tuna.tsinghua.edu.cn/docker/apt/repo ubuntu-trusty main"
-        create=yes 
+        create=yes
       become: true
 
     - name: update apt cache

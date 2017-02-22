@@ -80,7 +80,7 @@
             "rgba(237, 129, 40, 0.89)", 
             "rgba(50, 172, 45, 0.97)"
           ], 
-          "datasource": "aws-cluster", 
+          "datasource": "$datasource", 
           "error": false, 
           "nullText": null, 
           "postfixFontSize": "50%", 
@@ -158,7 +158,7 @@
             "rgba(50, 172, 45, 0.97)"
           ], 
           "cacheTimeout": null, 
-          "datasource": "aws-cluster", 
+          "datasource": "$datasource", 
           "error": false, 
           "nullText": null, 
           "postfixFontSize": "50%", 
@@ -234,7 +234,7 @@
             "rgba(237, 129, 40, 0.89)", 
             "rgba(50, 172, 45, 0.97)"
           ], 
-          "datasource": "aws-cluster", 
+          "datasource": "$datasource", 
           "error": false, 
           "nullText": null, 
           "postfixFontSize": "50%", 
@@ -291,7 +291,7 @@
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_max_diff_leader_ratio\"}", 
+              "expr": "holt_winters(pd_cluster_status{instance=\"$instance\",type=\"store_max_diff_leader_ratio\"}[5m], 0.8, 0.1)", 
               "step": 40, 
               "refId": "A"
             }
@@ -311,7 +311,7 @@
             "rgba(245, 54, 54, 0.9)"
           ], 
           "cacheTimeout": null, 
-          "datasource": "aws-cluster", 
+          "datasource": "$datasource", 
           "error": false, 
           "nullText": null, 
           "postfixFontSize": "50%", 
@@ -368,7 +368,7 @@
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_max_diff_storage_ratio\"}", 
+              "expr": "holt_winters(pd_cluster_status{instance=\"$instance\",type=\"store_max_diff_storage_ratio\"}[5m], 0.2, 0.1)", 
               "step": 40, 
               "refId": "A", 
               "legendFormat": ""
@@ -389,7 +389,7 @@
             "rgba(237, 129, 40, 0.89)", 
             "rgba(245, 54, 54, 0.9)"
           ], 
-          "datasource": "aws-cluster", 
+          "datasource": "$datasource", 
           "error": false, 
           "nullText": null, 
           "postfixFontSize": "50%", 
@@ -467,8 +467,8 @@
           ], 
           "transparent": false, 
           "hideTimeOverride": false, 
-          "fontSize": "100%", 
-          "datasource": "aws-cluster", 
+          "fontSize": "120%", 
+          "datasource": "$datasource", 
           "error": false, 
           "type": "table", 
           "id": 39, 
@@ -483,15 +483,23 @@
           "bars": false, 
           "timeFrom": null, 
           "links": [], 
-          "thresholds": [], 
+          "thresholds": [
+            {
+              "colorMode": "critical", 
+              "line": true, 
+              "op": "gt", 
+              "value": 0.8, 
+              "fill": true
+            }
+          ], 
           "nullPointMode": "null", 
           "renderer": "flot", 
-          "linewidth": 2, 
+          "linewidth": 1, 
           "steppedLine": false, 
           "id": 9, 
-          "fill": 1, 
+          "fill": 0, 
           "span": 4, 
-          "title": "Current Storage Size", 
+          "title": "Current Storage Usage", 
           "tooltip": {
             "sort": 0, 
             "shared": true, 
@@ -500,7 +508,7 @@
           }, 
           "legend": {
             "total": false, 
-            "show": false, 
+            "show": true, 
             "max": false, 
             "min": false, 
             "current": false, 
@@ -509,11 +517,20 @@
           }, 
           "targets": [
             {
-              "intervalFactor": 2, 
+              "hide": false, 
               "expr": "pd_cluster_status{instance=\"$instance\",type=\"storage_size\"}", 
               "step": 10, 
-              "refId": "A", 
-              "legendFormat": ""
+              "legendFormat": "strage size", 
+              "intervalFactor": 2, 
+              "refId": "A"
+            }, 
+            {
+              "hide": false, 
+              "expr": "avg(pd_cluster_status{type=\"storage_size\"}) / avg(pd_cluster_status{type=\"storage_capacity\"})", 
+              "step": 20, 
+              "legendFormat": "used ratio", 
+              "intervalFactor": 4, 
+              "refId": "B"
             }
           ], 
           "yaxes": [
@@ -527,9 +544,9 @@
             }, 
             {
               "logBase": 1, 
-              "show": false, 
+              "show": true, 
               "max": null, 
-              "format": "bytes", 
+              "format": "percentunit", 
               "min": null, 
               "label": null
             }
@@ -540,20 +557,68 @@
             "mode": "time", 
             "name": null
           }, 
-          "seriesOverrides": [], 
+          "seriesOverrides": [
+            {
+              "alias": "used ratio", 
+              "yaxis": 2
+            }
+          ], 
           "percentage": false, 
           "type": "graph", 
           "error": false, 
           "editable": true, 
+          "alert": {
+            "noDataState": "no_data", 
+            "name": "Current Storage Usage alert", 
+            "frequency": "60s", 
+            "notifications": [], 
+            "handler": 1, 
+            "executionErrorState": "alerting", 
+            "message": "Storage used space is above 80%.", 
+            "conditions": [
+              {
+                "operator": {
+                  "type": "and"
+                }, 
+                "query": {
+                  "params": [
+                    "B", 
+                    "5m", 
+                    "now"
+                  ], 
+                  "model": {
+                    "hide": false, 
+                    "expr": "avg(pd_cluster_status{type=\"storage_size\"}) / avg(pd_cluster_status{type=\"storage_capacity\"})", 
+                    "step": 20, 
+                    "legendFormat": "used ratio", 
+                    "intervalFactor": 4, 
+                    "refId": "B"
+                  }, 
+                  "datasourceId": 1
+                }, 
+                "evaluator": {
+                  "type": "gt", 
+                  "params": [
+                    0.8
+                  ]
+                }, 
+                "reducer": {
+                  "type": "avg", 
+                  "params": []
+                }, 
+                "type": "query"
+              }
+            ]
+          }, 
           "grid": {}, 
           "stack": false, 
           "timeShift": null, 
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "aws-cluster", 
+          "datasource": "$datasource", 
           "pointradius": 5, 
-          "decimals": null
+          "decimals": 2
         }, 
         {
           "bars": false, 
@@ -626,7 +691,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "aws-cluster", 
+          "datasource": "$datasource", 
           "pointradius": 5, 
           "decimals": null
         }, 
@@ -635,7 +700,7 @@
           "timeFrom": null, 
           "links": [], 
           "thresholds": [], 
-          "nullPointMode": "null", 
+          "nullPointMode": "null as zero", 
           "renderer": "flot", 
           "id": 27, 
           "linewidth": 1, 
@@ -643,7 +708,7 @@
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "sum(rate(pd_schedule_operators_count{instance=\"$instance\"}[1m])) by (type)", 
+              "expr": "sum(delta(pd_schedule_operators_count{instance=\"$instance\"}[1m])) by (type)", 
               "step": 10, 
               "refId": "A", 
               "legendFormat": "{{type}}"
@@ -675,9 +740,9 @@
               "logBase": 1, 
               "show": true, 
               "max": null, 
-              "format": "short", 
+              "format": "opm", 
               "min": "0", 
-              "label": null
+              "label": "operation/minute"
             }, 
             {
               "logBase": 1, 
@@ -705,28 +770,27 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "aws-cluster", 
+          "datasource": "$datasource", 
           "pointradius": 5
         }, 
         {
           "bars": false, 
           "timeFrom": null, 
           "links": [], 
-          "thresholds": [], 
-          "nullPointMode": "null", 
-          "renderer": "flot", 
-          "id": 40, 
-          "linewidth": 2, 
-          "steppedLine": false, 
-          "targets": [
+          "thresholds": [
             {
-              "intervalFactor": 2, 
-              "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_max_diff_leader_ratio\"}", 
-              "step": 4, 
-              "refId": "A", 
-              "legendFormat": "leader max diff ratio"
+              "colorMode": "critical", 
+              "line": true, 
+              "op": "gt", 
+              "value": 0.2, 
+              "fill": true
             }
           ], 
+          "nullPointMode": "null", 
+          "renderer": "flot", 
+          "linewidth": 2, 
+          "steppedLine": false, 
+          "id": 40, 
           "fill": 1, 
           "span": 6, 
           "title": "Leader Banlace Ratio", 
@@ -745,6 +809,23 @@
             "values": false, 
             "avg": false
           }, 
+          "targets": [
+            {
+              "intervalFactor": 2, 
+              "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_max_diff_leader_ratio\"}", 
+              "step": 4, 
+              "refId": "A", 
+              "legendFormat": "leader max diff ratio"
+            }, 
+            {
+              "hide": true, 
+              "expr": "min(pd_cluster_status{type=\"store_max_diff_leader_ratio\"})", 
+              "step": 4, 
+              "legendFormat": "ratio", 
+              "intervalFactor": 2, 
+              "refId": "B"
+            }
+          ], 
           "yaxes": [
             {
               "logBase": 1, 
@@ -774,34 +855,77 @@
           "type": "graph", 
           "error": false, 
           "editable": true, 
+          "alert": {
+            "noDataState": "no_data", 
+            "name": "Leader Banlace Ratio alert", 
+            "frequency": "60s", 
+            "notifications": [], 
+            "handler": 1, 
+            "executionErrorState": "alerting", 
+            "message": "Region leader balance ratio is high.", 
+            "conditions": [
+              {
+                "operator": {
+                  "type": "and"
+                }, 
+                "query": {
+                  "params": [
+                    "B", 
+                    "1m", 
+                    "now"
+                  ], 
+                  "model": {
+                    "hide": true, 
+                    "expr": "min(pd_cluster_status{type=\"store_max_diff_leader_ratio\"})", 
+                    "step": 4, 
+                    "legendFormat": "ratio", 
+                    "intervalFactor": 2, 
+                    "refId": "B"
+                  }, 
+                  "datasourceId": 1
+                }, 
+                "evaluator": {
+                  "type": "gt", 
+                  "params": [
+                    0.2
+                  ]
+                }, 
+                "reducer": {
+                  "type": "avg", 
+                  "params": []
+                }, 
+                "type": "query"
+              }
+            ]
+          }, 
           "grid": {}, 
           "stack": false, 
           "timeShift": null, 
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "aws-cluster", 
-          "pointradius": 5
+          "datasource": "$datasource", 
+          "pointradius": 5, 
+          "decimals": 4
         }, 
         {
           "bars": false, 
           "timeFrom": null, 
           "links": [], 
-          "thresholds": [], 
-          "nullPointMode": "null", 
-          "renderer": "flot", 
-          "id": 41, 
-          "linewidth": 2, 
-          "steppedLine": false, 
-          "targets": [
+          "thresholds": [
             {
-              "intervalFactor": 2, 
-              "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_max_diff_storage_ratio\"}", 
-              "step": 4, 
-              "refId": "A", 
-              "legendFormat": "\bstore balance ratio"
+              "colorMode": "critical", 
+              "line": true, 
+              "op": "gt", 
+              "value": 0.2, 
+              "fill": true
             }
           ], 
+          "nullPointMode": "null", 
+          "renderer": "flot", 
+          "linewidth": 2, 
+          "steppedLine": false, 
+          "id": 41, 
           "fill": 1, 
           "span": 6, 
           "title": "Store Balance Ratio", 
@@ -820,6 +944,24 @@
             "values": false, 
             "avg": false
           }, 
+          "targets": [
+            {
+              "hide": false, 
+              "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_max_diff_storage_ratio\"}", 
+              "step": 4, 
+              "legendFormat": "\bstore balance ratio", 
+              "intervalFactor": 2, 
+              "refId": "A"
+            }, 
+            {
+              "hide": true, 
+              "expr": "min(pd_cluster_status{type=\"store_max_diff_storage_ratio\"})", 
+              "step": 4, 
+              "legendFormat": "ratio", 
+              "intervalFactor": 2, 
+              "refId": "B"
+            }
+          ], 
           "yaxes": [
             {
               "logBase": 1, 
@@ -849,14 +991,58 @@
           "type": "graph", 
           "error": false, 
           "editable": true, 
+          "alert": {
+            "noDataState": "no_data", 
+            "name": "Store Balance Ratio alert", 
+            "frequency": "60s", 
+            "notifications": [], 
+            "handler": 1, 
+            "executionErrorState": "alerting", 
+            "message": "Store balance ratio is high", 
+            "conditions": [
+              {
+                "operator": {
+                  "type": "and"
+                }, 
+                "query": {
+                  "params": [
+                    "B", 
+                    "5m", 
+                    "now"
+                  ], 
+                  "model": {
+                    "hide": true, 
+                    "expr": "min(pd_cluster_status{type=\"store_max_diff_storage_ratio\"})", 
+                    "step": 4, 
+                    "legendFormat": "ratio", 
+                    "intervalFactor": 2, 
+                    "refId": "B"
+                  }, 
+                  "datasourceId": 1
+                }, 
+                "evaluator": {
+                  "type": "gt", 
+                  "params": [
+                    0.2
+                  ]
+                }, 
+                "reducer": {
+                  "type": "avg", 
+                  "params": []
+                }, 
+                "type": "query"
+              }
+            ]
+          }, 
           "grid": {}, 
           "stack": false, 
           "timeShift": null, 
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "aws-cluster", 
-          "pointradius": 5
+          "datasource": "$datasource", 
+          "pointradius": 5, 
+          "decimals": 4
         }
       ], 
       "showTitle": true, 
@@ -877,12 +1063,12 @@
           "thresholds": [], 
           "nullPointMode": "null as zero", 
           "renderer": "flot", 
-          "linewidth": 2, 
+          "linewidth": 1, 
           "steppedLine": false, 
           "id": 1, 
           "fill": 1, 
-          "span": 12, 
-          "title": "completed_cmds_count", 
+          "span": 6, 
+          "title": "completed commands rate", 
           "tooltip": {
             "sort": 0, 
             "shared": true, 
@@ -906,18 +1092,18 @@
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "sum(rate(pd_cmd_handle_completed_cmds_duration_seconds_count{instance=\"$instance\"}[5m])) by (type)", 
-              "step": 2, 
+              "expr": "sum(rate(pd_cmd_handle_completed_cmds_duration_seconds_count{instance=\"$instance\"}[1m])) by (type)", 
+              "step": 4, 
               "refId": "A", 
               "legendFormat": "{{type}}"
             }
           ], 
           "yaxes": [
             {
-              "logBase": 1, 
+              "logBase": 10, 
               "show": true, 
               "max": null, 
-              "format": "short", 
+              "format": "ops", 
               "min": null, 
               "label": null
             }, 
@@ -947,7 +1133,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "aws-cluster", 
+          "datasource": "$datasource", 
           "pointradius": 5, 
           "decimals": null
         }, 
@@ -959,7 +1145,7 @@
           "nullPointMode": "null as zero", 
           "renderer": "flot", 
           "id": 2, 
-          "linewidth": 2, 
+          "linewidth": 1, 
           "steppedLine": false, 
           "targets": [
             {
@@ -970,7 +1156,7 @@
               "legendFormat": "{{type}}"
             }
           ], 
-          "fill": 1, 
+          "fill": 0, 
           "span": 6, 
           "title": "99% completed_cmds_duration_seconds", 
           "tooltip": {
@@ -1029,7 +1215,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "aws-cluster", 
+          "datasource": "$datasource", 
           "pointradius": 5
         }, 
         {
@@ -1040,20 +1226,28 @@
           "nullPointMode": "null as zero", 
           "renderer": "flot", 
           "id": 23, 
-          "linewidth": 2, 
-          "steppedLine": false, 
+          "linewidth": 1, 
+          "steppedLine": true, 
           "targets": [
             {
-              "intervalFactor": 2, 
+              "hide": true, 
               "expr": "histogram_quantile(0.9999, sum(rate(pd_cmd_handle_completed_cmds_duration_seconds_bucket{instance=\"$instance\"}[5m])) by (type, le))", 
               "step": 4, 
-              "refId": "A", 
+              "legendFormat": "{{type}}", 
+              "intervalFactor": 2, 
+              "refId": "A"
+            }, 
+            {
+              "intervalFactor": 2, 
+              "expr": "rate(pd_cmd_handle_completed_cmds_duration_seconds_sum{instance=\"$instance\"}[30s]) / rate(pd_cmd_handle_completed_cmds_duration_seconds_count{instance=\"$instance\"}[30s])", 
+              "step": 4, 
+              "refId": "B", 
               "legendFormat": "{{type}}"
             }
           ], 
-          "fill": 1, 
+          "fill": 0, 
           "span": 6, 
-          "title": "99.99% completed_cmds_duration_seconds", 
+          "title": "average completed_cmds_duration_seconds", 
           "tooltip": {
             "sort": 0, 
             "shared": true, 
@@ -1081,7 +1275,7 @@
               "show": true, 
               "max": null, 
               "format": "s", 
-              "min": null, 
+              "min": "0", 
               "label": null
             }, 
             {
@@ -1110,8 +1304,130 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "aws-cluster", 
+          "datasource": "$datasource", 
           "pointradius": 5
+        }, 
+        {
+          "bars": false, 
+          "timeFrom": null, 
+          "links": [], 
+          "thresholds": [
+            {
+              "colorMode": "critical", 
+              "line": true, 
+              "op": "lt", 
+              "value": 0.1, 
+              "fill": true
+            }
+          ], 
+          "nullPointMode": "null", 
+          "renderer": "flot", 
+          "id": 44, 
+          "linewidth": 1, 
+          "steppedLine": false, 
+          "targets": [
+            {
+              "intervalFactor": 2, 
+              "expr": "delta(etcd_disk_wal_fsync_duration_seconds_count[1m])", 
+              "step": 4, 
+              "refId": "A", 
+              "legendFormat": "{{instance}} etch disk wal fsync rate"
+            }
+          ], 
+          "fill": 1, 
+          "span": 6, 
+          "title": "etch disk wal fsync rate", 
+          "tooltip": {
+            "sort": 0, 
+            "shared": true, 
+            "value_type": "individual"
+          }, 
+          "legend": {
+            "total": false, 
+            "show": true, 
+            "max": false, 
+            "min": false, 
+            "current": false, 
+            "values": false, 
+            "avg": false
+          }, 
+          "yaxes": [
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "opm", 
+              "min": null, 
+              "label": null
+            }, 
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "short", 
+              "min": null, 
+              "label": null
+            }
+          ], 
+          "xaxis": {
+            "show": true, 
+            "values": [], 
+            "mode": "time", 
+            "name": null
+          }, 
+          "seriesOverrides": [], 
+          "percentage": false, 
+          "type": "graph", 
+          "alert": {
+            "noDataState": "no_data", 
+            "name": "etch disk fsync", 
+            "frequency": "60s", 
+            "notifications": [], 
+            "handler": 1, 
+            "executionErrorState": "alerting", 
+            "message": "PD etcd disk fsync is down", 
+            "conditions": [
+              {
+                "operator": {
+                  "type": "and"
+                }, 
+                "query": {
+                  "params": [
+                    "A", 
+                    "1m", 
+                    "now"
+                  ], 
+                  "model": {
+                    "intervalFactor": 2, 
+                    "expr": "delta(etcd_disk_wal_fsync_duration_seconds_count[1m])", 
+                    "step": 4, 
+                    "refId": "A", 
+                    "legendFormat": "{{instance}} etch disk wal fsync rate"
+                  }, 
+                  "datasourceId": 1
+                }, 
+                "evaluator": {
+                  "type": "lt", 
+                  "params": [
+                    0.1
+                  ]
+                }, 
+                "reducer": {
+                  "type": "min", 
+                  "params": []
+                }, 
+                "type": "query"
+              }
+            ]
+          }, 
+          "stack": false, 
+          "timeShift": null, 
+          "aliasColors": {}, 
+          "lines": true, 
+          "points": false, 
+          "datasource": "$datasource", 
+          "pointradius": 5, 
+          "decimals": 1
         }
       ], 
       "showTitle": true, 
@@ -1133,7 +1449,7 @@
           "nullPointMode": "null", 
           "renderer": "flot", 
           "id": 5, 
-          "linewidth": 2, 
+          "linewidth": 1, 
           "steppedLine": false, 
           "targets": [
             {
@@ -1200,7 +1516,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "aws-cluster", 
+          "datasource": "$datasource", 
           "pointradius": 5
         }, 
         {
@@ -1211,7 +1527,7 @@
           "nullPointMode": "null", 
           "renderer": "flot", 
           "id": 6, 
-          "linewidth": 2, 
+          "linewidth": 1, 
           "steppedLine": false, 
           "targets": [
             {
@@ -1219,7 +1535,7 @@
               "expr": "histogram_quantile(0.99, sum(rate(pd_txn_handle_txns_duration_seconds_bucket[5m])) by (instance, result, le))", 
               "step": 4, 
               "refId": "A", 
-              "legendFormat": "{{instance}} : {{result}}"
+              "legendFormat": "{{instance}} {{result}}"
             }
           ], 
           "fill": 1, 
@@ -1248,7 +1564,7 @@
               "logBase": 1, 
               "show": true, 
               "max": null, 
-              "format": "short", 
+              "format": "s", 
               "min": null, 
               "label": null
             }, 
@@ -1278,7 +1594,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "aws-cluster", 
+          "datasource": "$datasource", 
           "pointradius": 5
         }, 
         {
@@ -1286,23 +1602,33 @@
           "timeFrom": null, 
           "links": [], 
           "thresholds": [], 
-          "nullPointMode": "null", 
+          "nullPointMode": "connected", 
           "renderer": "flot", 
           "id": 24, 
-          "linewidth": 2, 
+          "linewidth": 1, 
           "steppedLine": false, 
           "targets": [
             {
-              "intervalFactor": 2, 
-              "expr": "histogram_quantile(0.9999, sum(rate(pd_txn_handle_txns_duration_seconds_bucket[5m])) by (instance, result, le))", 
+              "hide": true, 
+              "expr": "histogram_quantile(0.9999, sum(rate(pd_txn_handle_txns_duration_seconds_bucket[1m])) by (instance, result, le))", 
               "step": 4, 
-              "refId": "A", 
-              "legendFormat": "{{instance}} : {{result}}"
+              "legendFormat": "{{instance}} : {{result}}", 
+              "intervalFactor": 2, 
+              "refId": "A"
+            }, 
+            {
+              "hide": false, 
+              "expr": "rate(pd_txn_handle_txns_duration_seconds_sum[30s]) / rate(pd_txn_handle_txns_duration_seconds_count[30s])", 
+              "interval": "", 
+              "step": 4, 
+              "legendFormat": "{{instance}} average", 
+              "intervalFactor": 2, 
+              "refId": "B"
             }
           ], 
           "fill": 1, 
           "span": 6, 
-          "title": "99.99% handle_txns_duration_seconds", 
+          "title": "average handle_txns_duration_seconds", 
           "tooltip": {
             "sort": 0, 
             "shared": true, 
@@ -1317,16 +1643,18 @@
             "max": true, 
             "show": true, 
             "current": true, 
+            "hideEmpty": true, 
             "values": true, 
             "alignAsTable": true, 
-            "avg": false
+            "avg": false, 
+            "hideZero": true
           }, 
           "yaxes": [
             {
               "logBase": 1, 
               "show": true, 
               "max": null, 
-              "format": "short", 
+              "format": "s", 
               "min": null, 
               "label": null
             }, 
@@ -1356,7 +1684,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "aws-cluster", 
+          "datasource": "$datasource", 
           "pointradius": 5
         }, 
         {
@@ -1367,7 +1695,7 @@
           "nullPointMode": "null", 
           "renderer": "flot", 
           "id": 7, 
-          "linewidth": 2, 
+          "linewidth": 1, 
           "steppedLine": false, 
           "targets": [
             {
@@ -1396,16 +1724,18 @@
             "max": true, 
             "show": true, 
             "current": true, 
+            "hideEmpty": true, 
             "values": true, 
             "alignAsTable": true, 
-            "avg": false
+            "avg": false, 
+            "hideZero": true
           }, 
           "yaxes": [
             {
               "logBase": 1, 
               "show": true, 
               "max": null, 
-              "format": "short", 
+              "format": "s", 
               "min": null, 
               "label": null
             }, 
@@ -1436,7 +1766,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "aws-cluster", 
+          "datasource": "$datasource", 
           "pointradius": 5
         }, 
         {
@@ -1444,24 +1774,32 @@
           "timeFrom": null, 
           "links": [], 
           "thresholds": [], 
-          "nullPointMode": "null", 
+          "nullPointMode": "connected", 
           "renderer": "flot", 
           "id": 25, 
-          "linewidth": 2, 
+          "linewidth": 1, 
           "steppedLine": false, 
           "targets": [
             {
-              "expr": "histogram_quantile(0.9999, sum(rate(etcd_disk_wal_fsync_duration_seconds_bucket[5m])) by (instance, le))", 
+              "hide": true, 
+              "expr": "histogram_quantile(0.9999, sum(rate(etcd_disk_wal_fsync_duration_seconds_bucket[1m])) by (instance, le))", 
               "metric": "", 
               "step": 4, 
               "legendFormat": "{{instance}}", 
               "intervalFactor": 2, 
               "refId": "A"
+            }, 
+            {
+              "intervalFactor": 2, 
+              "expr": "rate(etcd_disk_wal_fsync_duration_seconds_sum[30s]) / rate(etcd_disk_wal_fsync_duration_seconds_count[30s])", 
+              "step": 4, 
+              "refId": "B", 
+              "legendFormat": "{{instance}} average"
             }
           ], 
           "fill": 1, 
           "span": 6, 
-          "title": "99.99% wal_fsync_duration_seconds", 
+          "title": "average wal_fsync_duration_seconds", 
           "tooltip": {
             "sort": 0, 
             "shared": true, 
@@ -1476,16 +1814,18 @@
             "max": true, 
             "show": true, 
             "current": true, 
+            "hideEmpty": true, 
             "values": true, 
             "alignAsTable": true, 
-            "avg": false
+            "avg": false, 
+            "hideZero": true
           }, 
           "yaxes": [
             {
               "logBase": 1, 
               "show": true, 
               "max": null, 
-              "format": "short", 
+              "format": "s", 
               "min": null, 
               "label": null
             }, 
@@ -1516,7 +1856,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "aws-cluster", 
+          "datasource": "$datasource", 
           "pointradius": 5
         }, 
         {
@@ -1596,7 +1936,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "aws-cluster", 
+          "datasource": "$datasource", 
           "pointradius": 5
         }, 
         {
@@ -1676,7 +2016,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "aws-cluster", 
+          "datasource": "$datasource", 
           "pointradius": 5
         }
       ], 
@@ -1704,7 +2044,7 @@
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "sum(rate(pd_client_request_handle_requests_duration_seconds_count[5m])) by (type)", 
+              "expr": "sum(rate(pd_client_request_handle_requests_duration_seconds_count[1m])) by (type)", 
               "step": 2, 
               "refId": "A", 
               "legendFormat": "{{type}}"
@@ -1766,7 +2106,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "aws-cluster", 
+          "datasource": "$datasource", 
           "pointradius": 5
         }, 
         {
@@ -1781,95 +2121,24 @@
           "steppedLine": false, 
           "targets": [
             {
+              "hide": false, 
+              "expr": "histogram_quantile(0.98, sum(rate(pd_client_request_handle_requests_duration_seconds_bucket[30s])) by (type, le))", 
+              "step": 2, 
+              "legendFormat": "{{type}} 98th percentile", 
               "intervalFactor": 2, 
-              "expr": "histogram_quantile(0.99, sum(rate(pd_client_request_handle_requests_duration_seconds_bucket[5m])) by (type, le))", 
-              "step": 4, 
-              "refId": "A", 
-              "legendFormat": "{{type}}"
-            }
-          ], 
-          "fill": 1, 
-          "span": 6, 
-          "title": "99% handle_requests_duration_seconds", 
-          "tooltip": {
-            "sort": 0, 
-            "shared": true, 
-            "value_type": "individual", 
-            "msResolution": false
-          }, 
-          "legend": {
-            "rightSide": true, 
-            "total": false, 
-            "sideWidth": 300, 
-            "min": false, 
-            "max": true, 
-            "show": true, 
-            "current": true, 
-            "hideEmpty": true, 
-            "values": true, 
-            "alignAsTable": true, 
-            "avg": false
-          }, 
-          "yaxes": [
-            {
-              "logBase": 1, 
-              "show": true, 
-              "max": null, 
-              "format": "s", 
-              "min": null, 
-              "label": null
+              "refId": "A"
             }, 
             {
-              "logBase": 1, 
-              "show": true, 
-              "max": null, 
-              "format": "short", 
-              "min": null, 
-              "label": null
-            }
-          ], 
-          "xaxis": {
-            "show": true, 
-            "values": [], 
-            "mode": "time", 
-            "name": null
-          }, 
-          "seriesOverrides": [], 
-          "percentage": false, 
-          "type": "graph", 
-          "error": false, 
-          "editable": true, 
-          "grid": {}, 
-          "stack": false, 
-          "timeShift": null, 
-          "aliasColors": {}, 
-          "lines": true, 
-          "points": false, 
-          "datasource": "aws-cluster", 
-          "pointradius": 5
-        }, 
-        {
-          "bars": false, 
-          "timeFrom": null, 
-          "links": [], 
-          "thresholds": [], 
-          "nullPointMode": "null as zero", 
-          "renderer": "flot", 
-          "id": 30, 
-          "linewidth": 1, 
-          "steppedLine": false, 
-          "targets": [
-            {
               "intervalFactor": 2, 
-              "expr": "histogram_quantile(0.9999, sum(rate(pd_client_request_handle_requests_duration_seconds_bucket[5m])) by (type, le))", 
-              "step": 4, 
-              "refId": "A", 
-              "legendFormat": "{{type}}"
+              "expr": "avg(rate(pd_client_request_handle_requests_duration_seconds_sum[30s])) by (type) /  avg(rate(pd_client_request_handle_requests_duration_seconds_count[30s])) by (type)", 
+              "step": 2, 
+              "refId": "B", 
+              "legendFormat": "{{type}} average"
             }
           ], 
           "fill": 1, 
-          "span": 6, 
-          "title": "99.99% handle_requests_duration_seconds", 
+          "span": 12, 
+          "title": "handle_requests_duration_seconds", 
           "tooltip": {
             "sort": 0, 
             "shared": true, 
@@ -1877,6 +2146,7 @@
             "msResolution": false
           }, 
           "legend": {
+            "sort": "current", 
             "rightSide": true, 
             "total": false, 
             "sideWidth": 300, 
@@ -1888,7 +2158,8 @@
             "values": true, 
             "alignAsTable": true, 
             "avg": false, 
-            "hideZero": false
+            "sortDesc": false, 
+            "hideZero": true
           }, 
           "yaxes": [
             {
@@ -1896,7 +2167,7 @@
               "show": true, 
               "max": null, 
               "format": "s", 
-              "min": null, 
+              "min": "0", 
               "label": null
             }, 
             {
@@ -1925,7 +2196,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "aws-cluster", 
+          "datasource": "$datasource", 
           "pointradius": 5
         }
       ], 
@@ -2014,7 +2285,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "aws-cluster", 
+          "datasource": "$datasource", 
           "pointradius": 5
         }, 
         {
@@ -2030,7 +2301,7 @@
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_pd_msg_send_duration_seconds_bucket[5m])) by (type, le))", 
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_pd_msg_send_duration_seconds_bucket[30s])) by (le))", 
               "step": 4, 
               "refId": "A", 
               "legendFormat": ""
@@ -2038,7 +2309,7 @@
           ], 
           "fill": 1, 
           "span": 6, 
-          "title": "99% send_message_duration_seconds", 
+          "title": "95% send_message_duration_seconds", 
           "tooltip": {
             "sort": 0, 
             "shared": true, 
@@ -2091,7 +2362,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "aws-cluster", 
+          "datasource": "$datasource", 
           "pointradius": 5
         }, 
         {
@@ -2099,23 +2370,31 @@
           "timeFrom": null, 
           "links": [], 
           "thresholds": [], 
-          "nullPointMode": "null", 
+          "nullPointMode": "null as zero", 
           "renderer": "flot", 
           "id": 33, 
           "linewidth": 1, 
           "steppedLine": false, 
           "targets": [
             {
-              "intervalFactor": 2, 
-              "expr": "histogram_quantile(0.9999, sum(rate(tikv_pd_msg_send_duration_seconds_bucket[5m])) by (type, le))", 
+              "hide": true, 
+              "expr": "histogram_quantile(0.98, sum(rate(tikv_pd_msg_send_duration_seconds_bucket[60s])) by (type, le))", 
               "step": 4, 
-              "refId": "A", 
-              "legendFormat": ""
+              "legendFormat": "98th percentile", 
+              "intervalFactor": 2, 
+              "refId": "A"
+            }, 
+            {
+              "intervalFactor": 2, 
+              "expr": "rate(tikv_pd_msg_send_duration_seconds_sum[30s]) / rate(tikv_pd_msg_send_duration_seconds_count[30s])", 
+              "step": 4, 
+              "refId": "B", 
+              "legendFormat": "{{job}}"
             }
           ], 
-          "fill": 1, 
+          "fill": 0, 
           "span": 6, 
-          "title": "99.99% send_message_duration_seconds", 
+          "title": "send_message_duration_seconds", 
           "tooltip": {
             "sort": 0, 
             "shared": true, 
@@ -2123,15 +2402,17 @@
             "msResolution": false
           }, 
           "legend": {
-            "rightSide": false, 
+            "rightSide": true, 
             "total": false, 
             "min": false, 
-            "max": false, 
-            "show": false, 
+            "max": true, 
+            "show": true, 
             "current": false, 
-            "values": false, 
-            "alignAsTable": false, 
-            "avg": false
+            "hideEmpty": true, 
+            "values": true, 
+            "alignAsTable": true, 
+            "avg": false, 
+            "hideZero": true
           }, 
           "yaxes": [
             {
@@ -2139,14 +2420,14 @@
               "show": true, 
               "max": null, 
               "format": "s", 
-              "min": null, 
+              "min": "0", 
               "label": null
             }, 
             {
               "logBase": 1, 
               "show": true, 
               "max": null, 
-              "format": "short", 
+              "format": "s", 
               "min": null, 
               "label": null
             }
@@ -2168,7 +2449,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "aws-cluster", 
+          "datasource": "$datasource", 
           "pointradius": 5
         }
       ], 
@@ -2189,10 +2470,10 @@
           "links": [], 
           "thresholds": [
             {
-              "colorMode": "warning", 
+              "colorMode": "critical", 
               "line": true, 
               "op": "gt", 
-              "value": 8, 
+              "value": 4, 
               "fill": true
             }
           ], 
@@ -2255,13 +2536,57 @@
           "seriesOverrides": [], 
           "percentage": false, 
           "type": "graph", 
+          "alert": {
+            "noDataState": "no_data", 
+            "name": "TiKV Node Load alert", 
+            "frequency": "60s", 
+            "notifications": [], 
+            "handler": 1, 
+            "executionErrorState": "alerting", 
+            "message": "TiKV is under high load", 
+            "conditions": [
+              {
+                "operator": {
+                  "type": "and"
+                }, 
+                "query": {
+                  "params": [
+                    "A", 
+                    "5m", 
+                    "now"
+                  ], 
+                  "model": {
+                    "expr": "node_load1{job=\"tikv-node\"}", 
+                    "metric": "", 
+                    "step": 4, 
+                    "legendFormat": "{{instance}}", 
+                    "intervalFactor": 2, 
+                    "refId": "A"
+                  }, 
+                  "datasourceId": 1
+                }, 
+                "evaluator": {
+                  "type": "gt", 
+                  "params": [
+                    4
+                  ]
+                }, 
+                "reducer": {
+                  "type": "avg", 
+                  "params": []
+                }, 
+                "type": "query"
+              }
+            ]
+          }, 
           "stack": true, 
           "timeShift": null, 
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "aws-cluster", 
-          "pointradius": 5
+          "datasource": "$datasource", 
+          "pointradius": 5, 
+          "decimals": 2
         }, 
         {
           "bars": false, 
@@ -2346,7 +2671,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "aws-cluster", 
+          "datasource": "$datasource", 
           "pointradius": 5
         }
       ], 
@@ -2368,7 +2693,7 @@
         "refresh": 1, 
         "label": null, 
         "current": {}, 
-        "datasource": "aws-cluster", 
+        "datasource": "$datasource", 
         "type": "query", 
         "query": "label_values(pd_cluster_status, instance)", 
         "useTags": false, 
@@ -2388,7 +2713,7 @@
   "tags": [], 
   "graphTooltip": 1, 
   "hideControls": false, 
-  "title": "Aws-Cluster-PD", 
+  "title": "Cluster-PD", 
   "editable": true, 
   "refresh": "1m", 
   "annotations": {
@@ -2420,12 +2745,12 @@
       "1d"
     ]
   }, 
-  "version": 1, 
+  "version": 11, 
   "time": {
     "to": "now", 
     "from": "now-30m"
   }, 
   "timezone": "browser", 
   "schemaVersion": 14, 
-  "id": 3
+  "id": null
 }
