@@ -49,14 +49,14 @@
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.80, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le))", 
-              "step": 10, 
+              "step": 4, 
               "refId": "A", 
               "legendFormat": "average"
             }, 
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.80, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le, instance))", 
-              "step": 10, 
+              "step": 4, 
               "refId": "B", 
               "legendFormat": "{{instance}}"
             }
@@ -112,7 +112,7 @@
                   "model": {
                     "intervalFactor": 2, 
                     "expr": "histogram_quantile(0.80, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le))", 
-                    "step": 10, 
+                    "step": 4, 
                     "refId": "A", 
                     "legendFormat": "average"
                   }, 
@@ -183,14 +183,14 @@
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.95, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le))", 
-              "step": 10, 
+              "step": 4, 
               "refId": "A", 
               "legendFormat": "average"
             }, 
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.95, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le, instance))", 
-              "step": 10, 
+              "step": 4, 
               "refId": "B", 
               "legendFormat": "{{ instance }}"
             }
@@ -249,7 +249,7 @@
                   "model": {
                     "intervalFactor": 2, 
                     "expr": "histogram_quantile(0.95, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le))", 
-                    "step": 10, 
+                    "step": 4, 
                     "refId": "A", 
                     "legendFormat": "average"
                   }, 
@@ -318,14 +318,14 @@
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.99, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le))", 
-              "step": 10, 
+              "step": 4, 
               "refId": "B", 
               "legendFormat": "average"
             }, 
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.99, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le, instance))", 
-              "step": 10, 
+              "step": 4, 
               "refId": "A", 
               "legendFormat": "{{instance}}"
             }
@@ -381,7 +381,7 @@
                   "model": {
                     "intervalFactor": 2, 
                     "expr": "histogram_quantile(0.99, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le, instance))", 
-                    "step": 10, 
+                    "step": 4, 
                     "refId": "A", 
                     "legendFormat": "{{instance}}"
                   }, 
@@ -454,14 +454,14 @@
             {
               "intervalFactor": 2, 
               "expr": "irate(tidb_server_handle_query_duration_seconds_sum[30s]) / irate(tidb_server_handle_query_duration_seconds_count[30s])", 
-              "step": 10, 
+              "step": 4, 
               "refId": "A", 
               "legendFormat": "{{instance}}"
             }, 
             {
               "intervalFactor": 2, 
               "expr": "sum(irate(tidb_server_handle_query_duration_seconds_sum[30s])) / sum(irate(tidb_server_handle_query_duration_seconds_count[30s]))", 
-              "step": 10, 
+              "step": 4, 
               "refId": "B", 
               "legendFormat": "average"
             }
@@ -517,7 +517,7 @@
                   "model": {
                     "intervalFactor": 2, 
                     "expr": "irate(tidb_server_handle_query_duration_seconds_sum[30s]) / irate(tidb_server_handle_query_duration_seconds_count[30s])", 
-                    "step": 10, 
+                    "step": 4, 
                     "refId": "A", 
                     "legendFormat": "{{instance}}"
                   }, 
@@ -593,7 +593,7 @@
             {
               "intervalFactor": 2, 
               "expr": "rate(tidb_server_query_total[1m])", 
-              "step": 4, 
+              "step": 2, 
               "refId": "A", 
               "legendFormat": "{{instance}} {{type}} {{status}}"
             }
@@ -654,7 +654,7 @@
                   "model": {
                     "intervalFactor": 2, 
                     "expr": "rate(tidb_server_query_total[1m])", 
-                    "step": 4, 
+                    "step": 2, 
                     "refId": "A", 
                     "legendFormat": "{{instance}} {{type}} {{status}}"
                   }, 
@@ -723,14 +723,14 @@
             {
               "intervalFactor": 2, 
               "expr": "sum(rate(tidb_server_query_total[1m])) by (status)", 
-              "step": 10, 
+              "step": 4, 
               "refId": "A", 
               "legendFormat": "query {{status}}"
             }, 
             {
               "intervalFactor": 3, 
               "expr": "sum(rate(tidb_server_query_total{status=\"OK\"}[1m]  offset 1d))", 
-              "step": 15, 
+              "step": 6, 
               "refId": "B", 
               "legendFormat": "yesterday"
             }
@@ -812,7 +812,7 @@
             {
               "intervalFactor": 2, 
               "expr": "sum(irate(tidb_executor_statement_node_total[1m])) by (type)", 
-              "step": 4, 
+              "step": 2, 
               "refId": "A", 
               "legendFormat": "{{type}}"
             }
@@ -2303,7 +2303,7 @@
         }
       ], 
       "showTitle": true, 
-      "collapse": false
+      "collapse": true
     }, 
     {
       "repeat": null, 
@@ -3325,7 +3325,7 @@
       "1d"
     ]
   }, 
-  "version": 24, 
+  "version": 1, 
   "time": {
     "to": "now", 
     "from": "now-30m"
