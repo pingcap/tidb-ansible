@@ -4193,7 +4193,7 @@
             {
               "expr": "histogram_quantile(0.9999, max(rate(tikv_storage_mvcc_versions_bucket[1m])) by (le))", 
               "metric": "tikv_storage_mvcc_versions_bucket", 
-              "step": 10, 
+              "step": 4, 
               "legendFormat": " ", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -4271,7 +4271,7 @@
             {
               "expr": "histogram_quantile(0.9999, sum(rate(tikv_storage_mvcc_gc_delete_versions_bucket[1m])) by (le))", 
               "metric": "tikv_storage_mvcc_gc_delete_versions_bucket", 
-              "step": 10, 
+              "step": 4, 
               "legendFormat": " ", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -4349,7 +4349,7 @@
             {
               "intervalFactor": 2, 
               "expr": "sum(rate(tikv_scheduler_stage_total{stage=\"new\", type=\"gc\"}[1m]))", 
-              "step": 10, 
+              "step": 4, 
               "refId": "A", 
               "legendFormat": " "
             }
@@ -4426,7 +4426,7 @@
             {
               "expr": "histogram_quantile(0.9999, sum(rate(tikv_compact_range_cf_duration_seconds_bucket[1m])) by (le, cf, job))", 
               "metric": "", 
-              "step": 10, 
+              "step": 4, 
               "legendFormat": "{{job}}-{{cf}}", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -4544,12 +4544,12 @@
             {
               "intervalFactor": 2, 
               "expr": "min(tidb_tikvclient_gc_config{type=\"tikv_gc_life_time\"}) / 60", 
-              "step": 60, 
+              "step": 40, 
               "refId": "A"
             }
           ], 
           "prefixFontSize": "50%", 
-          "valueName": "avg", 
+          "valueName": "current", 
           "type": "singlestat", 
           "valueFontSize": "80%", 
           "format": "none", 
@@ -4620,12 +4620,12 @@
             {
               "intervalFactor": 2, 
               "expr": "avg(tidb_tikvclient_gc_config{type=\"tikv_gc_run_interval\"}) / 60", 
-              "step": 60, 
+              "step": 40, 
               "refId": "A"
             }
           ], 
           "prefixFontSize": "50%", 
-          "valueName": "avg", 
+          "valueName": "current", 
           "type": "singlestat", 
           "valueFontSize": "80%", 
           "format": "none", 
@@ -6112,82 +6112,6 @@
           "timeFrom": null, 
           "links": [], 
           "thresholds": [], 
-          "nullPointMode": "connected", 
-          "renderer": "flot", 
-          "id": 81, 
-          "linewidth": 1, 
-          "steppedLine": false, 
-          "targets": [
-            {
-              "intervalFactor": 10, 
-              "expr": "sum(delta(tikv_engine_get_served{type=~\"get_hit_l0|ge_hit_l1\"}[1m])) by (job) / sum(delta(tikv_engine_get_served[1m])) by (job)", 
-              "step": 20, 
-              "refId": "A", 
-              "legendFormat": "{{job}}"
-            }
-          ], 
-          "fill": 1, 
-          "span": 6, 
-          "title": "L0 L1 hit rate", 
-          "tooltip": {
-            "sort": 1, 
-            "shared": true, 
-            "value_type": "individual"
-          }, 
-          "legend": {
-            "total": false, 
-            "min": false, 
-            "max": false, 
-            "show": true, 
-            "current": false, 
-            "hideEmpty": true, 
-            "values": false, 
-            "avg": false, 
-            "hideZero": false
-          }, 
-          "yaxes": [
-            {
-              "logBase": 1, 
-              "show": true, 
-              "max": null, 
-              "format": "percentunit", 
-              "min": "0", 
-              "label": null
-            }, 
-            {
-              "logBase": 1, 
-              "show": true, 
-              "max": null, 
-              "format": "short", 
-              "min": null, 
-              "label": null
-            }
-          ], 
-          "xaxis": {
-            "show": true, 
-            "values": [
-              "current"
-            ], 
-            "mode": "time", 
-            "name": null
-          }, 
-          "seriesOverrides": [], 
-          "percentage": false, 
-          "type": "graph", 
-          "stack": false, 
-          "timeShift": null, 
-          "aliasColors": {}, 
-          "lines": true, 
-          "points": false, 
-          "datasource": "$datasource", 
-          "pointradius": 5, 
-          "minSpan": 6
-        }, 
-        {
-          "bars": false, 
-          "timeFrom": null, 
-          "links": [], 
-          "thresholds": [], 
           "nullPointMode": "null", 
           "renderer": "flot", 
           "id": 82, 
@@ -6230,8 +6154,8 @@
             "min": false, 
             "max": false, 
             "show": true, 
-            "current": false, 
-            "values": false, 
+            "current": true, 
+            "values": true, 
             "alignAsTable": true, 
             "avg": false
           }, 
@@ -6318,8 +6242,8 @@
             "min": false, 
             "max": false, 
             "show": true, 
-            "current": false, 
-            "values": false, 
+            "current": true, 
+            "values": true, 
             "alignAsTable": true, 
             "avg": false
           }, 
@@ -6406,8 +6330,8 @@
             "min": false, 
             "max": false, 
             "show": true, 
-            "current": false, 
-            "values": false, 
+            "current": true, 
+            "values": true, 
             "alignAsTable": true, 
             "avg": false
           }, 
@@ -6446,10 +6370,189 @@
           "datasource": "$datasource", 
           "pointradius": 5, 
           "minSpan": 6
+        }, 
+        {
+          "bars": false, 
+          "timeFrom": null, 
+          "links": [], 
+          "thresholds": [], 
+          "nullPointMode": "null", 
+          "renderer": "flot", 
+          "id": 85, 
+          "linewidth": 1, 
+          "steppedLine": false, 
+          "targets": [
+            {
+              "hide": false, 
+              "expr": "sum(rate(tikv_engine_flow_bytes{type=\"bytes_read\"}[1m]))", 
+              "step": 4, 
+              "legendFormat": "bytes_read", 
+              "intervalFactor": 2, 
+              "refId": "A"
+            }, 
+            {
+              "hide": false, 
+              "expr": "sum(rate(tikv_engine_flow_bytes{type=\"keys_read\"}[1m]))", 
+              "step": 4, 
+              "legendFormat": "keys_read", 
+              "intervalFactor": 2, 
+              "refId": "B"
+            }, 
+            {
+              "intervalFactor": 2, 
+              "expr": "sum(rate(tikv_engine_flow_bytes{type=\"iter_bytes_read\"}[1m]))", 
+              "step": 4, 
+              "refId": "C", 
+              "legendFormat": "iter_bytes_read"
+            }
+          ], 
+          "fill": 0, 
+          "span": 6, 
+          "title": "read flow", 
+          "tooltip": {
+            "sort": 0, 
+            "shared": true, 
+            "value_type": "individual"
+          }, 
+          "legend": {
+            "total": false, 
+            "show": true, 
+            "max": true, 
+            "min": false, 
+            "current": true, 
+            "values": true, 
+            "avg": false
+          }, 
+          "yaxes": [
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "Bps", 
+              "min": "0", 
+              "label": null
+            }, 
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "rps", 
+              "min": "0", 
+              "label": null
+            }
+          ], 
+          "xaxis": {
+            "show": true, 
+            "values": [], 
+            "mode": "time", 
+            "name": null
+          }, 
+          "seriesOverrides": [
+            {
+              "alias": "keys_read", 
+              "yaxis": 2
+            }
+          ], 
+          "percentage": false, 
+          "type": "graph", 
+          "stack": false, 
+          "timeShift": null, 
+          "aliasColors": {}, 
+          "lines": true, 
+          "points": false, 
+          "datasource": "$datasource", 
+          "pointradius": 5, 
+          "decimals": 1
+        }, 
+        {
+          "bars": false, 
+          "timeFrom": null, 
+          "links": [], 
+          "thresholds": [], 
+          "nullPointMode": "null", 
+          "renderer": "flot", 
+          "id": 86, 
+          "linewidth": 1, 
+          "steppedLine": false, 
+          "targets": [
+            {
+              "hide": false, 
+              "expr": "sum(rate(tikv_engine_flow_bytes{type=\"bytes_written\"}[1m])) by (type)", 
+              "step": 4, 
+              "legendFormat": "{{type}}", 
+              "intervalFactor": 2, 
+              "refId": "A"
+            }, 
+            {
+              "hide": false, 
+              "expr": "sum(rate(tikv_engine_flow_bytes{type=\"keys_written\"}[1m])) by (type)", 
+              "step": 4, 
+              "legendFormat": "{{type}}", 
+              "intervalFactor": 2, 
+              "refId": "B"
+            }
+          ], 
+          "fill": 1, 
+          "span": 6, 
+          "title": "write flow", 
+          "tooltip": {
+            "sort": 0, 
+            "shared": true, 
+            "value_type": "individual"
+          }, 
+          "legend": {
+            "total": false, 
+            "show": true, 
+            "max": true, 
+            "min": false, 
+            "current": true, 
+            "values": true, 
+            "avg": false
+          }, 
+          "yaxes": [
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "Bps", 
+              "min": "0", 
+              "label": null
+            }, 
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "wps", 
+              "min": "0", 
+              "label": null
+            }
+          ], 
+          "xaxis": {
+            "show": true, 
+            "values": [], 
+            "mode": "time", 
+            "name": null
+          }, 
+          "seriesOverrides": [
+            {
+              "alias": "keys_written", 
+              "yaxis": 2
+            }
+          ], 
+          "percentage": false, 
+          "type": "graph", 
+          "stack": false, 
+          "timeShift": null, 
+          "aliasColors": {}, 
+          "lines": true, 
+          "points": false, 
+          "datasource": "$datasource", 
+          "pointradius": 5, 
+          "decimals": 1
         }
       ], 
       "showTitle": true, 
-      "collapse": false
+      "collapse": true
     }
   ], 
   "templating": {
@@ -6497,7 +6600,7 @@
       "1d"
     ]
   }, 
-  "version": 14, 
+  "version": 1, 
   "time": {
     "to": "now", 
     "from": "now-30m"
