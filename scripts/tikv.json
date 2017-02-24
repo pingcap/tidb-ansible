@@ -222,7 +222,7 @@
               "logBase": 1, 
               "show": true, 
               "max": null, 
-              "format": "bytes", 
+              "format": "decbytes", 
               "min": "0", 
               "label": null
             }, 
@@ -301,7 +301,7 @@
               "logBase": 1, 
               "show": true, 
               "max": null, 
-              "format": "bytes", 
+              "format": "decbytes", 
               "min": "0", 
               "label": null
             }, 
@@ -552,14 +552,14 @@
           "timeFrom": null, 
           "links": [], 
           "thresholds": [], 
-          "nullPointMode": "null", 
+          "nullPointMode": "connected", 
           "renderer": "flot", 
           "id": 57, 
           "linewidth": 1, 
           "steppedLine": false, 
           "targets": [
             {
-              "expr": "histogram_quantile(0.9999, sum(rate(tikv_region_written_keys_bucket[1m])) by (le, job))", 
+              "expr": "histogram_quantile(0.8, sum(rate(tikv_region_written_keys_bucket[1m])) by (le, job))", 
               "metric": "tikv_region_written_keys_bucket", 
               "step": 4, 
               "legendFormat": "{{job}}", 
@@ -569,7 +569,7 @@
           ], 
           "fill": 1, 
           "span": 6, 
-          "title": "99.99% region written keys", 
+          "title": "80% region written keys", 
           "tooltip": {
             "sort": 0, 
             "shared": true, 
@@ -630,14 +630,14 @@
           "timeFrom": null, 
           "links": [], 
           "thresholds": [], 
-          "nullPointMode": "null as zero", 
+          "nullPointMode": "connected", 
           "renderer": "flot", 
           "id": 58, 
           "linewidth": 1, 
           "steppedLine": false, 
           "targets": [
             {
-              "expr": "histogram_quantile(0.9999, sum(rate(tikv_region_written_bytes_bucket[1m])) by (le, job))", 
+              "expr": "histogram_quantile(0.80, sum(rate(tikv_region_written_bytes_bucket[1m])) by (le, job))", 
               "metric": "tikv_regi", 
               "step": 4, 
               "legendFormat": "{{job}}", 
@@ -647,7 +647,7 @@
           ], 
           "fill": 1, 
           "span": 6, 
-          "title": "99.99% region written bytes", 
+          "title": "80% region written bytes", 
           "tooltip": {
             "sort": 0, 
             "shared": true, 
@@ -802,19 +802,9 @@
           "thresholds": [], 
           "nullPointMode": "null as zero", 
           "renderer": "flot", 
-          "id": 10, 
           "linewidth": 1, 
           "steppedLine": false, 
-          "targets": [
-            {
-              "expr": "sum(rate(tikv_server_receive_msg_total[1m])) by (instance, type)", 
-              "metric": "tikv_server_receive_msg_total", 
-              "step": 4, 
-              "legendFormat": "{{instance}}-{{type}}", 
-              "intervalFactor": 2, 
-              "refId": "A"
-            }
-          ], 
+          "id": 10, 
           "fill": 0, 
           "span": 6, 
           "title": "server receive msg", 
@@ -837,6 +827,16 @@
             "avg": false, 
             "hideZero": true
           }, 
+          "targets": [
+            {
+              "expr": "sum(rate(tikv_server_receive_msg_total[1m])) by (instance, type)", 
+              "metric": "tikv_server_receive_msg_total", 
+              "step": 4, 
+              "legendFormat": "{{instance}}-{{type}}", 
+              "intervalFactor": 2, 
+              "refId": "A"
+            }
+          ], 
           "yaxes": [
             {
               "logBase": 1, 
@@ -873,7 +873,8 @@
           "lines": true, 
           "points": false, 
           "datasource": "$datasource", 
-          "pointradius": 5
+          "pointradius": 5, 
+          "decimals": null
         }, 
         {
           "bars": false, 
@@ -1005,7 +1006,7 @@
         }
       ], 
       "showTitle": true, 
-      "collapse": true
+      "collapse": false
     }, 
     {
       "repeat": null, 
@@ -6022,7 +6023,7 @@
         }
       ], 
       "showTitle": true, 
-      "collapse": true
+      "collapse": false
     }, 
     {
       "repeat": null, 
@@ -6600,7 +6601,7 @@
       "1d"
     ]
   }, 
-  "version": 1, 
+  "version": 5, 
   "time": {
     "to": "now", 
     "from": "now-30m"

@@ -37,6 +37,10 @@ storage:
   #scheduler-worker-pool-size: 4
 
 raftstore:
+  raft-base-tick-interval: 1000
+  raft-heartbeat-ticks: 3
+  raft-election-timeout-ticks: 15
+
   # notify capacity, 40960 is suitable for about 7000 regions.
   #notify-capacity: 40960
 
@@ -88,10 +92,10 @@ raftstore:
 rocksdb:
   # Maximum number of concurrent background compaction jobs, submitted to
   # the default LOW priority thread pool.
-  #max-background-compactions: 6
+  max-background-compactions: 1
 
   # Maximum number of concurrent background flush jobs
-  #max-background-flushes: 2
+  max-background-flushes: 1
 
   # Number of open files that can be used by the DB.  You may need to
   # increase this if your database has a large working set. Value -1 means
@@ -122,7 +126,8 @@ rocksdb:
 
   # Rocksdb Statistics provides cumulative stats over time.
   # Set it ture only when debugging performance, because it will introduce overhead.
-  #enable-statistics: false
+  # 2%-3% performance reduce.
+  enable-statistics: true
 
   # Dump statistics periodically in information logs.
   # Same as rocksdb's default value (10 min).
@@ -168,10 +173,10 @@ rocksdb:
     #block-based-bloom-filter: false
 
     # Soft limit on number of level-0 files. We start slowing down writes at this point.
-    #level0-slowdown-writes-trigger: 12
+    #level0-slowdown-writes-trigger: 20
 
     # Maximum number of level-0 files.  We stop writes at this point.
-    #level0-stop-writes-trigger: 16
+    #level0-stop-writes-trigger: 36
 
     # Amount of data to build up in memory (backed by an unsorted log on disk)
     # before converting to a sorted on-disk file.
