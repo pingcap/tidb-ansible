@@ -69,7 +69,7 @@
           "valueName": "current", 
           "type": "singlestat", 
           "valueFontSize": "80%", 
-          "format": "bytes", 
+          "format": "decbytes", 
           "editable": true, 
           "cacheTimeout": null, 
           "postfix": "", 
@@ -146,7 +146,7 @@
           "valueName": "current", 
           "type": "singlestat", 
           "valueFontSize": "80%", 
-          "format": "bytes", 
+          "format": "decbytes", 
           "editable": true, 
           "hideTimeOverride": false, 
           "postfix": "", 
@@ -215,7 +215,7 @@
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "pd_cluster_status{instance=\"$instance\",type=\"region_total_count\"}", 
+              "expr": "pd_cluster_status{instance=\"$instance\",type=\"region_count\"}", 
               "step": 40, 
               "refId": "A"
             }
@@ -291,7 +291,7 @@
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "holt_winters(pd_cluster_status{instance=\"$instance\",type=\"store_max_diff_leader_ratio\"}[5m], 0.8, 0.1)", 
+              "expr": "holt_winters(pd_cluster_status{instance=\"$instance\",type=\"leader_balance_ratio\"}[5m], 0.8, 0.1)", 
               "step": 40, 
               "refId": "A"
             }
@@ -358,7 +358,7 @@
           "mappingType": 1, 
           "span": 2, 
           "colorBackground": false, 
-          "title": "Storage Balance Ratio", 
+          "title": "Region Balance Ratio", 
           "sparkline": {
             "full": true, 
             "fillColor": "rgba(31, 118, 189, 0.18)", 
@@ -368,7 +368,7 @@
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "holt_winters(pd_cluster_status{instance=\"$instance\",type=\"store_max_diff_storage_ratio\"}[5m], 0.2, 0.1)", 
+              "expr": "holt_winters(pd_cluster_status{instance=\"$instance\",type=\"region_balance_ratio\"}[5m], 0.2, 0.1)", 
               "step": 40, 
               "refId": "A", 
               "legendFormat": ""
@@ -538,7 +538,7 @@
               "logBase": 1, 
               "show": true, 
               "max": null, 
-              "format": "bytes", 
+              "format": "decbytes", 
               "min": null, 
               "label": null
             }, 
@@ -651,7 +651,7 @@
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "pd_cluster_status{instance=\"$instance\",type=\"region_total_count\"}", 
+              "expr": "pd_cluster_status{instance=\"$instance\",type=\"region_count\"}", 
               "step": 10, 
               "refId": "A"
             }
@@ -793,7 +793,7 @@
           "id": 40, 
           "fill": 1, 
           "span": 6, 
-          "title": "Leader Banlace Ratio", 
+          "title": "Leader Balance Ratio", 
           "tooltip": {
             "sort": 0, 
             "shared": true, 
@@ -812,7 +812,7 @@
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_max_diff_leader_ratio\"}", 
+              "expr": "pd_cluster_status{instance=\"$instance\",type=\"leader_balance_ratio\"}", 
               "step": 4, 
               "refId": "A", 
               "legendFormat": "leader max diff ratio"
@@ -928,7 +928,7 @@
           "id": 41, 
           "fill": 1, 
           "span": 6, 
-          "title": "Store Balance Ratio", 
+          "title": "Region Balance Ratio", 
           "tooltip": {
             "sort": 0, 
             "shared": true, 
@@ -947,7 +947,7 @@
           "targets": [
             {
               "hide": false, 
-              "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_max_diff_storage_ratio\"}", 
+              "expr": "pd_cluster_status{instance=\"$instance\",type=\"region_balance_ratio\"}", 
               "step": 4, 
               "legendFormat": "\bstore balance ratio", 
               "intervalFactor": 2, 
@@ -2745,7 +2745,7 @@
       "1d"
     ]
   }, 
-  "version": 0, 
+  "version": 2, 
   "time": {
     "to": "now", 
     "from": "now-30m"

@@ -63,6 +63,11 @@
     - run
   vars:
     role_status_dir: status/{{ role_name }}
+  register: tikv_script
+
+- name: backup script file
+  command: mv "{{ tikv_script.backup_file }}" "{{ backup_dir }}"
+  when: tikv_script.changed and tikv_script.backup_file is defined
 
 - name: prepare firewalld white list
   set_fact:

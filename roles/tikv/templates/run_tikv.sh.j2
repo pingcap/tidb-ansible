@@ -31,7 +31,9 @@ exec bin/tikv-server \
     --advertise-addr "{{ my_ip }}:{{ tikv_port }}" \
     --pd "{{ all_pd | join(',') }}" \
     --store "{{ tikv_data_dir }}" \
+{% if tikv_capacity != "0" %}
     --capacity "{{ tikv_capacity }}" \
+{% endif %}
     --config conf/tikv.toml \
     -L "{{ tikv_log_level }}" \
     --log-file "{{ tikv_log_dir }}/{{ tikv_log_filename }}"
