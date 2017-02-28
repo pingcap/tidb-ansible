@@ -653,7 +653,8 @@
               "intervalFactor": 2, 
               "expr": "pd_cluster_status{instance=\"$instance\",type=\"region_count\"}", 
               "step": 10, 
-              "refId": "A"
+              "refId": "A", 
+              "legendFormat": "count"
             }
           ], 
           "yaxes": [
@@ -819,7 +820,7 @@
             }, 
             {
               "hide": true, 
-              "expr": "min(pd_cluster_status{type=\"store_max_diff_leader_ratio\"})", 
+              "expr": "min(pd_cluster_status{type=\"leader_balance_ratio\"})", 
               "step": 4, 
               "legendFormat": "ratio", 
               "intervalFactor": 2, 
@@ -876,7 +877,7 @@
                   ], 
                   "model": {
                     "hide": true, 
-                    "expr": "min(pd_cluster_status{type=\"store_max_diff_leader_ratio\"})", 
+                    "expr": "min(pd_cluster_status{type=\"leader_balance_ratio\"})", 
                     "step": 4, 
                     "legendFormat": "ratio", 
                     "intervalFactor": 2, 
@@ -955,7 +956,7 @@
             }, 
             {
               "hide": true, 
-              "expr": "min(pd_cluster_status{type=\"store_max_diff_storage_ratio\"})", 
+              "expr": "min(pd_cluster_status{type=\"region_balance_ratio\"})", 
               "step": 4, 
               "legendFormat": "ratio", 
               "intervalFactor": 2, 
@@ -993,7 +994,7 @@
           "editable": true, 
           "alert": {
             "noDataState": "no_data", 
-            "name": "Store Balance Ratio alert", 
+            "name": "Region Balance Ratio alert", 
             "frequency": "60s", 
             "notifications": [], 
             "handler": 1, 
@@ -1012,7 +1013,7 @@
                   ], 
                   "model": {
                     "hide": true, 
-                    "expr": "min(pd_cluster_status{type=\"store_max_diff_storage_ratio\"})", 
+                    "expr": "min(pd_cluster_status{type=\"region_balance_ratio\"})", 
                     "step": 4, 
                     "legendFormat": "ratio", 
                     "intervalFactor": 2, 
@@ -2745,7 +2746,7 @@
       "1d"
     ]
   }, 
-  "version": 2, 
+  "version": 1, 
   "time": {
     "to": "now", 
     "from": "now-30m"
