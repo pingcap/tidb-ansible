@@ -4544,8 +4544,9 @@
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "min(tidb_tikvclient_gc_config{type=\"tikv_gc_life_time\"}) / 60", 
+              "expr": "max(tidb_tikvclient_gc_config{type=\"tikv_gc_life_time\"})", 
               "step": 40, 
+              "interval": "", 
               "refId": "A"
             }
           ], 
@@ -4553,10 +4554,11 @@
           "valueName": "current", 
           "type": "singlestat", 
           "valueFontSize": "80%", 
-          "format": "none", 
+          "format": "s", 
           "editable": true, 
           "cacheTimeout": null, 
-          "postfix": " Min", 
+          "postfix": "", 
+          "decimals": 0, 
           "interval": null, 
           "colors": [
             "rgba(245, 54, 54, 0.9)", 
@@ -4620,7 +4622,7 @@
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "avg(tidb_tikvclient_gc_config{type=\"tikv_gc_run_interval\"}) / 60", 
+              "expr": "max(tidb_tikvclient_gc_config{type=\"tikv_gc_run_interval\"})", 
               "step": 40, 
               "refId": "A"
             }
@@ -4629,10 +4631,11 @@
           "valueName": "current", 
           "type": "singlestat", 
           "valueFontSize": "80%", 
-          "format": "none", 
+          "format": "s", 
           "editable": true, 
           "cacheTimeout": null, 
-          "postfix": " Min", 
+          "postfix": "", 
+          "decimals": 0, 
           "interval": null, 
           "colors": [
             "rgba(245, 54, 54, 0.9)", 
@@ -6023,7 +6026,7 @@
         }
       ], 
       "showTitle": true, 
-      "collapse": false
+      "collapse": true
     }, 
     {
       "repeat": null, 
@@ -6550,10 +6553,81 @@
           "datasource": "$datasource", 
           "pointradius": 5, 
           "decimals": 1
+        }, 
+        {
+          "bars": false, 
+          "timeFrom": null, 
+          "links": [], 
+          "thresholds": [], 
+          "nullPointMode": "null", 
+          "renderer": "flot", 
+          "id": 87, 
+          "linewidth": 1, 
+          "steppedLine": false, 
+          "targets": [
+            {
+              "intervalFactor": 2, 
+              "expr": "sum(rate(tikv_engine_stall_micro_seconds[30s])) by (job)", 
+              "step": 4, 
+              "refId": "A", 
+              "legendFormat": "{{job}}"
+            }
+          ], 
+          "fill": 1, 
+          "span": 6, 
+          "title": "stall", 
+          "tooltip": {
+            "sort": 0, 
+            "shared": true, 
+            "value_type": "individual"
+          }, 
+          "legend": {
+            "total": false, 
+            "show": true, 
+            "max": false, 
+            "min": false, 
+            "current": false, 
+            "values": false, 
+            "avg": false
+          }, 
+          "yaxes": [
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "ms", 
+              "min": null, 
+              "label": null
+            }, 
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "short", 
+              "min": null, 
+              "label": null
+            }
+          ], 
+          "xaxis": {
+            "show": true, 
+            "values": [], 
+            "mode": "time", 
+            "name": null
+          }, 
+          "seriesOverrides": [], 
+          "percentage": false, 
+          "type": "graph", 
+          "stack": false, 
+          "timeShift": null, 
+          "aliasColors": {}, 
+          "lines": true, 
+          "points": false, 
+          "datasource": "$datasource", 
+          "pointradius": 5
         }
       ], 
       "showTitle": true, 
-      "collapse": true
+      "collapse": false
     }
   ], 
   "templating": {
@@ -6601,7 +6675,7 @@
       "1d"
     ]
   }, 
-  "version": 5, 
+  "version": 2, 
   "time": {
     "to": "now", 
     "from": "now-30m"
