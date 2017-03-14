@@ -1,29 +1,30 @@
 ---
 
+# all cluster use a single vpc
 - name: vpc setup
   ec2_vpc:
     state: present
     cidr_block: 172.233.0.0/16
     resource_tags:
-      Name: sre-vpc-ansible
-      ManagedBy: "{{ managed_by }}"
-      Creator: "{{ creator }}"
+      Name: pingcap-vpc-ansible
+      ManagedBy: tidb-ansible
+      Creator: ansible-auto
     subnets:
       - cidr: 172.233.1.0/24
         az: cn-north-1a
         resource_tags:
-          Name: "sre-subnet-1a"
+          Name: pingcap-subnet-1a
           Environment: "test"
-          ManagedBy: "{{ managed_by }}"
-          Creator: "{{ creator }}"
+          ManagedBy: tidb-ansible
+          Creator: ansible-auto
           Tier: "db"
       - cidr: 172.233.2.0/24
         az: cn-north-1b
         resource_tags:
-          Name: "sre-subnet-1b"
+          Name: pingcap-subnet-1b
           Environment: "test"
-          ManagedBy: "{{ managed_by }}"
-          Creator: "{{ creator }}"
+          ManagedBy: tidb-ansible
+          Creator: ansible-auto
           Tier: "db"
     internet_gateway: yes       # assign internet
     route_tables:
@@ -36,18 +37,18 @@
     region: cn-north-1
   register: vpc
 
+# existing cluster
 - name: tidb cluster group
   ec2_group:
     state: present
-    name: sre-sg-ansible
-    description: AWS VPC security group for SRE team
+    name: "ansible-sg-by-{{ managed_by }}"
+    description: vpc security group by {{ creator }}
     vpc_id: "{{ vpc.vpc_id }}"
     rules:
-      #
       - proto: tcp
         from_port: 0
         to_port: 0
-        group_name: 'sre-sg-ansible'
+        group_name: "ansible-sg-by-{{ managed_by }}"
       - proto: -1
         from_port: 0
         to_port: 0
@@ -101,7 +102,7 @@
   ec2:
     region: cn-north-1
     key_name: pingcap
-    group: sre-sg-ansible       # or group_id
+    group_id: "{{ security_group.group_id }}"
     instance_type: "{{ tikv_instance_type }}"
     image: "{{ image_ami }}"
     wait: yes
@@ -113,7 +114,7 @@
 #        delete_on_termination: true
 #   count: 1
     instance_tags:
-      Name: sre-tikv-c2
+      Name: tikv-by-{{ creator }}
       ManagedBy: "{{ managed_by }}"
       Creator: "{{ creator }}"
       Type: tikv
@@ -121,21 +122,21 @@
       Type: tikv
       ManagedBy: "{{ managed_by }}"
     exact_count: "{{ tikv_count }}"
-    vpc_subnet_id: "{{ vpc.subnets[0].id }}" # cn-north-1a
+    vpc_subnet_id: "{{ vpc.subnets[0].id }}"
     assign_public_ip: yes
 
 - name: pd servers
   ec2:
     region: cn-north-1
     key_name: pingcap
-    group: sre-sg-ansible       # or group_id
+    group_id: "{{ security_group.group_id }}"
     instance_type: "{{ pd_instance_type }}"
     image: "{{ image_ami }}"
     wait: yes
     wait_timeout: 500
 #   count: 1
     instance_tags:
-      Name: sre-pd-c2
+      Name: pd-by-{{ creator }}
       ManagedBy: "{{ managed_by }}"
       Creator: "{{ creator }}"
       Type: pd
@@ -143,21 +144,21 @@
       Type: pd
       ManagedBy: "{{ managed_by }}"
     exact_count: "{{ pd_count }}"
-    vpc_subnet_id: "{{ vpc.subnets[0].id }}" # cn-north-1a
+    vpc_subnet_id: "{{ vpc.subnets[0].id }}"
     assign_public_ip: yes
 
 - name: tidb servers
   ec2:
     region: cn-north-1
     key_name: pingcap
-    group: sre-sg-ansible       # or group_id
+    group_id: "{{ security_group.group_id }}"
     instance_type: "{{ tidb_instance_type }}"
     image: "{{ image_ami }}"
     wait: yes
     wait_timeout: 500
 #   count: 1
     instance_tags:
-      Name: sre-tidb-c1
+      Name: tidb-by-{{ creator }}
       ManagedBy: "{{ managed_by }}"
       Creator: "{{ creator }}"
       Type: tidb
@@ -165,7 +166,7 @@
       Type: tidb
       ManagedBy: "{{ managed_by }}"
     exact_count: "{{ tidb_count }}"
-    vpc_subnet_id: "{{ vpc.subnets[0].id }}" # cn-north-1a
+    vpc_subnet_id: "{{ vpc.subnets[0].id }}"
     assign_public_ip: yes
 
 
@@ -173,19 +174,18 @@
   ec2:
     region: cn-north-1
     key_name: pingcap
-    group: sre-sg-ansible       # or group_id
+    group_id: "{{ security_group.group_id }}"
     instance_type: "{{ monitoring_instance_type }}"
     image: "{{ image_ami }}"
     wait: yes
     wait_timeout: 500
-#   count: 1
     volumes:
       - device_name: /dev/xvdb
         volume_type: gp2
         volume_size: 50
         delete_on_termination: false
     instance_tags:
-      Name: sre-mon-c1
+      Name: mon-by-{{ creator }}
       ManagedBy: "{{ managed_by }}"
       Creator: "{{ creator }}"
       Type: monitoring
@@ -193,5 +193,5 @@
       Type: monitoring
       ManagedBy: "{{ managed_by }}"
     exact_count: "{{ monitoring_count }}"
-    vpc_subnet_id: "{{ vpc.subnets[0].id }}" # cn-north-1a
+    vpc_subnet_id: "{{ vpc.subnets[0].id }}"
     assign_public_ip: yes

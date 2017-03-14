@@ -8,17 +8,10 @@
     - include_vars:
         file: "{{ playbook_dir }}/vars.yml"
   tasks:
-    - name: gather vpc net facts
-      ec2_vpc_net_facts:
-        filters:
-          "tag:ManagedBy": "{{ managed_by }}"
-        region: cn-north-1
-      register: vpc_facts
-
     - name: host facts
       ec2_remote_facts:
         filters:
-          vpc-id: "{{ vpc_facts.vpcs[0].id }}"
+          "tag:ManagedBy": "{{ managed_by }}"
         region: cn-north-1
       register: ec2_instances
 
@@ -31,7 +24,7 @@
 
     - debug: var=groups['sre-to-be-teardown']
 
-    - pause: prompt="Are you sure to tear these down?"
+    - pause: prompt="Are you sure to tear these down(C to continue, A to Abort)?"
 
 - name: EC2 Instances
   hosts: sre-to-be-teardown
@@ -57,14 +50,10 @@
   tasks:
     - name: terminate security group
       ec2_group:
-        name: sre-sg-ansible
-        description: ec2 VPC security group for tidb cluster traffic
+        name: "ansible-sg-by-{{ managed_by }}"
+        description: vpc security group by {{ creator }}
         region: cn-north-1
         state: absent
 
-    - name: terminate vpc
-      ec2_vpc:
-        state: absent
-        vpc_id: "{{ vpc_facts.vpcs[0].id }}"
-        resource_tags:
-        region: cn-north-1
+    - debug: msg="we do not terminate vpc :)"
+
