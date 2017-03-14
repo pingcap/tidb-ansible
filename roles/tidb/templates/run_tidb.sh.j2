@@ -34,7 +34,7 @@ exec bin/tidb-server \
 {% if metric_host %}
     --metrics-addr="{{ metric_addr }}" --metrics-interval={{ metric_interval }} \
 {% endif %}
-{% if groups.binlog_servers is defined and groups.binlog_servers %}
+{% if enable_binlog %}
     --binlog-socket="{{ pump_socket }}" \
 {% endif %}
     --lease "{{ tidb_lease }}"
