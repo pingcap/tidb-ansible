@@ -169,7 +169,6 @@
     vpc_subnet_id: "{{ vpc.subnets[0].id }}"
     assign_public_ip: yes
 
-
 - name: monitoring servers
   ec2:
     region: cn-north-1
@@ -179,11 +178,11 @@
     image: "{{ image_ami }}"
     wait: yes
     wait_timeout: 500
-    volumes:
-      - device_name: /dev/xvdb
-        volume_type: gp2
-        volume_size: 50
-        delete_on_termination: false
+#    volumes:
+#      - device_name: /dev/xvdb
+#        volume_type: gp2
+#        volume_size: 50
+#        delete_on_termination: false
     instance_tags:
       Name: mon-by-{{ creator }}
       ManagedBy: "{{ managed_by }}"

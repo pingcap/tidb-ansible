@@ -7,6 +7,10 @@
   - "{{ resources_dir }}"
   - "{{ resources_dir }}/bin"
 
+# preflight checks
+
+- include_vars: file={{ playbook_dir }}/conf/packages.yml
+
 - name: detect outbound network
   shell: >
     warn=no
@@ -27,46 +31,38 @@
 - name: set GFW fact
   set_fact: under_gfw={{ gfw_st.stdout.strip() != '0' }}
 
+# do actual downloading
+
 - name: download tidb binary
-  get_url: url={{ item.url }} dest={{ downloads_dir }}/{{ item.name }}.tar.gz force=yes validate_certs=no
-  with_items: "{{ tidb_urls }}"
+  get_url: url={{ item.url }} dest={{ downloads_dir }}/{{ item.name }}-{{ item.version }}.tar.gz force=yes validate_certs=no
+  with_items: "{{ tidb_packages }}"
   when: has_outbound_network
 
 - name: download other binary
-  get_url: url={{ item.url }} dest={{ downloads_dir }}/{{ item.name }}.tar.gz validate_certs=no
-  with_items: "{{ package_urls_under_gfw if under_gfw else package_urls }}"
+  get_url: url={{ item.url }} dest={{ downloads_dir }}/{{ item.name }}-{{ item.version }}.tar.gz validate_certs=no
+  with_items: "{{ third_party_packages }}"
   when: has_outbound_network
 
-- name: unarchive binary
-  shell: ls -1 {{ item }}-*.tar.gz | xargs -n1 tar xzf
+- name: unarchive tidb binary
+  shell: ls -1 {{ item.name }}-{{ item.version }}.tar.gz | xargs -n1 tar xzf
   args:
     chdir: "{{ downloads_dir }}"
     warn: no
-  with_items:
-    - tidb
-    - binlog
-    - alertmanager
-    - prometheus
-    - node_exporter
-    - pushgateway
-    - daemontools
+  with_items: "{{ tidb_packages }}"
+
+- name: unarchive third party binary
+  shell: ls -1 {{ item.name }}-{{ item.version }}.tar.gz | xargs -n1 tar xzf
+  args:
+    chdir: "{{ downloads_dir }}"
+    warn: no
+  with_items: "{{ third_party_packages }}"
+
+
 
 - name: cp tidb binary
   shell: >
-    cp -v "{{ downloads_dir }}/tidb-latest-linux-amd64/bin/{{ item }}" "{{ resources_dir }}/bin/{{ item }}"
-  with_items:
-    - tidb-server
-    - pd-server
-    - tikv-server
-
-- name: cp binlog binary
-  shell: >
-    cp -v "{{ downloads_dir }}/binlog-latest-linux-amd64/bin/{{ item }}" "{{ resources_dir }}/bin/{{ item }}"
-  with_items:
-    - pump
-    - cistern
-    - drainer
-  when: enable_binlog | default(false)
+    cp -v {{ downloads_dir }}/{{ item.name }}-{{ item.version}}*/bin/* "{{ resources_dir }}/bin/"
+  with_items: "{{ tidb_packages }}"
 
 - name: cp monitoring binary
   shell: >
