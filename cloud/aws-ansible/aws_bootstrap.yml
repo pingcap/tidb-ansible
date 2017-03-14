@@ -47,26 +47,8 @@
       with_items: "{{ groups.all }}"
 
 
-- name: Set Time Zone
-  hosts: Ubuntu-14.04-do-not
-  gather_facts: false
-  become: true
-  tasks:
-    - name: Set timezone variables
-      copy: content='Asia/Shanghai'
-            dest=/etc/timezone
-            owner=root
-            group=root
-            mode=0644
-            backup=yes
-      notify:
-        - update timezone
-  handlers:
-    - name: update timezone
-      command: dpkg-reconfigure --frontend noninteractive tzdata
-
 - name: do AWS host preparation
-  hosts: Ubuntu-14.04-do-not
+  hosts: Ubuntu-14.04
   gather_facts: false
   tasks:
     - name: disable apt key check
