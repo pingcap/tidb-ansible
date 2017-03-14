@@ -45,7 +45,7 @@
 - name: deploying TiDB cluster
   hosts: tidb_servers
   roles:
-#  - pump
+    - { role: pump, when: enable_binlog }
     - tidb
 
 - name: finalizing deployment target

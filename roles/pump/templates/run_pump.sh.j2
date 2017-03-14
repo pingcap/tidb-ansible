@@ -6,9 +6,24 @@ ulimit -n 40960
 #          All your edit might be overwritten!
 {% set my_ip = ansible_default_ipv4.address -%}
 
+{% set metric_host = hostvars[groups.monitoring_servers[0]].ansible_default_ipv4.address
+    if groups.get('monitoring_servers', []) else "" -%}
+{% set metric_port = hostvars[groups.monitoring_servers[0]].pushgateway_port if metric_host else "" -%}
+{% set metric_addr = metric_host ~ ":" ~ metric_port if metric_host else "" -%}
+{% set metric_interval = tidb_metric_interval if metric_host else "0" -%}
+
+{% set all_pd = [] -%}
+{% set pd_hosts = groups.pd_servers %}
+{% for host in pd_hosts -%}
+  {% set pd_ip = hostvars[host].ansible_default_ipv4.address-%}
+  {% set pd_port = hostvars[host].pd_client_port -%}
+  {% set _ = all_pd.append("http://%s:%s" % (pd_ip, pd_port)) -%}
+{% endfor -%}
+
 exec bin/pump \
-    --addr="{{ my_ip }}:{{ pump_port }}" \
+    --addr="0.0.0.0:{{ pump_port }}" \
     --advertise-addr="{{ my_ip }}:{{ pump_port }}" \
+    --pd-urls="{{ all_pd | join(',') }}" \
     --data-dir="{{ pump_data_dir }}" \
     --socket="{{ pump_socket }}" \
     --log-file="{{ pump_log_dir }}/{{ pump_log_filename }}" \

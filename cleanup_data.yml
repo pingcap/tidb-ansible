@@ -20,14 +20,27 @@
 - name: TiDB cluster
   hosts: tidb_servers
   tasks:
-  - name: stop TiDB
-    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-    with_items:
-    - tidb
+    - name: stop TiDB
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      with_items:
+        - tidb
 
-  - name: wait TiDB down
-    wait_for: host={{ ansible_default_ipv4.address }} port={{ tidb_port }} state=stopped
+    - name: wait TiDB down
+      wait_for: host={{ ansible_default_ipv4.address }} port={{ tidb_port }} state=stopped
 
+    - name: pump
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      with_items:
+        - pump
+      when: enable_binlog
+
+    - name: wait pump down
+      wait_for: |
+        host={{ ansible_default_ipv4.address }} port={{ pump_port }} state=stopped
+      when: enable_binlog
+
+    - name: clean pump data
+      file: path={{ pump_data_dir }} state=absent
 
 - name: TiKV cluster
   hosts: tikv_servers

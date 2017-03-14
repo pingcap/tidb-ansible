@@ -66,6 +66,12 @@
       with_items:
         - tidb
 
+    - name: stop pump
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      with_items:
+        - pump
+      when: enable_binlog
+
 - hosts: grafana_servers
   # FIXME: must introduce this to load all variables
   tags:

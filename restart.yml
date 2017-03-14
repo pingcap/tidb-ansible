@@ -81,6 +81,17 @@
   tags:
     - tidb
   tasks:
+    - name: pump
+      shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
+      with_items:
+        - pump
+      when: enable_binlog
+
+    - name: wait pump up
+      wait_for: |
+        host={{ ansible_default_ipv4.address }} port={{ pump_port }} state=present
+      when: enable_binlog
+
     - name: restart TiDB
       shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
       with_items:
@@ -89,6 +100,7 @@
       wait_for: |
         host={{ ansible_default_ipv4.address }} port={{ tidb_port }} state=present
         search_regex='TiDB-1.0'
+
 
 - hosts: grafana_servers
   tags:

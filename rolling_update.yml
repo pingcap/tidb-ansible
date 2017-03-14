@@ -118,6 +118,7 @@
   tags:
     - tidb
   roles:
+    - { role: pump, when: enable_binlog, tags: ["deploy"] }
     - { role: tidb, tags: ["deploy"] }
   post_tasks:
     - name: stop TiDB
@@ -129,6 +130,17 @@
       tags:
         - restart
       wait_for: host={{ ansible_default_ipv4.address }} port={{ tidb_port }} state=stopped
+
+    - name: pump
+      shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
+      with_items:
+        - pump
+      when: enable_binlog
+
+    - name: wait pump up
+      wait_for: |
+        host={{ ansible_default_ipv4.address }} port={{ pump_port }} state=present
+      when: enable_binlog
 
     - name: start TiDB
       tags:

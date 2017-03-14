@@ -79,6 +79,17 @@
   tags:
     - tidb
   tasks:
+    - name: start pump
+      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh)
+      with_items:
+        - pump
+      when: enable_binlog
+
+    - name: wait pump up
+      wait_for: |
+        host={{ ansible_default_ipv4.address }} port={{ pump_port }} state=present
+      when: enable_binlog
+
     - name: restart TiDB
       shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
       with_items:
