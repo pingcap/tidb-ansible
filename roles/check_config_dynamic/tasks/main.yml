@@ -25,6 +25,16 @@
     msg: This machine does not have sufficient RAM to run TiDB.
   when: ansible_memtotal_mb < required_ram|int
 
+- name: Set enable_binlog - set default
+  set_fact:
+    enable_binlog: false
+  when: "(enable_binlog is not defined) or (enable_binlog in ['false', 'False', 'no'])"
+
+- name: Set enable_binlog - set inverse
+  set_fact:
+    enable_binlog: true
+  when: "enable_binlog in ['true', 'True', 'yes']"
+
 - name: Guess deploy_user - set ansible_user as default
   set_fact:
     deploy_user: "{{ ansible_user }}"

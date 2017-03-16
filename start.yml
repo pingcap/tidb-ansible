@@ -126,6 +126,7 @@
       delegate_to: localhost
       template: src=grafana.dest.json.j2 dest={{ playbook_dir }}/scripts/dests.json
       vars:
+        - ansible_become: false
         - grafana_dest_config:
             name: "{{ cluster_name | title }}"
             url: "http://{{ inventory_hostname }}:{{ grafana_port }}/"
@@ -143,3 +144,5 @@
       shell: >-
         chdir={{ playbook_dir }}/scripts
         ./grafana-config-copy.py
+      vars:
+        - ansible_become: false

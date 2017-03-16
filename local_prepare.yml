@@ -3,7 +3,10 @@
 - name: do local preparation
   hosts: localhost
   connection: local
-  become: false
+  become: false # useless
   gather_facts: false
   roles:
     - local
+  vars: # ugly workaround, ansible da shaby
+    - ansible_become: false
+
