@@ -23,33 +23,11 @@ scrape_configs:
           cluster: '{{ cluster_name }}'
 {% endif %}
 
-  - job_name: "tikv-node"
+  - job_name: "node"
     scrape_interval: "15s"
     static_configs:
       - targets:
-{% for host in groups.get('tikv_servers', []) -%}
-  {% set ip = hostvars[host]['ansible_default_ipv4']['address'] or host -%}
-  {# % set ip = host -% #}
-  {% set node_port = hostvars[host]['node_exporter_port'] %}
-        - '{{ ip }}:{{ node_port }}'
-{% endfor %}
-
-  - job_name: "pd-node"
-    scrape_interval: "15s"
-    static_configs:
-      - targets:
-{% for host in groups.get('pd_servers', []) -%}
-  {% set ip = hostvars[host]['ansible_default_ipv4']['address'] or host -%}
-  {# % set ip = host -% #}
-  {% set node_port = hostvars[host]['node_exporter_port'] %}
-        - '{{ ip }}:{{ node_port }}'
-{% endfor %}
-
-  - job_name: "tidb-node"
-    scrape_interval: "15s"
-    static_configs:
-      - targets:
-{% for host in groups.get('tidb_servers', []) -%}
+{% for host in groups.get('monitored_servers', []) -%}
   {% set ip = hostvars[host]['ansible_default_ipv4']['address'] or host -%}
   {# % set ip = host -% #}
   {% set node_port = hostvars[host]['node_exporter_port'] %}
