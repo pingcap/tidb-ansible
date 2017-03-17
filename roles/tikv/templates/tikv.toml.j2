@@ -27,7 +27,7 @@
 {% endfor %}
 
 [rocksdb]
-{% for item, value in tikv_conf.rocksdb | dictsort(false, by='value') -%}
+{% for item, value in tikv_conf.rocksdb | dictsort_by_value_type -%}
 {% if value is not mapping -%}
 {{ item }} = {{ value | to_json}}
 {% else %}

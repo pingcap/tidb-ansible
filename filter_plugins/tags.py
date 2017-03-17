@@ -15,9 +15,14 @@ def with_default_dicts(d, *args):
             ret.update([(k, arg[k]) for k in arg if k not in ret])
     return ret
 
+def dictsort_by_value_type(d):
+    vals = list(d.items())
+    return sorted(vals, key=lambda (k,v): (type(v)==dict, k, v))
+
 class FilterModule(object):
     def filters(self):
         return {
             'epoch_time_diff': epoch_time_diff,
-            'with_default_dicts': with_default_dicts
+            'with_default_dicts': with_default_dicts,
+            'dictsort_by_value_type': dictsort_by_value_type
         }
