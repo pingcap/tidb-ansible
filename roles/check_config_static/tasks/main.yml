@@ -24,3 +24,8 @@
 - name: Ensure ELK is disabled  (not supported yet)
   fail: msg="ELK deployment is not supported yet."
   when: enable_elk is defined and enable_elk
+
+- name: Close old control master
+  shell: ps aux | grep ansible-ssh | grep -v grep | awk '{print $2}' | xargs kill
+  ignore_errors: true
+  changed_when: false
