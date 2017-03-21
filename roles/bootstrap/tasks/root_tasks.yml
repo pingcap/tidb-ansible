@@ -65,3 +65,29 @@
   when: |
     enable_firewalld is defined and enable_firewalld and
     firewalld_running.stdout.strip() != "running"
+
+# modify irqbalance configuration file
+- name: check centos configuration file exists
+  stat: path=/etc/sysconfig/irqbalance 
+  register: centos_irq_config_file
+
+- name: check debian configuration file exists
+  stat: path=/etc/default/irqbalance 
+  register: debian_irq_config_file
+
+- name: modify centos irqbalance configuration file
+  lineinfile: dest=/etc/sysconfig/irqbalance 
+  regexp: '^# ONESHOT='
+  line: 'ONESHOT=yes'
+  when: tuning_irqbalance_value and centos_irq_config_file exists
+
+- name: modify centos irqbalance configuration file
+  lineinfile: dest=/etc/default/irqbalance 
+  regexp: 'ONESHOT='
+  line: 'ONESHOT="1"'
+  when: tuning_irqbalance_value and debian_irq_config_file exists
+
+# start/enable irqbalance value
+- name: enable irqbalance
+  service: name=irqbalance enable=yes state=started
+  ignore_errors: true
