@@ -1,7 +1,7 @@
+#!/usr/bin/env python
 
 import time
 import copy
-
 
 def epoch_time_diff(t):
     return int(int(t) - time.time())
@@ -17,7 +17,7 @@ def with_default_dicts(d, *args):
 
 def dictsort_by_value_type(d):
     vals = list(d.items())
-    return sorted(vals, key=lambda (k,v): (type(v)==dict, k, v))
+    return sorted(vals, key=lambda p: (isinstance(p[1], dict), p[0], p[1]))
 
 class FilterModule(object):
     def filters(self):
