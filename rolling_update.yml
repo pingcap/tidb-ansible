@@ -93,10 +93,15 @@
         - restart
       shell: cd {{ deploy_dir }}/scripts && ./stop_tikv.sh
 
-    - name: wait TiKV down
+    - name: wait TiKV down (via Port)
       tags:
         - restart
       wait_for: host={{ ansible_default_ipv4.address }} port={{ tikv_port }} state=stopped
+
+    - name: wait TiKV down (via PID)
+      tags:
+        - restart
+      wait_for_pid: pid_file={{ deploy_dir }}/status/tikv.pid timeout=300 state=absent
 
     - name: start TiKV
       tags:
