@@ -76,19 +76,25 @@
   register: debian_irq_config_file
 
 - name: modify centos irqbalance configuration file
-  lineinfile: dest=/etc/sysconfig/irqbalance 
-  regexp: '^# ONESHOT='
-  line: 'ONESHOT=yes'
-  when: tuning_irqbalance_value and centos_irq_config_file exists
+  lineinfile: 
+    dest=/etc/sysconfig/irqbalance 
+    regexp='# ONESHOT='
+    line='ONESHOT=yes'
+  when: 
+    - tuning_irqbalance_value 
+    - centos_irq_config_file.stat.exists
 
-- name: modify centos irqbalance configuration file
-  lineinfile: dest=/etc/default/irqbalance 
-  regexp: 'ONESHOT='
-  line: 'ONESHOT="1"'
-  when: tuning_irqbalance_value and debian_irq_config_file exists
+- name: modify debian irqbalance configuration file
+  lineinfile: 
+    dest=/etc/default/irqbalance 
+    regexp='ONESHOT='
+    line='ONESHOT="1"'
+  when: 
+    - tuning_irqbalance_value 
+    - debian_irq_config_file.stat.exists
 
 # start/enable irqbalance value
 - name: enable irqbalance
-  service: name=irqbalance enable=yes state=started
+  service: name=irqbalance state=started
   ignore_errors: true
   when: tuning_irqbalance_value
