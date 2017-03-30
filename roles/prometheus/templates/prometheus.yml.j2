@@ -25,8 +25,17 @@ scrape_configs:
 
   - job_name: "overwritten-nodes"
     honor_labels: true # don't overwrite job & instance labels
-    file_sd_configs:
-    - files: ['prometheus-sd-*.yml']
+    static_configs:
+    - targets:
+{% set target_hosts = [] -%}
+{% for host in hosts -%}
+{% set ip = hostvars[host]['ansible_default_ipv4']['address'] or host -%}
+{% set node_port = hostvars[host]['node_exporter_port'] -%}
+{% if ip not in target_hosts %}
+      - '{{ ip }}:{{ node_port }}'
+{% set _ = target_hosts.append(ip) -%}
+{% endif -%}
+{% endfor -%}
 
 # Load and evaluate rules in this file every 'evaluation_interval' seconds.
 rule_files:

@@ -22,11 +22,7 @@
 
 - name: create configuration file if not exist
   template: src=prometheus.yml.j2 dest={{ deploy_dir }}/conf/prometheus.yml mode=0644
-
-- name: create service discovery configuration file if not exist
-  template: src=prometheus-sd.yml.j2 dest={{ deploy_dir }}/conf/prometheus-sd-nodes.yml mode=0644
   vars:
-    job_name: nodes
     hosts: "{{ groups['all'] | list }}"
 
 - name: copy alert rules file if not exist
