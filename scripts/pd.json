@@ -1093,10 +1093,10 @@
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "sum(rate(pd_cmd_handle_completed_cmds_duration_seconds_count{instance=\"$instance\"}[1m])) by (type)", 
+              "expr": "sum(rate(grpc_server_handling_seconds_count{instance=\"$instance\"}[1m])) by (grpc_method)", 
               "step": 4, 
               "refId": "A", 
-              "legendFormat": "{{type}}"
+              "legendFormat": "{{grpc_method}}"
             }
           ], 
           "yaxes": [
@@ -1151,10 +1151,10 @@
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "histogram_quantile(0.99, sum(rate(pd_cmd_handle_completed_cmds_duration_seconds_bucket{instance=\"$instance\"}[5m])) by (type, le))", 
+              "expr": "histogram_quantile(0.99, sum(rate(grpc_server_handling_seconds_bucket{instance=\"$instance\"}[5m])) by (grpc_method, le))", 
               "step": 4, 
               "refId": "A", 
-              "legendFormat": "{{type}}"
+              "legendFormat": "{{grpc_method}}"
             }
           ], 
           "fill": 0, 
@@ -1232,18 +1232,18 @@
           "targets": [
             {
               "hide": true, 
-              "expr": "histogram_quantile(0.9999, sum(rate(pd_cmd_handle_completed_cmds_duration_seconds_bucket{instance=\"$instance\"}[5m])) by (type, le))", 
+              "expr": "histogram_quantile(0.9999, sum(rate(grpc_server_handling_seconds_sum{instance=\"$instance\"}[5m])) by (grpc_method, le))", 
               "step": 4, 
-              "legendFormat": "{{type}}", 
+              "legendFormat": "{{grpc_method}}", 
               "intervalFactor": 2, 
               "refId": "A"
             }, 
             {
               "intervalFactor": 2, 
-              "expr": "rate(pd_cmd_handle_completed_cmds_duration_seconds_sum{instance=\"$instance\"}[30s]) / rate(pd_cmd_handle_completed_cmds_duration_seconds_count{instance=\"$instance\"}[30s])", 
+              "expr": "rate(grpc_server_handling_seconds_sum{instance=\"$instance\"}[30s]) / rate(grpc_server_handling_seconds_count{instance=\"$instance\"}[30s])", 
               "step": 4, 
               "refId": "B", 
-              "legendFormat": "{{type}}"
+              "legendFormat": "{{grpc_method}}"
             }
           ], 
           "fill": 0, 
@@ -1432,7 +1432,7 @@
         }
       ], 
       "showTitle": true, 
-      "collapse": true
+      "collapse": false
     }, 
     {
       "repeat": null, 
@@ -2746,7 +2746,7 @@
       "1d"
     ]
   }, 
-  "version": 0, 
+  "version": 2, 
   "time": {
     "to": "now", 
     "from": "now-30m"
