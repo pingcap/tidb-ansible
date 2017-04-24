@@ -1,8 +1,6 @@
 # Ansible Playbook for TiDB
 
-``` 
-  TIDB CAN NOT RUN WITH ROOT
-```
+<span style="color: red; font-size:3em">  TIDB CAN NOT RUN BE WITH ROOT </span>
 
 Requires Ansible 2.2
 
