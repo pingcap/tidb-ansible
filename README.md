@@ -1,7 +1,7 @@
 # Ansible Playbook for TiDB
-
-__TIDB CAN NOT RUN BE WITH ROOT__
-
+------
+>__TIDB CAN NOT RUN BE WITH ROOT__
+------
 Requires Ansible 2.2
 
 WIP
