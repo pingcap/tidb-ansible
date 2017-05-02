@@ -1,8 +1,49 @@
 # Ansible Playbook for TiDB
-
+------
+>__TIDB CAN NOT RUN BE WITH ROOT__
+------
 Requires Ansible 2.2
 
 WIP
+
+## Deploy  informations
+1. install ansible and pip install the newest [ Jinja2 / MarkupSafe ]
+3. modify inventory.ini
+    * change val `ansible_user` with your deploy account (access sudo command).
+    * if deploy with root
+        * uncomment val `ansible_user`/`ansible_become_user`
+        * comment val `ansible_become`
+4. local prepare; if Internet is accessbile, ansible will download the latest tidb,
+    * command: 
+        ```
+            ansible-playbook local_prepare.yml
+        ```
+5. modify kernel variables
+    * command: 
+    ```
+        ansible-playbook bootstrap.yml
+    ```
+6. deploy 
+
+    *if deploy with root,*
+    *uncomment val `ansible_become` in inventory.ini file*
+
+    * command: 
+    ```
+        ansible-playbook deploy.yml
+    ```
+7. start 
+    * command:
+    ```
+        ansible-playbook start.yml
+    ```
+8. test
+    * use mysql client 
+    ```
+        mysql -u root -h tidb_ip -P 4000
+    ```
+9. web http://grafana_servers:3000
+    login(admin/admin)
 
 ## Where to get binary
 
