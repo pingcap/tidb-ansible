@@ -6,7 +6,7 @@
 WIP
 
 ## Requirements
-To use this guide you’ll need a working installation of Ansible version 2.2 or later.
+To use this guide you’ll need a working installation of Ansible version 2.2 or later and pip install the newest Jinja2 / MarkupSafe Python module.
 ([installation  reference](http://docs.ansible.com/ansible/intro_installation.html))
 
 After the installation is complete, you can run the following command to check ansible version：
