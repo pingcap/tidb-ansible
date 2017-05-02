@@ -15,42 +15,44 @@ $ ansible --version
 ansible 2.2.2.0
 ```
 ## Deploy  information
-1. modify inventory.ini
+1.  modify inventory.ini
     * if deploying via normal user:
         * change variable `ansible_user` to your deploy account (access sudo command).
     * if deploying via root:
         * uncomment variable `ansible_user`/`ansible_become_user`
         * comment variable `ansible_become`
-2. local prepare: if the Internet is accessbile, ansible will download the latest tidb.
-     ```
+2.  local prepare: if the Internet is accessbile, ansible will download the latest tidb.
+    ```
     ansible-playbook local_prepare.yml
     ```
 
-3. modify kernel parameters
+3.  modify kernel parameters
     
     ```
     ansible-playbook bootstrap.yml
     ```
-4. deploy
-> If deploying via root, uncomment variable `ansible_become` in inventory.ini file.
+4.  deploy
+    
+    > If deploying via root, uncomment variable `ansible_become` in inventory.ini file.
 
-    ansible-playbook deploy.yml
+        ansible-playbook deploy.yml
 
-5. start cluster
-    ```
-    ansible-playbook start.yml
-    ```
-6. test
+5.  start cluster
+
+        ansible-playbook start.yml
+   
+
+6.  test
     
     use mysql client
-    ```
-    mysql -u root -h tidb_servers_ip -P 4000
-    ```
-7. grafana monitoring platform:
 
-   http://grafana_servers_ip:3000
+        mysql -u root -h tidb_servers_ip -P 4000
+
+7.  grafana monitoring platform:
+
+    http://grafana_servers_ip:3000
    
-   login(admin/admin)
+    login(admin/admin)
 
 ## Where to get binary
 
