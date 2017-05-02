@@ -1,7 +1,6 @@
 # Ansible Playbook for TiDB
-------
->__TIDB CAN NOT RUN AS ROOT USER __
-------
+
+> TIDB CAN NOT RUN AS ROOT USER 
 
 WIP
 
