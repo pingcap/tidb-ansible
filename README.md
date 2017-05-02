@@ -1,49 +1,56 @@
 # Ansible Playbook for TiDB
 ------
->__TIDB CAN NOT RUN BE WITH ROOT__
+>__TIDB CAN NOT RUN AS ROOT USER __
 ------
-Requires Ansible 2.2
 
 WIP
 
-## Deploy  informations
-1. install ansible and pip install the newest [ Jinja2 / MarkupSafe ]
-3. modify inventory.ini
-    * change val `ansible_user` with your deploy account (access sudo command).
-    * if deploy with root
-        * uncomment val `ansible_user`/`ansible_become_user`
-        * comment val `ansible_become`
-4. local prepare; if Internet is accessbile, ansible will download the latest tidb,
-    * command: 
-        ```
-            ansible-playbook local_prepare.yml
-        ```
-5. modify kernel variables
-    * command: 
-    ```
-        ansible-playbook bootstrap.yml
-    ```
-6. deploy 
+## Requirements
+To use this guide you’ll need a working installation of Ansible version 2.2 or later.
+([installation  reference](http://docs.ansible.com/ansible/intro_installation.html))
 
-    *if deploy with root,*
-    *uncomment val `ansible_become` in inventory.ini file*
+After the installation is complete, you can run the following command to check ansible version：
+```
+$ ansible --version
+ansible 2.2.2.0
+```
+## Deploy  information
+1. modify inventory.ini
+    * if deploying via normal user:
+        * change variable `ansible_user` to your deploy account (access sudo command).
+    * if deploying via root:
+        * uncomment variable `ansible_user`/`ansible_become_user`
+        * comment variable `ansible_become`
+2. local prepare: if the Internet is accessbile, ansible will download the latest tidb.
+     ```
+    ansible-playbook local_prepare.yml
+    ```
 
-    * command: 
+3. modify kernel parameters
+    
     ```
-        ansible-playbook deploy.yml
+    ansible-playbook bootstrap.yml
     ```
-7. start 
-    * command:
+4. deploy
+> If deploying via root, uncomment variable `ansible_become` in inventory.ini file.
+
+    ansible-playbook deploy.yml
+
+5. start cluster
     ```
-        ansible-playbook start.yml
+    ansible-playbook start.yml
     ```
-8. test
-    * use mysql client 
+6. test
+    
+    use mysql client
     ```
-        mysql -u root -h tidb_ip -P 4000
+    mysql -u root -h tidb_servers_ip -P 4000
     ```
-9. web http://grafana_servers:3000
-    login(admin/admin)
+7. grafana monitoring platform:
+
+   http://grafana_servers_ip:3000
+   
+   login(admin/admin)
 
 ## Where to get binary
 
