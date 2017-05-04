@@ -1,0 +1,35 @@
+---
+
+# - name: find log filename
+#   find:
+#     path: "{{ deploy_dir }}/log"
+#     age: "-2d"
+#     patterns: "^.*log.*$"
+#     use_regex: True
+#     file_type: "file"
+#   register: log_filename_result
+
+# - name: archive log files
+#   archive:
+#     path: "{{item.path}}"
+#     dest: "{{ deploy_dir }}/log/{{ ansible_default_ipv4.address }}_newer_2_days.zip"
+#     format: zip
+#   with_items: "{{ log_filename_result.files }}"
+
+- name: archive log files
+  shell: "(cd {{ deploy_dir }}/log && find . -type f -name \"*log*\" -mtime -2 |xargs tar zfc {{ deploy_dir }}/log/{{ ansible_default_ipv4.address }}_newer_2_days.tgz )"
+
+
+
+- name: fetch log files
+  fetch:
+    src: "{{ deploy_dir }}/log/{{ ansible_default_ipv4.address }}_newer_2_days.tgz"
+    dest: "{{ fetch_log_dir }}/{{ ansible_default_ipv4.address }}_newer_2_days.tgz"
+    flat: yes
+
+- name: remove archive log file
+  file:
+    path: "{{ deploy_dir }}/log/{{ ansible_default_ipv4.address }}_newer_2_days.tgz"
+    state: absent
+    
+
