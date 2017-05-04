@@ -21,6 +21,7 @@ ulimit -n 1000000
 {% endfor -%}
 
 exec bin/pump \
+    --gc="{{ pump_gc }}" \
     --addr="0.0.0.0:{{ pump_port }}" \
     --advertise-addr="{{ my_ip }}:{{ pump_port }}" \
     --pd-urls="{{ all_pd | join(',') }}" \
