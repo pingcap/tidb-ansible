@@ -3,7 +3,6 @@
 > **TIDB IS NOT RECOMMENDED TO RUN AS ROOT**
 ---
 
-WIP
 
 ## Requirements
 To use this guide you’ll need a working installation of Ansible version 2.2 or later and pip install the newest Jinja2 / MarkupSafe Python module.
