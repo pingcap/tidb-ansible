@@ -79,6 +79,10 @@
   tags:
     - tidb
   tasks:
+    - name: clean pump .node file
+      file: path={{ pump_data_dir }}/.node state=absent
+      when: enable_binlog
+
     - name: start pump
       shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
       with_items:
