@@ -89,6 +89,12 @@
   when: "item.mount == deploy_partition.stdout and item.size_available < minimum_deploy_space|int"
   with_items: "{{ ansible_mounts }}"
 
+- name: Preflight check - Does deploy dir meet ext4 file system requirement
+  fail:
+    msg: 'The file system mounted at {{ item.mount }} does not meet ext4 file system requirement'
+  when: "item.mount == deploy_partition.stdout and item.fstype != 'ext4'"
+  with_items: "{{ ansible_mounts }}"
+
 - name: Preflight check - Get deploy dir permissions
   stat: path={{ deploy_dir }}
   register: vl_st
