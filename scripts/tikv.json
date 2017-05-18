@@ -97,7 +97,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -174,7 +174,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -222,7 +222,7 @@
               "logBase": 1, 
               "show": true, 
               "max": null, 
-              "format": "decbytes", 
+              "format": "bytes", 
               "min": "0", 
               "label": null
             }, 
@@ -252,7 +252,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -301,7 +301,7 @@
               "logBase": 1, 
               "show": true, 
               "max": null, 
-              "format": "decbytes", 
+              "format": "bytes", 
               "min": "0", 
               "label": null
             }, 
@@ -331,7 +331,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -462,7 +462,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -544,7 +544,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -622,7 +622,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -701,7 +701,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -780,7 +780,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }
       ], 
@@ -872,7 +872,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "decimals": null
         }, 
@@ -1001,8 +1001,251 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
+        }, 
+        {
+          "bars": false, 
+          "timeFrom": null, 
+          "links": [], 
+          "thresholds": [], 
+          "nullPointMode": "null as zero", 
+          "renderer": "flot", 
+          "linewidth": 1, 
+          "steppedLine": false, 
+          "id": 91, 
+          "fill": 0, 
+          "span": 6, 
+          "title": "buffered send data", 
+          "tooltip": {
+            "sort": 0, 
+            "shared": true, 
+            "value_type": "cumulative", 
+            "msResolution": false
+          }, 
+          "legend": {
+            "rightSide": true, 
+            "total": false, 
+            "min": false, 
+            "max": true, 
+            "show": true, 
+            "current": true, 
+            "hideEmpty": true, 
+            "values": true, 
+            "alignAsTable": true, 
+            "avg": false, 
+            "hideZero": true
+          }, 
+          "targets": [
+            {
+              "expr": "sum(rate(tikv_server_conn_buffered_send_bytes_total[1m])) by (job)", 
+              "metric": "tikv_server_conn_buffered_send_bytes_total", 
+              "step": 4, 
+              "legendFormat": "{{job}}", 
+              "intervalFactor": 2, 
+              "refId": "A"
+            }
+          ], 
+          "yaxes": [
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "bytes", 
+              "min": null, 
+              "label": null
+            }, 
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "short", 
+              "min": null, 
+              "label": null
+            }
+          ], 
+          "xaxis": {
+            "show": true, 
+            "values": [], 
+            "mode": "time", 
+            "name": null
+          }, 
+          "seriesOverrides": [], 
+          "percentage": false, 
+          "type": "graph", 
+          "error": false, 
+          "editable": true, 
+          "grid": {}, 
+          "stack": false, 
+          "timeShift": null, 
+          "aliasColors": {}, 
+          "lines": true, 
+          "points": false, 
+          "datasource": "${DS_TIDB-CLUSTER}", 
+          "pointradius": 5, 
+          "decimals": null
+        }, 
+        {
+          "bars": false, 
+          "timeFrom": null, 
+          "links": [], 
+          "thresholds": [], 
+          "nullPointMode": "null as zero", 
+          "renderer": "flot", 
+          "linewidth": 1, 
+          "steppedLine": false, 
+          "id": 92, 
+          "fill": 0, 
+          "span": 6, 
+          "title": "send data", 
+          "tooltip": {
+            "sort": 0, 
+            "shared": true, 
+            "value_type": "cumulative", 
+            "msResolution": false
+          }, 
+          "legend": {
+            "rightSide": true, 
+            "total": false, 
+            "min": false, 
+            "max": true, 
+            "show": true, 
+            "current": true, 
+            "hideEmpty": true, 
+            "values": true, 
+            "alignAsTable": true, 
+            "avg": false, 
+            "hideZero": true
+          }, 
+          "targets": [
+            {
+              "expr": "sum(rate(tikv_server_conn_send_bytes_total[1m])) by (job)", 
+              "metric": "tikv_server_conn_buffered_send_bytes_total", 
+              "step": 4, 
+              "legendFormat": "{{job}}", 
+              "intervalFactor": 2, 
+              "refId": "A"
+            }
+          ], 
+          "yaxes": [
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "bytes", 
+              "min": null, 
+              "label": null
+            }, 
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "short", 
+              "min": null, 
+              "label": null
+            }
+          ], 
+          "xaxis": {
+            "show": true, 
+            "values": [], 
+            "mode": "time", 
+            "name": null
+          }, 
+          "seriesOverrides": [], 
+          "percentage": false, 
+          "type": "graph", 
+          "error": false, 
+          "editable": true, 
+          "grid": {}, 
+          "stack": false, 
+          "timeShift": null, 
+          "aliasColors": {}, 
+          "lines": true, 
+          "points": false, 
+          "datasource": "${DS_TIDB-CLUSTER}", 
+          "pointradius": 5, 
+          "decimals": null
+        }, 
+        {
+          "bars": false, 
+          "timeFrom": null, 
+          "links": [], 
+          "thresholds": [], 
+          "nullPointMode": "null as zero", 
+          "renderer": "flot", 
+          "linewidth": 1, 
+          "steppedLine": false, 
+          "id": 93, 
+          "fill": 0, 
+          "span": 6, 
+          "title": "recv data", 
+          "tooltip": {
+            "sort": 0, 
+            "shared": true, 
+            "value_type": "cumulative", 
+            "msResolution": false
+          }, 
+          "legend": {
+            "rightSide": true, 
+            "total": false, 
+            "min": false, 
+            "max": true, 
+            "show": true, 
+            "current": true, 
+            "hideEmpty": true, 
+            "values": true, 
+            "alignAsTable": true, 
+            "avg": false, 
+            "hideZero": true
+          }, 
+          "targets": [
+            {
+              "expr": "sum(rate(tikv_server_conn_recv_bytes_total[1m])) by (job)", 
+              "metric": "tikv_server_conn_buffered_send_bytes_total", 
+              "step": 4, 
+              "legendFormat": "{{job}}", 
+              "intervalFactor": 2, 
+              "refId": "A"
+            }
+          ], 
+          "yaxes": [
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "bytes", 
+              "min": null, 
+              "label": null
+            }, 
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "short", 
+              "min": null, 
+              "label": null
+            }
+          ], 
+          "xaxis": {
+            "show": true, 
+            "values": [], 
+            "mode": "time", 
+            "name": null
+          }, 
+          "seriesOverrides": [], 
+          "percentage": false, 
+          "type": "graph", 
+          "error": false, 
+          "editable": true, 
+          "grid": {}, 
+          "stack": false, 
+          "timeShift": null, 
+          "aliasColors": {}, 
+          "lines": true, 
+          "points": false, 
+          "datasource": "${DS_TIDB-CLUSTER}", 
+          "pointradius": 5, 
+          "decimals": null
         }
       ], 
       "showTitle": true, 
@@ -1142,7 +1385,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -1220,7 +1463,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -1298,7 +1541,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -1376,7 +1619,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -1453,7 +1696,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -1530,7 +1773,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -1608,7 +1851,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -1687,7 +1930,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -1765,7 +2008,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -1843,7 +2086,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -1921,7 +2164,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -1999,7 +2242,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }
       ], 
@@ -2089,7 +2332,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -2166,7 +2409,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -2244,7 +2487,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -2321,7 +2564,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -2369,7 +2612,7 @@
               "logBase": 1, 
               "show": true, 
               "max": null, 
-              "format": "short", 
+              "format": "s", 
               "min": null, 
               "label": null
             }, 
@@ -2399,7 +2642,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -2446,7 +2689,7 @@
               "logBase": 1, 
               "show": true, 
               "max": null, 
-              "format": "short", 
+              "format": "s", 
               "min": null, 
               "label": null
             }, 
@@ -2476,7 +2719,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }
       ], 
@@ -2567,7 +2810,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -2648,7 +2891,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -2726,7 +2969,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -2805,7 +3048,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }
       ], 
@@ -2897,7 +3140,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -2974,7 +3217,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -3053,7 +3296,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -3131,7 +3374,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -3209,7 +3452,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "decimals": 2
         }, 
@@ -3288,7 +3531,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -3368,7 +3611,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }
       ], 
@@ -3457,7 +3700,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "decimals": 5
         }, 
@@ -3537,7 +3780,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "decimals": 5
         }, 
@@ -3616,7 +3859,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -3694,7 +3937,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -3772,7 +4015,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -3850,7 +4093,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -3929,7 +4172,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -4008,7 +4251,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -4087,7 +4330,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }
       ], 
@@ -4177,7 +4420,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -4255,7 +4498,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -4332,7 +4575,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -4412,7 +4655,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -4487,7 +4730,7 @@
             "rgba(237, 129, 40, 0.89)", 
             "rgba(50, 172, 45, 0.97)"
           ], 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "error": false, 
           "nullText": null, 
           "postfixFontSize": "50%", 
@@ -4564,7 +4807,7 @@
             "rgba(237, 129, 40, 0.89)", 
             "rgba(50, 172, 45, 0.97)"
           ], 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "error": false, 
           "nullText": null, 
           "postfixFontSize": "50%", 
@@ -4596,7 +4839,7 @@
             {
               "intervalFactor": 2, 
               "expr": "sum(delta(tikv_raftstore_raft_sent_message_total{type=\"snapshot\"}[1m]))", 
-              "step": 4, 
+              "step": 10, 
               "refId": "A", 
               "legendFormat": " "
             }
@@ -4657,7 +4900,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -4674,21 +4917,21 @@
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.99, sum(rate(tikv_server_send_snapshot_duration_seconds_bucket[1m])) by (le))", 
-              "step": 4, 
+              "step": 10, 
               "refId": "A", 
               "legendFormat": "send"
             }, 
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_snapshot_duration_seconds_bucket{type=\"apply\"}[1m])) by (le))", 
-              "step": 4, 
+              "step": 10, 
               "refId": "B", 
               "legendFormat": "apply"
             }, 
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_snapshot_duration_seconds_bucket{type=\"generate\"}[1m])) by (le))", 
-              "step": 4, 
+              "step": 10, 
               "refId": "C", 
               "legendFormat": "generate"
             }
@@ -4749,7 +4992,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -4766,7 +5009,7 @@
             {
               "expr": "sum(tikv_raftstore_snapshot_traffic_total) by (type)", 
               "metric": "", 
-              "step": 4, 
+              "step": 10, 
               "legendFormat": "{{type}}", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -4828,7 +5071,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -4907,7 +5150,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -4986,7 +5229,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }
       ], 
@@ -5078,7 +5321,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -5155,7 +5398,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }
       ], 
@@ -5297,7 +5540,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -5375,7 +5618,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -5453,7 +5696,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -5533,7 +5776,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -5612,7 +5855,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -5692,7 +5935,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -5770,7 +6013,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -5865,7 +6108,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -5943,7 +6186,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }
       ], 
@@ -6029,7 +6272,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "minSpan": 6
         }, 
@@ -6104,7 +6347,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "minSpan": 6
         }, 
@@ -6192,7 +6435,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "minSpan": 6
         }, 
@@ -6280,7 +6523,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "minSpan": 6
         }, 
@@ -6368,7 +6611,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "minSpan": 6
         }, 
@@ -6461,7 +6704,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "decimals": 1
         }, 
@@ -6547,7 +6790,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "decimals": 1
         }, 
@@ -6619,7 +6862,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -6698,7 +6941,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "decimals": 1
         }, 
@@ -6778,7 +7021,252 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
+          "pointradius": 5, 
+          "decimals": 1
+        }, 
+        {
+          "bars": false, 
+          "timeFrom": null, 
+          "links": [], 
+          "thresholds": [], 
+          "nullPointMode": "null", 
+          "renderer": "flot", 
+          "id": 94, 
+          "linewidth": 1, 
+          "steppedLine": false, 
+          "targets": [
+            {
+              "hide": false, 
+              "expr": "sum(tikv_engine_block_cache_size_bytes) by(job, cf)", 
+              "metric": "tikv_engine_block_cache_size_bytes", 
+              "step": 4, 
+              "legendFormat": "{{job}}-{{cf}}", 
+              "intervalFactor": 2, 
+              "refId": "A"
+            }
+          ], 
+          "fill": 1, 
+          "span": 6, 
+          "title": "cache", 
+          "tooltip": {
+            "sort": 0, 
+            "shared": true, 
+            "value_type": "individual"
+          }, 
+          "legend": {
+            "rightSide": true, 
+            "total": false, 
+            "min": false, 
+            "max": true, 
+            "show": true, 
+            "current": true, 
+            "values": true, 
+            "alignAsTable": true, 
+            "avg": false
+          }, 
+          "yaxes": [
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "bytes", 
+              "min": "0", 
+              "label": null
+            }, 
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "wps", 
+              "min": "0", 
+              "label": null
+            }
+          ], 
+          "xaxis": {
+            "show": true, 
+            "values": [], 
+            "mode": "time", 
+            "name": null
+          }, 
+          "seriesOverrides": [
+            {
+              "alias": "keys_written", 
+              "yaxis": 2
+            }
+          ], 
+          "percentage": false, 
+          "type": "graph", 
+          "stack": false, 
+          "timeShift": null, 
+          "aliasColors": {}, 
+          "lines": true, 
+          "points": false, 
+          "datasource": "${DS_TIDB-CLUSTER}", 
+          "pointradius": 5, 
+          "decimals": 1
+        }, 
+        {
+          "bars": false, 
+          "timeFrom": null, 
+          "links": [], 
+          "thresholds": [], 
+          "nullPointMode": "null", 
+          "renderer": "flot", 
+          "id": 95, 
+          "linewidth": 1, 
+          "steppedLine": false, 
+          "targets": [
+            {
+              "hide": false, 
+              "expr": "sum(tikv_engine_memory_bytes{type=\"mem-tables\"}) by (job, cf)", 
+              "metric": "tikv_engine_memory_bytes", 
+              "step": 4, 
+              "legendFormat": "{{job}}-{{cf}}", 
+              "intervalFactor": 2, 
+              "refId": "A"
+            }
+          ], 
+          "fill": 1, 
+          "span": 6, 
+          "title": "mem table", 
+          "tooltip": {
+            "sort": 0, 
+            "shared": true, 
+            "value_type": "individual"
+          }, 
+          "legend": {
+            "rightSide": true, 
+            "total": false, 
+            "min": false, 
+            "max": true, 
+            "show": true, 
+            "current": true, 
+            "values": true, 
+            "alignAsTable": true, 
+            "avg": false, 
+            "hideZero": true
+          }, 
+          "yaxes": [
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "bytes", 
+              "min": "0", 
+              "label": null
+            }, 
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "wps", 
+              "min": "0", 
+              "label": null
+            }
+          ], 
+          "xaxis": {
+            "show": true, 
+            "values": [], 
+            "mode": "time", 
+            "name": null
+          }, 
+          "seriesOverrides": [
+            {
+              "alias": "keys_written", 
+              "yaxis": 2
+            }
+          ], 
+          "percentage": false, 
+          "type": "graph", 
+          "stack": false, 
+          "timeShift": null, 
+          "aliasColors": {}, 
+          "lines": true, 
+          "points": false, 
+          "datasource": "${DS_TIDB-CLUSTER}", 
+          "pointradius": 5, 
+          "decimals": 1
+        }, 
+        {
+          "bars": false, 
+          "timeFrom": null, 
+          "links": [], 
+          "thresholds": [], 
+          "nullPointMode": "null", 
+          "renderer": "flot", 
+          "id": 96, 
+          "linewidth": 1, 
+          "steppedLine": false, 
+          "targets": [
+            {
+              "hide": false, 
+              "expr": "sum(tikv_engine_memory_bytes{type=\"readers-mem\"}) by (job, cf)", 
+              "metric": "tikv_engine_memory_bytes", 
+              "step": 4, 
+              "legendFormat": "{{job}}-{{cf}}", 
+              "intervalFactor": 2, 
+              "refId": "A"
+            }
+          ], 
+          "fill": 1, 
+          "span": 6, 
+          "title": "table reader mem", 
+          "tooltip": {
+            "sort": 0, 
+            "shared": true, 
+            "value_type": "individual"
+          }, 
+          "legend": {
+            "rightSide": true, 
+            "total": false, 
+            "min": false, 
+            "max": true, 
+            "show": true, 
+            "current": true, 
+            "values": true, 
+            "alignAsTable": true, 
+            "avg": false, 
+            "hideZero": true
+          }, 
+          "yaxes": [
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "bytes", 
+              "min": "0", 
+              "label": null
+            }, 
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "wps", 
+              "min": "0", 
+              "label": null
+            }
+          ], 
+          "xaxis": {
+            "show": true, 
+            "values": [], 
+            "mode": "time", 
+            "name": null
+          }, 
+          "seriesOverrides": [
+            {
+              "alias": "keys_written", 
+              "yaxis": 2
+            }
+          ], 
+          "percentage": false, 
+          "type": "graph", 
+          "stack": false, 
+          "timeShift": null, 
+          "aliasColors": {}, 
+          "lines": true, 
+          "points": false, 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "decimals": 1
         }
@@ -6800,7 +7288,7 @@
   "tags": [], 
   "graphTooltip": 0, 
   "hideControls": false, 
-  "title": "Cluster-TiKV", 
+  "title": "TiDB Cluster - tikv", 
   "editable": true, 
   "refresh": "1m", 
   "annotations": {
@@ -6832,11 +7320,35 @@
       "1d"
     ]
   }, 
-  "version": 0, 
+  "__inputs": [
+    {
+      "description": "", 
+      "pluginName": "Prometheus", 
+      "label": "tidb-cluster", 
+      "pluginId": "prometheus", 
+      "type": "datasource", 
+      "name": "DS_TIDB-CLUSTER"
+    }
+  ], 
+  "version": 4, 
   "time": {
     "to": "now", 
     "from": "now-30m"
   }, 
+  "__requires": [
+    {
+      "version": "4.0.1", 
+      "type": "grafana", 
+      "id": "grafana", 
+      "name": "Grafana"
+    }, 
+    {
+      "version": "1.0.0", 
+      "type": "datasource", 
+      "id": "prometheus", 
+      "name": "Prometheus"
+    }
+  ], 
   "timezone": "browser", 
   "schemaVersion": 14, 
   "id": null
