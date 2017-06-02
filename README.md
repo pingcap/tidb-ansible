@@ -1,8 +1,9 @@
 # Ansible Playbook for TiDB
 > **TIDB IS NOT RECOMMENDED TO RUN AS ROOT**
 
+## Tutorial
 
-WIP
+[简体中文](https://github.com/pingcap/docs-cn/blob/master/op-guide/ansible-deployment.md)
 
 ## Requirements
 To use this guide you’ll need a working installation of Ansible version 2.2 or later and `pip install Jinja2==2.7.2 MarkupSafe==0.11`.
