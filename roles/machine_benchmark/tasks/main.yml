@@ -3,6 +3,9 @@
 - name: Benchmark the write speed of tikv deploy_dir disk with dd command 
   shell: "dd bs=4k count=250000 oflag=direct if=/dev/zero of={{ deploy_dir }}/io_test.txt 2>&1 | awk '/MB/{print $(NF-1)}'"
   register: disk_write_speed
+  
+- debug:
+    msg: "run command on tikv servers: `dd bs=4k count=250000 oflag=direct if=/dev/zero of={{ deploy_dir }}/io_test.txt 2>&1 | awk '/MB/{print $(NF-1)}'`, and the result is {{ disk_write_speed.stdout }} MB/s."
 
 - name: Preflight check - Does the write speed of tikv deploy_dir disk meet requirement
   fail:
