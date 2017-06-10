@@ -1,0 +1,13 @@
+---
+
+- name: Benchmark the write speed of tikv deploy_dir disk with dd command 
+  shell: "dd bs=4k count=250000 oflag=direct if=/dev/zero of={{ deploy_dir }}/io_test.txt 2>&1 | awk '/MB/{print $(NF-1)}'"
+  register: disk_write_speed
+
+- name: Preflight check - Does the write speed of tikv deploy_dir disk meet requirement
+  fail:
+    msg: 'the write speed of tikv deploy_dir disk is too slow: {{ disk_write_speed.stdout }} MB/s < {{ min_write_speed }} MB/s'
+  when: disk_write_speed.stdout|int < min_write_speed|int
+
+- name: Clean disk benchmark temporary file
+  file: path={{ deploy_dir }}/io_test.txt state=absent
