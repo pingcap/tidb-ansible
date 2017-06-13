@@ -26,5 +26,12 @@
   roles:
     - pre-ansible
     - bootstrap
+
+- name: machine benchmark
+  hosts: tikv_servers
+  gather_facts: false
+  roles:
+    - { role: machine_benchmark, when: machine_benchmark }
+
 # FIXME: will fail when using pipeline connection
 #    - check_config_dynamic
