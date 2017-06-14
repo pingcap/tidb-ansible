@@ -42,10 +42,13 @@
 - name: set hostname if hostname is not distinguishable
   hostname: name=ip-{{ ansible_default_ipv4.address | replace(".","-") }}
   register: hostname_set
-  when: "ansible_default_ipv4.address | replace('.','-') not in ansible_hostname"
+  when:
+    - set_hostname
+    - "ansible_default_ipv4.address | replace('.','-') not in ansible_hostname"
 
 - name: set hostname in hosts file
   lineinfile: dest=/etc/hosts line='127.0.0.1     ip-{{ ansible_default_ipv4.address | replace(\".\",\"-\") }}'
+  when: set_hostname
 
 # need root
 - name: determine if firewalld is running
