@@ -222,7 +222,7 @@
               "logBase": 1, 
               "show": true, 
               "max": null, 
-              "format": "bytes", 
+              "format": "decbytes", 
               "min": "0", 
               "label": null
             }, 
@@ -301,7 +301,7 @@
               "logBase": 1, 
               "show": true, 
               "max": null, 
-              "format": "bytes", 
+              "format": "decbytes", 
               "min": "0", 
               "label": null
             }, 
@@ -785,470 +785,6 @@
         }
       ], 
       "showTitle": true, 
-      "collapse": false
-    }, 
-    {
-      "repeat": null, 
-      "titleSize": "h6", 
-      "repeatIteration": null, 
-      "title": "Network", 
-      "height": "250px", 
-      "repeatRowId": null, 
-      "panels": [
-        {
-          "bars": false, 
-          "timeFrom": null, 
-          "links": [], 
-          "thresholds": [], 
-          "nullPointMode": "null as zero", 
-          "renderer": "flot", 
-          "linewidth": 1, 
-          "steppedLine": false, 
-          "id": 10, 
-          "fill": 0, 
-          "span": 6, 
-          "title": "server receive msg", 
-          "tooltip": {
-            "sort": 0, 
-            "shared": true, 
-            "value_type": "cumulative", 
-            "msResolution": false
-          }, 
-          "legend": {
-            "rightSide": true, 
-            "total": false, 
-            "min": false, 
-            "max": true, 
-            "show": true, 
-            "current": true, 
-            "hideEmpty": true, 
-            "values": true, 
-            "alignAsTable": true, 
-            "avg": false, 
-            "hideZero": true
-          }, 
-          "targets": [
-            {
-              "expr": "sum(rate(tikv_server_receive_msg_total[1m])) by (instance, type)", 
-              "metric": "tikv_server_receive_msg_total", 
-              "step": 4, 
-              "legendFormat": "{{instance}}-{{type}}", 
-              "intervalFactor": 2, 
-              "refId": "A"
-            }
-          ], 
-          "yaxes": [
-            {
-              "logBase": 1, 
-              "show": true, 
-              "max": null, 
-              "format": "short", 
-              "min": null, 
-              "label": null
-            }, 
-            {
-              "logBase": 1, 
-              "show": true, 
-              "max": null, 
-              "format": "short", 
-              "min": null, 
-              "label": null
-            }
-          ], 
-          "xaxis": {
-            "show": true, 
-            "values": [], 
-            "mode": "time", 
-            "name": null
-          }, 
-          "seriesOverrides": [], 
-          "percentage": false, 
-          "type": "graph", 
-          "error": false, 
-          "editable": true, 
-          "grid": {}, 
-          "stack": false, 
-          "timeShift": null, 
-          "aliasColors": {}, 
-          "lines": true, 
-          "points": false, 
-          "datasource": "${DS_TIDB-CLUSTER}", 
-          "pointradius": 5, 
-          "decimals": null
-        }, 
-        {
-          "bars": false, 
-          "timeFrom": null, 
-          "links": [], 
-          "thresholds": [
-            {
-              "colorMode": "critical", 
-              "line": true, 
-              "op": "lt", 
-              "value": 0.1, 
-              "fill": true
-            }
-          ], 
-          "nullPointMode": "null as zero", 
-          "renderer": "flot", 
-          "linewidth": 1, 
-          "steppedLine": false, 
-          "id": 20, 
-          "fill": 0, 
-          "span": 6, 
-          "title": "connections", 
-          "tooltip": {
-            "sort": 0, 
-            "shared": true, 
-            "value_type": "cumulative", 
-            "msResolution": false
-          }, 
-          "legend": {
-            "rightSide": true, 
-            "total": false, 
-            "min": false, 
-            "max": true, 
-            "show": true, 
-            "current": true, 
-            "hideEmpty": true, 
-            "values": true, 
-            "alignAsTable": true, 
-            "avg": false
-          }, 
-          "targets": [
-            {
-              "intervalFactor": 2, 
-              "expr": "sum(tikv_server_connection_total) by (job)", 
-              "step": 4, 
-              "refId": "A", 
-              "legendFormat": "{{job}}"
-            }
-          ], 
-          "yaxes": [
-            {
-              "logBase": 1, 
-              "show": true, 
-              "max": null, 
-              "format": "short", 
-              "min": "0", 
-              "label": null
-            }, 
-            {
-              "logBase": 1, 
-              "show": true, 
-              "max": null, 
-              "format": "short", 
-              "min": null, 
-              "label": null
-            }
-          ], 
-          "xaxis": {
-            "show": true, 
-            "values": [], 
-            "mode": "time", 
-            "name": null
-          }, 
-          "seriesOverrides": [], 
-          "percentage": false, 
-          "type": "graph", 
-          "error": false, 
-          "editable": true, 
-          "alert": {
-            "noDataState": "alerting", 
-            "name": "TiKV connections alert", 
-            "frequency": "60s", 
-            "notifications": [], 
-            "handler": 1, 
-            "executionErrorState": "alerting", 
-            "message": "TiKV keep-alive check fails, connection count is 0", 
-            "conditions": [
-              {
-                "operator": {
-                  "type": "and"
-                }, 
-                "query": {
-                  "params": [
-                    "A", 
-                    "1m", 
-                    "now"
-                  ], 
-                  "model": {
-                    "intervalFactor": 2, 
-                    "expr": "sum(tikv_server_connection_total) by (job)", 
-                    "step": 4, 
-                    "refId": "A", 
-                    "legendFormat": "{{job}}"
-                  }, 
-                  "datasourceId": 1
-                }, 
-                "evaluator": {
-                  "type": "lt", 
-                  "params": [
-                    0.1
-                  ]
-                }, 
-                "reducer": {
-                  "type": "min", 
-                  "params": []
-                }, 
-                "type": "query"
-              }
-            ]
-          }, 
-          "grid": {}, 
-          "stack": false, 
-          "timeShift": null, 
-          "aliasColors": {}, 
-          "lines": true, 
-          "points": false, 
-          "datasource": "${DS_TIDB-CLUSTER}", 
-          "pointradius": 5
-        }, 
-        {
-          "bars": false, 
-          "timeFrom": null, 
-          "links": [], 
-          "thresholds": [], 
-          "nullPointMode": "null as zero", 
-          "renderer": "flot", 
-          "linewidth": 1, 
-          "steppedLine": false, 
-          "id": 91, 
-          "fill": 0, 
-          "span": 6, 
-          "title": "buffered send data", 
-          "tooltip": {
-            "sort": 0, 
-            "shared": true, 
-            "value_type": "cumulative", 
-            "msResolution": false
-          }, 
-          "legend": {
-            "rightSide": true, 
-            "total": false, 
-            "min": false, 
-            "max": true, 
-            "show": true, 
-            "current": true, 
-            "hideEmpty": true, 
-            "values": true, 
-            "alignAsTable": true, 
-            "avg": false, 
-            "hideZero": true
-          }, 
-          "targets": [
-            {
-              "expr": "sum(rate(tikv_server_conn_buffered_send_bytes_total[1m])) by (job)", 
-              "metric": "tikv_server_conn_buffered_send_bytes_total", 
-              "step": 4, 
-              "legendFormat": "{{job}}", 
-              "intervalFactor": 2, 
-              "refId": "A"
-            }
-          ], 
-          "yaxes": [
-            {
-              "logBase": 1, 
-              "show": true, 
-              "max": null, 
-              "format": "bytes", 
-              "min": null, 
-              "label": null
-            }, 
-            {
-              "logBase": 1, 
-              "show": true, 
-              "max": null, 
-              "format": "short", 
-              "min": null, 
-              "label": null
-            }
-          ], 
-          "xaxis": {
-            "show": true, 
-            "values": [], 
-            "mode": "time", 
-            "name": null
-          }, 
-          "seriesOverrides": [], 
-          "percentage": false, 
-          "type": "graph", 
-          "error": false, 
-          "editable": true, 
-          "grid": {}, 
-          "stack": false, 
-          "timeShift": null, 
-          "aliasColors": {}, 
-          "lines": true, 
-          "points": false, 
-          "datasource": "${DS_TIDB-CLUSTER}", 
-          "pointradius": 5, 
-          "decimals": null
-        }, 
-        {
-          "bars": false, 
-          "timeFrom": null, 
-          "links": [], 
-          "thresholds": [], 
-          "nullPointMode": "null as zero", 
-          "renderer": "flot", 
-          "linewidth": 1, 
-          "steppedLine": false, 
-          "id": 92, 
-          "fill": 0, 
-          "span": 6, 
-          "title": "send data", 
-          "tooltip": {
-            "sort": 0, 
-            "shared": true, 
-            "value_type": "cumulative", 
-            "msResolution": false
-          }, 
-          "legend": {
-            "rightSide": true, 
-            "total": false, 
-            "min": false, 
-            "max": true, 
-            "show": true, 
-            "current": true, 
-            "hideEmpty": true, 
-            "values": true, 
-            "alignAsTable": true, 
-            "avg": false, 
-            "hideZero": true
-          }, 
-          "targets": [
-            {
-              "expr": "sum(rate(tikv_server_conn_send_bytes_total[1m])) by (job)", 
-              "metric": "tikv_server_conn_buffered_send_bytes_total", 
-              "step": 4, 
-              "legendFormat": "{{job}}", 
-              "intervalFactor": 2, 
-              "refId": "A"
-            }
-          ], 
-          "yaxes": [
-            {
-              "logBase": 1, 
-              "show": true, 
-              "max": null, 
-              "format": "bytes", 
-              "min": null, 
-              "label": null
-            }, 
-            {
-              "logBase": 1, 
-              "show": true, 
-              "max": null, 
-              "format": "short", 
-              "min": null, 
-              "label": null
-            }
-          ], 
-          "xaxis": {
-            "show": true, 
-            "values": [], 
-            "mode": "time", 
-            "name": null
-          }, 
-          "seriesOverrides": [], 
-          "percentage": false, 
-          "type": "graph", 
-          "error": false, 
-          "editable": true, 
-          "grid": {}, 
-          "stack": false, 
-          "timeShift": null, 
-          "aliasColors": {}, 
-          "lines": true, 
-          "points": false, 
-          "datasource": "${DS_TIDB-CLUSTER}", 
-          "pointradius": 5, 
-          "decimals": null
-        }, 
-        {
-          "bars": false, 
-          "timeFrom": null, 
-          "links": [], 
-          "thresholds": [], 
-          "nullPointMode": "null as zero", 
-          "renderer": "flot", 
-          "linewidth": 1, 
-          "steppedLine": false, 
-          "id": 93, 
-          "fill": 0, 
-          "span": 6, 
-          "title": "recv data", 
-          "tooltip": {
-            "sort": 0, 
-            "shared": true, 
-            "value_type": "cumulative", 
-            "msResolution": false
-          }, 
-          "legend": {
-            "rightSide": true, 
-            "total": false, 
-            "min": false, 
-            "max": true, 
-            "show": true, 
-            "current": true, 
-            "hideEmpty": true, 
-            "values": true, 
-            "alignAsTable": true, 
-            "avg": false, 
-            "hideZero": true
-          }, 
-          "targets": [
-            {
-              "expr": "sum(rate(tikv_server_conn_recv_bytes_total[1m])) by (job)", 
-              "metric": "tikv_server_conn_buffered_send_bytes_total", 
-              "step": 4, 
-              "legendFormat": "{{job}}", 
-              "intervalFactor": 2, 
-              "refId": "A"
-            }
-          ], 
-          "yaxes": [
-            {
-              "logBase": 1, 
-              "show": true, 
-              "max": null, 
-              "format": "bytes", 
-              "min": null, 
-              "label": null
-            }, 
-            {
-              "logBase": 1, 
-              "show": true, 
-              "max": null, 
-              "format": "short", 
-              "min": null, 
-              "label": null
-            }
-          ], 
-          "xaxis": {
-            "show": true, 
-            "values": [], 
-            "mode": "time", 
-            "name": null
-          }, 
-          "seriesOverrides": [], 
-          "percentage": false, 
-          "type": "graph", 
-          "error": false, 
-          "editable": true, 
-          "grid": {}, 
-          "stack": false, 
-          "timeShift": null, 
-          "aliasColors": {}, 
-          "lines": true, 
-          "points": false, 
-          "datasource": "${DS_TIDB-CLUSTER}", 
-          "pointradius": 5, 
-          "decimals": null
-        }
-      ], 
-      "showTitle": true, 
       "collapse": true
     }, 
     {
@@ -1303,7 +839,7 @@
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_raft_process_duration_secs_bucket{type='ready'}[1m])) by (le, job))", 
-              "step": 4, 
+              "step": 20, 
               "refId": "A", 
               "legendFormat": "{{job}}"
             }
@@ -1359,7 +895,7 @@
                   "model": {
                     "intervalFactor": 2, 
                     "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_raft_process_duration_secs_bucket{type='ready'}[1m])) by (le, job))", 
-                    "step": 4, 
+                    "step": 20, 
                     "refId": "A", 
                     "legendFormat": "{{job}}"
                   }, 
@@ -1402,7 +938,7 @@
             {
               "expr": "sum(rate(tikv_raftstore_raft_ready_handled_total[1m])) by (type)", 
               "metric": "tikv_raftstore_raft_ready_handled_total", 
-              "step": 4, 
+              "step": 20, 
               "legendFormat": "{{type}}", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -1480,7 +1016,7 @@
             {
               "expr": "sum(rate(tikv_raftstore_proposal_total{type=~\"local_read|normal|read_index\"}[1m])) by (type)", 
               "metric": "tikv_raftstore_proposal_total", 
-              "step": 4, 
+              "step": 20, 
               "legendFormat": "{{type}}", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -1558,7 +1094,7 @@
             {
               "expr": "sum(rate(tikv_raftstore_proposal_total{type=~\"conf_change|transfer_leader\"}[1m])) by (type)", 
               "metric": "tikv_raftstore_proposal_total", 
-              "step": 4, 
+              "step": 20, 
               "legendFormat": "{{type}}", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -1636,7 +1172,7 @@
             {
               "intervalFactor": 2, 
               "expr": "sum(rate(tikv_raftstore_raft_sent_message_total[1m])) by (type)", 
-              "step": 4, 
+              "step": 20, 
               "refId": "A", 
               "legendFormat": "{{type}}"
             }
@@ -1713,7 +1249,7 @@
             {
               "intervalFactor": 2, 
               "expr": "sum(rate(tikv_raftstore_raft_sent_message_total{type=\"vote\"}[1m])) by (job)", 
-              "step": 4, 
+              "step": 20, 
               "refId": "A", 
               "legendFormat": "{{job}}-vote"
             }
@@ -1790,7 +1326,7 @@
             {
               "expr": "sum(rate(tikv_raftstore_check_split_total{type!=\"ignore\"}[1m])) by (type)", 
               "metric": "tikv_raftstore_check_split_total", 
-              "step": 4, 
+              "step": 20, 
               "legendFormat": "{{type}}", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -1868,7 +1404,7 @@
             {
               "expr": "histogram_quantile(0.9999, sum(rate(tikv_raftstore_check_split_duration_seconds_bucket[1m])) by (le))", 
               "metric": "tikv_raftstore_check_split_duration_seconds_bucket", 
-              "step": 4, 
+              "step": 20, 
               "legendFormat": "duration", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -1947,7 +1483,7 @@
             {
               "expr": "histogram_quantile(0.9999, sum(rate(tikv_raftstore_log_lag_bucket[1m])) by (le))", 
               "metric": "tikv_raftstore_log_lag_bucket", 
-              "step": 4, 
+              "step": 20, 
               "legendFormat": "lag", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -2025,7 +1561,7 @@
             {
               "expr": "histogram_quantile(0.9999, sum(rate(tikv_raftstore_propose_log_size_bucket[1m])) by (le))", 
               "metric": "tikv_raftstore_propose_log_size_bucket", 
-              "step": 4, 
+              "step": 20, 
               "legendFormat": "size", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -2103,7 +1639,7 @@
             {
               "expr": "sum(rate(tikv_raftstore_admin_cmd_total{status=\"success\", type=\"compact\"}[1m]))  by (type)", 
               "metric": "tikv_raftstore_admin_cmd_total", 
-              "step": 4, 
+              "step": 20, 
               "legendFormat": "{{type}}", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -2181,7 +1717,7 @@
             {
               "expr": "sum(rate(tikv_raftstore_admin_cmd_total{status=\"success\", type!=\"compact\"}[1m]))  by (type)", 
               "metric": "tikv_raftstore_admin_cmd_total", 
-              "step": 4, 
+              "step": 20, 
               "legendFormat": "{{type}}", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -2237,6 +1773,79 @@
           "error": false, 
           "editable": true, 
           "grid": {}, 
+          "stack": false, 
+          "timeShift": null, 
+          "aliasColors": {}, 
+          "lines": true, 
+          "points": false, 
+          "datasource": "${DS_TIDB-CLUSTER}", 
+          "pointradius": 5
+        }, 
+        {
+          "bars": false, 
+          "timeFrom": null, 
+          "links": [], 
+          "thresholds": [], 
+          "nullPointMode": "null", 
+          "renderer": "flot", 
+          "id": 106, 
+          "linewidth": 1, 
+          "steppedLine": false, 
+          "targets": [
+            {
+              "intervalFactor": 2, 
+              "expr": "tikv_server_raft_message_recv_total", 
+              "step": 20, 
+              "refId": "A", 
+              "legendFormat": "{{job}}"
+            }
+          ], 
+          "fill": 1, 
+          "span": 6, 
+          "title": "raft message recv total", 
+          "tooltip": {
+            "sort": 0, 
+            "shared": true, 
+            "value_type": "individual"
+          }, 
+          "legend": {
+            "rightSide": true, 
+            "total": false, 
+            "min": false, 
+            "max": false, 
+            "show": true, 
+            "current": false, 
+            "values": false, 
+            "alignAsTable": true, 
+            "avg": false
+          }, 
+          "yaxes": [
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "short", 
+              "min": null, 
+              "label": null
+            }, 
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "short", 
+              "min": null, 
+              "label": null
+            }
+          ], 
+          "xaxis": {
+            "show": true, 
+            "values": [], 
+            "mode": "time", 
+            "name": null
+          }, 
+          "seriesOverrides": [], 
+          "percentage": false, 
+          "type": "graph", 
           "stack": false, 
           "timeShift": null, 
           "aliasColors": {}, 
@@ -2612,7 +2221,7 @@
               "logBase": 1, 
               "show": true, 
               "max": null, 
-              "format": "s", 
+              "format": "short", 
               "min": null, 
               "label": null
             }, 
@@ -2689,7 +2298,7 @@
               "logBase": 1, 
               "show": true, 
               "max": null, 
-              "format": "s", 
+              "format": "short", 
               "min": null, 
               "label": null
             }, 
@@ -4839,7 +4448,7 @@
             {
               "intervalFactor": 2, 
               "expr": "sum(delta(tikv_raftstore_raft_sent_message_total{type=\"snapshot\"}[1m]))", 
-              "step": 10, 
+              "step": 4, 
               "refId": "A", 
               "legendFormat": " "
             }
@@ -4917,21 +4526,21 @@
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.99, sum(rate(tikv_server_send_snapshot_duration_seconds_bucket[1m])) by (le))", 
-              "step": 10, 
+              "step": 4, 
               "refId": "A", 
               "legendFormat": "send"
             }, 
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_snapshot_duration_seconds_bucket{type=\"apply\"}[1m])) by (le))", 
-              "step": 10, 
+              "step": 4, 
               "refId": "B", 
               "legendFormat": "apply"
             }, 
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_snapshot_duration_seconds_bucket{type=\"generate\"}[1m])) by (le))", 
-              "step": 10, 
+              "step": 4, 
               "refId": "C", 
               "legendFormat": "generate"
             }
@@ -5009,7 +4618,7 @@
             {
               "expr": "sum(tikv_raftstore_snapshot_traffic_total) by (type)", 
               "metric": "", 
-              "step": 10, 
+              "step": 4, 
               "legendFormat": "{{type}}", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -5456,7 +5065,7 @@
             {
               "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"raftstore_.*\"}[1m])) by (job, name)", 
               "metric": "tikv_thread_cpu_seconds_total", 
-              "step": 4, 
+              "step": 20, 
               "legendFormat": "{{job}}", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -5513,7 +5122,7 @@
                   "model": {
                     "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"raftstore_.*\"}[1m])) by (job, name)", 
                     "metric": "tikv_thread_cpu_seconds_total", 
-                    "step": 4, 
+                    "step": 20, 
                     "legendFormat": "{{job}}", 
                     "intervalFactor": 2, 
                     "refId": "A"
@@ -5550,84 +5159,6 @@
           "thresholds": [], 
           "nullPointMode": "null", 
           "renderer": "flot", 
-          "id": 62, 
-          "linewidth": 1, 
-          "steppedLine": false, 
-          "targets": [
-            {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=\"tikv_eventloop\"}[1m])) by (job)", 
-              "metric": "tikv_thread_cpu_seconds_total", 
-              "step": 4, 
-              "legendFormat": "{{job}}", 
-              "intervalFactor": 2, 
-              "refId": "A"
-            }
-          ], 
-          "fill": 0, 
-          "span": 6, 
-          "title": "server event loop CPU", 
-          "tooltip": {
-            "sort": 0, 
-            "shared": true, 
-            "value_type": "individual", 
-            "msResolution": false
-          }, 
-          "legend": {
-            "rightSide": true, 
-            "total": false, 
-            "min": false, 
-            "max": true, 
-            "show": true, 
-            "current": true, 
-            "values": true, 
-            "alignAsTable": true, 
-            "avg": false
-          }, 
-          "yaxes": [
-            {
-              "logBase": 1, 
-              "show": true, 
-              "max": null, 
-              "format": "percentunit", 
-              "min": null, 
-              "label": null
-            }, 
-            {
-              "logBase": 1, 
-              "show": true, 
-              "max": null, 
-              "format": "short", 
-              "min": null, 
-              "label": null
-            }
-          ], 
-          "xaxis": {
-            "show": true, 
-            "values": [], 
-            "mode": "time", 
-            "name": null
-          }, 
-          "seriesOverrides": [], 
-          "percentage": false, 
-          "type": "graph", 
-          "error": false, 
-          "editable": true, 
-          "grid": {}, 
-          "stack": false, 
-          "timeShift": null, 
-          "aliasColors": {}, 
-          "lines": true, 
-          "points": false, 
-          "datasource": "${DS_TIDB-CLUSTER}", 
-          "pointradius": 5
-        }, 
-        {
-          "bars": false, 
-          "timeFrom": null, 
-          "links": [], 
-          "thresholds": [], 
-          "nullPointMode": "null", 
-          "renderer": "flot", 
           "id": 63, 
           "linewidth": 1, 
           "steppedLine": false, 
@@ -5635,7 +5166,7 @@
             {
               "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"storage_schedul.*\"}[1m])) by (job)", 
               "metric": "tikv_thread_cpu_seconds_total", 
-              "step": 4, 
+              "step": 20, 
               "legendFormat": "{{job}}", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -5713,7 +5244,7 @@
             {
               "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"sched_worker.*\"}[1m])) by (job)", 
               "metric": "tikv_thread_cpu_seconds_total", 
-              "step": 4, 
+              "step": 20, 
               "legendFormat": "{{job}}", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -5793,7 +5324,7 @@
             {
               "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"endpoint.*\"}[1m])) by (job)", 
               "interval": "", 
-              "step": 4, 
+              "step": 20, 
               "legendFormat": "{{job}}", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -5872,7 +5403,7 @@
             {
               "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"snapshot_worker.*\"}[1m])) by (job, tid)", 
               "metric": "tikv_thread_cpu_seconds_total", 
-              "step": 4, 
+              "step": 20, 
               "legendFormat": "{{job}}-{{tid}}", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -5952,7 +5483,7 @@
             {
               "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"split_check.*\"}[1m])) by (job)", 
               "metric": "tikv_thread_cpu_seconds_total", 
-              "step": 4, 
+              "step": 20, 
               "legendFormat": "{{job}}", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -6045,7 +5576,7 @@
             {
               "expr": "max(rate(tikv_thread_cpu_seconds_total{name=~\"rocksdb.*\"}[1m])) by (job)", 
               "metric": "tikv_thread_cpu_seconds_total", 
-              "step": 4, 
+              "step": 20, 
               "legendFormat": "{{job}}", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -6125,7 +5656,7 @@
             {
               "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=\"apply_worker\"}[1m])) by (job)", 
               "metric": "tikv_thread_cpu_seconds_total", 
-              "step": 4, 
+              "step": 20, 
               "legendFormat": "{{job}}", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -6188,6 +5719,79 @@
           "points": false, 
           "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
+        }, 
+        {
+          "bars": false, 
+          "timeFrom": null, 
+          "links": [], 
+          "thresholds": [], 
+          "nullPointMode": "null", 
+          "renderer": "flot", 
+          "id": 105, 
+          "linewidth": 1, 
+          "steppedLine": false, 
+          "targets": [
+            {
+              "intervalFactor": 2, 
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"grpc.*\"}[1m])) by (job,name)", 
+              "step": 20, 
+              "refId": "A", 
+              "legendFormat": "{{job}}-{{name}}"
+            }
+          ], 
+          "fill": 1, 
+          "span": 6, 
+          "title": "grpc poll CPU", 
+          "tooltip": {
+            "sort": 0, 
+            "shared": true, 
+            "value_type": "individual"
+          }, 
+          "legend": {
+            "rightSide": true, 
+            "total": false, 
+            "min": false, 
+            "max": false, 
+            "show": true, 
+            "current": false, 
+            "values": false, 
+            "alignAsTable": true, 
+            "avg": false
+          }, 
+          "yaxes": [
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "percentunit", 
+              "min": null, 
+              "label": null
+            }, 
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "short", 
+              "min": null, 
+              "label": null
+            }
+          ], 
+          "xaxis": {
+            "show": true, 
+            "values": [], 
+            "mode": "time", 
+            "name": null
+          }, 
+          "seriesOverrides": [], 
+          "percentage": false, 
+          "type": "graph", 
+          "stack": false, 
+          "timeShift": null, 
+          "aliasColors": {}, 
+          "lines": true, 
+          "points": false, 
+          "datasource": "${DS_TIDB-CLUSTER}", 
+          "pointradius": 5
         }
       ], 
       "showTitle": true, 
@@ -6215,7 +5819,7 @@
             {
               "intervalFactor": 2, 
               "expr": "sum(rate(tikv_engine_cache_efficiency{type=\"block_cache_hit\"}[1m])) by (job) / (sum(rate(tikv_engine_cache_efficiency{type=\"block_cache_hit\"}[1m])) by (job) + sum(rate(tikv_engine_cache_efficiency{type=\"block_cache_miss\"}[1m])) by (job))", 
-              "step": 4, 
+              "step": 20, 
               "refId": "A", 
               "legendFormat": "{{job}}"
             }
@@ -6290,7 +5894,7 @@
             {
               "intervalFactor": 2, 
               "expr": "sum(rate(tikv_engine_memtable_efficiency{type=\"memtable_hit\"}[1m])) by (job) / (sum(rate(tikv_engine_memtable_efficiency{type=\"memtable_hit\"}[1m])) by (job) + sum(rate(tikv_engine_memtable_efficiency{type=\"memtable_miss\"}[1m])) by (job))", 
-              "step": 4, 
+              "step": 20, 
               "refId": "A", 
               "legendFormat": "{{job}}"
             }
@@ -6365,21 +5969,21 @@
             {
               "intervalFactor": 2, 
               "expr": "avg(tikv_engine_get_micro_seconds{type=\"get_average\"})", 
-              "step": 4, 
+              "step": 20, 
               "refId": "A", 
               "legendFormat": "average"
             }, 
             {
               "intervalFactor": 2, 
               "expr": "avg(tikv_engine_get_micro_seconds{type=\"get_percentile99\"})", 
-              "step": 4, 
+              "step": 20, 
               "refId": "B", 
               "legendFormat": "percentile99"
             }, 
             {
               "intervalFactor": 2, 
               "expr": "avg(tikv_engine_get_micro_seconds{type=\"get_percentile95\"})", 
-              "step": 4, 
+              "step": 20, 
               "refId": "C", 
               "legendFormat": "percentile95"
             }
@@ -6453,21 +6057,21 @@
             {
               "intervalFactor": 2, 
               "expr": "avg(tikv_engine_write_micro_seconds{type=\"write_average\"})", 
-              "step": 4, 
+              "step": 20, 
               "refId": "A", 
               "legendFormat": "average"
             }, 
             {
               "intervalFactor": 2, 
               "expr": "avg(tikv_engine_write_micro_seconds{type=\"write_percentile99\"})", 
-              "step": 4, 
+              "step": 20, 
               "refId": "B", 
               "legendFormat": "percentile99"
             }, 
             {
               "intervalFactor": 2, 
               "expr": "avg(tikv_engine_write_micro_seconds{type=\"write_percentile95\"})", 
-              "step": 4, 
+              "step": 20, 
               "refId": "C", 
               "legendFormat": "percentile95"
             }
@@ -6541,21 +6145,21 @@
             {
               "intervalFactor": 2, 
               "expr": "avg(tikv_engine_seek_micro_seconds{type=\"seek_average\"})", 
-              "step": 4, 
+              "step": 20, 
               "refId": "A", 
               "legendFormat": "average"
             }, 
             {
               "intervalFactor": 2, 
               "expr": "avg(tikv_engine_seek_micro_seconds{type=\"seek_percentile99\"})", 
-              "step": 4, 
+              "step": 20, 
               "refId": "B", 
               "legendFormat": "percentile99"
             }, 
             {
               "intervalFactor": 2, 
               "expr": "avg(tikv_engine_seek_micro_seconds{type=\"seek_percentile95\"})", 
-              "step": 4, 
+              "step": 20, 
               "refId": "C", 
               "legendFormat": "percentile95"
             }
@@ -6629,7 +6233,7 @@
             {
               "hide": false, 
               "expr": "sum(rate(tikv_engine_flow_bytes{type=\"bytes_read\"}[1m]))", 
-              "step": 4, 
+              "step": 20, 
               "legendFormat": "bytes_read", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -6637,7 +6241,7 @@
             {
               "hide": false, 
               "expr": "sum(rate(tikv_engine_flow_bytes{type=\"keys_read\"}[1m]))", 
-              "step": 4, 
+              "step": 20, 
               "legendFormat": "keys_read", 
               "intervalFactor": 2, 
               "refId": "B"
@@ -6645,7 +6249,7 @@
             {
               "intervalFactor": 2, 
               "expr": "sum(rate(tikv_engine_flow_bytes{type=\"iter_bytes_read\"}[1m]))", 
-              "step": 4, 
+              "step": 20, 
               "refId": "C", 
               "legendFormat": "iter_bytes_read"
             }
@@ -6722,7 +6326,7 @@
             {
               "hide": false, 
               "expr": "sum(rate(tikv_engine_flow_bytes{type=\"bytes_written\"}[1m])) by (type)", 
-              "step": 4, 
+              "step": 20, 
               "legendFormat": "{{type}}", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -6730,7 +6334,7 @@
             {
               "hide": false, 
               "expr": "sum(rate(tikv_engine_flow_bytes{type=\"keys_written\"}[1m])) by (type)", 
-              "step": 4, 
+              "step": 20, 
               "legendFormat": "{{type}}", 
               "intervalFactor": 2, 
               "refId": "B"
@@ -6808,7 +6412,7 @@
             {
               "intervalFactor": 2, 
               "expr": "sum(rate(tikv_engine_stall_micro_seconds[30s])) by (job)", 
-              "step": 4, 
+              "step": 20, 
               "refId": "A", 
               "legendFormat": "{{job}}"
             }
@@ -6879,7 +6483,7 @@
             {
               "hide": false, 
               "expr": "sum(rate(tikv_engine_bloom_efficiency[1m])) by (type)", 
-              "step": 4, 
+              "step": 20, 
               "legendFormat": "{{type}}", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -6959,7 +6563,7 @@
             {
               "hide": false, 
               "expr": "sum(rate(tikv_engine_compaction_flow_bytes[1m])) by (job)", 
-              "step": 4, 
+              "step": 20, 
               "legendFormat": "{{job}}", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -7032,18 +6636,16 @@
           "thresholds": [], 
           "nullPointMode": "null", 
           "renderer": "flot", 
-          "id": 94, 
+          "id": 102, 
           "linewidth": 1, 
           "steppedLine": false, 
           "targets": [
             {
-              "hide": false, 
-              "expr": "sum(tikv_engine_block_cache_size_bytes) by(job, cf)", 
-              "metric": "tikv_engine_block_cache_size_bytes", 
-              "step": 4, 
-              "legendFormat": "{{job}}-{{cf}}", 
               "intervalFactor": 2, 
-              "refId": "A"
+              "expr": "sum(tikv_engine_block_cache_size_bytes) by(job, cf)", 
+              "step": 20, 
+              "refId": "A", 
+              "legendFormat": "{{job}}-{{cf}}"
             }
           ], 
           "fill": 1, 
@@ -7058,10 +6660,10 @@
             "rightSide": true, 
             "total": false, 
             "min": false, 
-            "max": true, 
+            "max": false, 
             "show": true, 
-            "current": true, 
-            "values": true, 
+            "current": false, 
+            "values": false, 
             "alignAsTable": true, 
             "avg": false
           }, 
@@ -7070,16 +6672,16 @@
               "logBase": 1, 
               "show": true, 
               "max": null, 
-              "format": "bytes", 
-              "min": "0", 
+              "format": "short", 
+              "min": null, 
               "label": null
             }, 
             {
               "logBase": 1, 
               "show": true, 
               "max": null, 
-              "format": "wps", 
-              "min": "0", 
+              "format": "short", 
+              "min": null, 
               "label": null
             }
           ], 
@@ -7089,12 +6691,7 @@
             "mode": "time", 
             "name": null
           }, 
-          "seriesOverrides": [
-            {
-              "alias": "keys_written", 
-              "yaxis": 2
-            }
-          ], 
+          "seriesOverrides": [], 
           "percentage": false, 
           "type": "graph", 
           "stack": false, 
@@ -7103,8 +6700,7 @@
           "lines": true, 
           "points": false, 
           "datasource": "${DS_TIDB-CLUSTER}", 
-          "pointradius": 5, 
-          "decimals": 1
+          "pointradius": 5
         }, 
         {
           "bars": false, 
@@ -7113,18 +6709,16 @@
           "thresholds": [], 
           "nullPointMode": "null", 
           "renderer": "flot", 
-          "id": 95, 
+          "id": 103, 
           "linewidth": 1, 
           "steppedLine": false, 
           "targets": [
             {
-              "hide": false, 
-              "expr": "sum(tikv_engine_memory_bytes{type=\"mem-tables\"}) by (job, cf)", 
-              "metric": "tikv_engine_memory_bytes", 
-              "step": 4, 
-              "legendFormat": "{{job}}-{{cf}}", 
               "intervalFactor": 2, 
-              "refId": "A"
+              "expr": "sum(tikv_engine_memory_bytes{type=\"mem-tables\"}) by (job, cf)", 
+              "step": 20, 
+              "refId": "A", 
+              "legendFormat": "{{job}}-{{cf}}"
             }
           ], 
           "fill": 1, 
@@ -7139,29 +6733,28 @@
             "rightSide": true, 
             "total": false, 
             "min": false, 
-            "max": true, 
+            "max": false, 
             "show": true, 
-            "current": true, 
-            "values": true, 
+            "current": false, 
+            "values": false, 
             "alignAsTable": true, 
-            "avg": false, 
-            "hideZero": true
+            "avg": false
           }, 
           "yaxes": [
             {
               "logBase": 1, 
               "show": true, 
               "max": null, 
-              "format": "bytes", 
-              "min": "0", 
+              "format": "short", 
+              "min": null, 
               "label": null
             }, 
             {
               "logBase": 1, 
               "show": true, 
               "max": null, 
-              "format": "wps", 
-              "min": "0", 
+              "format": "short", 
+              "min": null, 
               "label": null
             }
           ], 
@@ -7171,12 +6764,7 @@
             "mode": "time", 
             "name": null
           }, 
-          "seriesOverrides": [
-            {
-              "alias": "keys_written", 
-              "yaxis": 2
-            }
-          ], 
+          "seriesOverrides": [], 
           "percentage": false, 
           "type": "graph", 
           "stack": false, 
@@ -7185,8 +6773,7 @@
           "lines": true, 
           "points": false, 
           "datasource": "${DS_TIDB-CLUSTER}", 
-          "pointradius": 5, 
-          "decimals": 1
+          "pointradius": 5
         }, 
         {
           "bars": false, 
@@ -7195,18 +6782,16 @@
           "thresholds": [], 
           "nullPointMode": "null", 
           "renderer": "flot", 
-          "id": 96, 
+          "id": 104, 
           "linewidth": 1, 
           "steppedLine": false, 
           "targets": [
             {
-              "hide": false, 
-              "expr": "sum(tikv_engine_memory_bytes{type=\"readers-mem\"}) by (job, cf)", 
-              "metric": "tikv_engine_memory_bytes", 
-              "step": 4, 
-              "legendFormat": "{{job}}-{{cf}}", 
               "intervalFactor": 2, 
-              "refId": "A"
+              "expr": "sum(tikv_engine_memory_bytes{type=\"readers-mem\"}) by (job, cf)", 
+              "step": 20, 
+              "refId": "A", 
+              "legendFormat": "{{job}}-{{cf}}"
             }
           ], 
           "fill": 1, 
@@ -7221,29 +6806,28 @@
             "rightSide": true, 
             "total": false, 
             "min": false, 
-            "max": true, 
+            "max": false, 
             "show": true, 
-            "current": true, 
-            "values": true, 
+            "current": false, 
+            "values": false, 
             "alignAsTable": true, 
-            "avg": false, 
-            "hideZero": true
+            "avg": false
           }, 
           "yaxes": [
             {
               "logBase": 1, 
               "show": true, 
               "max": null, 
-              "format": "bytes", 
-              "min": "0", 
+              "format": "short", 
+              "min": null, 
               "label": null
             }, 
             {
               "logBase": 1, 
               "show": true, 
               "max": null, 
-              "format": "wps", 
-              "min": "0", 
+              "format": "short", 
+              "min": null, 
               "label": null
             }
           ], 
@@ -7253,12 +6837,7 @@
             "mode": "time", 
             "name": null
           }, 
-          "seriesOverrides": [
-            {
-              "alias": "keys_written", 
-              "yaxis": 2
-            }
-          ], 
+          "seriesOverrides": [], 
           "percentage": false, 
           "type": "graph", 
           "stack": false, 
@@ -7267,8 +6846,387 @@
           "lines": true, 
           "points": false, 
           "datasource": "${DS_TIDB-CLUSTER}", 
-          "pointradius": 5, 
-          "decimals": 1
+          "pointradius": 5
+        }
+      ], 
+      "showTitle": true, 
+      "collapse": true
+    }, 
+    {
+      "repeat": null, 
+      "titleSize": "h6", 
+      "repeatIteration": null, 
+      "title": "Grpc", 
+      "height": "300", 
+      "repeatRowId": null, 
+      "panels": [
+        {
+          "bars": false, 
+          "timeFrom": null, 
+          "links": [], 
+          "thresholds": [], 
+          "nullPointMode": "null", 
+          "renderer": "flot", 
+          "id": 95, 
+          "linewidth": 1, 
+          "steppedLine": false, 
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.8, sum(rate(tikv_grpc_msg_duration_seconds_bucket[1m])) by (le, job))", 
+              "metric": "tikv_grpc_msg_duration_seconds_bucket", 
+              "step": 20, 
+              "legendFormat": "{{job}}", 
+              "intervalFactor": 2, 
+              "refId": "A"
+            }
+          ], 
+          "fill": 1, 
+          "span": 6, 
+          "title": "80% tikv grpc messge duration by job", 
+          "tooltip": {
+            "sort": 0, 
+            "shared": true, 
+            "value_type": "individual"
+          }, 
+          "legend": {
+            "rightSide": true, 
+            "total": false, 
+            "min": false, 
+            "max": false, 
+            "show": true, 
+            "current": false, 
+            "values": false, 
+            "alignAsTable": true, 
+            "avg": false
+          }, 
+          "yaxes": [
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "s", 
+              "min": null, 
+              "label": null
+            }, 
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "short", 
+              "min": null, 
+              "label": null
+            }
+          ], 
+          "xaxis": {
+            "show": true, 
+            "values": [], 
+            "mode": "time", 
+            "name": null
+          }, 
+          "seriesOverrides": [], 
+          "percentage": false, 
+          "type": "graph", 
+          "stack": false, 
+          "timeShift": null, 
+          "aliasColors": {}, 
+          "lines": true, 
+          "points": false, 
+          "datasource": "${DS_TIDB-CLUSTER}", 
+          "pointradius": 5
+        }, 
+        {
+          "bars": false, 
+          "timeFrom": null, 
+          "links": [], 
+          "thresholds": [], 
+          "nullPointMode": "null", 
+          "renderer": "flot", 
+          "id": 96, 
+          "linewidth": 1, 
+          "steppedLine": false, 
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_grpc_msg_duration_seconds_bucket[1m])) by (le, job))", 
+              "metric": "tikv_grpc_msg_duration_seconds_bucket", 
+              "step": 20, 
+              "legendFormat": "{{job}}", 
+              "intervalFactor": 2, 
+              "refId": "A"
+            }
+          ], 
+          "fill": 1, 
+          "span": 6, 
+          "title": "99% tikv grpc messge duration by job", 
+          "tooltip": {
+            "sort": 0, 
+            "shared": true, 
+            "value_type": "individual"
+          }, 
+          "legend": {
+            "rightSide": true, 
+            "total": false, 
+            "min": false, 
+            "max": false, 
+            "show": true, 
+            "current": false, 
+            "values": false, 
+            "alignAsTable": true, 
+            "avg": false
+          }, 
+          "yaxes": [
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "s", 
+              "min": null, 
+              "label": null
+            }, 
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "short", 
+              "min": null, 
+              "label": null
+            }
+          ], 
+          "xaxis": {
+            "show": true, 
+            "values": [], 
+            "mode": "time", 
+            "name": null
+          }, 
+          "seriesOverrides": [], 
+          "percentage": false, 
+          "type": "graph", 
+          "stack": false, 
+          "timeShift": null, 
+          "aliasColors": {}, 
+          "lines": true, 
+          "points": false, 
+          "datasource": "${DS_TIDB-CLUSTER}", 
+          "pointradius": 5
+        }, 
+        {
+          "bars": false, 
+          "timeFrom": null, 
+          "links": [], 
+          "thresholds": [], 
+          "nullPointMode": "null", 
+          "renderer": "flot", 
+          "id": 97, 
+          "linewidth": 1, 
+          "steppedLine": false, 
+          "targets": [
+            {
+              "intervalFactor": 2, 
+              "expr": "histogram_quantile(0.8, sum(rate(tikv_grpc_msg_duration_seconds_bucket[1m])) by (le, type))", 
+              "step": 20, 
+              "refId": "A", 
+              "legendFormat": "{{type}}"
+            }
+          ], 
+          "fill": 1, 
+          "span": 6, 
+          "title": "80% tikv grpc messge duration by type", 
+          "tooltip": {
+            "sort": 0, 
+            "shared": true, 
+            "value_type": "individual"
+          }, 
+          "legend": {
+            "rightSide": true, 
+            "total": false, 
+            "min": false, 
+            "max": false, 
+            "show": true, 
+            "current": false, 
+            "values": false, 
+            "alignAsTable": true, 
+            "avg": false
+          }, 
+          "yaxes": [
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "s", 
+              "min": null, 
+              "label": null
+            }, 
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "short", 
+              "min": null, 
+              "label": null
+            }
+          ], 
+          "xaxis": {
+            "show": true, 
+            "values": [], 
+            "mode": "time", 
+            "name": null
+          }, 
+          "seriesOverrides": [], 
+          "percentage": false, 
+          "type": "graph", 
+          "stack": false, 
+          "timeShift": null, 
+          "aliasColors": {}, 
+          "lines": true, 
+          "points": false, 
+          "datasource": "${DS_TIDB-CLUSTER}", 
+          "pointradius": 5
+        }, 
+        {
+          "bars": false, 
+          "timeFrom": null, 
+          "links": [], 
+          "thresholds": [], 
+          "nullPointMode": "null", 
+          "renderer": "flot", 
+          "id": 98, 
+          "linewidth": 1, 
+          "steppedLine": false, 
+          "targets": [
+            {
+              "intervalFactor": 2, 
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_grpc_msg_duration_seconds_bucket[1m])) by (le, type))", 
+              "step": 20, 
+              "refId": "A", 
+              "legendFormat": "{{type}}"
+            }
+          ], 
+          "fill": 1, 
+          "span": 6, 
+          "title": "99% tikv grpc messge duration by type", 
+          "tooltip": {
+            "sort": 0, 
+            "shared": true, 
+            "value_type": "individual"
+          }, 
+          "legend": {
+            "rightSide": true, 
+            "total": false, 
+            "min": false, 
+            "max": false, 
+            "show": true, 
+            "current": false, 
+            "values": false, 
+            "alignAsTable": true, 
+            "avg": false
+          }, 
+          "yaxes": [
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "s", 
+              "min": null, 
+              "label": null
+            }, 
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "short", 
+              "min": null, 
+              "label": null
+            }
+          ], 
+          "xaxis": {
+            "show": true, 
+            "values": [], 
+            "mode": "time", 
+            "name": null
+          }, 
+          "seriesOverrides": [], 
+          "percentage": false, 
+          "type": "graph", 
+          "stack": false, 
+          "timeShift": null, 
+          "aliasColors": {}, 
+          "lines": true, 
+          "points": false, 
+          "datasource": "${DS_TIDB-CLUSTER}", 
+          "pointradius": 5
+        }, 
+        {
+          "bars": false, 
+          "timeFrom": null, 
+          "links": [], 
+          "thresholds": [], 
+          "nullPointMode": "null", 
+          "renderer": "flot", 
+          "id": 107, 
+          "linewidth": 1, 
+          "steppedLine": false, 
+          "targets": [
+            {
+              "expr": "sum(tikv_grpc_msg_fail_total)by(type)", 
+              "metric": "tikv_grpc_msg_fail_total", 
+              "step": 20, 
+              "legendFormat": "{{type}}", 
+              "intervalFactor": 2, 
+              "refId": "A"
+            }
+          ], 
+          "fill": 1, 
+          "span": 6, 
+          "title": "grpc message failed", 
+          "tooltip": {
+            "sort": 0, 
+            "shared": true, 
+            "value_type": "individual"
+          }, 
+          "legend": {
+            "rightSide": true, 
+            "total": false, 
+            "min": false, 
+            "max": false, 
+            "show": true, 
+            "current": false, 
+            "values": false, 
+            "alignAsTable": true, 
+            "avg": false
+          }, 
+          "yaxes": [
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "short", 
+              "min": null, 
+              "label": null
+            }, 
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "short", 
+              "min": null, 
+              "label": null
+            }
+          ], 
+          "xaxis": {
+            "show": true, 
+            "values": [], 
+            "mode": "time", 
+            "name": null
+          }, 
+          "seriesOverrides": [], 
+          "percentage": false, 
+          "type": "graph", 
+          "stack": false, 
+          "timeShift": null, 
+          "aliasColors": {}, 
+          "lines": true, 
+          "points": false, 
+          "datasource": "${DS_TIDB-CLUSTER}", 
+          "pointradius": 5
         }
       ], 
       "showTitle": true, 
@@ -7330,10 +7288,10 @@
       "name": "DS_TIDB-CLUSTER"
     }
   ], 
-  "version": 4, 
+  "version": 35, 
   "time": {
     "to": "now", 
-    "from": "now-30m"
+    "from": "now-3h"
   }, 
   "__requires": [
     {
