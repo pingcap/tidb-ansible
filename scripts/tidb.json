@@ -49,14 +49,14 @@
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.80, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le))", 
-              "step": 10, 
+              "step": 60, 
               "refId": "A", 
               "legendFormat": "average"
             }, 
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.80, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le, instance))", 
-              "step": 10, 
+              "step": 60, 
               "refId": "B", 
               "legendFormat": "{{instance}}"
             }
@@ -112,7 +112,7 @@
                   "model": {
                     "intervalFactor": 2, 
                     "expr": "histogram_quantile(0.80, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le))", 
-                    "step": 10, 
+                    "step": 60, 
                     "refId": "A", 
                     "legendFormat": "average"
                   }, 
@@ -138,7 +138,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -183,14 +183,14 @@
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.95, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le))", 
-              "step": 10, 
+              "step": 60, 
               "refId": "A", 
               "legendFormat": "average"
             }, 
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.95, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le, instance))", 
-              "step": 10, 
+              "step": 60, 
               "refId": "B", 
               "legendFormat": "{{ instance }}"
             }
@@ -249,7 +249,7 @@
                   "model": {
                     "intervalFactor": 2, 
                     "expr": "histogram_quantile(0.95, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le))", 
-                    "step": 10, 
+                    "step": 60, 
                     "refId": "A", 
                     "legendFormat": "average"
                   }, 
@@ -275,7 +275,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -318,14 +318,14 @@
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.99, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le))", 
-              "step": 10, 
+              "step": 60, 
               "refId": "B", 
               "legendFormat": "average"
             }, 
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.99, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le, instance))", 
-              "step": 10, 
+              "step": 60, 
               "refId": "A", 
               "legendFormat": "{{instance}}"
             }
@@ -381,7 +381,7 @@
                   "model": {
                     "intervalFactor": 2, 
                     "expr": "histogram_quantile(0.99, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le, instance))", 
-                    "step": 10, 
+                    "step": 60, 
                     "refId": "A", 
                     "legendFormat": "{{instance}}"
                   }, 
@@ -407,7 +407,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -454,14 +454,14 @@
             {
               "intervalFactor": 2, 
               "expr": "irate(tidb_server_handle_query_duration_seconds_sum[30s]) / irate(tidb_server_handle_query_duration_seconds_count[30s])", 
-              "step": 10, 
+              "step": 60, 
               "refId": "A", 
               "legendFormat": "{{instance}}"
             }, 
             {
               "intervalFactor": 2, 
               "expr": "sum(irate(tidb_server_handle_query_duration_seconds_sum[30s])) / sum(irate(tidb_server_handle_query_duration_seconds_count[30s]))", 
-              "step": 10, 
+              "step": 60, 
               "refId": "B", 
               "legendFormat": "average"
             }
@@ -517,7 +517,7 @@
                   "model": {
                     "intervalFactor": 2, 
                     "expr": "irate(tidb_server_handle_query_duration_seconds_sum[30s]) / irate(tidb_server_handle_query_duration_seconds_count[30s])", 
-                    "step": 10, 
+                    "step": 60, 
                     "refId": "A", 
                     "legendFormat": "{{instance}}"
                   }, 
@@ -543,7 +543,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -584,10 +584,10 @@
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "rate(tidb_server_query_total[1m])", 
-              "step": 4, 
+              "expr": "rate(tidb_server_query_total[1m]) * 5", 
+              "step": 30, 
               "refId": "A", 
-              "legendFormat": "{{instance}} {{type}} {{status}}"
+              "legendFormat": "{{instance}}-{{job}} {{type}} {{status}}"
             }
           ], 
           "yaxes": [
@@ -630,7 +630,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "minSpan": 12
         }, 
@@ -672,15 +672,15 @@
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "sum(rate(tidb_server_query_total[1m])) by (status)", 
-              "step": 10, 
+              "expr": "sum(rate(tidb_server_query_total[1m])) by (status) * 5", 
+              "step": 60, 
               "refId": "A", 
               "legendFormat": "query {{status}}"
             }, 
             {
               "intervalFactor": 3, 
               "expr": "sum(rate(tidb_server_query_total{status=\"OK\"}[1m]  offset 1d))", 
-              "step": 15, 
+              "step": 90, 
               "refId": "B", 
               "legendFormat": "yesterday"
             }
@@ -720,7 +720,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "minSpan": 12
         }, 
@@ -762,7 +762,7 @@
             {
               "intervalFactor": 2, 
               "expr": "sum(irate(tidb_executor_statement_node_total[1m])) by (type)", 
-              "step": 4, 
+              "step": 30, 
               "refId": "A", 
               "legendFormat": "{{type}}"
             }
@@ -802,7 +802,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "decimals": null
         }
@@ -832,14 +832,14 @@
             {
               "intervalFactor": 2, 
               "expr": "tidb_server_connections", 
-              "step": 4, 
+              "step": 30, 
               "refId": "A", 
-              "legendFormat": "{{instance}}"
+              "legendFormat": "{{instance}}-{{job}}"
             }, 
             {
               "intervalFactor": 2, 
               "expr": "sum(tidb_server_connections)", 
-              "step": 4, 
+              "step": 30, 
               "refId": "B", 
               "legendFormat": "total"
             }
@@ -905,7 +905,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -952,10 +952,10 @@
           "targets": [
             {
               "hide": false, 
-              "expr": "go_memstats_heap_inuse_bytes{job=\"tidb\"}", 
+              "expr": "go_memstats_heap_inuse_bytes{job=~\"tidb.*\"}", 
               "metric": "go_memstats_heap_inuse_bytes", 
-              "step": 4, 
-              "legendFormat": "{{instance}}", 
+              "step": 30, 
+              "legendFormat": "{{instance}}-{{job}}", 
               "intervalFactor": 2, 
               "refId": "B"
             }
@@ -1010,10 +1010,10 @@
                   ], 
                   "model": {
                     "hide": false, 
-                    "expr": "go_memstats_heap_inuse_bytes{job=\"tidb\"}", 
+                    "expr": "go_memstats_heap_inuse_bytes{job=~\"tidb.*\"}", 
                     "metric": "go_memstats_heap_inuse_bytes", 
-                    "step": 4, 
-                    "legendFormat": "{{instance}}", 
+                    "step": 30, 
+                    "legendFormat": "{{instance}}-{{job}}", 
                     "intervalFactor": 2, 
                     "refId": "B"
                   }, 
@@ -1039,7 +1039,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }
       ], 
@@ -1133,7 +1133,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -1210,7 +1210,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }
       ], 
@@ -1303,7 +1303,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -1382,7 +1382,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }
       ], 
@@ -1411,7 +1411,7 @@
             {
               "intervalFactor": 2, 
               "expr": "sum(rate(tidb_tikvclient_txn_cmd_total[1m])) by (type)", 
-              "step": 4, 
+              "step": 30, 
               "refId": "A", 
               "legendFormat": "{{type}}"
             }
@@ -1475,7 +1475,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -1492,7 +1492,7 @@
             {
               "intervalFactor": 2, 
               "expr": "sum(rate(tidb_tikvclient_txn_total[1m])) by (instance)", 
-              "step": 4, 
+              "step": 30, 
               "refId": "A", 
               "legendFormat": "{{instance}}"
             }
@@ -1552,7 +1552,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -1569,7 +1569,7 @@
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.9999, sum(rate(tidb_tikvclient_backoff_seconds_bucket[1m])) by (instance, le))", 
-              "step": 4, 
+              "step": 30, 
               "refId": "A", 
               "legendFormat": "{{instance}}"
             }
@@ -1631,7 +1631,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -1648,7 +1648,7 @@
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.9999, sum(rate(tidb_tikvclient_request_seconds_bucket[1m])) by (le, instance, type))", 
-              "step": 4, 
+              "step": 30, 
               "refId": "A", 
               "legendFormat": "{{instance}} {{type}}"
             }
@@ -1710,7 +1710,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -1727,7 +1727,7 @@
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.99, sum(rate(tidb_tikvclient_txn_cmd_seconds_bucket[1m])) by (le, type))", 
-              "step": 4, 
+              "step": 30, 
               "refId": "A", 
               "legendFormat": "{{type}}"
             }
@@ -1789,7 +1789,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -1806,7 +1806,7 @@
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(0.999, sum(rate(tidb_tikvclient_txn_cmd_seconds_bucket[1m])) by (le, type))", 
-              "step": 4, 
+              "step": 30, 
               "refId": "A", 
               "legendFormat": "{{type}}"
             }
@@ -1866,12 +1866,89 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
+          "pointradius": 5
+        }, 
+        {
+          "bars": false, 
+          "timeFrom": null, 
+          "links": [], 
+          "thresholds": [], 
+          "nullPointMode": "null as zero", 
+          "renderer": "flot", 
+          "id": 44, 
+          "linewidth": 2, 
+          "steppedLine": false, 
+          "targets": [
+            {
+              "intervalFactor": 2, 
+              "expr": "histogram_quantile(0.90, sum(rate(tidb_tikvclient_txn_regions_num_bucket[1m])) by (le, instance))", 
+              "step": 60, 
+              "refId": "A", 
+              "legendFormat": "{{instance}}"
+            }
+          ], 
+          "fill": 1, 
+          "span": 6, 
+          "title": "90 Txn regions count", 
+          "tooltip": {
+            "sort": 0, 
+            "shared": true, 
+            "value_type": "cumulative", 
+            "msResolution": true
+          }, 
+          "legend": {
+            "rightSide": true, 
+            "total": false, 
+            "min": false, 
+            "max": true, 
+            "show": true, 
+            "current": true, 
+            "values": true, 
+            "alignAsTable": true, 
+            "avg": false
+          }, 
+          "yaxes": [
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "short", 
+              "min": "0", 
+              "label": null
+            }, 
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "short", 
+              "min": null, 
+              "label": null
+            }
+          ], 
+          "xaxis": {
+            "show": true, 
+            "values": [], 
+            "mode": "time", 
+            "name": null
+          }, 
+          "seriesOverrides": [], 
+          "percentage": false, 
+          "type": "graph", 
+          "error": false, 
+          "editable": true, 
+          "grid": {}, 
+          "stack": false, 
+          "timeShift": null, 
+          "aliasColors": {}, 
+          "lines": true, 
+          "points": false, 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }
       ], 
       "showTitle": true, 
-      "collapse": true
+      "collapse": false
     }, 
     {
       "repeat": null, 
@@ -1895,7 +1972,7 @@
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(1, sum(rate(tidb_tikvclient_txn_write_kv_count_bucket[1m])) by (le, instance))", 
-              "step": 4, 
+              "step": 30, 
               "refId": "B", 
               "legendFormat": "{{instance}}"
             }
@@ -1957,7 +2034,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -1974,7 +2051,7 @@
             {
               "intervalFactor": 2, 
               "expr": "histogram_quantile(1, sum(rate(tidb_tikvclient_txn_write_size_bucket[1m])) by (le, instance))", 
-              "step": 4, 
+              "step": 30, 
               "refId": "A", 
               "legendFormat": "{{instance}}"
             }
@@ -2036,7 +2113,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -2083,7 +2160,7 @@
             {
               "expr": "sum(rate(tidb_tikvclient_region_err_total[1m])) by (type, instance)", 
               "metric": "tidb_server_session_execute_parse_duration_count", 
-              "step": 4, 
+              "step": 30, 
               "legendFormat": "{{instance}} {{type}}", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -2140,7 +2217,7 @@
                   "model": {
                     "expr": "sum(rate(tidb_tikvclient_region_err_total[1m])) by (type, instance)", 
                     "metric": "tidb_server_session_execute_parse_duration_count", 
-                    "step": 4, 
+                    "step": 30, 
                     "legendFormat": "{{instance}} {{type}}", 
                     "intervalFactor": 2, 
                     "refId": "A"
@@ -2167,7 +2244,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "decimals": 2
         }, 
@@ -2185,7 +2262,7 @@
             {
               "expr": "sum(rate(tidb_tikvclient_lock_resolver_actions_total[1m])) by (type)", 
               "metric": "tidb_tikvclient_lock_resolver_actions_total", 
-              "step": 4, 
+              "step": 30, 
               "legendFormat": "{{type}}", 
               "intervalFactor": 2, 
               "refId": "A"
@@ -2248,12 +2325,12 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }
       ], 
       "showTitle": true, 
-      "collapse": true
+      "collapse": false
     }, 
     {
       "repeat": null, 
@@ -2335,7 +2412,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -2410,7 +2487,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -2485,7 +2562,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }
       ], 
@@ -2626,7 +2703,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -2768,7 +2845,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -2899,7 +2976,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "decimals": 2
         }
@@ -2987,7 +3064,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -3066,7 +3143,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -3141,7 +3218,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }, 
         {
@@ -3222,7 +3299,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
         }
       ], 
@@ -3230,9 +3307,7 @@
       "collapse": true
     }
   ], 
-  "templating": {
-    "list": []
-  }, 
+  "editMode": false, 
   "links": [
     {
       "tags": [], 
@@ -3243,12 +3318,10 @@
   "tags": [], 
   "graphTooltip": 0, 
   "hideControls": false, 
-  "title": "Cluster-TiDB", 
+  "title": "TiDB Cluster - tidb", 
   "editable": true, 
   "refresh": "30s", 
-  "annotations": {
-    "list": []
-  }, 
+  "id": null, 
   "gnetId": null, 
   "timepicker": {
     "time_options": [
@@ -3275,12 +3348,41 @@
       "1d"
     ]
   }, 
-  "version": 0, 
+  "__inputs": [
+    {
+      "description": "", 
+      "pluginName": "Prometheus", 
+      "label": "tidb-cluster", 
+      "pluginId": "prometheus", 
+      "type": "datasource", 
+      "name": "DS_TIDB-CLUSTER"
+    }
+  ], 
+  "version": 11, 
   "time": {
     "to": "now", 
-    "from": "now-30m"
+    "from": "now-6h"
   }, 
+  "__requires": [
+    {
+      "version": "4.0.1", 
+      "type": "grafana", 
+      "id": "grafana", 
+      "name": "Grafana"
+    }, 
+    {
+      "version": "1.0.0", 
+      "type": "datasource", 
+      "id": "prometheus", 
+      "name": "Prometheus"
+    }
+  ], 
   "timezone": "browser", 
   "schemaVersion": 14, 
-  "id": null
+  "annotations": {
+    "list": []
+  }, 
+  "templating": {
+    "list": []
+  }
 }
