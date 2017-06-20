@@ -66,7 +66,7 @@ cat <<EOF
         "ansible_kernel": "$(uname -r)",
         "ansible_machine": "$(uname -m)",
         "ansible_memfree_mb": $(($(echo $(cat /proc/meminfo  | grep -i memfree) | cut '-d ' -f 2) / 1024)),
-        "ansible_memtotal_mb": $(($(echo $(cat /proc/meminfo  | grep -i memfree) | cut '-d ' -f 2) / 1024)),
+        "ansible_memtotal_mb": $(($(echo $(cat /proc/meminfo  | grep -i memtotal) | cut '-d ' -f 2) / 1024)),
         "ansible_nodename": "$(hostname)",
         "ansible_os_family": "Linux",
         "ansible_processor_cores": ${coreNumber},
