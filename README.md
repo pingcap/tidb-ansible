@@ -22,7 +22,7 @@ Ansible is simple IT automation tool. [TiDB-Ansible](https://github.com/pingcap/
 ## Requirements
 To use this guide you’ll need a working installation of Ansible version 2.2 or later and `pip install Jinja2==2.7.2 MarkupSafe==0.11`.
 
-Simple guide for installing ansinle in different OS
+Simple guide for installing Ansible in different OS
 1. Ubuntu install ansible via PPA:
   sudo add-apt-repository ppa:ansible/ansible
   sudo apt-get update
