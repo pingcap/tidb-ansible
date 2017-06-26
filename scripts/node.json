@@ -1,4 +1,105 @@
 {
+  "editMode": false, 
+  "links": [
+    {
+      "tags": [], 
+      "type": "dashboards", 
+      "asDropdown": false, 
+      "icon": "external link"
+    }
+  ], 
+  "graphTooltip": 1, 
+  "timezone": "browser", 
+  "id": null, 
+  "templating": {
+    "list": [
+      {
+        "multi": false, 
+        "hide": 0, 
+        "name": "interval", 
+        "auto_count": 200, 
+        "auto": true, 
+        "allFormat": "glob", 
+        "refresh": 2, 
+        "label": "Interval", 
+        "current": {
+          "text": "5s", 
+          "value": "5s"
+        }, 
+        "options": [
+          {
+            "text": "auto", 
+            "selected": false, 
+            "value": "$__auto_interval"
+          }, 
+          {
+            "text": "1s", 
+            "selected": false, 
+            "value": "1s"
+          }, 
+          {
+            "text": "5s", 
+            "selected": true, 
+            "value": "5s"
+          }, 
+          {
+            "text": "1m", 
+            "selected": false, 
+            "value": "1m"
+          }, 
+          {
+            "text": "5m", 
+            "selected": false, 
+            "value": "5m"
+          }, 
+          {
+            "text": "1h", 
+            "selected": false, 
+            "value": "1h"
+          }, 
+          {
+            "text": "6h", 
+            "selected": false, 
+            "value": "6h"
+          }, 
+          {
+            "text": "1d", 
+            "selected": false, 
+            "value": "1d"
+          }
+        ], 
+        "auto_min": "1s", 
+        "datasource": "${DS_TIDB-CLUSTER}", 
+        "query": "1s,5s,1m,5m,1h,6h,1d", 
+        "type": "interval", 
+        "multiFormat": "glob", 
+        "includeAll": false
+      }, 
+      {
+        "regex": "", 
+        "sort": 3, 
+        "multi": false, 
+        "hide": 0, 
+        "name": "host", 
+        "tags": [], 
+        "allValue": null, 
+        "refresh_on_load": false, 
+        "allFormat": "glob", 
+        "refresh": 1, 
+        "label": "Host", 
+        "current": {}, 
+        "options": [], 
+        "datasource": "${DS_TIDB-CLUSTER}", 
+        "type": "query", 
+        "tagsQuery": "up", 
+        "query": "label_values(node_boot_time,instance)", 
+        "useTags": false, 
+        "tagValuesQuery": "instance", 
+        "multiFormat": "regex values", 
+        "includeAll": false
+      }
+    ]
+  }, 
   "style": "dark", 
   "rows": [
     {
@@ -83,7 +184,7 @@
             "rgba(237, 129, 40, 0.89)", 
             "rgba(50, 172, 45, 0.97)"
           ], 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "error": false, 
           "nullText": null, 
           "postfixFontSize": "80%", 
@@ -161,7 +262,7 @@
             "rgba(237, 129, 40, 0.89)", 
             "rgba(50, 172, 45, 0.97)"
           ], 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "error": false, 
           "nullText": null, 
           "postfixFontSize": "50%", 
@@ -242,7 +343,7 @@
             "rgba(237, 129, 40, 0.89)", 
             "rgba(50, 172, 45, 0.97)"
           ], 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "error": false, 
           "nullText": null, 
           "postfixFontSize": "50%", 
@@ -322,7 +423,7 @@
             "rgba(237, 129, 40, 0.89)", 
             "rgba(245, 54, 54, 0.9)"
           ], 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "error": false, 
           "nullText": null, 
           "postfixFontSize": "50%", 
@@ -409,7 +510,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "decimals": 2
         }, 
@@ -535,7 +636,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "decimals": 2
         }
@@ -675,7 +776,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "decimals": 2
         }, 
@@ -801,7 +902,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "decimals": 2
         }, 
@@ -892,7 +993,7 @@
           "aliasColors": {}, 
           "lines": false, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "decimals": 2
         }, 
@@ -1000,7 +1101,7 @@
           "aliasColors": {}, 
           "lines": false, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "decimals": 2
         }, 
@@ -1086,7 +1187,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "decimals": 2
         }, 
@@ -1177,7 +1278,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "decimals": 2
         }, 
@@ -1276,7 +1377,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "decimals": 2
         }, 
@@ -1379,7 +1480,7 @@
           "aliasColors": {}, 
           "lines": false, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "decimals": 2
         }, 
@@ -1478,7 +1579,7 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "decimals": 2
         }, 
@@ -1577,9 +1678,81 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "decimals": 2
+        }, 
+        {
+          "bars": false, 
+          "timeFrom": null, 
+          "links": [], 
+          "thresholds": [], 
+          "nullPointMode": "null", 
+          "renderer": "flot", 
+          "id": 32, 
+          "linewidth": 1, 
+          "steppedLine": false, 
+          "targets": [
+            {
+              "intervalFactor": 2, 
+              "expr": "node_sockstat_TCP_inuse", 
+              "metric": "node_sockstat_TCP_inuse", 
+              "refId": "A", 
+              "step": 10
+            }
+          ], 
+          "fill": 1, 
+          "span": 6, 
+          "title": "TCP In Use", 
+          "tooltip": {
+            "sort": 0, 
+            "shared": true, 
+            "value_type": "individual"
+          }, 
+          "legend": {
+            "total": false, 
+            "show": true, 
+            "max": false, 
+            "min": false, 
+            "current": false, 
+            "values": false, 
+            "avg": false
+          }, 
+          "yaxes": [
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "short", 
+              "min": null, 
+              "label": null
+            }, 
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "short", 
+              "min": null, 
+              "label": null
+            }
+          ], 
+          "xaxis": {
+            "show": true, 
+            "values": [], 
+            "mode": "time", 
+            "name": null
+          }, 
+          "seriesOverrides": [], 
+          "percentage": false, 
+          "type": "graph", 
+          "description": "Number of TCP sockets in state inuse.", 
+          "stack": false, 
+          "timeShift": null, 
+          "aliasColors": {}, 
+          "lines": true, 
+          "points": false, 
+          "datasource": "${DS_TIDB-CLUSTER}", 
+          "pointradius": 5
         }, 
         {
           "bars": false, 
@@ -1685,32 +1858,83 @@
           "aliasColors": {}, 
           "lines": true, 
           "points": false, 
-          "datasource": "$datasource", 
+          "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5, 
           "decimals": 2
         }
       ], 
       "showTitle": false, 
       "collapse": false
-    }
-  ], 
-  "description": "Prometheus for system metrics. \r\nLoad, CPU, RAM, network, process ... ", 
-  "links": [
+    }, 
     {
-      "tags": [], 
-      "type": "dashboards", 
-      "asDropdown": false, 
-      "icon": "external link"
+      "repeat": null, 
+      "titleSize": "h6", 
+      "repeatIteration": null, 
+      "title": "Dashboard Row", 
+      "height": 250, 
+      "repeatRowId": null, 
+      "panels": [], 
+      "showTitle": false, 
+      "collapse": false
     }
   ], 
-  "tags": [], 
-  "graphTooltip": 1, 
-  "hideControls": false, 
-  "title": "Cluster-Node-Export", 
-  "editable": true, 
-  "refresh": "30s", 
-  "id": null, 
+  "title": "TiDB Cluster - node", 
   "gnetId": 159, 
+  "version": 6, 
+  "annotations": {
+    "list": [
+      {
+        "enable": true, 
+        "name": "Alert", 
+        "expr": "ALERTS{instance=\"$host\", alertstate=\"firing\"}", 
+        "titleFormat": "{{ alertname\u00a0}}", 
+        "datasource": "${DS_TIDB-CLUSTER}", 
+        "textFormat": "{{ instance }} : {{alertstate}}", 
+        "tagKeys": "severity", 
+        "iconColor": "rgb(252, 5, 0)"
+      }, 
+      {
+        "enable": true, 
+        "name": "Warning", 
+        "expr": "ALERTS{instance=\"$host\",alertstate=\"pending\"}", 
+        "titleFormat": "{{ alertname }}", 
+        "datasource": "${DS_TIDB-CLUSTER}", 
+        "textFormat": "{{ instance\u00a0}} : {{ alertstate\u00a0}}", 
+        "tagKeys": "severity", 
+        "iconColor": "rgb(228, 242, 9)"
+      }
+    ]
+  }, 
+  "description": "Prometheus for system metrics. \r\nLoad, CPU, RAM, network, process ... ", 
+  "tags": [], 
+  "editable": true, 
+  "__inputs": [
+    {
+      "description": "", 
+      "pluginName": "Prometheus", 
+      "label": "tidb-cluster", 
+      "pluginId": "prometheus", 
+      "type": "datasource", 
+      "name": "DS_TIDB-CLUSTER"
+    }
+  ], 
+  "__requires": [
+    {
+      "version": "4.0.1", 
+      "type": "grafana", 
+      "id": "grafana", 
+      "name": "Grafana"
+    }, 
+    {
+      "version": "1.0.0", 
+      "type": "datasource", 
+      "id": "prometheus", 
+      "name": "Prometheus"
+    }
+  ], 
+  "schemaVersion": 14, 
+  "hideControls": false, 
+  "refresh": "30s", 
   "timepicker": {
     "status": "Stable", 
     "notice": false, 
@@ -1742,124 +1966,8 @@
     "now": true, 
     "type": "timepicker"
   }, 
-  "version": 0, 
   "time": {
     "to": "now", 
     "from": "now-1h"
-  }, 
-  "timezone": "browser", 
-  "schemaVersion": 14, 
-  "annotations": {
-    "list": [
-      {
-        "enable": true, 
-        "name": "Alert", 
-        "expr": "ALERTS{instance=\"$host\", alertstate=\"firing\"}", 
-        "titleFormat": "{{ alertname\u00a0}}", 
-        "datasource": "$datasource", 
-        "textFormat": "{{ instance }} : {{alertstate}}", 
-        "tagKeys": "severity", 
-        "iconColor": "rgb(252, 5, 0)"
-      }, 
-      {
-        "enable": true, 
-        "name": "Warning", 
-        "expr": "ALERTS{instance=\"$host\",alertstate=\"pending\"}", 
-        "titleFormat": "{{ alertname }}", 
-        "datasource": "$datasource", 
-        "textFormat": "{{ instance\u00a0}} : {{ alertstate\u00a0}}", 
-        "tagKeys": "severity", 
-        "iconColor": "rgb(228, 242, 9)"
-      }
-    ]
-  }, 
-  "templating": {
-    "list": [
-      {
-        "multi": false, 
-        "hide": 0, 
-        "name": "interval", 
-        "auto_count": 200, 
-        "auto": true, 
-        "allFormat": "glob", 
-        "refresh": 2, 
-        "label": "Interval", 
-        "current": {
-          "text": "5s", 
-          "value": "5s"
-        }, 
-        "options": [
-          {
-            "text": "auto", 
-            "selected": false, 
-            "value": "$__auto_interval"
-          }, 
-          {
-            "text": "1s", 
-            "selected": false, 
-            "value": "1s"
-          }, 
-          {
-            "text": "5s", 
-            "selected": true, 
-            "value": "5s"
-          }, 
-          {
-            "text": "1m", 
-            "selected": false, 
-            "value": "1m"
-          }, 
-          {
-            "text": "5m", 
-            "selected": false, 
-            "value": "5m"
-          }, 
-          {
-            "text": "1h", 
-            "selected": false, 
-            "value": "1h"
-          }, 
-          {
-            "text": "6h", 
-            "selected": false, 
-            "value": "6h"
-          }, 
-          {
-            "text": "1d", 
-            "selected": false, 
-            "value": "1d"
-          }
-        ], 
-        "auto_min": "1s", 
-        "datasource": "$datasource", 
-        "query": "1s,5s,1m,5m,1h,6h,1d", 
-        "type": "interval", 
-        "multiFormat": "glob", 
-        "includeAll": false
-      }, 
-      {
-        "regex": "", 
-        "sort": 3, 
-        "multi": false, 
-        "hide": 0, 
-        "name": "host", 
-        "tags": [], 
-        "allValue": null, 
-        "refresh_on_load": false, 
-        "allFormat": "glob", 
-        "refresh": 1, 
-        "label": "Host", 
-        "current": {}, 
-        "options": [], 
-        "datasource": "$datasource", 
-        "type": "query", 
-        "tagsQuery": "up", 
-        "query": "label_values(node_boot_time,instance)", 
-        "useTags": false, 
-        "tagValuesQuery": "instance", 
-        "multiFormat": "regex values", 
-        "includeAll": false
-      }
-    ]
   }
 }
