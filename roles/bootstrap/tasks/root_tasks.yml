@@ -81,7 +81,7 @@
 - name: modify centos irqbalance configuration file
   lineinfile: 
     dest=/etc/sysconfig/irqbalance 
-    regexp='# ONESHOT='
+    regexp='(?<!_)ONESHOT='
     line='ONESHOT=yes'
   when: 
     - tuning_irqbalance_value 
