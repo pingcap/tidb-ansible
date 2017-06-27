@@ -23,7 +23,8 @@ src = dict(
     dashboards={"node": 'node.json',
                 "pd"  : 'pd.json',
                 "tidb": 'tidb.json',
-                "tikv": 'tikv.json'})
+                "tikv": 'tikv.json',
+                "privotal": 'privotal.json'})
 
 dests = [
 ]
