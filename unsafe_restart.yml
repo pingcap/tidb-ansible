@@ -40,7 +40,7 @@
       - node_exporter
     - name: wait up
       wait_for: |
-        host={{ ansible_default_ipv4.address }} port={{ node_exporter_port }} state=present
+        host={{ ansible_host }} port={{ node_exporter_port }} state=present
         send='GET /metrics HTTP/1.0\r\n\r\n' search_regex='200 OK'
 
 - hosts: monitoring_servers
@@ -55,11 +55,11 @@
         - prometheus
     - name: wait pushgateway up
       wait_for: |
-        host={{ ansible_default_ipv4.address }} port={{ pushgateway_port }} state=present
+        host={{ ansible_host }} port={{ pushgateway_port }} state=present
         send='GET /metrics HTTP/1.0\r\n\r\n' search_regex='200 OK'
     - name: wait prometheus up
       wait_for: |
-        host={{ ansible_default_ipv4.address }} port={{ prometheus_port }} state=present
+        host={{ ansible_host }} port={{ prometheus_port }} state=present
         send='GET /metrics HTTP/1.0\r\n\r\n' search_regex='200 OK'
 
 - hosts: pd_servers
@@ -72,7 +72,7 @@
         - pd
     - name: wait up
       wait_for: |
-        host={{ ansible_default_ipv4.address }} port={{ pd_client_port }} state=present
+        host={{ ansible_host }} port={{ pd_client_port }} state=present
         send='GET /pd/api/v1/members HTTP/1.0\r\n\r\n' search_regex='200 OK'
 
 - hosts: tikv_servers
@@ -100,7 +100,7 @@
 
     - name: wait pump up
       wait_for: |
-        host={{ ansible_default_ipv4.address }} port={{ pump_port }} state=present
+        host={{ ansible_host }} port={{ pump_port }} state=present
       when: enable_binlog
 
     - name: restart TiDB
@@ -109,7 +109,7 @@
         - tidb
     - name: wait up
       wait_for: |
-        host={{ ansible_default_ipv4.address }} port={{ tidb_port }} state=present
+        host={{ ansible_host }} port={{ tidb_port }} state=present
         search_regex='TiDB-1.0'
 
 
@@ -126,7 +126,7 @@
 
     - name: wait grafana up
       wait_for: |
-        host={{ ansible_default_ipv4.address }} port={{ grafana_port }} state=present
+        host={{ ansible_host }} port={{ grafana_port }} state=present
         send='GET /login HTTP/1.0\r\n\r\n' search_regex='200 OK'
 
     - name: import grafana data source

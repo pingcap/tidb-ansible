@@ -47,7 +47,7 @@
     - name: wait NodeExporter down
       tags:
         - restart
-      wait_for: host={{ ansible_default_ipv4.address }} port={{ node_exporter_port }} state=stopped
+      wait_for: host={{ ansible_host }} port={{ node_exporter_port }} state=stopped
 
     - name: start NodeExporter
       tags:
@@ -56,7 +56,7 @@
 
     - name: wait NodeExporter up
       wait_for: |
-        host={{ ansible_default_ipv4.address }} port={{ node_exporter_port }} state=present
+        host={{ ansible_host }} port={{ node_exporter_port }} state=present
         send='GET /metrics HTTP/1.0\r\n\r\n' search_regex='200 OK'
 
 
@@ -77,7 +77,7 @@
     - name: wait PD down
       tags:
         - restart
-      wait_for: host={{ ansible_default_ipv4.address }} port={{ pd_client_port }} state=stopped
+      wait_for: host={{ ansible_host }} port={{ pd_client_port }} state=stopped
 
     - name: start PD
       tags:
@@ -86,7 +86,7 @@
 
     - name: wait PD up
       wait_for: |
-        host={{ ansible_default_ipv4.address }} port={{ pd_client_port }} state=present
+        host={{ ansible_host }} port={{ pd_client_port }} state=present
         send='GET /pd/api/v1/members HTTP/1.0\r\n\r\n' search_regex='200 OK'
 
 
@@ -107,7 +107,7 @@
     - name: wait TiKV down (via Port)
       tags:
         - restart
-      wait_for: host={{ ansible_default_ipv4.address }} port={{ tikv_port }} state=stopped
+      wait_for: host={{ ansible_host }} port={{ tikv_port }} state=stopped
 
     - name: wait TiKV down (via PID)
       tags:
@@ -145,7 +145,7 @@
     - name: wait TiDB down
       tags:
         - restart
-      wait_for: host={{ ansible_default_ipv4.address }} port={{ tidb_port }} state=stopped
+      wait_for: host={{ ansible_host }} port={{ tidb_port }} state=stopped
 
     - name: pump
       shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
@@ -155,7 +155,7 @@
 
     - name: wait pump up
       wait_for: |
-        host={{ ansible_default_ipv4.address }} port={{ pump_port }} state=present
+        host={{ ansible_host }} port={{ pump_port }} state=present
       when: enable_binlog
 
     - name: start TiDB
@@ -167,5 +167,5 @@
       tags:
         - restart
       wait_for: |
-        host={{ ansible_default_ipv4.address }} port={{ tidb_port }} state=present
+        host={{ ansible_host }} port={{ tidb_port }} state=present
         search_regex='TiDB-1.0'
