@@ -6,14 +6,14 @@ ulimit -n 1000000
 #          All your edit might be overwritten!
 cd "{{ deploy_dir }}" || exit 1
 
-{% set my_ip = ansible_default_ipv4.address -%}
+{% set my_ip = hostvars[inventory_hostname].ansible_host | default(hostvars[inventory_hostname].inventory_hostname) -%}
 
 {% set my_peer_id = groups.tikv_servers.index(inventory_hostname) + 1 -%}
 
 {% set all_pd = [] -%}
 {% set pd_hosts = groups.pd_servers %}
 {% for host in pd_hosts -%}
-  {% set pd_ip = hostvars[host].ansible_default_ipv4.address -%}
+  {% set pd_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
   {% set pd_port = hostvars[host].pd_client_port -%}
   {% set _ = all_pd.append("%s:%s" % (pd_ip, pd_port)) -%}
 {% endfor -%}

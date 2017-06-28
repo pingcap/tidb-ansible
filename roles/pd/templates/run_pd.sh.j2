@@ -8,12 +8,12 @@ DEPLOY_DIR={{ deploy_dir }}
 
 cd "${DEPLOY_DIR}" || exit 1
 
-{% set my_ip = ansible_default_ipv4.address -%}
+{% set my_ip = hostvars[inventory_hostname].ansible_host | default(hostvars[inventory_hostname].inventory_hostname) -%}
 {% set my_peer_id = groups.pd_servers.index(inventory_hostname) + 1 -%}
 
 {% set all_pd = [] -%}
 {% for host in groups.pd_servers -%}
-  {% set other_ip = hostvars[host]['ansible_default_ipv4']['address'] -%}
+  {% set other_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
   {% set other_port = hostvars[host]['pd_peer_port'] -%}
   {% set other_pd_name_surfix = groups.pd_servers.index(host) + 1 -%}
   {% set other_pd_name = pd_name_prefix ~ other_pd_name_surfix -%}

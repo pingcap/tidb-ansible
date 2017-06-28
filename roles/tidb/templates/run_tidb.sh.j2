@@ -12,12 +12,12 @@ cd "${DEPLOY_DIR}" || exit 1
 {% set all_pd = [] -%}
 {% set pd_hosts = groups.pd_servers %}
 {% for host in pd_hosts -%}
-  {% set pd_ip = hostvars[host].ansible_default_ipv4.address-%}
+  {% set pd_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
   {% set pd_port = hostvars[host].pd_client_port -%}
   {% set _ = all_pd.append("%s:%s" % (pd_ip, pd_port)) -%}
 {% endfor -%}
 
-{% set metric_host = hostvars[groups.monitoring_servers[0]].ansible_default_ipv4.address
+{% set metric_host = hostvars[groups.monitoring_servers[0]].ansible_host | default(hostvars[groups.monitoring_servers[0]].inventory_hostname)
     if groups.get('monitoring_servers', []) else "" -%}
 {% set metric_port = hostvars[groups.monitoring_servers[0]].pushgateway_port if metric_host else "" -%}
 {% set metric_addr = metric_host ~ ":" ~ metric_port if metric_host else "" -%}

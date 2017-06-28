@@ -37,7 +37,7 @@
         - tidb
 
     - name: wait TiDB down
-      wait_for: host={{ ansible_default_ipv4.address }} port={{ tidb_port }} state=stopped
+      wait_for: host={{ ansible_host }} port={{ tidb_port }} state=stopped
 
     - name: pump
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
@@ -47,7 +47,7 @@
 
     - name: wait pump down
       wait_for: |
-        host={{ ansible_default_ipv4.address }} port={{ pump_port }} state=stopped
+        host={{ ansible_host }} port={{ pump_port }} state=stopped
       when: enable_binlog
 
     - name: clean pump data
@@ -62,7 +62,7 @@
     - tikv
 
   - name: wait TiKV down
-    wait_for: host={{ ansible_default_ipv4.address }} port={{ tikv_port }} state=stopped
+    wait_for: host={{ ansible_host }} port={{ tikv_port }} state=stopped
 
   - name: clean TiKV data
     file: path={{ tikv_data_dir }} state=absent
@@ -80,7 +80,7 @@
     - pd
 
   - name: wait PD down
-    wait_for: host={{ ansible_default_ipv4.address }} port={{ pd_client_port }} state=stopped
+    wait_for: host={{ ansible_host }} port={{ pd_client_port }} state=stopped
 
   - name: clean PD data
     file: path={{ pd_data_dir }} state=absent
