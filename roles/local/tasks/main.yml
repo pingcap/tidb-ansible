@@ -14,7 +14,7 @@
 - name: detect outbound network
   shell: >
     warn=no
-    curl -s --connect-timeout 4 baidu.com 2>/dev/null >/dev/null; echo $?
+    curl -s --connect-timeout 10 baidu.com 2>/dev/null >/dev/null; echo $?
   changed_when: false
   register: outbound_network_st
 
@@ -24,7 +24,7 @@
 - name: detect GFW
   shell: >
     warn=no
-    curl -s --connect-timeout 2 google.com 2>/dev/null >/dev/null; echo $?
+    curl -s --connect-timeout 10 google.com 2>/dev/null >/dev/null; echo $?
   changed_when: false
   register: gfw_st
 
