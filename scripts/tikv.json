@@ -6872,17 +6872,17 @@
           "steppedLine": false, 
           "targets": [
             {
-              "expr": "histogram_quantile(0.8, sum(rate(tikv_grpc_msg_duration_seconds_bucket[1m])) by (le, job))", 
+              "expr": "sum(rate(tikv_grpc_msg_duration_seconds_count[1m])) by (type)", 
               "metric": "tikv_grpc_msg_duration_seconds_bucket", 
               "step": 20, 
-              "legendFormat": "{{job}}", 
+              "legendFormat": "{{type}}", 
               "intervalFactor": 2, 
               "refId": "A"
             }
           ], 
           "fill": 1, 
           "span": 6, 
-          "title": "80% tikv grpc messge duration by job", 
+          "title": "grpc message count by type", 
           "tooltip": {
             "sort": 0, 
             "shared": true, 
@@ -6904,7 +6904,7 @@
               "logBase": 1, 
               "show": true, 
               "max": null, 
-              "format": "s", 
+              "format": "ops", 
               "min": null, 
               "label": null
             }, 
@@ -6941,22 +6941,22 @@
           "thresholds": [], 
           "nullPointMode": "null", 
           "renderer": "flot", 
-          "id": 96, 
+          "id": 107, 
           "linewidth": 1, 
           "steppedLine": false, 
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_grpc_msg_duration_seconds_bucket[1m])) by (le, job))", 
-              "metric": "tikv_grpc_msg_duration_seconds_bucket", 
+              "expr": "sum(tikv_grpc_msg_fail_total)by(type)", 
+              "metric": "tikv_grpc_msg_fail_total", 
               "step": 20, 
-              "legendFormat": "{{job}}", 
+              "legendFormat": "{{type}}", 
               "intervalFactor": 2, 
               "refId": "A"
             }
           ], 
           "fill": 1, 
           "span": 6, 
-          "title": "99% tikv grpc messge duration by job", 
+          "title": "grpc message failed", 
           "tooltip": {
             "sort": 0, 
             "shared": true, 
@@ -6978,7 +6978,7 @@
               "logBase": 1, 
               "show": true, 
               "max": null, 
-              "format": "s", 
+              "format": "short", 
               "min": null, 
               "label": null
             }, 
@@ -7153,80 +7153,6 @@
           "points": false, 
           "datasource": "${DS_TIDB-CLUSTER}", 
           "pointradius": 5
-        }, 
-        {
-          "bars": false, 
-          "timeFrom": null, 
-          "links": [], 
-          "thresholds": [], 
-          "nullPointMode": "null", 
-          "renderer": "flot", 
-          "id": 107, 
-          "linewidth": 1, 
-          "steppedLine": false, 
-          "targets": [
-            {
-              "expr": "sum(tikv_grpc_msg_fail_total)by(type)", 
-              "metric": "tikv_grpc_msg_fail_total", 
-              "step": 20, 
-              "legendFormat": "{{type}}", 
-              "intervalFactor": 2, 
-              "refId": "A"
-            }
-          ], 
-          "fill": 1, 
-          "span": 6, 
-          "title": "grpc message failed", 
-          "tooltip": {
-            "sort": 0, 
-            "shared": true, 
-            "value_type": "individual"
-          }, 
-          "legend": {
-            "rightSide": true, 
-            "total": false, 
-            "min": false, 
-            "max": false, 
-            "show": true, 
-            "current": false, 
-            "values": false, 
-            "alignAsTable": true, 
-            "avg": false
-          }, 
-          "yaxes": [
-            {
-              "logBase": 1, 
-              "show": true, 
-              "max": null, 
-              "format": "short", 
-              "min": null, 
-              "label": null
-            }, 
-            {
-              "logBase": 1, 
-              "show": true, 
-              "max": null, 
-              "format": "short", 
-              "min": null, 
-              "label": null
-            }
-          ], 
-          "xaxis": {
-            "show": true, 
-            "values": [], 
-            "mode": "time", 
-            "name": null
-          }, 
-          "seriesOverrides": [], 
-          "percentage": false, 
-          "type": "graph", 
-          "stack": false, 
-          "timeShift": null, 
-          "aliasColors": {}, 
-          "lines": true, 
-          "points": false, 
-          "datasource": "${DS_TIDB-CLUSTER}", 
-          "pointradius": 5
         }
       ], 
       "showTitle": true, 
@@ -7288,7 +7214,7 @@
       "name": "DS_TIDB-CLUSTER"
     }
   ], 
-  "version": 35, 
+  "version": 3, 
   "time": {
     "to": "now", 
     "from": "now-3h"
