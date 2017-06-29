@@ -30,6 +30,27 @@
     deploy_user: "{{ ansible_become_user }}"
   when: deploy_user == 'root' and ansible_become_user is defined
 
+- name: guess deploy_user - use become_user under ansible_user
+  set_fact:
+    deploy_user: "{{ ansible_become_user }}"
+  when: ansible_become_user != ansible_user and ansible_become_user is defined
+
+- name: create group
+  group: name="{{ deploy_user }}"
+  when:
+    - ansible_user != 'root' and deploy_user != ansible_user
+  vars: # ugly workaround
+    - ansible_become: true
+    - ansible_become_user: root
+
+- name: create account
+  user: name="{{ deploy_user }}" group="{{ deploy_user }}"
+  when:
+    - ansible_user != 'root' and deploy_user != ansible_user 
+  vars: # ugly workaround
+    - ansible_become: true
+    - ansible_become_user: root
+
 - name: Set deploy dir if not presented
   set_fact: deploy_dir="/home/{{ deploy_user }}/deploy"
   when: deploy_dir is not defined
@@ -46,6 +67,8 @@
 
 - include: root_tasks.yml
   static: no
-  become: true
   when:
     - ansible_user != 'root'
+  vars: # ugly workaround
+    - ansible_become: true
+    - ansible_become_user: root
