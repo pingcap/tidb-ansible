@@ -55,15 +55,6 @@ ALERT tikv_raft_process_ready
     description = "alert: sum(rate(tikv_raftstore_raft_process_nanos_total{type='ready'[1m])) by (type, instance) / 1000000000 instance: {{ $labels.instance }} values: {{ $value }}",
   }
 
-ALERT tikv_keepalive
-  IF sum(rate(tikv_pd_msg_send_duration_seconds_count[1m])) by (instance) == 0
-  FOR 1m
-  LABELS { env = "ENV_LABELS_ENV", channels = "alerts" }
-  ANNOTATIONS {
-    summary = "TiKV keepalive fails",
-    description = "alert: sum(rate(tikv_pd_msg_send_duration_seconds_count[1m])) by (instance) instance {{ $labels.instance }} values:{{ $value }}",
-  }
-
 ALERT raft_sotre_msg
   IF sum(rate(tikv_server_report_failure_msg_total{type='unreachable'}[1m])) > 10
   FOR 1m
