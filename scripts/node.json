@@ -1694,11 +1694,12 @@
           "steppedLine": false, 
           "targets": [
             {
-              "intervalFactor": 2, 
-              "expr": "node_sockstat_TCP_inuse", 
-              "metric": "node_sockstat_TCP_inuse", 
-              "refId": "A", 
-              "step": 10
+              "expr": "node_sockstat_TCP_inuse{instance=\"$host\"}", 
+              "metric": "", 
+              "step": 5, 
+              "legendFormat": "TCP In Use", 
+              "intervalFactor": 1, 
+              "refId": "A"
             }
           ], 
           "fill": 1, 
@@ -1873,14 +1874,159 @@
       "title": "Dashboard Row", 
       "height": 250, 
       "repeatRowId": null, 
-      "panels": [], 
+      "panels": [
+        {
+          "bars": false, 
+          "timeFrom": null, 
+          "links": [], 
+          "thresholds": [], 
+          "nullPointMode": "null", 
+          "renderer": "flot", 
+          "id": 33, 
+          "linewidth": 1, 
+          "steppedLine": false, 
+          "targets": [
+            {
+              "expr": "node_filefd_allocated{instance=\"$host\"}", 
+              "metric": "node_filefd_allocated", 
+              "step": 10, 
+              "legendFormat": "Allocated File Descriptor", 
+              "intervalFactor": 2, 
+              "refId": "A"
+            }
+          ], 
+          "fill": 1, 
+          "span": 6, 
+          "title": "Allocated File Descriptor", 
+          "tooltip": {
+            "sort": 0, 
+            "shared": true, 
+            "value_type": "individual"
+          }, 
+          "legend": {
+            "total": false, 
+            "show": true, 
+            "max": false, 
+            "min": false, 
+            "current": false, 
+            "values": false, 
+            "avg": false
+          }, 
+          "yaxes": [
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "short", 
+              "min": null, 
+              "label": null
+            }, 
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "short", 
+              "min": null, 
+              "label": null
+            }
+          ], 
+          "xaxis": {
+            "show": true, 
+            "values": [], 
+            "mode": "time", 
+            "name": null
+          }, 
+          "seriesOverrides": [], 
+          "percentage": false, 
+          "type": "graph", 
+          "stack": false, 
+          "timeShift": null, 
+          "aliasColors": {}, 
+          "lines": true, 
+          "points": false, 
+          "datasource": "${DS_TIDB-CLUSTER}", 
+          "pointradius": 5
+        }, 
+        {
+          "bars": false, 
+          "timeFrom": null, 
+          "links": [], 
+          "thresholds": [], 
+          "nullPointMode": "null", 
+          "renderer": "flot", 
+          "id": 34, 
+          "linewidth": 1, 
+          "steppedLine": false, 
+          "targets": [
+            {
+              "expr": "node_filefd_maximum{instance=\"$host\"}", 
+              "metric": "node_filefd_maximum", 
+              "step": 10, 
+              "legendFormat": "Maximum File Descriptor", 
+              "intervalFactor": 2, 
+              "refId": "A"
+            }
+          ], 
+          "fill": 1, 
+          "span": 6, 
+          "title": "Maximum File Descriptor", 
+          "tooltip": {
+            "sort": 0, 
+            "shared": true, 
+            "value_type": "individual"
+          }, 
+          "legend": {
+            "total": false, 
+            "show": true, 
+            "max": false, 
+            "min": false, 
+            "current": false, 
+            "values": false, 
+            "avg": false
+          }, 
+          "yaxes": [
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "short", 
+              "min": null, 
+              "label": null
+            }, 
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "short", 
+              "min": null, 
+              "label": null
+            }
+          ], 
+          "xaxis": {
+            "show": true, 
+            "values": [], 
+            "mode": "time", 
+            "name": null
+          }, 
+          "seriesOverrides": [], 
+          "percentage": false, 
+          "type": "graph", 
+          "stack": false, 
+          "timeShift": null, 
+          "aliasColors": {}, 
+          "lines": true, 
+          "points": false, 
+          "datasource": "${DS_TIDB-CLUSTER}", 
+          "pointradius": 5
+        }
+      ], 
       "showTitle": false, 
       "collapse": false
     }
   ], 
   "title": "TiDB Cluster - node", 
   "gnetId": 159, 
-  "version": 6, 
+  "version": 11, 
   "annotations": {
     "list": [
       {
