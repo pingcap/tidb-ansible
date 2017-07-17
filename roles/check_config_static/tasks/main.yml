@@ -26,7 +26,7 @@
   when: enable_elk is defined and enable_elk
 
 - name: Close old control master
-  raw: ps aux | grep ansible-ssh | grep -v grep | awk '{print $2}' | xargs kill
+  raw: ps aux | grep ansible-ssh | grep -v grep | awk '{print $2}' | xargs kill ; true
   ignore_errors: true
   changed_when: false
   vars:
