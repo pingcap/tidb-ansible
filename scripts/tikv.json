@@ -4959,17 +4959,12 @@
           "aliasColors": {},
           "bars": false,
           "datasource": "${DS_TEST-CLUSTER}",
-          "editable": true,
-          "error": false,
           "fill": 1,
-          "grid": {},
-          "id": 30,
+          "id": 121,
           "legend": {
             "alignAsTable": true,
             "avg": false,
             "current": true,
-            "hideEmpty": true,
-            "hideZero": false,
             "max": true,
             "min": false,
             "rightSide": true,
@@ -4980,7 +4975,7 @@
           "lines": true,
           "linewidth": 1,
           "links": [],
-          "nullPointMode": "null as zero",
+          "nullPointMode": "null",
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -4991,23 +4986,30 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.9999, sum(rate(tikv_compact_range_cf_duration_seconds_bucket[1m])) by (le, cf, job))",
+              "expr": "sum(rate(tikv_storage_command_total{type=\"gc\"}[1m]))",
               "intervalFactor": 2,
-              "legendFormat": "{{job}}-{{cf}}",
-              "metric": "",
+              "legendFormat": "GC Commands",
+              "metric": "tikv_storage_command_total",
               "refId": "A",
-              "step": 30
+              "step": 20
+            },
+            {
+              "expr": "sum(rate(tikv_storage_gc_skipped_counter[1m]))",
+              "intervalFactor": 2,
+              "legendFormat": "GC Skipped",
+              "metric": "tikv_storage_gc_skipped_counter",
+              "refId": "B",
+              "step": 20
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "manual compact duration",
+          "title": "scheduler GC skipped",
           "tooltip": {
-            "msResolution": false,
             "shared": true,
             "sort": 0,
-            "value_type": "cumulative"
+            "value_type": "individual"
           },
           "type": "graph",
           "xaxis": {
@@ -5189,6 +5191,86 @@
             }
           ],
           "valueName": "current"
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {},
+          "id": 30,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "hideEmpty": true,
+            "hideZero": false,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null as zero",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.9999, sum(rate(tikv_compact_range_cf_duration_seconds_bucket[1m])) by (le, cf, job))",
+              "intervalFactor": 2,
+              "legendFormat": "{{job}}-{{cf}}",
+              "metric": "",
+              "refId": "A",
+              "step": 20
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "manual compact duration",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
         }
       ],
       "repeat": null,
