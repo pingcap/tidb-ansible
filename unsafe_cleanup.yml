@@ -39,6 +39,10 @@
         killall -9 pump drainer cistern;
         true
 
+    - name: cleaning up wal dir
+      file: path={{ wal_dir }} state=absent
+      when: wal_dir is defined
+
     - name: cleaning up deploy dir
       file: path={{ deploy_dir }} state=absent
 
