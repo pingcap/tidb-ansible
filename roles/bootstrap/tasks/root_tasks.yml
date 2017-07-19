@@ -36,6 +36,10 @@
 - name: create top deploy dir when under root
   file: path="{{ deploy_dir }}" state=directory mode=0755 owner={{ deploy_user }} group={{ deploy_user }}
 
+- name: create wal_dir deploy dir when under root
+  file: path="{{ wal_dir }}" state=directory mode=0755 owner={{ deploy_user }} group={{ deploy_user }}
+  when: wal_dir is defined
+
 - name: set timezone to Asia/Shanghai
   timezone: name=Asia/Shanghai
 
