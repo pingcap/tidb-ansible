@@ -70,6 +70,13 @@
   - name: create new TiKV data dir
     file: path={{ tikv_data_dir }} state=directory mode=0755
 
+  - name: clean TiKV wal data
+    file: path={{ wal_dir }} state=absent
+    when: wal_dir is defined
+
+  - name: create new TiKV wal data dir
+    file: path={{ wal_dir }} state=directory mode=0755
+    when: wal_dir is defined
 
 - name: PD cluster
   hosts: pd_servers
