@@ -89,10 +89,25 @@
   when: "item.mount == deploy_partition.stdout and item.size_available < minimum_deploy_space|int"
   with_items: "{{ ansible_mounts }}"
 
-- name: Preflight check - Does deploy dir meet ext4 file system requirement
+- name: Preflight check - Check bug if file system is xfs
+  shell: cd {{ deploy_dir }} && fallocate -n -o 0 -l 9192 tidb_test && printf 'a%.0s' {1..5000} > tidb_test && truncate -s 5000 tidb_test && fallocate -p -n -o 5000 -l 4192 tidb_test && LANG=en_US.UTF-8  stat tidb_test |awk 'NR==2{print $2}'
+  register: xfs_result
+  when: "item.mount == deploy_partition.stdout and item.fstype == 'xfs'"
+  with_items: "{{ ansible_mounts }}"
+
+- name: Preflight check - Clean check file for xfs file system
+  file: path={{ deploy_dir }}/tidb_test state=absent
+
+- name: Preflight check - Does deploy dir meet ext4 or xfs file system requirement[1]
+  set_fact:
+    fssystem_check_result: true
+  when: "(item.mount == deploy_partition.stdout and item.fstype == 'ext4') or (item.mount == deploy_partition.stdout and item.fstype == 'xfs' and xfs_result.results[0].stdout|int == 5000)"
+  with_items: "{{ ansible_mounts }}"
+
+- name: Preflight check - Does deploy dir meet ext4 or xfs file system requirement[2]
   fail:
-    msg: 'The file system mounted at {{ item.mount }} does not meet ext4 file system requirement'
-  when: "item.mount == deploy_partition.stdout and item.fstype != 'ext4'"
+    msg: 'The file system mounted at {{ item.mount }} does not meet ext4 or xfs file system requirement'
+  when: "fssystem_check_result is not defined"
   with_items: "{{ ansible_mounts }}"
 
 - name: Preflight check - Get deploy dir permissions
