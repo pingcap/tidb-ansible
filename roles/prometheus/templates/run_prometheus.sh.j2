@@ -2,6 +2,8 @@
 set -e
 ulimit -n 1000000
 
+{% set my_ip = hostvars[inventory_hostname].ansible_host | default(hostvars[inventory_hostname].inventory_hostname) -%}
+
 # WARNING: This file was auto-generated. Do not edit!
 #          All your edit might be overwritten!
 exec > >(tee -i -a "{{ prometheus_log_dir }}/{{ prometheus_log_filename }}")
@@ -10,6 +12,7 @@ exec 2>&1
 exec bin/prometheus \
     --config.file="{{ deploy_dir }}/conf/prometheus.yml" \
     --web.listen-address=":{{ prometheus_port }}" \
+    --web.external-url="http://{{ my_ip }}:{{ prometheus_port }}/" \
     --log.level="{{ prometheus_log_level }}" \
     --storage.local.path="{{ prometheus_data_dir }}" \
     --storage.local.retention="{{ prometheus_storage_retention }}"
