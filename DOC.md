@@ -95,7 +95,7 @@ cd /playbook #
 
 ### 编制 Ansible Inventory 文件
 
-Ansible 使用 Inventory 文件描述部署目标服务器。例子请参考 ``inventory.ini.sample`` 文件。
+Ansible 使用 Inventory 文件描述部署目标服务器。例子请参考 ``inventory.ini`` 文件。
 
 当通过 root 用户 ssh 部署时（一般为 CentOS），需要填写 ``[all:vars]``：
 
