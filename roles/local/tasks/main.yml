@@ -19,7 +19,7 @@
   register: outbound_network_st
 
 - name: set outbound network fact
-  set_fact: has_outbound_network={{ outbound_network_st.stdout.strip() == '0' }}
+  set_fact: has_outbound_network={{ outbound_network_st.stdout.strip() == '0' }} 
 
 - name: detect GFW
   shell: >
@@ -29,7 +29,7 @@
   register: gfw_st
 
 - name: set GFW fact
-  set_fact: under_gfw={{ gfw_st.stdout.strip() != '0' }}
+  set_fact: under_gfw={{ gfw_st.stdout.strip() != '0' }} 
 
 # do actual downloading
 
@@ -41,15 +41,12 @@
 - name: download other binary
   get_url: url={{ item.url }} dest={{ downloads_dir }}/{{ item.name }}-{{ item.version }}.tar.gz validate_certs=no
   with_items: "{{ third_party_packages }}"
-  when: has_outbound_network and not under_gfw
-
+  when: has_outbound_network and not under_gfw 
 - name: download other binary under gfw
   get_url: |
-    url=http://download.pingcap.org/{{ item.name }}-{{ item.version }}.tar.gz
-    dest={{ downloads_dir }}/{{ item.name }}-{{ item.version }}.tar.gz
-    validate_certs=no
-  with_items: "{{ third_party_packages }}"
-  when: has_outbound_network and under_gfw
+    url={{ item.url }} dest={{ downloads_dir }}/{{ item.name }}-{{ item.version }}.tar.gz validate_certs=no
+  with_items: "{{ package_urls_under_gfw }}" 
+  when: has_outbound_network and under_gfw 
 
 - name: unarchive tidb binary
   shell: ls -1 {{ item.name }}-{{ item.version }}.tar.gz | xargs -n1 tar xzf
