@@ -62,4 +62,4 @@ exec bin/tidb-server \
 {% if tidb_conf.server['skip-grant-table'] is defined %}
     --run-ddl={{ tidb_conf.server['skip-grant-table'] | to_json }} \
 {% endif %}
-    --lease "{{ tidb_conf.server.lease }}"
+    --lease "{{ tidb_conf.server.lease }}" 2> "{{ tidb_log_dir }}/{{ tidb_stderr_filename }}"
