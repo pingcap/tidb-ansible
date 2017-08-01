@@ -1,58 +1,21 @@
 # Ansible Playbook for TiDB
-> **TIDB IS NOT RECOMMENDED TO RUN AS ROOT**
+## Overview
+Ansible is an IT automation tool. It can configure systems, deploy software, and orchestrate more advanced IT tasks such as continuous deployments or zero downtime rolling updates.
+
+[TiDB-Ansible](https://github.com/pingcap/tidb-ansible) is a TiDB cluster deployment tool developed by PingCAP, based on Ansible playbook. TiDB-Ansible enables you to quickly deploy a new TiDB cluster which includes PD, TiDB, TiKV, and the cluster monitoring modules.
+ 
+You can use the TiDB-Ansible configuration file to set up the cluster topology, completing all operation tasks with one click, including:
+	
+- Initializing the system, including creating user for deployment, setting up hostname, etc.
+- Deploying the components
+- Rolling upgrade, including module survival detection
+- Cleaning data
+- Cleaning environment
+- Configuring monitoring modules
 
 ## Tutorial
-
+[English](https://github.com/pingcap/docs/blob/master/op-guide/ansible-deployment.md)
 [简体中文](https://github.com/pingcap/docs-cn/blob/master/op-guide/ansible-deployment.md)
-
-## Requirements
-To use this guide you’ll need a working installation of Ansible version 2.2 or later and `pip install Jinja2==2.7.2 MarkupSafe==0.11`.
-([installation  reference](http://docs.ansible.com/ansible/intro_installation.html))
-
-After the installation is complete, you can run the following command to check ansible version：
-```
-$ ansible --version
-ansible 2.2.2.0
-```
-## Deploy  information
-1.  modify inventory.ini
-    * if deploying via normal user:
-        * change variable `ansible_user` to your deploy account (access sudo command).
-    * if deploying via root:
-        * uncomment variable `ansible_user`/`ansible_become_user`
-        * comment variable `ansible_become`
-2.  local prepare: if the Internet is accessbile, ansible will download the latest tidb.
-    ```
-    ansible-playbook local_prepare.yml
-    ```
-
-3.  modify kernel parameters
-    
-    ```
-    ansible-playbook bootstrap.yml
-    ```
-4.  deploy
-    
-    > If deploying via root, uncomment variable `ansible_become` in inventory.ini file.
-
-        ansible-playbook deploy.yml
-
-5.  start cluster
-
-        ansible-playbook start.yml
-   
-
-6.  test
-    
-    use mysql client
-
-        mysql -u root -h tidb_servers_ip -P 4000
-
-7.  grafana monitoring platform:
-
-    http://grafana_servers_ip:3000
-   
-    login(admin/admin)
 
 ## Where to get binary
 
@@ -77,7 +40,7 @@ ansible-playbook deploy.yml --list-hosts
 
 ansible-playbook deploy.yml -k -K
 
-ansible-playbook rolling_update.yml
+ansible-playbook rolling_update.yml -k
 ```
 
 ## Special Tasks
@@ -85,3 +48,6 @@ ansible-playbook rolling_update.yml
 Rolling update TiKV only:
 
     ansible-playbook rolling_update.yml --tags tikv
+
+## License
+TiDB-Ansible is under the Apache 2.0 license. 
