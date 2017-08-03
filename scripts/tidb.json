@@ -2353,15 +2353,15 @@
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "sum(rate(pd_client_cmd_cmds_total[1m])) by (type)", 
+              "expr": "sum(rate(pd_client_cmd_handle_cmds_duration_seconds_bucket[1m])) by (type)",
               "step": 10, 
               "refId": "A", 
               "legendFormat": "{{type}}"
             }
           ], 
           "fill": 1, 
-          "span": 4, 
-          "title": "PD Cmd Count", 
+          "span": 3, 
+          "title": "PD Client cmd count", 
           "tooltip": {
             "sort": 0, 
             "shared": true, 
@@ -2435,8 +2435,83 @@
             }
           ], 
           "fill": 1, 
-          "span": 4, 
-          "title": "PD Client Duration 999", 
+          "span": 3, 
+          "title": "PD Client cmd duration 999", 
+          "tooltip": {
+            "sort": 0, 
+            "shared": true, 
+            "value_type": "cumulative", 
+            "msResolution": false
+          }, 
+          "legend": {
+            "total": false, 
+            "show": true, 
+            "max": false, 
+            "min": false, 
+            "current": false, 
+            "values": false, 
+            "avg": false
+          }, 
+          "yaxes": [
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "s", 
+              "min": null, 
+              "label": null
+            }, 
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "short", 
+              "min": null, 
+              "label": null
+            }
+          ], 
+          "xaxis": {
+            "show": true, 
+            "values": [], 
+            "mode": "time", 
+            "name": null
+          }, 
+          "seriesOverrides": [], 
+          "percentage": false, 
+          "type": "graph", 
+          "error": false, 
+          "editable": true, 
+          "grid": {}, 
+          "stack": false, 
+          "timeShift": null, 
+          "aliasColors": {}, 
+          "lines": true, 
+          "points": false, 
+          "datasource": "${DS_TIDB-CLUSTER}", 
+          "pointradius": 5
+        }, 
+        {
+          "bars": false, 
+          "timeFrom": null, 
+          "links": [], 
+          "thresholds": [], 
+          "nullPointMode": "null as zero", 
+          "renderer": "flot", 
+          "id": 45, 
+          "linewidth": 1, 
+          "steppedLine": false, 
+          "targets": [
+            {
+              "intervalFactor": 2, 
+              "expr": "histogram_quantile(0.999, sum(rate(pd_client_request_handle_requests_duration_seconds_bucket[1m])) by (le, type))",
+              "step": 10, 
+              "refId": "A", 
+              "legendFormat": "{{type}}"
+            }
+          ], 
+          "fill": 1, 
+          "span": 3, 
+          "title": "PD Client request duration 999", 
           "tooltip": {
             "sort": 0, 
             "shared": true, 
@@ -2503,15 +2578,15 @@
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "histogram_quantile(0.99999, sum(rate(pd_client_cmd_handle_failed_cmds_duration_seconds_bucket[1m])) by (le))", 
+              "expr": "sum(rate(pd_client_cmd_handle_failed_cmds_duration_seconds_count[1m])) by (type)",
               "step": 10, 
               "refId": "A", 
-              "legendFormat": "duration"
+              "legendFormat": "{{type}}"
             }
           ], 
           "fill": 1, 
-          "span": 4, 
-          "title": "pd_client_failed_cmd_duration", 
+          "span": 3, 
+          "title": "PD Client cmd fail", 
           "tooltip": {
             "sort": 0, 
             "shared": true, 
@@ -2532,7 +2607,7 @@
               "logBase": 1, 
               "show": true, 
               "max": null, 
-              "format": "s", 
+              "format": "ops", 
               "min": "0", 
               "label": null
             }, 
