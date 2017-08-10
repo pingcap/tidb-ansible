@@ -7,11 +7,16 @@ ansible_connection: local
 
 tidb_packages:
   - name: tidb
-    version: latest
-    url: http://download.pingcap.org/tidb-latest-linux-amd64.tar.gz
+    version: {{ tidb_version }}
+    url: http://download.pingcap.org/tidb-{{ tidb_version }}-linux-amd64.tar.gz
   - name: tidb-binlog
+{% if tidb_version == 'rc2.2' %}
+    version: rc2.2
+    url: http://download.pingcap.org/tidb-binlog-rc2.2-linux-amd64.tar.gz
+{% else %}
     version: latest
     url: http://download.pingcap.org/tidb-binlog-latest-linux-amd64.tar.gz
+{% endif %}
   - name: tidb-tools
     version: latest
     url: http://download.pingcap.org/tidb-tools-latest-linux-amd64.tar.gz
