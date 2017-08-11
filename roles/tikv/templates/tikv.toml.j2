@@ -1,12 +1,22 @@
 # TiKV config template
 #  Human-readable big numbers:
-#   File size(based on byte): KB, MB, GB, TB, PB (or lowercase)
+#   File size(based on byte): KB, MB, GB, TB, PB
 #    e.g.: 1_048_576 = "1MB"
 #   Time(based on ms): ms, s, m, h
 #    e.g.: 78_000 = "1.3m"
 
+# log level: trace, debug, info, warn, error, off.
+log-level = "info"
+# file to store log, write to stderr if it's empty.
+# log-file = ""
+
 [server]
 {% for item, value in tikv_conf.server | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+
+[storage]
+{% for item, value in tikv_conf.storage | dictsort -%}
 {{ item }} = {{ value | to_json }}
 {% endfor %}
 
@@ -39,7 +49,3 @@
 {% endif%}
 {% endfor %}
 
-[storage]
-{% for item, value in tikv_conf.storage | dictsort -%}
-{{ item }} = {{ value | to_json }}
-{% endfor %}
