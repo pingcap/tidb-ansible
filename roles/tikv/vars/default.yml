@@ -89,10 +89,10 @@ raftstore:
   # A threshold to gc stale raft log, must >= 1.
   # raft-log-gc-threshold: 50
   # When entry count exceed this value, gc will be forced trigger.
-  # raft-log-gc-count-limit: 48000
+  # raft-log-gc-count-limit: 196608
   # When the approximate size of raft log entries exceed this value, gc will be forced trigger.
   # It's recommanded to set it to 3/4 of region-split-size.
-  # raft-log-gc-size-limit: "48MB"
+  # raft-log-gc-size-limit: "192MB"
 
   # When a peer hasn't been active for max-peer-down-duration,
   # we will consider this peer to be down and report it to pd.
@@ -121,7 +121,7 @@ rocksdb:
   # info-log-roll-time: "0s"
 
   # Maximum number of concurrent background jobs (compactions and flushes)
-  # max-background-jobs: 6
+  # max-background-jobs: 8
 
   # This value represents the maximum number of threads that will concurrently perform a
   # compaction job by breaking it into multiple, smaller ones that are run simultaneously.
@@ -266,6 +266,16 @@ rocksdb:
 
     # Target file size for compaction.
     # target-file-size-base: "32MB"
+    
+    # Max bytes for compaction.max_compaction_bytes
+    # max-compaction-bytes: "2GB"
+
+    # There are four different algorithms to pick files to compact.
+    # 0 : ByCompensatedSize
+    # 1 : OldestLargestSeqFirst
+    # 2 : OldestSmallestSeqFirst
+    # 3 : MinOverlappingRatio
+    # compaction-pri: 3
 
     # block-cache used to cache uncompressed blocks, big block-cache can speed up read.
     # in normal cases should tune to 30%-50% system's total memory.
@@ -294,6 +304,7 @@ rocksdb:
     # level0-slowdown-writes-trigger: 20
     # level0-stop-writes-trigger: 36
     # cache-index-and-filter-blocks: true
+    # compaction-pri: 3
 
 
   # options for Column Family raft.
@@ -313,6 +324,7 @@ rocksdb:
     # level0-slowdown-writes-trigger: 20
     # level0-stop-writes-trigger: 36
     # cache-index-and-filter-blocks: true
+    # compaction-pri: 0
     
   lockcf:
     # compression-per-level: "no:no:no:no:no:no:no"
@@ -327,3 +339,4 @@ rocksdb:
     # level0-slowdown-writes-trigger: 20
     # level0-stop-writes-trigger: 36
     # cache-index-and-filter-blocks: true
+    # compaction-pri: 0
