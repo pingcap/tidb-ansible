@@ -1,0 +1,18 @@
+---
+# systemd configuration generation
+
+- include: systemd.yml
+  static: no
+  become: false
+  become_user: root
+  when:
+    - ansible_user == 'root'
+  vars:
+    - ansible_become: false
+    - ansible_become_user: root
+
+- include: systemd.yml
+  static: no
+  become: true
+  when:
+    - ansible_user != 'root'

@@ -21,6 +21,14 @@
   vars:
     this_role_name: tidb
 
+- name: systemd
+  include_role:
+    name: systemd
+  when: use_systemd
+  vars:
+    this_role_name: tidb
+    service_name: tidb
+
 # config part
 
 - name: load customized config
@@ -61,23 +69,6 @@
 - name: backup script file
   command: mv "{{ tidb_script.backup_file }}" "{{ backup_dir }}"
   when: tidb_script.changed and tidb_script.backup_file is defined
-
-- name: create systemd service configuration
-  template:
-    src: "tidb.service.j2"
-    dest: "/etc/systemd/system/tidb.service"
-    mode: 0644
-  when: use_systemd
-  vars:
-    - ansible_become: false
-    - ansible_become_user: root
-
-- name: reload systemd
-  shell: "systemctl daemon-reload"
-  when: use_systemd
-  vars:
-    - ansible_become: false
-    - ansible_become_user: root
 
 - name: prepare firewalld white list
   set_fact:

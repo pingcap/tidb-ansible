@@ -49,7 +49,14 @@
       tags:
         - restart
       systemd: name=node-exporter.service state=stopped
-      when: use_systemd
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: stop NodeExporter by systemd
+      tags:
+        - restart
+      systemd: name=node-exporter.service state=stopped
+      when: use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -69,7 +76,14 @@
       tags:
         - restart
       systemd: name=node-exporter.service state=restarted
-      when: use_systemd
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: start NodeExporter by systemd
+      tags:
+        - restart
+      systemd: name=node-exporter.service state=restarted
+      when: use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -99,7 +113,14 @@
       tags:
         - restart
       systemd: name=pd.service state=stopped
-      when: use_systemd
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: stop PD by systemd
+      tags:
+        - restart
+      systemd: name=pd.service state=stopped
+      when: use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -119,7 +140,14 @@
       tags:
         - restart
       systemd: name=pd.service state=started
-      when: use_systemd
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: start PD by systemd
+      tags:
+        - restart
+      systemd: name=pd.service state=started
+      when: use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -149,7 +177,14 @@
       tags:
         - restart
       systemd: name=tikv.service state=stopped
-      when: use_systemd
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: stop TiKV by systemd
+      tags:
+        - restart
+      systemd: name=tikv.service state=stopped
+      when: use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -175,7 +210,14 @@
       tags:
         - restart
       systemd: name=tikv.service state=started
-      when: use_systemd
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: start TiKV by systemd
+      tags:
+        - restart
+      systemd: name=tikv.service state=started
+      when: use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -208,7 +250,14 @@
       tags:
         - restart
       systemd: name=tidb.service state=stopped
-      when: use_systemd
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: stop TiDB by systemd
+      tags:
+        - restart
+      systemd: name=tidb.service state=stopped
+      when: use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -226,7 +275,12 @@
 
     - name: stop pump by systemd
       systemd: name=pump.service state=stopped
-      when: enable_binlog and use_systemd
+      become: true
+      when: enable_binlog and use_systemd and ansible_user != "root"
+
+    - name: stop pump by systemd
+      systemd: name=pump.service state=stopped
+      when: enable_binlog and use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -246,7 +300,14 @@
       tags:
         - restart
       systemd: name=tidb.service state=started
-      when: use_systemd
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: start TiDB by systemd
+      tags:
+        - restart
+      systemd: name=tidb.service state=started
+      when: use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root

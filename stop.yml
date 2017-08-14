@@ -41,10 +41,15 @@
 
     - name: stop node_exporter by systemd
       systemd: name=node-exporter.service state=stopped
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: stop node_exporter by systemd
+      systemd: name=node-exporter.service state=stopped
+      when: use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
-      when: use_systemd
 
 - hosts: monitoring_servers
   tags:
@@ -60,13 +65,21 @@
 
     - name: stop monitoring modules by systemd
       systemd: name={{ item }} state=stopped
+      when: use_systemd and ansible_user != "root"
+      become: true
+      with_items:
+        - push-gateway.service
+        - prometheus.service
+
+    - name: stop monitoring modules by systemd
+      systemd: name={{ item }} state=stopped
+      when: use_systemd and ansible_user == "root"
       with_items:
         - push-gateway.service
         - prometheus.service
       vars:
         - ansible_become: false
         - ansible_become_user: root
-      when: use_systemd
 
 - hosts: pd_servers
   tags:
@@ -80,7 +93,12 @@
 
     - name: stop PD by systemd
       systemd: name=pd.service state=stopped
-      when: use_systemd
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: stop PD by systemd
+      systemd: name=pd.service state=stopped
+      when: use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -97,7 +115,12 @@
 
     - name: stop TiKV by systemd
       systemd: name=tikv.service state=stopped
-      when: use_systemd
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: stop TiKV by systemd
+      systemd: name=tikv.service state=stopped
+      when: use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -114,7 +137,12 @@
 
     - name: stop TiDB by systemd
       systemd: name=tidb.service state=stopped
-      when: use_systemd
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: stop TiDB by systemd
+      systemd: name=tidb.service state=stopped
+      when: use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -127,7 +155,12 @@
 
     - name: stop pump by systemd
       systemd: name=pump.service state=stopped
-      when: enable_binlog and use_systemd
+      become: true
+      when: enable_binlog and use_systemd and ansible_user != "root"
+
+    - name: stop pump by systemd
+      systemd: name=pump.service state=stopped
+      when: enable_binlog and use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -145,7 +178,12 @@
 
     - name: stop monitoring modules by systemd
       systemd: name=grafana.service state=stopped
-      when: use_systemd
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: stop monitoring modules by systemd
+      systemd: name=grafana.service state=stopped
+      when: use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root

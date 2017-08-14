@@ -39,8 +39,13 @@
         - node_exporter
 
     - name: restart node_exporter by systemd
+      become: true
       systemd: name=node-exporter.service state=started
-      when: use_systemd
+      when: use_systemd and ansible_user != 'root'
+
+    - name: restart node_exporter by systemd
+      systemd: name=node-exporter.service state=started
+      when: use_systemd and ansible_user == 'root'
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -64,7 +69,15 @@
 
     - name: restart monitoring modules by systemd
       systemd: name={{ item }} state=started
-      when: use_systemd
+      when: use_systemd and ansible_user != 'root'
+      become: true
+      with_items:
+        - push-gateway.service
+        - prometheus.service
+
+    - name: restart monitoring modules by systemd
+      systemd: name={{ item }} state=started
+      when: use_systemd and ansible_user == 'root'
       with_items:
         - push-gateway.service
         - prometheus.service
@@ -94,7 +107,12 @@
 
     - name: restart PD by systemd
       systemd: name=pd.service state=started
-      when: use_systemd
+      become: true
+      when: use_systemd and ansible_user != 'root'
+
+    - name: restart PD by systemd
+      systemd: name=pd.service state=started
+      when: use_systemd and ansible_user == 'root'
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -116,7 +134,12 @@
 
     - name: restart TiKV by systemd
       systemd: name=tikv.service state=started
-      when: use_systemd
+      become: true
+      when: use_systemd and ansible_user != 'root'
+
+    - name: restart TiKV by systemd
+      systemd: name=tikv.service state=started
+      when: use_systemd and ansible_user == 'root'
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -142,7 +165,12 @@
 
     - name: start pump by systemd
       systemd: name=pump.service state=started
-      when: enable_binlog and use_systemd
+      become: true
+      when: enable_binlog and use_systemd and ansible_user != 'root'
+
+    - name: start pump by systemd
+      systemd: name=pump.service state=started
+      when: enable_binlog and use_systemd and ansible_user == 'root'
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -160,7 +188,12 @@
 
     - name: restart TiDB by systemd
       systemd: name=tidb.service state=started
-      when: use_systemd
+      become: true
+      when: use_systemd and ansible_user != 'root'
+
+    - name: restart TiDB by systemd
+      systemd: name=tidb.service state=started
+      when: use_systemd and ansible_user == 'root'
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -184,7 +217,12 @@
 
     - name: restart grafana by systemd
       systemd: name=grafana.service state=started
-      when: use_systemd
+      when: use_systemd and ansible_user != 'root'
+      become: true
+
+    - name: restart grafana by systemd
+      systemd: name=grafana.service state=started
+      when: use_systemd and ansible_user == 'root'
       vars:
         - ansible_become: false
         - ansible_become_user: root

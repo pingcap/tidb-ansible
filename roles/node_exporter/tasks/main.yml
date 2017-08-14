@@ -15,6 +15,14 @@
   vars:
     this_role_name: node_exporter
 
+- name: systemd
+  include_role:
+    name: systemd
+  when: use_systemd
+  vars:
+    this_role_name: node_exporter
+    service_name: node-exporter
+
 - name: create run script
   template:
     src: "{{ item }}_{{ role_name }}.sh.j2"
@@ -25,23 +33,6 @@
     - run
   vars:
     role_status_dir: status/{{ role_name }}
-
-- name: create systemd service configuration
-  template:
-    src: "node-exporter.service.j2"
-    dest: "/etc/systemd/system/node-exporter.service"
-    mode: 0644
-  when: use_systemd
-  vars:
-    - ansible_become: false
-    - ansible_become_user: root
-
-- name: reload systemd
-  shell: "systemctl daemon-reload"
-  when: use_systemd
-  vars:
-    - ansible_become: false
-    - ansible_become_user: root
 
 - name: prepare firewalld white list
   set_fact:
