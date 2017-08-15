@@ -176,14 +176,14 @@
     - name: stop TiKV by systemd
       tags:
         - restart
-      systemd: name=tikv.service state=stopped
+      systemd: name=tikv@{{ tikv_port }}.service state=stopped
       become: true
       when: use_systemd and ansible_user != "root"
 
     - name: stop TiKV by systemd
       tags:
         - restart
-      systemd: name=tikv.service state=stopped
+      systemd: name=tikv@{{ tikv_port }}.service state=stopped
       when: use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false
@@ -209,14 +209,14 @@
     - name: start TiKV by systemd
       tags:
         - restart
-      systemd: name=tikv.service state=started
+      systemd: name=tikv@{{ tikv_port }}.service state=started
       become: true
       when: use_systemd and ansible_user != "root"
 
     - name: start TiKV by systemd
       tags:
         - restart
-      systemd: name=tikv.service state=started
+      systemd: name=tikv@{{ tikv_port }}.service state=started
       when: use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false

@@ -133,12 +133,12 @@
         - tikv
 
     - name: restart TiKV by systemd
-      systemd: name=tikv.service state=started
+      systemd: name=tikv@{{ tikv_port }}.service state=started
       become: true
       when: use_systemd and ansible_user != 'root'
 
     - name: restart TiKV by systemd
-      systemd: name=tikv.service state=started
+      systemd: name=tikv@{{ tikv_port }}.service state=started
       when: use_systemd and ansible_user == 'root'
       vars:
         - ansible_become: false

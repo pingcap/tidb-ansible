@@ -36,8 +36,22 @@
   tasks:
     - name: restart node_exporter
       shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
+      when: not use_systemd
       with_items:
-      - node_exporter
+        - node_exporter
+
+    - name: restart node_exporter by systemd
+      systemd: name=node-exporter.service state=restarted
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: restart node_exporter by systemd
+      systemd: name=node-exporter.service state=restarted
+      when: use_systemd and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
+
     - name: wait up
       wait_for: |
         host={{ ansible_host }} port={{ node_exporter_port }} state=present
@@ -50,13 +64,34 @@
   tasks:
     - name: restart monitoring modules
       shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
+      when: not use_systemd
       with_items:
         - pushgateway
         - prometheus
+
+    - name: restart monitoring modules by systemd
+      systemd: name={{ item }} state=restarted
+      become: true
+      when: use_systemd and ansible_user != "root"
+      with_items:
+        - push-gateway.service
+        - prometheus.service
+
+    - name: restart monitoring modules by systemd
+      systemd: name={{ item }} state=restarted
+      when: use_systemd and ansible_user == "root"
+      with_items:
+        - push-gateway.service
+        - prometheus.service
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
+
     - name: wait pushgateway up
       wait_for: |
         host={{ ansible_host }} port={{ pushgateway_port }} state=present
         send='GET /metrics HTTP/1.0\r\n\r\n' search_regex='200 OK'
+
     - name: wait prometheus up
       wait_for: |
         host={{ ansible_host }} port={{ prometheus_port }} state=present
@@ -68,8 +103,22 @@
   tasks:
     - name: restart PD
       shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
+      when: not use_systemd
       with_items:
         - pd
+
+    - name: restart PD by systemd
+      systemd: name=pd.service state=restarted
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: restart PD by systemd
+      systemd: name=pd.service state=restarted
+      when: use_systemd and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
+
     - name: wait up
       wait_for: |
         host={{ ansible_host }} port={{ pd_client_port }} state=present
@@ -81,8 +130,22 @@
   tasks:
     - name: restart TiKV
       shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
+      when: not use_systemd
       with_items:
         - tikv
+
+    - name: restart TiKV by systemd
+      systemd: name=tikv@{{ tikv_port }}.service state=restarted
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: restart TiKV by systemd
+      systemd: name=tikv@{{ tikv_port }}.service state=restarted
+      when: use_systemd and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
+
     - name: wait up
       wait_for_pid: |
         pid_file={{ deploy_dir }}/status/tikv.pid timeout=300
@@ -94,9 +157,22 @@
   tasks:
     - name: pump
       shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
+      when: not use_systemd
       with_items:
         - pump
       when: enable_binlog
+
+    - name: restart pump by systemd
+      systemd: name=pump.service state=restarted
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: restart pump by systemd
+      systemd: name=pump.service state=restarted
+      when: use_systemd and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
 
     - name: wait pump up
       wait_for: |
@@ -105,8 +181,22 @@
 
     - name: restart TiDB
       shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
+      when: not use_systemd
       with_items:
         - tidb
+
+    - name: restart TiDB by systemd
+      systemd: name=tidb.service state=restarted
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: restart TiDB by systemd
+      systemd: name=tidb.service state=restarted
+      when: use_systemd and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
+
     - name: wait up
       wait_for: |
         host={{ ansible_host }} port={{ tidb_port }} state=present
@@ -121,8 +211,21 @@
   tasks:
     - name: restart grafana
       shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
+      when: not use_systemd
       with_items:
         - grafana
+
+    - name: restart grafana by systemd
+      systemd: name=grafana.service state=restarted
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: restart grafana by systemd
+      systemd: name=grafana.service state=restarted
+      when: use_systemd and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
 
     - name: wait grafana up
       wait_for: |
