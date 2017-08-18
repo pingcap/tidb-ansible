@@ -35,3 +35,13 @@
 
 # FIXME: will fail when using pipeline connection
 #    - check_config_dynamic
+
+- name: create ops scripts
+  hosts: localhost
+  connection: local
+  become: false # useless
+  gather_facts: false
+  roles:
+    - ops
+  vars:
+    - ansible_become: false
