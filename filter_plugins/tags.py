@@ -21,8 +21,9 @@ def dictsort_by_value_type(d):
     return sorted(vals, key=lambda p: (isinstance(p[1], dict), p[0], p[1]))
 
 def tikv_server_labels_format(label_str):
+    label_str = str(label_str or '')
     labels = set()
-    for tag in set(filter(None, map(str.strip, label_str.split(',')))):
+    for tag in set(filter(None, map(lambda s: s.strip(), label_str.split(',')))):
         k = tag.split('=', 1)[0].strip()
         v = tag.split('=', 1)[1].strip()
         assert k, "empty label key"
@@ -39,8 +40,3 @@ class FilterModule(object):
             'dictsort_by_value_type': dictsort_by_value_type,
             'tikv_server_labels_format': tikv_server_labels_format,
         }
-
-
-if __name__ == '__main__':
-    print(tikv_server_labels_format("asdf=h36,disk=ssd"))
-    print(repr(tikv_server_labels_format("")))
