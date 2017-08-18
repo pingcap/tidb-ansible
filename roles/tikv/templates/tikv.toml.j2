@@ -12,7 +12,11 @@ log-level = "info"
 
 [server]
 {% for item, value in tikv_conf.server | dictsort -%}
+{% if item == "labels" %}
+{{ item }} = {{ value | tikv_server_labels_format }}
+{% else %}
 {{ item }} = {{ value | to_json }}
+{% endif %}
 {% endfor %}
 
 [storage]
