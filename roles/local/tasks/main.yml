@@ -90,6 +90,11 @@
     - supervise
     - svstat
     - svc
+- name: cp fio binary
+  shell: >
+    cp -v {{ downloads_dir }}/fio-*/{{ item }} "{{ resources_dir }}/bin/"
+  with_items:
+    - fio
 
 - name: clean up download dir
   shell: >
