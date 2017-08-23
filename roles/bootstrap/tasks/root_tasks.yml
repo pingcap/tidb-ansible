@@ -40,6 +40,10 @@
   file: path="{{ wal_dir }}" state=directory mode=0755 owner={{ deploy_user }} group={{ deploy_user }}
   when: wal_dir is defined
 
+- name: create raftdb_path deploy dir when under root
+  file: path="{{ raftdb_path }}" state=directory mode=0755 owner={{ deploy_user }} group={{ deploy_user }}
+  when: raftdb_path is defined
+
 - name: set timezone to Asia/Shanghai
   timezone: name=Asia/Shanghai
 
