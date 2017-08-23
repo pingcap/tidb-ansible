@@ -78,6 +78,14 @@
     file: path={{ wal_dir }} state=directory mode=0755
     when: wal_dir is defined
 
+  - name: clean TiKV raftdb data
+    file: path={{ raftdb_path }} state=absent
+    when: raftdb_path is defined
+
+  - name: create new TiKV raftdb data dir
+    file: path={{ raftdb_path }} state=directory mode=0755
+    when: raftdb_path is defined
+
 - name: PD cluster
   hosts: pd_servers
   tasks:
