@@ -40,6 +40,18 @@
   with_items: "{{ tidb_packages }}"
   when: has_outbound_network
 
+- name: get preGA tikv sha1
+  shell: "curl http://pingcap-dev.hk.ufileos.com/refs/pingcap/tikv/master/centos7/sha1"
+  register: tikv_sha1_st
+
+- name: set tikv_sha1 facts
+  set_fact:
+    tikv_sha1: "{{ tikv_sha1_st.stdout | trim }}"
+
+- name: download preGA tikv binary
+  get_url: url=http://pingcap-dev.hk.ufileos.com/builds/pingcap/tikv/{{ tikv_sha1 }}/centos7/tikv-server.tar.gz dest={{ downloads_dir }}/tikv-server.tar.gz force=yes validate_certs=no
+  when: has_outbound_network
+
 - name: download other binary
   get_url: url={{ item.url }} dest={{ downloads_dir }}/{{ item.name }}-{{ item.version }}.tar.gz validate_certs=no
   with_items: "{{ third_party_packages }}"
@@ -60,6 +72,12 @@
     warn: no
   with_items: "{{ tidb_packages }}"
 
+- name: unarchive preGA tikv binary
+  shell: ls -1 tikv-server.tar.gz | xargs -n1 tar xzf
+  args:
+    chdir: "{{ downloads_dir }}"
+    warn: no
+
 - name: unarchive third party binary
   shell: ls -1 {{ item.name }}-{{ item.version }}.tar.gz | xargs -n1 tar xzf
   args:
@@ -73,6 +91,10 @@
   shell: >
     cp -v {{ downloads_dir }}/{{ item.name }}-{{ item.version}}*/bin/* "{{ resources_dir }}/bin/"
   with_items: "{{ tidb_packages }}"
+
+- name: cp preGA tikv binary
+  shell: >
+    cp -v {{ downloads_dir }}/bin/tikv* "{{ resources_dir }}/bin/"
 
 - name: cp monitoring binary
   shell: >
