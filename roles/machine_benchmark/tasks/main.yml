@@ -11,7 +11,7 @@
   copy: src="{{ resources_dir }}/bin/fio" dest="{{ deploy_dir }}/" mode=0755
 
 - name: Benchmark randread iops of tikv deploy_dir disk with fio command 
-  shell: "cd {{ deploy_dir }} && LANG='en_US.UTF-8' ./fio -ioengine=libaio -bs=32k -direct=1 -thread -rw=randread  -size=10G -filename=randread_test -name='PingCAP' -iodepth=4 -runtime=60 | awk -F, '/iops/{print $3}' | awk -F'=' '{print $2}'"
+  shell: "cd {{ deploy_dir }} && LANG='en_US.UTF-8' ./fio -ioengine=libaio -bs=32k -direct=1 -thread -rw=randread  -size=10G -filename=randread_test.txt -name='PingCAP' -iodepth=4 -runtime=60 | awk -F, '/iops/{print $3}' | awk -F'=' '{print $2}'"
   register: disk_randread_iops
   
 - debug:
@@ -32,5 +32,13 @@
   fail:
     msg: 'fio: randread iops of tikv deploy_dir disk is too low: {{ disk_randread_iops.stdout }} < {{ min_sas_randread_iops }}'
   when: disk_randread_iops.stdout|int < min_sas_randread_iops|int
+
+- name: Warning!!!!!!!!!
+  pause: prompt='Hi, for OLTP scenarios, it is strongly recommended to use SSD disks for TiKV and PD, or there might be performance issues. Press "Enter" to continue. Press Ctrl+c and then "A" to abort.'
+  when:
+    - disk_randread_iops.stdout|int > min_sas_randread_iops|int
+    - disk_randread_iops.stdout|int < min_ssd_randread_iops|int
+
+
 
 
