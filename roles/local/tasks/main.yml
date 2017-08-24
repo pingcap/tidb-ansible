@@ -41,12 +41,14 @@
   when: has_outbound_network
 
 - name: get preGA tikv sha1
-  shell: "curl http://pingcap-dev.hk.ufileos.com/refs/pingcap/tikv/master/centos7/sha1"
+  uri:
+    url: http://pingcap-dev.hk.ufileos.com/refs/pingcap/tikv/master/centos7/sha1
+    return_content: yes
   register: tikv_sha1_st
 
 - name: set tikv_sha1 facts
   set_fact:
-    tikv_sha1: "{{ tikv_sha1_st.stdout | trim }}"
+    tikv_sha1: "{{ tikv_sha1_st.content | trim }}"
 
 - name: download preGA tikv binary
   get_url: url=http://pingcap-dev.hk.ufileos.com/builds/pingcap/tikv/{{ tikv_sha1 }}/centos7/tikv-server.tar.gz dest={{ downloads_dir }}/tikv-server.tar.gz force=yes validate_certs=no
