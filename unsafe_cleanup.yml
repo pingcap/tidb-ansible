@@ -72,7 +72,11 @@
 
     - name: cleaning up wal dir
       file: path={{ wal_dir }} state=absent
-      when: wal_dir is defined
+      when: "'tikv_servers' in group_names and wal_dir is defined"
+
+    - name: cleaning up raftdb dir
+      file: path={{ raftdb_path }} state=absent
+      when: "'tikv_servers' in group_names and raftdb_path is defined"
 
     - name: cleaning up deploy dir
       file: path={{ deploy_dir }} state=absent

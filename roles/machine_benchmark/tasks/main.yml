@@ -1,16 +1,44 @@
 ---
 
 - name: Benchmark the write speed of tikv deploy_dir disk with dd command 
-  shell: "LANG='en_US.UTF-8' dd bs=4k count=250000 oflag=direct if=/dev/zero of={{ deploy_dir }}/io_test.txt 2>&1 | awk '/MB/{print $(NF-1)}'"
+  shell: "LANG='en_US.UTF-8' dd bs=4k count=250000 oflag=direct if=/dev/zero of={{ deploy_dir }}/dd_test.txt 2>&1 | awk '/MB/{print $(NF-1)}'"
   register: disk_write_speed
   
 - debug:
-    msg: "run command on tikv servers: `LANG='en_US.UTF-8' dd bs=4k count=250000 oflag=direct if=/dev/zero of={{ deploy_dir }}/io_test.txt 2>&1 | awk '/MB/{print $(NF-1)}'`, and the result is {{ disk_write_speed.stdout }} MB/s."
+    msg: "run command on tikv servers: `LANG='en_US.UTF-8' dd bs=4k count=250000 oflag=direct if=/dev/zero of={{ deploy_dir }}/dd_test.txt 2>&1 | awk '/MB/{print $(NF-1)}'`, and the result is {{ disk_write_speed.stdout }} MB/s."
+
+- name: deploy fio
+  copy: src="{{ resources_dir }}/bin/fio" dest="{{ deploy_dir }}/" mode=0755
+
+- name: Benchmark randread iops of tikv deploy_dir disk with fio command 
+  shell: "cd {{ deploy_dir }} && LANG='en_US.UTF-8' ./fio -ioengine=libaio -bs=32k -direct=1 -thread -rw=randread  -size=10G -filename=randread_test.txt -name='PingCAP' -iodepth=4 -runtime=60 | awk -F, '/iops/{print $3}' | awk -F'=' '{print $2}'"
+  register: disk_randread_iops
+  
+- debug:
+    msg: "run command on tikv servers: `cd {{ deploy_dir }} && LANG='en_US.UTF-8' ./fio -ioengine=libaio -bs=32k -direct=1 -thread -rw=randread  -size=10G -filename=randread_test.txt -name='PingCAP' -iodepth=4 -runtime=60 | awk -F, '/iops/{print $3}' | awk -F'=' '{print $2}'`, and the result is {{ disk_randread_iops.stdout }}."
+
+- name: Clean disk dd benchmark temporary file
+  file: path={{ deploy_dir }}/dd_test.txt state=absent
+
+- name: Clean disk fio benchmark temporary file
+  file: path={{ deploy_dir }}/randread_test.txt state=absent
 
 - name: Preflight check - Does the write speed of tikv deploy_dir disk meet requirement
   fail:
-    msg: 'the write speed of tikv deploy_dir disk is too slow: {{ disk_write_speed.stdout }} MB/s < {{ min_write_speed }} MB/s'
+    msg: 'dd: the write speed of tikv deploy_dir disk is too slow: {{ disk_write_speed.stdout }} MB/s < {{ min_write_speed }} MB/s'
   when: disk_write_speed.stdout|int < min_write_speed|int
+  
+- name: Preflight check - Does fio randread iops of tikv deploy_dir disk meet requirement
+  fail:
+    msg: 'fio: randread iops of tikv deploy_dir disk is too low: {{ disk_randread_iops.stdout }} < {{ min_sas_randread_iops }}'
+  when: disk_randread_iops.stdout|int < min_sas_randread_iops|int
 
-- name: Clean disk benchmark temporary file
-  file: path={{ deploy_dir }}/io_test.txt state=absent
+- name: Warning!!!!!!!!!
+  pause: prompt='Hi, for OLTP scenarios, it is strongly recommended to use SSD disks for TiKV and PD, or there might be performance issues. Press "Enter" to continue. Press Ctrl+c and then "A" to abort.'
+  when:
+    - disk_randread_iops.stdout|int > min_sas_randread_iops|int
+    - disk_randread_iops.stdout|int < min_ssd_randread_iops|int
+
+
+
+

@@ -15,15 +15,14 @@
 # The rolling update playbook of TiDB
 
 - name: check config locally
-  any_errors_fatal: true
   hosts: localhost
+  any_errors_fatal: true
   tags:
     - always
   roles:
     - check_config_static
 
 - name: gather all facts, and check dest
-  any_errors_fatal: true
   hosts: all
   any_errors_fatal: true
   tags:
@@ -317,4 +316,4 @@
         - restart
       wait_for: |
         host={{ ansible_host }} port={{ tidb_port }} state=present
-        search_regex='TiDB-'
+        search_regex='TiDB'

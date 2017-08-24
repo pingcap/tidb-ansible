@@ -16,6 +16,7 @@
 
 - name: check config locally
   hosts: localhost
+  any_errors_fatal: true
   tags:
     - always
   roles:
@@ -23,6 +24,7 @@
 
 - name: gather all facts, and check dest
   hosts: all
+  any_errors_fatal: true
   tags:
     - always
   roles:
@@ -201,7 +203,7 @@
     - name: wait up
       wait_for: |
         host={{ ansible_host }} port={{ tidb_port }} state=present
-        search_regex='TiDB-'
+        search_regex='TiDB'
 
 - hosts: grafana_servers
   tags:

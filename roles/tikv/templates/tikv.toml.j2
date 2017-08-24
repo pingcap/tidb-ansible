@@ -12,7 +12,11 @@ log-level = "info"
 
 [server]
 {% for item, value in tikv_conf.server | dictsort -%}
+{% if item == "labels" %}
+{{ item }} = {{ value | tikv_server_labels_format }}
+{% else %}
 {{ item }} = {{ value | to_json }}
+{% endif %}
 {% endfor %}
 
 [storage]
@@ -46,13 +50,13 @@ log-level = "info"
 {% for sub_item, sub_value in value | dictsort -%}
 {{ sub_item }} = {{ sub_value | to_json }}
 {% endfor %}
-{% endif%}
+{% endif %}
 {% endfor %}
 
 [raftdb]
 {% for item, value in tikv_conf.raftdb | dictsort_by_value_type -%}
 {% if value is not mapping -%}
-{{ item }} = {{ value | to_json }}
+{{ item }} = {{ value | to_json}}
 {% else %}
 
 [raftdb.{{ item }}]
