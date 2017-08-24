@@ -47,14 +47,14 @@
     - name: stop NodeExporter by systemd
       tags:
         - restart
-      systemd: name=node-exporter.service state=stopped
+      systemd: name=node_exporter.service state=stopped
       become: true
       when: use_systemd and ansible_user != "root"
 
     - name: stop NodeExporter by systemd
       tags:
         - restart
-      systemd: name=node-exporter.service state=stopped
+      systemd: name=node_exporter.service state=stopped
       when: use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false
@@ -74,14 +74,14 @@
     - name: start NodeExporter by systemd
       tags:
         - restart
-      systemd: name=node-exporter.service state=restarted
+      systemd: name=node_exporter.service state=restarted
       become: true
       when: use_systemd and ansible_user != "root"
 
     - name: start NodeExporter by systemd
       tags:
         - restart
-      systemd: name=node-exporter.service state=restarted
+      systemd: name=node_exporter.service state=restarted
       when: use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false

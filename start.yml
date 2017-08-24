@@ -42,11 +42,11 @@
 
     - name: restart node_exporter by systemd
       become: true
-      systemd: name=node-exporter.service state=started
+      systemd: name=node_exporter.service state=started
       when: use_systemd and ansible_user != 'root'
 
     - name: restart node_exporter by systemd
-      systemd: name=node-exporter.service state=started
+      systemd: name=node_exporter.service state=started
       when: use_systemd and ansible_user == 'root'
       vars:
         - ansible_become: false
@@ -74,14 +74,14 @@
       when: use_systemd and ansible_user != 'root'
       become: true
       with_items:
-        - push-gateway.service
+        - pushgateway.service
         - prometheus.service
 
     - name: restart monitoring modules by systemd
       systemd: name={{ item }} state=started
       when: use_systemd and ansible_user == 'root'
       with_items:
-        - push-gateway.service
+        - pushgateway.service
         - prometheus.service
       vars:
         - ansible_become: false

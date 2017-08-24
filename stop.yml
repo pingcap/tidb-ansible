@@ -41,12 +41,12 @@
       when: not use_systemd
 
     - name: stop node_exporter by systemd
-      systemd: name=node-exporter.service state=stopped
+      systemd: name=node_exporter.service state=stopped
       become: true
       when: use_systemd and ansible_user != "root"
 
     - name: stop node_exporter by systemd
-      systemd: name=node-exporter.service state=stopped
+      systemd: name=node_exporter.service state=stopped
       when: use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false
@@ -69,14 +69,14 @@
       when: use_systemd and ansible_user != "root"
       become: true
       with_items:
-        - push-gateway.service
+        - pushgateway.service
         - prometheus.service
 
     - name: stop monitoring modules by systemd
       systemd: name={{ item }} state=stopped
       when: use_systemd and ansible_user == "root"
       with_items:
-        - push-gateway.service
+        - pushgateway.service
         - prometheus.service
       vars:
         - ansible_become: false
