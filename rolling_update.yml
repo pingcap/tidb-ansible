@@ -42,6 +42,23 @@
       tags:
         - restart
       shell: cd {{ deploy_dir }}/scripts && ./stop_node_exporter.sh
+      when: not use_systemd
+
+    - name: stop NodeExporter by systemd
+      tags:
+        - restart
+      systemd: name=node_exporter.service state=stopped
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: stop NodeExporter by systemd
+      tags:
+        - restart
+      systemd: name=node_exporter.service state=stopped
+      when: use_systemd and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
 
     - name: wait NodeExporter down
       tags:
@@ -52,6 +69,23 @@
       tags:
         - restart
       shell: cd {{ deploy_dir }}/scripts && ./start_node_exporter.sh
+      when: not use_systemd
+
+    - name: start NodeExporter by systemd
+      tags:
+        - restart
+      systemd: name=node_exporter.service state=restarted
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: start NodeExporter by systemd
+      tags:
+        - restart
+      systemd: name=node_exporter.service state=restarted
+      when: use_systemd and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
 
     - name: wait NodeExporter up
       wait_for: |
@@ -72,6 +106,23 @@
       tags:
         - restart
       shell: cd {{ deploy_dir }}/scripts && ./stop_pd.sh
+      when: not use_systemd
+
+    - name: stop PD by systemd
+      tags:
+        - restart
+      systemd: name=pd.service state=stopped
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: stop PD by systemd
+      tags:
+        - restart
+      systemd: name=pd.service state=stopped
+      when: use_systemd and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
 
     - name: wait PD down
       tags:
@@ -82,6 +133,23 @@
       tags:
         - restart
       shell: cd {{ deploy_dir }}/scripts && ./start_pd.sh
+      when: not use_systemd
+
+    - name: start PD by systemd
+      tags:
+        - restart
+      systemd: name=pd.service state=started
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: start PD by systemd
+      tags:
+        - restart
+      systemd: name=pd.service state=started
+      when: use_systemd and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
 
     - name: wait PD up
       wait_for: |
@@ -102,6 +170,23 @@
       tags:
         - restart
       shell: cd {{ deploy_dir }}/scripts && ./stop_tikv.sh
+      when: not use_systemd
+
+    - name: stop TiKV by systemd
+      tags:
+        - restart
+      systemd: name=tikv@{{ tikv_port }}.service state=stopped
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: stop TiKV by systemd
+      tags:
+        - restart
+      systemd: name=tikv@{{ tikv_port }}.service state=stopped
+      when: use_systemd and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
 
     - name: wait TiKV down (via Port)
       tags:
@@ -111,12 +196,30 @@
     - name: wait TiKV down (via PID)
       tags:
         - restart
+      when: not use_systemd
       wait_for_pid: pid_file={{ deploy_dir }}/status/tikv.pid timeout=300 state=absent
 
     - name: start TiKV
       tags:
         - restart
       shell: cd {{ deploy_dir }}/scripts && ./start_tikv.sh
+      when: not use_systemd
+
+    - name: start TiKV by systemd
+      tags:
+        - restart
+      systemd: name=tikv@{{ tikv_port }}.service state=started
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: start TiKV by systemd
+      tags:
+        - restart
+      systemd: name=tikv@{{ tikv_port }}.service state=started
+      when: use_systemd and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
 
     - name: wait TiKV up
       tags:
@@ -140,17 +243,46 @@
       tags:
         - restart
       shell: cd {{ deploy_dir }}/scripts && ./stop_tidb.sh
+      when: not use_systemd
+
+    - name: stop TiDB by systemd
+      tags:
+        - restart
+      systemd: name=tidb.service state=stopped
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: stop TiDB by systemd
+      tags:
+        - restart
+      systemd: name=tidb.service state=stopped
+      when: use_systemd and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
 
     - name: wait TiDB down
       tags:
         - restart
       wait_for: host={{ ansible_host }} port={{ tidb_port }} state=stopped
 
-    - name: pump
+    - name: stop pump
       shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
       with_items:
         - pump
-      when: enable_binlog
+      when: enable_binlog and not use_systemd
+
+    - name: stop pump by systemd
+      systemd: name=pump.service state=stopped
+      become: true
+      when: enable_binlog and use_systemd and ansible_user != "root"
+
+    - name: stop pump by systemd
+      systemd: name=pump.service state=stopped
+      when: enable_binlog and use_systemd and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
 
     - name: wait pump up
       wait_for: |
@@ -161,6 +293,23 @@
       tags:
         - restart
       shell: cd {{ deploy_dir }}/scripts && ./start_tidb.sh
+      when: not use_systemd
+
+    - name: start TiDB by systemd
+      tags:
+        - restart
+      systemd: name=tidb.service state=started
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: start TiDB by systemd
+      tags:
+        - restart
+      systemd: name=tidb.service state=started
+      when: use_systemd and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
 
     - name: wait TiDB up
       tags:

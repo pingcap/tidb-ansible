@@ -14,32 +14,10 @@
 
 # The playbook of TiDB
 
-- name: check config locally
-  hosts: localhost
-  any_errors_fatal: true
-  tags:
-    - always
-  roles:
-    - check_config_static
-
-- name: gather all facts, and check dest
-  hosts: all
-  any_errors_fatal: true
-  tags:
-    - always
-  roles:
-    - check_config_dynamic
-
 - hosts: monitored_servers
   tags:
     - node_exporter
   tasks:
-    - name: stop node_exporter
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      with_items:
-        - node_exporter
-      when: not use_systemd
-
     - name: stop node_exporter by systemd
       systemd: name=node_exporter.service state=stopped
       become: true
@@ -57,13 +35,6 @@
     - pushgateway
     - prometheus
   tasks:
-    - name: stop monitoring modules
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      with_items:
-        - pushgateway
-        - prometheus
-      when: not use_systemd
-
     - name: stop monitoring modules by systemd
       systemd: name={{ item }} state=stopped
       when: use_systemd and ansible_user != "root"
@@ -86,12 +57,6 @@
   tags:
     - pd
   tasks:
-    - name: stop PD
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      when: not use_systemd
-      with_items:
-        - pd
-
     - name: stop PD by systemd
       systemd: name=pd.service state=stopped
       become: true
@@ -108,12 +73,6 @@
   tags:
     - tikv
   tasks:
-    - name: stop TiKV
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      when: not use_systemd
-      with_items:
-        - tikv
-
     - name: stop TiKV by systemd
       systemd: name=tikv@{{ tikv_port }}.service state=stopped
       become: true
@@ -130,12 +89,6 @@
   tags:
     - tidb
   tasks:
-    - name: stop TiDB
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      when: not use_systemd
-      with_items:
-        - tidb
-
     - name: stop TiDB by systemd
       systemd: name=tidb.service state=stopped
       become: true
@@ -147,12 +100,6 @@
       vars:
         - ansible_become: false
         - ansible_become_user: root
-
-    - name: stop pump
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      when: enable_binlog and not use_systemd
-      with_items:
-        - pump
 
     - name: stop pump by systemd
       systemd: name=pump.service state=stopped
@@ -171,12 +118,6 @@
   tags:
     - grafana
   tasks:
-    - name: stop monitoring modules
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      when: not use_systemd
-      with_items:
-        - grafana
-
     - name: stop monitoring modules by systemd
       systemd: name=grafana.service state=stopped
       become: true

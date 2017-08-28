@@ -21,6 +21,14 @@
   vars:
     this_role_name: tidb
 
+- name: systemd
+  include_role:
+    name: systemd
+  when: use_systemd
+  vars:
+    this_role_name: tidb
+    service_name: tidb
+
 # config part
 
 - name: load customized config
