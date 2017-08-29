@@ -17,6 +17,13 @@
   vars:
     this_role_name: pump
 
+- name: systemd
+  include_role:
+    name: systemd
+  vars:
+    this_role_name: pump
+    service_name: pump
+
 - name: create run script
   template:
     src: "{{ item }}_{{ role_name }}.sh.j2"

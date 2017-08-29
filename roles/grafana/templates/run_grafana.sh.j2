@@ -7,6 +7,9 @@ ulimit -n 1000000
 # exec > >(tee -i -a "{{ grafana_log_dir }}/{{ grafana_log_filename }}")
 # exec 2>&1
 
+DEPLOY_DIR={{ deploy_dir }}
+cd "${DEPLOY_DIR}" || exit 1
+
 exec opt/grafana/bin/grafana-server \
     --homepath="{{ deploy_dir }}/opt/grafana" \
     --config="{{ deploy_dir }}/opt/grafana/conf/grafana.ini"
