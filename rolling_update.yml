@@ -74,14 +74,14 @@
     - name: start NodeExporter by systemd
       tags:
         - restart
-      systemd: name=node_exporter.service state=restarted
+      systemd: name=node_exporter.service state=started
       become: true
       when: use_systemd and ansible_user != "root"
 
     - name: start NodeExporter by systemd
       tags:
         - restart
-      systemd: name=node_exporter.service state=restarted
+      systemd: name=node_exporter.service state=started
       when: use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false
@@ -196,7 +196,6 @@
     - name: wait TiKV down (via PID)
       tags:
         - restart
-      when: not use_systemd
       wait_for_pid: pid_file={{ deploy_dir }}/status/tikv.pid timeout=300 state=absent
 
     - name: start TiKV

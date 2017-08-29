@@ -165,11 +165,11 @@
     - name: restart pump by systemd
       systemd: name=pump.service state=restarted
       become: true
-      when: use_systemd and ansible_user != "root"
+      when: enable_binlog and use_systemd and ansible_user != "root"
 
     - name: restart pump by systemd
       systemd: name=pump.service state=restarted
-      when: use_systemd and ansible_user == "root"
+      when: enable_binlog and use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root

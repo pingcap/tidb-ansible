@@ -34,18 +34,18 @@
   tags:
     - node_exporter
   tasks:
-    - name: restart node_exporter
+    - name: start node_exporter
       shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
       when: not use_systemd
       with_items:
         - node_exporter
 
-    - name: restart node_exporter by systemd
+    - name: start node_exporter by systemd
       become: true
       systemd: name=node_exporter.service state=started
       when: use_systemd and ansible_user != 'root'
 
-    - name: restart node_exporter by systemd
+    - name: start node_exporter by systemd
       systemd: name=node_exporter.service state=started
       when: use_systemd and ansible_user == 'root'
       vars:
@@ -62,14 +62,14 @@
     - pushgateway
     - prometheus
   tasks:
-    - name: restart monitoring modules
+    - name: start monitoring modules
       shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
       when: not use_systemd
       with_items:
         - pushgateway
         - prometheus
 
-    - name: restart monitoring modules by systemd
+    - name: start monitoring modules by systemd
       systemd: name={{ item }} state=started
       when: use_systemd and ansible_user != 'root'
       become: true
@@ -77,7 +77,7 @@
         - pushgateway.service
         - prometheus.service
 
-    - name: restart monitoring modules by systemd
+    - name: start monitoring modules by systemd
       systemd: name={{ item }} state=started
       when: use_systemd and ansible_user == 'root'
       with_items:
@@ -101,18 +101,18 @@
   tags:
     - pd
   tasks:
-    - name: restart PD
+    - name: start PD
       shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
       when: not use_systemd
       with_items:
         - pd
 
-    - name: restart PD by systemd
+    - name: start PD by systemd
       systemd: name=pd.service state=started
       become: true
       when: use_systemd and ansible_user != 'root'
 
-    - name: restart PD by systemd
+    - name: start PD by systemd
       systemd: name=pd.service state=started
       when: use_systemd and ansible_user == 'root'
       vars:
@@ -128,18 +128,18 @@
   tags:
     - tikv
   tasks:
-    - name: restart TiKV
+    - name: start TiKV
       shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
       when: not use_systemd
       with_items:
         - tikv
 
-    - name: restart TiKV by systemd
+    - name: start TiKV by systemd
       systemd: name=tikv@{{ tikv_port }}.service state=started
       become: true
       when: use_systemd and ansible_user != 'root'
 
-    - name: restart TiKV by systemd
+    - name: start TiKV by systemd
       systemd: name=tikv@{{ tikv_port }}.service state=started
       when: use_systemd and ansible_user == 'root'
       vars:
@@ -182,18 +182,18 @@
         host={{ ansible_host }} port={{ pump_port }} state=present
       when: enable_binlog
 
-    - name: restart TiDB
+    - name: start TiDB
       shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
       when: not use_systemd
       with_items:
         - tidb
 
-    - name: restart TiDB by systemd
+    - name: start TiDB by systemd
       systemd: name=tidb.service state=started
       become: true
       when: use_systemd and ansible_user != 'root'
 
-    - name: restart TiDB by systemd
+    - name: start TiDB by systemd
       systemd: name=tidb.service state=started
       when: use_systemd and ansible_user == 'root'
       vars:
@@ -211,18 +211,18 @@
   roles:
     - { role: grafana, grafana_exec_vars_only: true }
   tasks:
-    - name: restart grafana
+    - name: start grafana
       shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
       when: not use_systemd
       with_items:
         - grafana
 
-    - name: restart grafana by systemd
+    - name: start grafana by systemd
       systemd: name=grafana.service state=started
       when: use_systemd and ansible_user != 'root'
       become: true
 
-    - name: restart grafana by systemd
+    - name: start grafana by systemd
       systemd: name=grafana.service state=started
       when: use_systemd and ansible_user == 'root'
       vars:
@@ -268,3 +268,4 @@
       vars:
         - ansible_become: false
         - ansible_connection: local
+
