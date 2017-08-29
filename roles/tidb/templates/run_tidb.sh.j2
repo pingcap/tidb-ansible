@@ -32,6 +32,7 @@ exec bin/tidb-server \
     --store=tikv --path="{{ all_pd | join(',') }}" \
     -L="{{ tidb_log_level }}" --log-file="{{ tidb_log_dir }}/{{ tidb_log_filename }}" \
     --status="{{ tidb_status_port }}" \
+    -statsLease 0 \
 {% if metric_host %}
     --metrics-addr="{{ metric_addr }}" --metrics-interval={{ metric_interval }} \
 {% endif %}
