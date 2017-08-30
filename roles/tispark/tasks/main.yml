@@ -1,0 +1,11 @@
+---
+
+- name: deploy spark-2.1.0
+  unarchive: >
+    creates="{{ deploy_dir }}/spark-2.1.1-bin-hadoop2.7/sbin/start-master.sh"
+    src={{ downloads_dir }}/spark-2.1.1-bin-hadoop2.7.tar.gz dest={{ deploy_dir }}/
+
+- name: rename spark deploy dir
+  shell: >
+    creates="{{ deploy_dir }}/spark-2.1.1-bin-hadoop2.7/sbin/start-master.sh"
+    mv {{ deploy_dir }}/spark-2.1.1-bin-hadoop2.7 {{ deploy_dir }}/spark

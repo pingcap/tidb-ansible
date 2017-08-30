@@ -40,6 +40,11 @@
   with_items: "{{ tidb_packages }}"
   when: has_outbound_network
 
+- name: download TiSpark packages
+  get_url: url={{ item.url }} dest={{ downloads_dir }}/{{ item.name }}.tar.gz force=yes validate_certs=no
+  with_items: "{{ tispark_packages }}"
+  when: has_outbound_network
+
 - name: download other binary
   get_url: url={{ item.url }} dest={{ downloads_dir }}/{{ item.name }}-{{ item.version }}.tar.gz validate_certs=no
   with_items: "{{ third_party_packages }}"
@@ -59,6 +64,12 @@
     chdir: "{{ downloads_dir }}"
     warn: no
   with_items: "{{ tidb_packages }}"
+  
+- name: unarchive tispark-sample-data
+  shell: ls -1 tispark-sample-data.tar.gz | xargs -n1 tar xzf
+  args:
+    chdir: "{{ downloads_dir }}"
+    warn: no
 
 - name: unarchive third party binary
   shell: ls -1 {{ item.name }}-{{ item.version }}.tar.gz | xargs -n1 tar xzf
@@ -72,6 +83,10 @@
   shell: >
     cp -v {{ downloads_dir }}/{{ item.name }}-{{ item.version}}*/bin/* "{{ resources_dir }}/bin/"
   with_items: "{{ tidb_packages }}"
+
+- name: cp tispark-sample-data
+  shell: >
+    cp -v {{ downloads_dir }}/tispark-sample-data "{{ resources_dir }}/bin/"
 
 - name: cp monitoring binary
   shell: >
