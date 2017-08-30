@@ -25,7 +25,7 @@ src = dict(
                 "tidb": 'tidb.json',
                 "tikv": 'tikv.json',
                 "overview": 'overview.json',
-                "Disk Performance": 'DiskPerformance.json'})
+                "disk_performance": 'DiskPerformance.json'})
 
 dests = [
 ]
