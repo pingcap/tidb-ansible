@@ -15,6 +15,14 @@
   vars:
     this_role_name: pushgateway
 
+- name: systemd
+  include_role:
+    name: systemd
+  when: use_systemd
+  vars:
+    this_role_name: pushgateway
+    service_name: pushgateway
+
 - name: create run script
   template:
     src: "{{ item }}_{{ role_name }}.sh.j2"

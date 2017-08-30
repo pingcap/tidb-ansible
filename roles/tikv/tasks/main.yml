@@ -59,6 +59,14 @@
   vars:
     this_role_name: tikv
 
+- name: systemd
+  include_role:
+    name: systemd
+  when: use_systemd
+  vars:
+    this_role_name: tikv
+    service_name: tikv@{{ tikv_port }}
+
 - name: create run script
   template:
     src: "{{ item }}_{{ role_name }}.sh.j2"

@@ -29,6 +29,8 @@
   roles:
     - check_config_dynamic
 
+- include: stop_systemd.yml
+
 - hosts: all
   tasks:
     - name: killing all process
@@ -38,6 +40,38 @@
         killall -9 tikv-server tidb-server pd-server;
         killall -9 pump drainer cistern;
         true
+      when: not use_systemd
+
+    - name: clean systemd config
+      shell: "rm -f /etc/systemd/system/{{ item }}"
+      when: use_systemd and ansible_user == "root"
+      with_items:
+        - grafana.service
+        - prometheus.service
+        - pushgateway.service
+        - node_exporter.service
+        - pd*.service
+        - pump.service
+        - tidb*.service
+        - tikv*.service
+
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
+
+    - name: clean systemd config
+      shell: "rm -f /etc/systemd/system/{{ item }}"
+      become: true
+      when: use_systemd and ansible_user != "root"
+      with_items:
+        - grafana.service
+        - prometheus.service
+        - pushgateway.service
+        - node_exporter.service
+        - pd*.service
+        - tidb*.service
+        - pump.service
+        - tikv*.service
 
     - name: cleaning up wal dir
       file: path={{ wal_dir }} state=absent
@@ -49,4 +83,3 @@
 
     - name: cleaning up deploy dir
       file: path={{ deploy_dir }} state=absent
-

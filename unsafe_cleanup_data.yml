@@ -33,17 +33,43 @@
   tasks:
     - name: stop TiDB
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      when: not use_systemd
       with_items:
         - tidb
+
+    - name: stop TiDB by systemd
+      systemd: name=tidb.service state=stopped
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: stop TiDB by systemd
+      systemd: name=tidb.service state=stopped
+      when: use_systemd and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
+
 
     - name: wait TiDB down
       wait_for: host={{ ansible_host }} port={{ tidb_port }} state=stopped
 
-    - name: pump
+    - name: stop pump
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
       with_items:
         - pump
-      when: enable_binlog
+      when: enable_binlog and not use_systemd
+
+    - name: stop pump by systemd
+      systemd: name=pump.service state=stopped
+      become: true
+      when: enable_binlog and use_systemd and ansible_user != "root"
+
+    - name: stop pump by systemd
+      systemd: name=pump.service state=stopped
+      when: enable_binlog and use_systemd and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
 
     - name: wait pump down
       wait_for: |
@@ -58,8 +84,21 @@
   tasks:
   - name: stop TiKV
     shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+    when: not use_systemd
     with_items:
     - tikv
+
+  - name: stop TiKV by systemd
+    systemd: name=tikv@{{ tikv_port }}.service state=stopped
+    become: true
+    when: use_systemd and ansible_user != "root"
+
+  - name: stop TiKV by systemd
+    systemd: name=tikv@{{ tikv_port }}.service state=stopped
+    when: use_systemd and ansible_user == "root"
+    vars:
+      - ansible_become: false
+      - ansible_become_user: root
 
   - name: wait TiKV down
     wait_for: host={{ ansible_host }} port={{ tikv_port }} state=stopped
@@ -91,8 +130,21 @@
   tasks:
   - name: stop PD
     shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+    when: not use_systemd
     with_items:
     - pd
+
+  - name: stop PD by systemd
+    systemd: name=pd.service state=stopped
+    become: true
+    when: use_systemd and ansible_user != "root"
+
+  - name: stop PD by systemd
+    systemd: name=pd.service state=stopped
+    when: use_systemd and ansible_user == "root"
+    vars:
+      - ansible_become: false
+      - ansible_become_user: root
 
   - name: wait PD down
     wait_for: host={{ ansible_host }} port={{ pd_client_port }} state=stopped

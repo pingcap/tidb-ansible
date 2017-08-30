@@ -1,0 +1,12 @@
+[Unit]
+Description={{ service_name }} Service
+After=syslog.target network.target remote-fs.target nss-lookup.target
+
+[Service]
+LimitNOFILE=1000000
+ExecStart={{ deploy_dir }}/scripts/run_{{ this_role_name }}.sh
+Restart=on-failure
+User={{ deploy_user }}
+
+[Install]
+WantedBy=multi-user.target

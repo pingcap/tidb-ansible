@@ -37,6 +37,14 @@
   vars:
     this_role_name: grafana
 
+- name: systemd
+  include_role:
+    name: systemd
+  when: use_systemd
+  vars:
+    this_role_name: grafana
+    service_name: grafana
+
 - name: create run script
   template:
     src: "{{ item }}_{{ role_name }}.sh.j2"
