@@ -402,7 +402,7 @@
                     "legendFormat": "{{job}}-{{type}}",
                     "metric": "",
                     "refId": "A",
-                    "step": 4
+                    "step": 2
                   },
                   "params": [
                     "A",
@@ -6689,41 +6689,41 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_memtable_efficiency{db=\"$db\", type=\"memtable_hit\"}[1m])) by (job, type)",
+              "expr": "sum(rate(tikv_engine_memtable_efficiency{db=\"$db\", type=\"memtable_hit\"}[1m]))",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - memtable",
+              "legendFormat": "memtable",
               "metric": "",
               "refId": "B",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=~\"block_cache_data_hit|block_cache_filter_hit\"}[1m])) by (job)",
+              "expr": "sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=~\"block_cache_data_hit|block_cache_filter_hit\"}[1m]))",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - block_cache",
+              "legendFormat": "block_cache",
               "metric": "",
               "refId": "E",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_get_served{db=\"$db\", type=\"get_hit_l0\"}[1m])) by (job, type)",
+              "expr": "sum(rate(tikv_engine_get_served{db=\"$db\", type=\"get_hit_l0\"}[1m]))",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - l0",
+              "legendFormat": "l0",
               "refId": "A",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_get_served{db=\"$db\", type=\"get_hit_l1\"}[1m])) by (job, type)",
+              "expr": "sum(rate(tikv_engine_get_served{db=\"$db\", type=\"get_hit_l1\"}[1m]))",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - l1",
+              "legendFormat": "l1",
               "refId": "C",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_get_served{db=\"$db\", type=\"get_hit_l2_and_up\"}[1m])) by (job, type)",
+              "expr": "sum(rate(tikv_engine_get_served{db=\"$db\", type=\"get_hit_l2_and_up\"}[1m]))",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - l2_and_up",
+              "legendFormat": "l2_and_up",
               "refId": "F",
-              "step": 2
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -6795,25 +6795,25 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "tikv_engine_get_micro_seconds{db=\"$db\",type=\"get_average\"}",
+              "expr": "avg(tikv_engine_get_micro_seconds{db=\"$db\",type=\"get_average\"})",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - average",
+              "legendFormat": "average",
               "refId": "A",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "tikv_engine_get_micro_seconds{db=\"$db\",type=\"get_percentile95\"}",
+              "expr": "avg(tikv_engine_get_micro_seconds{db=\"$db\",type=\"get_percentile95\"})",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - percentile95",
+              "legendFormat": "percentile95",
               "refId": "B",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "tikv_engine_get_micro_seconds{db=\"$db\",type=\"get_percentile99\"}",
+              "expr": "avg(tikv_engine_get_micro_seconds{db=\"$db\",type=\"get_percentile99\"})",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - percentile99",
+              "legendFormat": "percentile99",
               "refId": "C",
-              "step": 2
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -6884,52 +6884,52 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_locate{db=\"$db\", type=\"number_db_seek\"}[1m])) by (job)",
+              "expr": "sum(rate(tikv_engine_locate{db=\"$db\", type=\"number_db_seek\"}[1m]))",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - seek",
-              "metric": "tikv_engine_locate",
+              "legendFormat": "seek",
+              "metric": "",
               "refId": "A",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_locate{db=\"$db\", type=\"number_db_seek_found\"}[1m])) by (job)",
+              "expr": "sum(rate(tikv_engine_locate{db=\"$db\", type=\"number_db_seek_found\"}[1m]))",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - seek_found",
-              "metric": "tikv_engine_locate",
+              "legendFormat": "seek_found",
+              "metric": "",
               "refId": "B",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_locate{db=\"$db\", type=\"number_db_next\"}[1m])) by (job)",
+              "expr": "sum(rate(tikv_engine_locate{db=\"$db\", type=\"number_db_next\"}[1m]))",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - next",
-              "metric": "tikv_engine_locate",
+              "legendFormat": "next",
+              "metric": "",
               "refId": "C",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_locate{db=\"$db\", type=\"number_db_next_found\"}[1m])) by (job)",
+              "expr": "sum(rate(tikv_engine_locate{db=\"$db\", type=\"number_db_next_found\"}[1m]))",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - next_found",
-              "metric": "tikv_engine_locate",
+              "legendFormat": "next_found",
+              "metric": "",
               "refId": "D",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_locate{db=\"$db\", type=\"number_db_prev\"}[1m])) by (job)",
+              "expr": "sum(rate(tikv_engine_locate{db=\"$db\", type=\"number_db_prev\"}[1m]))",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - prev",
-              "metric": "tikv_engine_locate",
+              "legendFormat": "prev",
+              "metric": "",
               "refId": "E",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_locate{db=\"$db\", type=\"number_db_prev_found\"}[1m])) by (job)",
+              "expr": "sum(rate(tikv_engine_locate{db=\"$db\", type=\"number_db_prev_found\"}[1m]))",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - prev_found",
-              "metric": "tikv_engine_locate",
+              "legendFormat": "prev_found",
+              "metric": "",
               "refId": "F",
-              "step": 2
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -7001,25 +7001,25 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "tikv_engine_seek_micro_seconds{db=\"$db\",type=\"seek_average\"}",
+              "expr": "avg(tikv_engine_seek_micro_seconds{db=\"$db\",type=\"seek_average\"})",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - average",
+              "legendFormat": "average",
               "refId": "A",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "tikv_engine_seek_micro_seconds{db=\"$db\",type=\"seek_percentile95\"}",
+              "expr": "avg(tikv_engine_seek_micro_seconds{db=\"$db\",type=\"seek_percentile95\"})",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - percentile95",
+              "legendFormat": "percentile95",
               "refId": "B",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "tikv_engine_seek_micro_seconds{db=\"$db\",type=\"seek_percentile99\"}",
+              "expr": "avg(tikv_engine_seek_micro_seconds{db=\"$db\",type=\"seek_percentile99\"})",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - percentile99",
+              "legendFormat": "percentile99",
               "refId": "C",
-              "step": 2
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -7090,25 +7090,25 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_write_served{db=\"$db\", type=~\"write_done_by_self|write_done_by_other\"}[1m])) by (job)",
+              "expr": "sum(rate(tikv_engine_write_served{db=\"$db\", type=~\"write_done_by_self|write_done_by_other\"}[1m]))",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - done",
+              "legendFormat": "done",
               "refId": "A",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_write_served{db=\"$db\", type=\"write_timeout\"}[1m])) by (job)",
+              "expr": "sum(rate(tikv_engine_write_served{db=\"$db\", type=\"write_timeout\"}[1m]))",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - timeout",
+              "legendFormat": "timeout",
               "refId": "B",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_write_served{db=\"$db\", type=\"write_with_wal\"}[1m])) by (job)",
+              "expr": "sum(rate(tikv_engine_write_served{db=\"$db\", type=\"write_with_wal\"}[1m]))",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - with_wal",
+              "legendFormat": "with_wal",
               "refId": "C",
-              "step": 2
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -7180,25 +7180,25 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "tikv_engine_write_micro_seconds{db=\"$db\",type=\"write_average\"}",
+              "expr": "avg(tikv_engine_write_micro_seconds{db=\"$db\",type=\"write_average\"})",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - average",
+              "legendFormat": "average",
               "refId": "A",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "tikv_engine_write_micro_seconds{db=\"$db\",type=\"write_percentile95\"}",
+              "expr": "avg(tikv_engine_write_micro_seconds{db=\"$db\",type=\"write_percentile95\"})",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - percentile95",
+              "legendFormat": "percentile95",
               "refId": "B",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "tikv_engine_write_micro_seconds{db=\"$db\",type=\"write_percentile99\"}",
+              "expr": "avg(tikv_engine_write_micro_seconds{db=\"$db\",type=\"write_percentile99\"})",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - percentile99",
+              "legendFormat": "percentile99",
               "refId": "C",
-              "step": 2
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -7269,12 +7269,12 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_wal_file_synced{db=\"$db\"}[1m])) by (job)",
+              "expr": "sum(rate(tikv_engine_wal_file_synced{db=\"$db\"}[1m]))",
               "intervalFactor": 2,
-              "legendFormat": "{{job}}",
+              "legendFormat": "sync",
               "metric": "",
               "refId": "A",
-              "step": 2
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -7346,25 +7346,25 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "tikv_engine_wal_file_sync_micro_seconds{db=\"$db\",type=\"wal_file_sync_average\"}",
+              "expr": "avg(tikv_engine_wal_file_sync_micro_seconds{db=\"$db\",type=\"wal_file_sync_average\"})",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - average",
+              "legendFormat": "average",
               "refId": "A",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "tikv_engine_wal_file_sync_micro_seconds{db=\"$db\",type=\"wal_file_sync_percentile95\"}",
+              "expr": "avg(tikv_engine_wal_file_sync_micro_seconds{db=\"$db\",type=\"wal_file_sync_percentile95\"})",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - percentile95",
+              "legendFormat": "percentile95",
               "refId": "B",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "tikv_engine_wal_file_sync_micro_seconds{db=\"$db\",type=\"wal_file_sync_percentile99\"}",
+              "expr": "avg(tikv_engine_wal_file_sync_micro_seconds{db=\"$db\",type=\"wal_file_sync_percentile99\"})",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - percentile99",
+              "legendFormat": "percentile99",
               "refId": "C",
-              "step": 2
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -7435,12 +7435,12 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_event_total{db=\"$db\"}[1m])) by (job, type)",
+              "expr": "sum(rate(tikv_engine_event_total{db=\"$db\"}[1m])) by (type)",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - {{type}}",
+              "legendFormat": "{{type}}",
               "metric": "tikv_engine_event_total",
               "refId": "B",
-              "step": 2
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -7512,26 +7512,26 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "tikv_engine_compaction_time{db=\"$db\",type=\"compaction_time_average\"}",
+              "expr": "avg(tikv_engine_compaction_time{db=\"$db\",type=\"compaction_time_average\"})",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - average",
+              "legendFormat": "average",
               "metric": "",
               "refId": "A",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "tikv_engine_compaction_time{db=\"$db\",type=\"compaction_time_percentile95\"}",
+              "expr": "avg(tikv_engine_compaction_time{db=\"$db\",type=\"compaction_time_percentile95\"})",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - percentile95",
+              "legendFormat": "percentile95",
               "refId": "B",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "tikv_engine_compaction_time{db=\"$db\",type=\"compaction_time_percentile99\"}",
+              "expr": "avg(tikv_engine_compaction_time{db=\"$db\",type=\"compaction_time_percentile99\"})",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - percentile99",
+              "legendFormat": "percentile99",
               "refId": "C",
-              "step": 2
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -7602,28 +7602,28 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_sst_read_micros{db=\"$db\", type=\"sst_read_micros_average\"}[1m])) by (job)",
+              "expr": "avg(rate(tikv_engine_sst_read_micros{db=\"$db\", type=\"sst_read_micros_average\"}[1m]))",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - average",
+              "legendFormat": "average",
               "metric": "",
               "refId": "A",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_sst_read_micros{db=\"$db\", type=\"sst_read_micros_percentile95\"}[1m])) by (job)",
+              "expr": "avg(rate(tikv_engine_sst_read_micros{db=\"$db\", type=\"sst_read_micros_percentile95\"}[1m]))",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - percentile95",
+              "legendFormat": "percentile95",
               "metric": "",
               "refId": "B",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_sst_read_micros{db=\"$db\", type=\"sst_read_micros_percentile99\"}[1m])) by (job)",
+              "expr": "avg(rate(tikv_engine_sst_read_micros{db=\"$db\", type=\"sst_read_micros_percentile99\"}[1m]))",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - percentile99",
+              "legendFormat": "percentile99",
               "metric": "",
               "refId": "C",
-              "step": 2
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -7694,28 +7694,28 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_write_stall{db=\"$db\", type=\"write_stall_average\"}[1m])) by (job)",
+              "expr": "avg(rate(tikv_engine_write_stall{db=\"$db\", type=\"write_stall_average\"}[1m]))",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - average",
+              "legendFormat": "average",
               "metric": "",
               "refId": "A",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_write_stall{db=\"$db\", type=\"write_stall_percentile95\"}[1m])) by (job)",
+              "expr": "avg(rate(tikv_engine_write_stall{db=\"$db\", type=\"write_stall_percentile95\"}[1m]))",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - percentile95",
+              "legendFormat": "percentile95",
               "metric": "",
               "refId": "B",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_write_stall{db=\"$db\", type=\"write_stall_percentile99\"}[1m])) by (job)",
+              "expr": "avg(rate(tikv_engine_write_stall{db=\"$db\", type=\"write_stall_percentile99\"}[1m]))",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - percentile99",
+              "legendFormat": "percentile99",
               "metric": "",
               "refId": "C",
-              "step": 2
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -7786,11 +7786,11 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(tikv_engine_memory_bytes{db=\"$db\", type=\"mem-tables\"}) by (job, cf)",
+              "expr": "avg(tikv_engine_memory_bytes{db=\"$db\", type=\"mem-tables\"}) by (cf)",
               "intervalFactor": 2,
-              "legendFormat": "{{job}}-{{cf}}",
+              "legendFormat": "{{cf}}",
               "refId": "A",
-              "step": 2
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -7862,11 +7862,11 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_memtable_efficiency{db=\"$db\", type=\"memtable_hit\"}[1m])) by (job) / (sum(rate(tikv_engine_memtable_efficiency{db=\"$db\", type=\"memtable_hit\"}[1m])) by (job) + sum(rate(tikv_engine_memtable_efficiency{db=\"$db\", type=\"memtable_miss\"}[1m])) by (job))",
+              "expr": "sum(rate(tikv_engine_memtable_efficiency{db=\"$db\", type=\"memtable_hit\"}[1m])) / (sum(rate(tikv_engine_memtable_efficiency{db=\"$db\", type=\"memtable_hit\"}[1m])) + sum(rate(tikv_engine_memtable_efficiency{db=\"$db\", type=\"memtable_miss\"}[1m])))",
               "intervalFactor": 2,
-              "legendFormat": "{{job}}",
+              "legendFormat": "hit",
               "refId": "A",
-              "step": 2
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -7938,11 +7938,11 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(tikv_engine_block_cache_size_bytes{db=\"$db\"}) by(job, cf)",
+              "expr": "avg(tikv_engine_block_cache_size_bytes{db=\"$db\"}) by(cf)",
               "intervalFactor": 2,
-              "legendFormat": "{{job}}-{{cf}}",
+              "legendFormat": "{{cf}}",
               "refId": "A",
-              "step": 2
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -8014,44 +8014,44 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_hit\"}[1m])) by (job) / (sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_hit\"}[1m])) by (job) + sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_miss\"}[1m])) by (job))",
+              "expr": "sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_hit\"}[1m])) / (sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_hit\"}[1m])) + sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_miss\"}[1m])))",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - all",
+              "legendFormat": "all",
               "metric": "",
               "refId": "A",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_data_hit\"}[1m])) by (job) / (sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_data_hit\"}[1m])) by (job) + sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_data_miss\"}[1m])) by (job))",
+              "expr": "sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_data_hit\"}[1m])) / (sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_data_hit\"}[1m])) + sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_data_miss\"}[1m])))",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - data",
+              "legendFormat": "data",
               "metric": "",
               "refId": "D",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_index_hit\"}[1m])) by (job) / (sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_index_hit\"}[1m])) by (job) + sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_index_miss\"}[1m])) by (job))",
+              "expr": "sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_index_hit\"}[1m])) / (sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_index_hit\"}[1m])) + sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_index_miss\"}[1m])))",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - index",
+              "legendFormat": "index",
               "metric": "",
               "refId": "B",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_filter_hit\"}[1m])) by (job) / (sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_filter_hit\"}[1m])) by (job) + sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_filter_miss\"}[1m])) by (job))",
+              "expr": "sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_filter_hit\"}[1m])) / (sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_filter_hit\"}[1m])) + sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_filter_miss\"}[1m])))",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - bloom",
+              "legendFormat": "bloom",
               "metric": "",
               "refId": "C",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_bloom_efficiency{db=\"$db\", type=\"bloom_prefix_useful\"}[1m])) by (job) / sum(rate(tikv_engine_bloom_efficiency{db=\"$db\", type=\"bloom_prefix_checked\"}[1m])) by (job)",
+              "expr": "sum(rate(tikv_engine_bloom_efficiency{db=\"$db\", type=\"bloom_prefix_useful\"}[1m])) / sum(rate(tikv_engine_bloom_efficiency{db=\"$db\", type=\"bloom_prefix_checked\"}[1m]))",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - bloom prefix",
+              "legendFormat": "bloom prefix",
               "metric": "",
               "refId": "E",
-              "step": 2
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -8124,32 +8124,32 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_flow_bytes{db=\"$db\", type=\"keys_read\"}[1m])) by (job, type)",
+              "expr": "sum(rate(tikv_engine_flow_bytes{db=\"$db\", type=\"keys_read\"}[1m]))",
               "hide": false,
               "interval": "",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - read",
+              "legendFormat": "read",
               "refId": "B",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_flow_bytes{db=\"$db\", type=\"keys_written\"}[1m])) by (job, type)",
+              "expr": "sum(rate(tikv_engine_flow_bytes{db=\"$db\", type=\"keys_written\"}[1m]))",
               "hide": false,
               "interval": "",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - written",
+              "legendFormat": "written",
               "refId": "C",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_compaction_num_corrupt_keys{db=\"$db\"}[1m])) by (job)",
+              "expr": "sum(rate(tikv_engine_compaction_num_corrupt_keys{db=\"$db\"}[1m]))",
               "hide": false,
               "interval": "",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - corrupt",
+              "legendFormat": "corrupt",
               "metric": "",
               "refId": "A",
-              "step": 2
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -8220,13 +8220,13 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "tikv_engine_estimate_num_keys{db=\"$db\"}",
+              "expr": "sum(tikv_engine_estimate_num_keys{db=\"$db\"}) by (cf)",
               "hide": false,
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - {{cf}}",
+              "legendFormat": "{{cf}}",
               "metric": "tikv_engine_estimate_num_keys",
               "refId": "A",
-              "step": 2
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -8298,31 +8298,31 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_flow_bytes{db=\"$db\", type=\"bytes_read\"}[1m])) by (job)",
+              "expr": "sum(rate(tikv_engine_flow_bytes{db=\"$db\", type=\"bytes_read\"}[1m]))",
               "hide": false,
               "interval": "",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - get",
+              "legendFormat": "get",
               "refId": "A",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_flow_bytes{db=\"$db\", type=\"iter_bytes_read\"}[1m])) by (job)",
+              "expr": "sum(rate(tikv_engine_flow_bytes{db=\"$db\", type=\"iter_bytes_read\"}[1m]))",
               "hide": false,
               "interval": "",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - scan",
+              "legendFormat": "scan",
               "refId": "C",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_flow_bytes{db=\"$db\", type=\"block_cache_byte_read\"}[1m])) by (job)",
+              "expr": "sum(rate(tikv_engine_flow_bytes{db=\"$db\", type=\"block_cache_byte_read\"}[1m]))",
               "hide": false,
               "interval": "",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - cache",
+              "legendFormat": "cache",
               "refId": "D",
-              "step": 2
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -8394,25 +8394,25 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "tikv_engine_bytes_per_read{db=\"$db\",type=\"bytes_per_read_average\"}",
+              "expr": "avg(tikv_engine_bytes_per_read{db=\"$db\",type=\"bytes_per_read_average\"})",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - average",
+              "legendFormat": "average",
               "refId": "A",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "tikv_engine_bytes_per_read{db=\"$db\",type=\"bytes_per_read_percentile95\"}",
+              "expr": "avg(tikv_engine_bytes_per_read{db=\"$db\",type=\"bytes_per_read_percentile95\"})",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - percentile95",
+              "legendFormat": "percentile95",
               "refId": "B",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "tikv_engine_bytes_per_read{db=\"$db\",type=\"bytes_per_read_percentile99\"}",
+              "expr": "avg(tikv_engine_bytes_per_read{db=\"$db\",type=\"bytes_per_read_percentile99\"})",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - percentile99",
+              "legendFormat": "percentile99",
               "refId": "C",
-              "step": 2
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -8484,28 +8484,28 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_flow_bytes{db=\"$db\", type=~\"wal_file_bytes\"}[1m])) by (job, type)",
+              "expr": "sum(rate(tikv_engine_flow_bytes{db=\"$db\", type=\"wal_file_bytes\"}[1m]))",
               "hide": false,
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - wal",
+              "legendFormat": "wal",
               "refId": "C",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_flow_bytes{db=\"$db\", type=~\"bytes_written\"}[1m])) by (job, type)",
+              "expr": "sum(rate(tikv_engine_flow_bytes{db=\"$db\", type=\"bytes_written\"}[1m]))",
               "hide": false,
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - write",
+              "legendFormat": "write",
               "refId": "A",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_flow_bytes{db=\"$db\", type=~\"block_cache_byte_write\"}[1m])) by (job, type)",
+              "expr": "sum(rate(tikv_engine_flow_bytes{db=\"$db\", type=\"block_cache_byte_write\"}[1m]))",
               "hide": false,
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - cache",
+              "legendFormat": "cache",
               "refId": "D",
-              "step": 2
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -8577,25 +8577,25 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "tikv_engine_bytes_per_write{db=\"$db\",type=\"bytes_per_write_average\"}",
+              "expr": "avg(tikv_engine_bytes_per_write{db=\"$db\",type=\"bytes_per_write_average\"})",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - average",
+              "legendFormat": "average",
               "refId": "A",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "tikv_engine_bytes_per_write{db=\"$db\",type=\"bytes_per_write_percentile95\"}",
+              "expr": "avg(tikv_engine_bytes_per_write{db=\"$db\",type=\"bytes_per_write_percentile95\"})",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - percentile95",
+              "legendFormat": "percentile95",
               "refId": "B",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "tikv_engine_bytes_per_write{db=\"$db\",type=\"bytes_per_write_percentile99\"}",
+              "expr": "avg(tikv_engine_bytes_per_write{db=\"$db\",type=\"bytes_per_write_percentile99\"})",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - percentile99",
+              "legendFormat": "percentile99",
               "refId": "C",
-              "step": 2
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -8666,28 +8666,28 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_compaction_flow_bytes{db=\"$db\", type=\"bytes_read\"}[1m])) by (job)",
+              "expr": "sum(rate(tikv_engine_compaction_flow_bytes{db=\"$db\", type=\"bytes_read\"}[1m]))",
               "hide": false,
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - read",
+              "legendFormat": "read",
               "refId": "A",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_compaction_flow_bytes{db=\"$db\", type=\"bytes_written\"}[1m])) by (job)",
+              "expr": "sum(rate(tikv_engine_compaction_flow_bytes{db=\"$db\", type=\"bytes_written\"}[1m]))",
               "hide": false,
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - written",
+              "legendFormat": "written",
               "refId": "C",
-              "step": 2
+              "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_flow_bytes{db=\"$db\", type=\"flush_write_bytes\"}[1m])) by (job)",
+              "expr": "sum(rate(tikv_engine_flow_bytes{db=\"$db\", type=\"flush_write_bytes\"}[1m]))",
               "hide": false,
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - flushed",
+              "legendFormat": "flushed",
               "refId": "B",
-              "step": 2
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -8758,13 +8758,13 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_pending_compaction_bytes{db=\"$db\"}[1m])) by (job, cf)",
+              "expr": "sum(rate(tikv_engine_pending_compaction_bytes{db=\"$db\"}[1m])) by (cf)",
               "hide": false,
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - {{cf}}",
+              "legendFormat": "{{cf}}",
               "metric": "tikv_engine_pending_compaction_bytes",
               "refId": "A",
-              "step": 2
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -9249,5 +9249,5 @@
   },
   "timezone": "browser",
   "title": "Test-Cluster-TiKV",
-  "version": 4
+  "version": 2
 }
