@@ -105,7 +105,7 @@
 - name: Preflight check - Does deploy dir meet ext4 or xfs file system requirement[1]
   set_fact:
     fssystem_check_result: true
-  when: "('tikv_servers' in group_names and item.mount == deploy_partition.stdout and item.fstype == 'ext4') or ('tikv_servers' in group_names and item.mount == deploy_partition.stdout and item.fstype == 'xfs' and xfs_result.results[0].stdout|int == 5000)"
+  when: "('tikv_servers' in group_names and item.mount == deploy_partition.stdout and item.fstype == 'ext4') or ('tikv_servers' in group_names and xfs_filesystem is defined and xfs_filesystem and xfs_result.stdout|int == 5000)"
   with_items: "{{ ansible_mounts }}"
 
 - name: Preflight check - Does deploy dir meet ext4 or xfs file system requirement[2]
