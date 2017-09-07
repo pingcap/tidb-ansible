@@ -137,12 +137,12 @@
         - tidb
 
     - name: stop TiDB by systemd
-      systemd: name=tidb.service state=stopped
+      systemd: name=tidb@{{ tidb_port }}.service state=stopped
       become: true
       when: use_systemd and ansible_user != "root"
 
     - name: stop TiDB by systemd
-      systemd: name=tidb.service state=stopped
+      systemd: name=tidb@{{ tidb_port }}.service state=stopped
       when: use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false
