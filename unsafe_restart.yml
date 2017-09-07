@@ -186,12 +186,12 @@
         - tidb
 
     - name: restart TiDB by systemd
-      systemd: name=tidb.service state=restarted
+      systemd: name=tidb@{{ tidb_port }}.service state=restarted
       become: true
       when: use_systemd and ansible_user != "root"
 
     - name: restart TiDB by systemd
-      systemd: name=tidb.service state=restarted
+      systemd: name=tidb@{{ tidb_port }}.service state=restarted
       when: use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false

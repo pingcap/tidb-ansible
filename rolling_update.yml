@@ -247,14 +247,14 @@
     - name: stop TiDB by systemd
       tags:
         - restart
-      systemd: name=tidb.service state=stopped
+      systemd: name=tidb@{{ tidb_port }}.service state=stopped
       become: true
       when: use_systemd and ansible_user != "root"
 
     - name: stop TiDB by systemd
       tags:
         - restart
-      systemd: name=tidb.service state=stopped
+      systemd: name=tidb@{{ tidb_port }}.service state=stopped
       when: use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false
@@ -297,14 +297,14 @@
     - name: start TiDB by systemd
       tags:
         - restart
-      systemd: name=tidb.service state=started
+      systemd: name=tidb@{{ tidb_port }}.service state=started
       become: true
       when: use_systemd and ansible_user != "root"
 
     - name: start TiDB by systemd
       tags:
         - restart
-      systemd: name=tidb.service state=started
+      systemd: name=tidb@{{ tidb_port }}.service state=started
       when: use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false
