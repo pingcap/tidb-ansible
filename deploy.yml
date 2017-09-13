@@ -59,7 +59,12 @@
   roles:
     - { role: pump, when: enable_binlog }
     - tidb
-    - tispark
+    - { role: tispark, when: "groups.get('spark_master', []) | length == 0 or groups.get('spark_slaves', []) | length == 0" }
+
+- name: deploying tispark cluster
+  hosts: spark_master,spark_slaves
+  roles:
+    - { role: tispark, when: "groups.get('spark_master', []) | length != 0 and groups.get('spark_slaves', []) | length != 0" }
 
 - name: finalizing deployment target
   hosts: all

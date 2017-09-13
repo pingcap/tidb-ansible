@@ -2,10 +2,19 @@
 
 - name: deploy spark-2.1.1-bin-hadoop2.7
   unarchive: >
-    creates="{{ deploy_dir }}/spark-2.1.1-bin-hadoop2.7/sbin/start-master.sh"
-    src={{ downloads_dir }}/spark-2.1.1-bin-hadoop2.7-all-in-one.tar.gz dest={{ deploy_dir }}/
+    creates="{{ deploy_dir }}/spark/sbin/start-master.sh"
+    src={{ downloads_dir }}/spark-2.1.1-bin-hadoop2.7.tgz dest={{ deploy_dir }}/
 
 - name: rename spark deploy dir
   shell: >
     creates="{{ deploy_dir }}/spark/sbin/start-master.sh"
-    mv {{ deploy_dir }}/spark-2.1.1-bin-hadoop2.7 {{ deploy_dir }}/spark
+    mv {{ deploy_dir }}/spark-* "{{ deploy_dir }}/spark"
+
+- name: deploy tispark
+  copy: >
+    src={{ downloads_dir }}/tispark-SNAPSHOT-jar-with-dependencies.jar dest={{ deploy_dir }}/spark/jars/
+
+- include: standalone.yml
+  static: no
+  when:
+    - "'spark_master' in group_names or 'spark_slaves' in group_names"

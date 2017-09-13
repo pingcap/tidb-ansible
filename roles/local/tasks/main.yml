@@ -41,7 +41,7 @@
   when: has_outbound_network
 
 - name: download TiSpark packages
-  get_url: url={{ item.url }} dest={{ downloads_dir }}/{{ item.name }}.tar.gz force=yes validate_certs=no
+  get_url: url={{ item.url }} dest={{ downloads_dir }}/{{ item.name }} force=yes validate_certs=no
   with_items: "{{ tispark_packages }}"
   when: has_outbound_network
 
@@ -113,4 +113,4 @@
 
 - name: clean up download dir
   shell: >
-    cd "{{ downloads_dir }}" && ls -1 | grep -v tar.gz | xargs rm -rf ./{} \;
+    cd "{{ downloads_dir }}" && find . -mindepth 1 -maxdepth 1 -type d -exec rm -rf {} \;
