@@ -15,6 +15,13 @@
     msg: "System clock is wrong relative to current host: {{ ansible_date_time.epoch | epoch_time_diff}} seconds."
   when: ansible_date_time.epoch | epoch_time_diff | abs > max_time_diff_seconds
 
+- name: Preflight check - fail when NTP service is not running or ntpstat is not synchronised to NTP server
+  shell: ntpstat | grep -w synchronised | wc -l
+  register: ntp_st
+  failed_when: ntp_st.stdout|int != 1
+  changed_when: false
+  when: enable_ntpd
+
 - name: Preflight check - Red Hat Enterprise Linux/CentOS 6 is deprecated
   debug:
     msg: "Support for running TiDB on Red Hat Enterprise Linux 6 and CentOS 6 is deprecated, and will be removed in a future release."
