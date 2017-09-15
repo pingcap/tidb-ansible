@@ -26,9 +26,6 @@ exec bin/tidb-server \
     --store=tikv --path="{{ all_pd | join(',') }}" \
     --config conf/tidb.toml \
     --status="{{ tidb_status_port }}" \
-{% if metric_host %}
-    --metrics-addr="{{ metric_addr }}" --metrics-interval={{ metric_interval }} \
-{% endif %}
 {% if enable_binlog %}
     --binlog-socket="{{ pump_socket }}" \
 {% endif %}

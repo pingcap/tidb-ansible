@@ -53,6 +53,14 @@
 
 - debug: var=tidb_conf
 
+- name: create config file
+  template: src=tidb.toml.j2 dest={{ deploy_dir }}/conf/tidb.toml mode=0644 backup=yes
+  register: tidb_conf_st
+
+- name: backup conf file
+  command: mv "{{ tidb_conf_st.backup_file }}" "{{ backup_dir }}"
+  when: tidb_conf_st.changed and tidb_conf_st.backup_file is defined
+
 - name: create run script
   template:
     src: "{{ item }}_{{ role_name }}.sh.j2"
