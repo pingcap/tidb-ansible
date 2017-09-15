@@ -24,21 +24,19 @@
   file: path={{ deploy_dir }}/fio_randread_test.txt state=absent
 
 - name: Benchmark mix iops of tikv deploy_dir disk with fio command
-  shell: "cd {{ deploy_dir }} && LANG='en_US.UTF-8' ./fio -ioengine=libaio -bs=32k -direct=1 -thread -rw=randrw -percentage_random=100,0 -size=1G -filename=fi
-o_randr_write_test.txt -name='PingCAP' -iodepth=4 -runtime=60 | grep iops | egrep 'read|write' | awk -F, '/iops/{print $3}' | awk -F= '{print $2}'"
+  shell: "cd {{ deploy_dir }} && LANG='en_US.UTF-8' ./fio -ioengine=libaio -bs=32k -direct=1 -thread -rw=randrw -percentage_random=100,0 -size=10G -filename=fio_randr_write_test.txt -name='PingCAP' -iodepth=4 -runtime=60 | grep iops | egrep 'read|write' | awk -F, '/iops/{print $3}' | awk -F= '{print $2}'"
   register: disk_randr_write_iops
 
 - name: set fio disk_mix_randread_iops facts
   set_fact:
-    disk_mix_randread_iops: "{{ disk_randr_write_iops.stdout_lines[0] | int }}"
+    disk_mix_randread_iops: "{{ disk_randr_write_iops.stdout_lines[0] }}"
 
 - name: set fio disk_mix_write_iops facts
   set_fact:
-    disk_mix_write_iops: "{{ disk_randr_write_iops.stdout_lines[1] | int }}"
+    disk_mix_write_iops: "{{ disk_randr_write_iops.stdout_lines[1] }}"
 
 - debug:
-    msg: "run command on tikv servers: `cd {{ deploy_dir }} && LANG='en_US.UTF-8' ./fio -ioengine=libaio -bs=32k -direct=1 -thread -rw=randrw -percentage_random=100,0 -size=10G -filename=fi
-o_randr_write_test.txt -name='PingCAP' -iodepth=4 -runtime=60 | grep iops | egrep 'read|write' | awk -F, '/iops/{print $3}' | awk -F= '{print $2}'`, and fio mixed randread and sequential write iops result: randread {{ disk_mix_randread_iops }}, sequential write {{ disk_mix_write_iops }}."
+    msg: "run command on tikv servers: `cd {{ deploy_dir }} && LANG='en_US.UTF-8' ./fio -ioengine=libaio -bs=32k -direct=1 -thread -rw=randrw -percentage_random=100,0 -size=10G -filename=fio_randr_write_test.txt -name='PingCAP' -iodepth=4 -runtime=60 | grep iops | egrep 'read|write' | awk -F, '/iops/{print $3}' | awk -F= '{print $2}'`, and fio mixed randread and sequential write iops result: randread {{ disk_mix_randread_iops }}, sequential write {{ disk_mix_write_iops }}."
 
 - name: Clean fio binary file
   file: path={{ deploy_dir }}/fio state=absent
@@ -59,15 +57,13 @@ o_randr_write_test.txt -name='PingCAP' -iodepth=4 -runtime=60 | grep iops | egre
 - name: Preflight check - Does fio mixed randread and sequential write iops of tikv deploy_dir disk meet requirement - randread
   fail:
     msg: 'fio mixed randread and sequential write test: randread iops of tikv deploy_dir disk is too low: {{ disk_mix_randread_iops }} < {{ min_sas_mix_randread_iops }}'
-  when: disk_mix_randread_iops < min_sas_mix_randread_iops|int
+  when: disk_mix_randread_iops|int < min_sas_mix_randread_iops|int
 
 - name: Preflight check - Does fio mixed randread and sequential write iops of tikv deploy_dir disk meet requirement - sequential write
   fail:
     msg: 'fio mixed randread and sequential write test: sequential write iops of tikv deploy_dir disk is too low: {{ disk_mix_write_iops }} < {{ min_sas_mix_write_iops }}'
-  when: disk_mix_write_iops < min_sas_mix_write_iops|int
+  when: disk_mix_write_iops|int < min_sas_mix_write_iops|int
 
 - name: Warning!!!!!!!!!
   pause: prompt='Hi, for OLTP scenarios, it is strongly recommended to use SSD disks for TiKV and PD, or there might be performance issues. Press "Enter" to continue. Press Ctrl+c and then "A" to abort.'
-  when: (disk_randread_iops.stdout|int > min_sas_randread_iops|int and disk_randread_iops.stdout|int < min_ssd_randread_iops|int) or (disk_mix_randread_iops > min_sas_mix_randread_iops|int and disk_mix_randread_iops < min_ssd_mix_randread_iops|int) or (disk_mix_write_iops > min_sas_mix_write_iops|int and disk_mix_write_iops > min_ssd_mix_write_iops|int)
-
-
+  when: (disk_randread_iops.stdout|int > min_sas_randread_iops|int and disk_randread_iops.stdout|int < min_ssd_randread_iops|int) or (disk_mix_randread_iops|int > min_sas_mix_randread_iops|int and disk_mix_randread_iops|int < min_ssd_mix_randread_iops|int) or (disk_mix_write_iops|int > min_sas_mix_write_iops|int and disk_mix_write_iops|int > min_ssd_mix_write_iops|int)
