@@ -32,35 +32,10 @@ exec bin/tidb-server \
     --store=tikv --path="{{ all_pd | join(',') }}" \
     -L="{{ tidb_log_level }}" --log-file="{{ tidb_log_dir }}/{{ tidb_log_filename }}" \
     --status="{{ tidb_status_port }}" \
-    -statsLease 0 \
 {% if metric_host %}
     --metrics-addr="{{ metric_addr }}" --metrics-interval={{ metric_interval }} \
 {% endif %}
 {% if enable_binlog %}
     --binlog-socket="{{ pump_socket }}" \
 {% endif %}
-{% if tidb_conf.server.perfschema is defined %}
-    --perfschema={{ tidb_conf.server.perfschema | to_json }}\
-{% endif %}
-{% if tidb_conf.server.privilege is defined %}
-    --privilege={{ tidb_conf.server.privilege | to_json }} \
-{% endif %}
-{% if tidb_conf.server['retry-limit'] is defined %}
-    --retry-limit={{ tidb_conf.server['retry-limit'] | int }} \
-{% endif %}
-{% if tidb_conf.server['cross-join'] is defined %}
-    --cross-join={{ tidb_conf.server['cross-join'] | to_json }} \
-{% endif %}
-{% if tidb_conf.server['enable-statistic'] is defined %}
-    --enable-statistic={{ tidb_conf.server['enable-statistic'] | to_json }} \
-{% endif %}
-{% if tidb_conf.server['join-concurrency'] is defined %}
-    --join-concurrency={{ tidb_conf.server['join-concurrency'] | int }} \
-{% endif %}
-{% if tidb_conf.server['run-ddl'] is defined %}
-    --run-ddl={{ tidb_conf.server['run-ddl'] | to_json }} \
-{% endif %}
-{% if tidb_conf.server['skip-grant-table'] is defined %}
-    --run-ddl={{ tidb_conf.server['skip-grant-table'] | to_json }} \
-{% endif %}
-    --lease "{{ tidb_conf.server.lease }}" 2> "{{ tidb_log_dir }}/{{ tidb_stderr_filename }}"
+    2> "{{ tidb_log_dir }}/{{ tidb_stderr_filename }}"

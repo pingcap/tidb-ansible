@@ -42,13 +42,6 @@
   set_fact:
     tidb_conf_generated:
 
-- name: generate metrics config (2/2)
-  set_fact:
-    tidb_conf_generated:
-      server:
-        lease: "{{ tidb_lease }}"
-  when: "tidb_lease is defined"
-
 - name: combine final config
   set_fact:
     tidb_conf: "{{ tidb_conf_generated | with_default_dicts(tidb_conf_custom, tidb_conf_default) }}"
