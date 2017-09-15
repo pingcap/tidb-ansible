@@ -1,27 +1,50 @@
 ---
 
-- name: Benchmark the write speed of tikv deploy_dir disk with dd command 
+- name: Benchmark the direct write speed of tikv deploy_dir disk with dd command 
   shell: "LANG='en_US.UTF-8' dd bs=4k count=250000 oflag=direct if=/dev/zero of={{ deploy_dir }}/dd_test.txt 2>&1 | awk '/MB/{print $(NF-1)}'"
   register: disk_write_speed
-  
+
 - debug:
     msg: "run command on tikv servers: `LANG='en_US.UTF-8' dd bs=4k count=250000 oflag=direct if=/dev/zero of={{ deploy_dir }}/dd_test.txt 2>&1 | awk '/MB/{print $(NF-1)}'`, and the result is {{ disk_write_speed.stdout }} MB/s."
-
-- name: deploy fio
-  copy: src="{{ resources_dir }}/bin/fio" dest="{{ deploy_dir }}/" mode=0755
-
-- name: Benchmark randread iops of tikv deploy_dir disk with fio command 
-  shell: "cd {{ deploy_dir }} && LANG='en_US.UTF-8' ./fio -ioengine=libaio -bs=32k -direct=1 -thread -rw=randread  -size=10G -filename=randread_test.txt -name='PingCAP' -iodepth=4 -runtime=60 | awk -F, '/iops/{print $3}' | awk -F'=' '{print $2}'"
-  register: disk_randread_iops
-  
-- debug:
-    msg: "run command on tikv servers: `cd {{ deploy_dir }} && LANG='en_US.UTF-8' ./fio -ioengine=libaio -bs=32k -direct=1 -thread -rw=randread  -size=10G -filename=randread_test.txt -name='PingCAP' -iodepth=4 -runtime=60 | awk -F, '/iops/{print $3}' | awk -F'=' '{print $2}'`, and the result is {{ disk_randread_iops.stdout }}."
 
 - name: Clean disk dd benchmark temporary file
   file: path={{ deploy_dir }}/dd_test.txt state=absent
 
-- name: Clean disk fio benchmark temporary file
-  file: path={{ deploy_dir }}/randread_test.txt state=absent
+- name: deploy fio
+  copy: src="{{ resources_dir }}/bin/fio" dest="{{ deploy_dir }}/fio" mode=0755
+
+- name: Benchmark randread iops of tikv deploy_dir disk with fio command 
+  shell: "cd {{ deploy_dir }} && LANG='en_US.UTF-8' ./fio -ioengine=libaio -bs=32k -direct=1 -thread -rw=randread  -size=10G -filename=fio_randread_test.txt -name='PingCAP' -iodepth=4 -runtime=60 | awk -F, '/iops/{print $3}' | awk -F'=' '{print $2}'"
+  register: disk_randread_iops
+
+- debug:
+    msg: "run command on tikv servers: `cd {{ deploy_dir }} && LANG='en_US.UTF-8' ./fio -ioengine=libaio -bs=32k -direct=1 -thread -rw=randread  -size=10G -filename=fio_randread_test.txt -name='PingCAP' -iodepth=4 -runtime=60 | awk -F, '/iops/{print $3}' | awk -F'=' '{print $2}'`, and the result is {{ disk_randread_iops.stdout }}."
+
+- name: Clean fio randread iops benchmark temporary file
+  file: path={{ deploy_dir }}/fio_randread_test.txt state=absent
+
+- name: Benchmark mix iops of tikv deploy_dir disk with fio command
+  shell: "cd {{ deploy_dir }} && LANG='en_US.UTF-8' ./fio -ioengine=libaio -bs=32k -direct=1 -thread -rw=randrw -percentage_random=100,0 -size=1G -filename=fi
+o_randr_write_test.txt -name='PingCAP' -iodepth=4 -runtime=60 | grep iops | egrep 'read|write' | awk -F, '/iops/{print $3}' | awk -F= '{print $2}'"
+  register: disk_randr_write_iops
+
+- name: set fio disk_mix_randread_iops facts
+  set_fact:
+    disk_mix_randread_iops: "{{ disk_randr_write_iops.stdout_lines[0] | int }}"
+
+- name: set fio disk_mix_write_iops facts
+  set_fact:
+    disk_mix_write_iops: "{{ disk_randr_write_iops.stdout_lines[1] | int }}"
+
+- debug:
+    msg: "run command on tikv servers: `cd {{ deploy_dir }} && LANG='en_US.UTF-8' ./fio -ioengine=libaio -bs=32k -direct=1 -thread -rw=randrw -percentage_random=100,0 -size=10G -filename=fi
+o_randr_write_test.txt -name='PingCAP' -iodepth=4 -runtime=60 | grep iops | egrep 'read|write' | awk -F, '/iops/{print $3}' | awk -F= '{print $2}'`, and fio mixed randread and sequential write iops result: randread {{ disk_mix_randread_iops }}, sequential write {{ disk_mix_write_iops }}."
+
+- name: Clean fio binary file
+  file: path={{ deploy_dir }}/fio state=absent
+
+- name: Clean fio mixed randread and sequential write iops benchmark temporary file
+  file: path={{ deploy_dir }}/fio_randr_write_test.txt state=absent
 
 - name: Preflight check - Does the write speed of tikv deploy_dir disk meet requirement
   fail:
@@ -33,12 +56,18 @@
     msg: 'fio: randread iops of tikv deploy_dir disk is too low: {{ disk_randread_iops.stdout }} < {{ min_sas_randread_iops }}'
   when: disk_randread_iops.stdout|int < min_sas_randread_iops|int
 
+- name: Preflight check - Does fio mixed randread and sequential write iops of tikv deploy_dir disk meet requirement - randread
+  fail:
+    msg: 'fio mixed randread and sequential write test: randread iops of tikv deploy_dir disk is too low: {{ disk_mix_randread_iops }} < {{ min_sas_mix_randread_iops }}'
+  when: disk_mix_randread_iops < min_sas_mix_randread_iops|int
+
+- name: Preflight check - Does fio mixed randread and sequential write iops of tikv deploy_dir disk meet requirement - sequential write
+  fail:
+    msg: 'fio mixed randread and sequential write test: sequential write iops of tikv deploy_dir disk is too low: {{ disk_mix_write_iops }} < {{ min_sas_mix_write_iops }}'
+  when: disk_mix_write_iops < min_sas_mix_write_iops|int
+
 - name: Warning!!!!!!!!!
   pause: prompt='Hi, for OLTP scenarios, it is strongly recommended to use SSD disks for TiKV and PD, or there might be performance issues. Press "Enter" to continue. Press Ctrl+c and then "A" to abort.'
-  when:
-    - disk_randread_iops.stdout|int > min_sas_randread_iops|int
-    - disk_randread_iops.stdout|int < min_ssd_randread_iops|int
-
-
+  when: (disk_randread_iops.stdout|int > min_sas_randread_iops|int and disk_randread_iops.stdout|int < min_ssd_randread_iops|int) or (disk_mix_randread_iops > min_sas_mix_randread_iops|int and disk_mix_randread_iops < min_ssd_mix_randread_iops|int) or (disk_mix_write_iops > min_sas_mix_write_iops|int and disk_mix_write_iops > min_ssd_mix_write_iops|int)
 
 
