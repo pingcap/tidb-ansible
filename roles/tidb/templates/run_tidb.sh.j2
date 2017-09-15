@@ -17,12 +17,6 @@ cd "${DEPLOY_DIR}" || exit 1
   {% set _ = all_pd.append("%s:%s" % (pd_ip, pd_port)) -%}
 {% endfor -%}
 
-{% set metric_host = hostvars[groups.monitoring_servers[0]].ansible_host | default(hostvars[groups.monitoring_servers[0]].inventory_hostname)
-    if groups.get('monitoring_servers', []) else "" -%}
-{% set metric_port = hostvars[groups.monitoring_servers[0]].pushgateway_port if metric_host else "" -%}
-{% set metric_addr = metric_host ~ ":" ~ metric_port if metric_host else "" -%}
-{% set metric_interval = tidb_metric_interval if metric_host else "0" -%}
-
 {% if groups.binlog_servers is defined and groups.binlog_servers %}
   {% set binlog_socket = hostvars[ansible_host].pump_socket %}
 {% endif %}
@@ -30,7 +24,7 @@ cd "${DEPLOY_DIR}" || exit 1
 exec bin/tidb-server \
     -P {{ tidb_port }} \
     --store=tikv --path="{{ all_pd | join(',') }}" \
-    -L="{{ tidb_log_level }}" --log-file="{{ tidb_log_dir }}/{{ tidb_log_filename }}" \
+    --config conf/tidb.toml \
     --status="{{ tidb_status_port }}" \
 {% if metric_host %}
     --metrics-addr="{{ metric_addr }}" --metrics-interval={{ metric_interval }} \
@@ -38,4 +32,5 @@ exec bin/tidb-server \
 {% if enable_binlog %}
     --binlog-socket="{{ pump_socket }}" \
 {% endif %}
-    2> "{{ tidb_log_dir }}/{{ tidb_stderr_filename }}"
+    -L="{{ tidb_log_level }}" \
+    --log-file="{{ tidb_log_dir }}/{{ tidb_log_filename }}" 2> "{{ tidb_log_dir }}/{{ tidb_stderr_filename }}"
