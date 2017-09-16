@@ -1,0 +1,38 @@
+# TiDB Configuration.
+
+{% for item, value in tidb_conf.server | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+
+[log]
+{% for item, value in tidb_conf.log | dictsort_by_value_type -%}
+{% if value is not mapping -%}
+{{ item }} = {{ value | to_json}}
+{% else %}
+
+[log.{{ item }}]
+{% for sub_item, sub_value in value | dictsort -%}
+{{ sub_item }} = {{ sub_value | to_json }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+
+[security]
+{% for item, value in tidb_conf.security | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+
+[status]
+{% for item, value in tidb_conf.status | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+
+[performance]
+{% for item, value in tidb_conf.performance | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+
+[xprotocol]
+{% for item, value in tidb_conf.xprotocol | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}

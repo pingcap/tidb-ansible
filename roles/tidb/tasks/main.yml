@@ -6,6 +6,7 @@
   with_items:
   - "{{ tidb_log_dir }}"
   - "{{ deploy_dir }}/status/{{ role_name }}"
+  - "{{ deploy_dir }}/conf"
 
 - name: deploy binary
   copy: src="{{ resources_dir }}/bin/tidb-server" dest="{{ deploy_dir }}/bin/" mode=0755 backup=yes
@@ -40,19 +41,25 @@
 - name: generate metrics config (1/2)
   set_fact:
     tidb_conf_generated:
-
-- name: generate metrics config (2/2)
-  set_fact:
-    tidb_conf_generated:
-      server:
-        lease: "{{ tidb_lease }}"
-  when: "tidb_lease is defined"
+      status:
+        metrics-addr: >-
+          {{ hostvars[groups.monitoring_servers[0]].ansible_host | default(hostvars[groups.monitoring_servers[0]].inventory_hostname) ~ ':' ~
+           (hostvars.get(groups.monitoring_servers.0).pushgateway_port | default('9091')) |
+           default('') }}
 
 - name: combine final config
   set_fact:
     tidb_conf: "{{ tidb_conf_generated | with_default_dicts(tidb_conf_custom, tidb_conf_default) }}"
 
 - debug: var=tidb_conf
+
+- name: create config file
+  template: src=tidb.toml.j2 dest={{ deploy_dir }}/conf/tidb.toml mode=0644 backup=yes
+  register: tidb_conf_st
+
+- name: backup conf file
+  command: mv "{{ tidb_conf_st.backup_file }}" "{{ backup_dir }}"
+  when: tidb_conf_st.changed and tidb_conf_st.backup_file is defined
 
 - name: create run script
   template:
