@@ -52,6 +52,9 @@
         - ansible_become: false
         - ansible_become_user: root
 
+    - name: wait node_exporter down
+      wait_for: host={{ ansible_host }} port={{ node_exporter_port }} state=stopped
+
 - hosts: monitoring_servers
   tags:
     - pushgateway
@@ -82,6 +85,12 @@
         - ansible_become: false
         - ansible_become_user: root
 
+    - name: wait pushgateway down
+      wait_for: host={{ ansible_host }} port={{ pushgateway_port }} state=stopped
+
+    - name: wait prometheus down
+      wait_for: host={{ ansible_host }} port={{ prometheus_port }} state=stopped
+
 - hosts: pd_servers
   tags:
     - pd
@@ -103,6 +112,9 @@
       vars:
         - ansible_become: false
         - ansible_become_user: root
+
+    - name: wait PD down
+      wait_for: host={{ ansible_host }} port={{ pd_client_port }} state=stopped
 
 - hosts: tikv_servers
   tags:
@@ -126,6 +138,12 @@
         - ansible_become: false
         - ansible_become_user: root
 
+    - name: wait TiKV down (via Port)
+      wait_for: host={{ ansible_host }} port={{ tikv_port }} state=stopped
+
+    - name: wait TiKV down (via PID)
+      wait_for_pid: pid_file={{ deploy_dir }}/status/tikv.pid timeout=300 state=absent
+
 - hosts: tidb_servers
   tags:
     - tidb
@@ -148,6 +166,9 @@
         - ansible_become: false
         - ansible_become_user: root
 
+    - name: wait TiDB down
+      wait_for: host={{ ansible_host }} port={{ tidb_port }} state=stopped
+
     - name: stop pump
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
       when: enable_binlog and not use_systemd
@@ -166,8 +187,12 @@
         - ansible_become: false
         - ansible_become_user: root
 
+    - name: wait pump down
+      wait_for: |
+        host={{ ansible_host }} port={{ pump_port }} state=stopped
+      when: enable_binlog
+
 - hosts: grafana_servers
-  # FIXME: must introduce this to load all variables
   tags:
     - grafana
   tasks:
@@ -188,3 +213,6 @@
       vars:
         - ansible_become: false
         - ansible_become_user: root
+
+    - name: wait grafana down
+      wait_for: host={{ ansible_host }} port={{ grafana_port }} state=stopped
