@@ -4,7 +4,7 @@ server:
   # set listening address.
   # addr: "127.0.0.1:20160"
   # set advertise listening address for client communication, if not set, use addr instead.
-  #advertise-addr: ""
+  # advertise-addr: ""
   # notify capacity, 40960 is suitable for about 7000 regions.
   # notify-capacity: 40960
   # maximum number of messages can be processed in one tick.
@@ -29,6 +29,9 @@ server:
   # labels: {}
 
 storage:
+  # set the path to rocksdb directory.
+  # data-dir = "/tmp/tikv/store"
+
   # notify capacity of scheduler's channel
   # scheduler-notify-capacity: 10240
 
@@ -310,7 +313,6 @@ rocksdb:
 
     # in normal cases should tune to 10%-30% system's total memory.
     # block-cache-size: "256MB"
-    # cache-index-and-filter-blocks: true
     # level0-file-num-compaction-trigger: 4
     # level0-slowdown-writes-trigger: 20
     # level0-stop-writes-trigger: 36
@@ -350,8 +352,8 @@ raftdb:
   # writable-file-max-buffer-size: "1MB"
   # use-direct-io-for-flush-and-compaction: false
   # enable-pipelined-write: true
+  # allow-concurrent-memtable-write = false
 
-  # Column Family default is used to store raft log and raft states.
   defaultcf:
     # compression-per-level: ["no", "no", "lz4", "lz4", "lz4", "zstd", "zstd"]
     # block-size: "64KB"
