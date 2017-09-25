@@ -112,7 +112,7 @@
       vars:
         - ansible_become: false
         - ansible_become_user: root
-    
+
     - name: wait PD down
       wait_for: host={{ ansible_host }} port={{ pd_client_port }} state=stopped
 
@@ -187,10 +187,10 @@
         - ansible_become: false
         - ansible_become_user: root
 
-     - name: wait pump down
-       wait_for: |
-         host={{ ansible_host }} port={{ pump_port }} state=stopped
-       when: enable_binlog
+    - name: wait pump down
+      wait_for: |
+        host={{ ansible_host }} port={{ pump_port }} state=stopped
+      when: enable_binlog
 
 - hosts: grafana_servers
   # FIXME: must introduce this to load all variables
