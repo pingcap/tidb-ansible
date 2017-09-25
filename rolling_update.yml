@@ -266,19 +266,54 @@
       wait_for: host={{ ansible_host }} port={{ tidb_port }} state=stopped
 
     - name: stop pump
-      shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
+      tags:
+        - restart
+      shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh
       with_items:
         - pump
       when: enable_binlog and not use_systemd
 
     - name: stop pump by systemd
+      tags:
+        - restart
       systemd: name=pump.service state=stopped
       become: true
       when: enable_binlog and use_systemd and ansible_user != "root"
 
     - name: stop pump by systemd
+      tags:
+        - restart
       systemd: name=pump.service state=stopped
       when: enable_binlog and use_systemd and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
+
+    - name: wait pump down
+      wait_for: |
+        host={{ ansible_host }} port={{ pump_port }} state=stopped
+      when: enable_binlog
+
+    - name: start pump
+      tags:
+        - restart
+      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
+      when: enable_binlog and not use_systemd
+      with_items:
+        - pump
+
+    - name: start pump by systemd
+      tags:
+        - restart
+      systemd: name=pump.service state=started enabled=yes
+      become: true
+      when: enable_binlog and use_systemd and ansible_user != 'root'
+
+    - name: start pump by systemd
+      tags:
+        - restart
+      systemd: name=pump.service state=started enabled=yes
+      when: enable_binlog and use_systemd and ansible_user == 'root'
       vars:
         - ansible_become: false
         - ansible_become_user: root
