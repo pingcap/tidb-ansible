@@ -66,5 +66,8 @@
       file: path={{ raftdb_path }} state=absent
       when: "'tikv_servers' in group_names and raftdb_path is defined"
 
+    - name: using rm command to clean up deploy_dir
+      shell: "rm -rf {{ deploy_dir }}"
+
     - name: cleaning up deploy dir
       file: path={{ deploy_dir }} state=absent
