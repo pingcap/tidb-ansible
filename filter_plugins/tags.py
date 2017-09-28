@@ -32,6 +32,9 @@ def tikv_server_labels_format(label_str):
 
     return "{ %s }" % (', '.join(["%s = %s" % (k, json.dumps(v)) for (k,v) in labels]))
 
+def spark_conf(S):
+    return S.replace("\"","")
+
 class FilterModule(object):
     def filters(self):
         return {
@@ -39,4 +42,5 @@ class FilterModule(object):
             'with_default_dicts': with_default_dicts,
             'dictsort_by_value_type': dictsort_by_value_type,
             'tikv_server_labels_format': tikv_server_labels_format,
+            'spark_conf': spark_conf,
         }
