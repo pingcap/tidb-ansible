@@ -7,20 +7,12 @@
   template: src=spark-env.sh.j2 dest={{ deploy_dir }}/spark/conf/spark-env.sh mode=0644 backup=yes
   register: spark_env_st
 
-- name: backup spark_env file
-  command: mv "{{ spark_env_st.backup_file }}" "{{ backup_dir }}"
-  when: spark_env_st.changed and spark_env_st.backup_file is defined
-
 - name: load customized spark_defaults
   include_vars: file={{ playbook_dir }}/conf/spark-defaults.yml name=spark_defaults_custom
 
 - name: create spark_defaults.conf file
   template: src=spark-defaults.conf.j2 dest={{ deploy_dir }}/spark/conf/spark-defaults.conf mode=0644 backup=yes
   register: spark_defaults_st
-
-- name: backup spark_defaults file
-  command: mv "{{ spark_default_st.backup_file }}" "{{ backup_dir }}"
-  when: spark_defaults_st.changed and spark_defaults_st.backup_file is defined
 
 - name: create spark-slave.sh
   template:

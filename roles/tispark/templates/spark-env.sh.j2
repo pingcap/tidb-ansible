@@ -67,7 +67,7 @@
 
 #export JAVA_HOME, to set jdk home
 {% for item, value in spark_env_custom | dictsort -%}
-{{ item }}={{ value | to_json }}
+{{ item }}={{ value | to_json | spark_conf }}
 {% endfor %}
 
 {% set tispark_master = [] -%}
