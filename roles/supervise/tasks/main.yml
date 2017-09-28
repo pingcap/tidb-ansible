@@ -1,12 +1,16 @@
 ---
 # tasks file for supervise
 
-- name: create deploy directories
+- name: create deploy binary directory
   file: path={{ item }} state=directory mode=0755
   with_items:
   - "{{ deploy_dir }}/bin"
+
+- name: create deploy status directory
+  file: path={{ item }} state=directory mode=0755
+  with_items:
   - "{{ status_dir }}"
-  when: not skip_supervise
+  when: use_supervise
 
 - name: deploy supervise binary
   copy: src="{{ resources_dir }}/bin/{{ item }}" dest="{{ deploy_dir }}/bin/" mode=0755
@@ -14,4 +18,4 @@
   - supervise
   - svc
   - svstat
-  when: not skip_supervise
+  when: use_supervise

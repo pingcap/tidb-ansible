@@ -130,12 +130,6 @@
     msg: 'The permissions on {{ deploy_dir }} ({{ vl_st.stat.mode }}) prevent successful installation. {{ deploy_dir }} must be world-readable.'
   when: vl_st.stat.roth is defined and not vl_st.stat.roth
 
-# - name: Preflight check - Read in tidb version
-#   slurp:
-#     src: "{{ deploy_dir }}/.tidb_version"
-#   register: result
-#   ignore_errors: true
-
 - name: Check swap
   debug:
     msg: Swap is on, for best performance, turn swap off
@@ -148,7 +142,10 @@
 - name: environment check (supervise)
   stat: path={{ deploy_dir }}/bin/supervise get_md5=false get_checksum=false
   register: supervise_st
-  when: deploy_dir_st.stat.isdir is defined and deploy_dir_st.stat.isdir
+  when:
+    - deploy_dir_st.stat.isdir is defined
+    - deploy_dir_st.stat.isdir
+    - use_supervise
 
 - name: config skip variables (default)
   set_fact:
@@ -171,6 +168,4 @@
   when:
     - supervise_st.stat.executable is defined
     - supervise_st.stat.executable
-
-
-
+    - use_supervise

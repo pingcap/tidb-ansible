@@ -7,7 +7,6 @@
     - "{{ deploy_dir }}/scripts"
     - "{{ deploy_dir }}/conf"
     - "{{ backup_dir }}"
-#  when: not skip_supervise
 
 - name: create startup script - common start/stop
   template:
@@ -19,3 +18,4 @@
     - stop
   vars:
     role_status_dir: status/{{ this_role_name }}
+  when: use_supervise
