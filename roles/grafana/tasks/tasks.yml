@@ -31,16 +31,17 @@
 - name: push data source file
   template: src=data_source.json.j2 dest={{ grafana_data_dir }}/data_source.json mode=0644
 
-- name: create scripts
+- name: deploy supervise
   include_role:
-    name: scripts
+    name: supervise
+  when: deployment_method == 'supervise'
   vars:
     this_role_name: grafana
 
-- name: systemd
+- name: deploy systemd
   include_role:
     name: systemd
-  when: use_systemd
+  when: deployment_method == 'systemd'
   vars:
     this_role_name: grafana
     service_name: grafana

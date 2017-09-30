@@ -34,20 +34,20 @@
   tags:
     - node_exporter
   tasks:
-    - name: start node_exporter
+    - name: start node_exporter by supervise
       shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
-      when: not use_systemd
+      when: deployment_method == 'supervise'
       with_items:
         - node_exporter
 
     - name: start node_exporter by systemd
       become: true
       systemd: name=node_exporter.service state=started enabled=yes
-      when: use_systemd and ansible_user != 'root'
+      when: deployment_method == 'systemd' and ansible_user != 'root'
 
     - name: start node_exporter by systemd
       systemd: name=node_exporter.service state=started enabled=yes
-      when: use_systemd and ansible_user == 'root'
+      when: deployment_method == 'systemd' and ansible_user == 'root'
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -62,16 +62,16 @@
     - pushgateway
     - prometheus
   tasks:
-    - name: start monitoring modules
+    - name: start monitoring modules by supervise
       shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
-      when: not use_systemd
+      when: deployment_method == 'supervise'
       with_items:
         - pushgateway
         - prometheus
 
     - name: start monitoring modules by systemd
       systemd: name={{ item }} state=started enabled=yes
-      when: use_systemd and ansible_user != 'root'
+      when: deployment_method == 'systemd' and ansible_user != 'root'
       become: true
       with_items:
         - pushgateway.service
@@ -79,7 +79,7 @@
 
     - name: start monitoring modules by systemd
       systemd: name={{ item }} state=started enabled=yes
-      when: use_systemd and ansible_user == 'root'
+      when: deployment_method == 'systemd' and ansible_user == 'root'
       with_items:
         - pushgateway.service
         - prometheus.service
@@ -101,20 +101,20 @@
   tags:
     - pd
   tasks:
-    - name: start PD
+    - name: start PD by supervise
       shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
-      when: not use_systemd
+      when: deployment_method == 'supervise'
       with_items:
         - pd
 
     - name: start PD by systemd
       systemd: name=pd.service state=started enabled=yes
       become: true
-      when: use_systemd and ansible_user != 'root'
+      when: deployment_method == 'systemd' and ansible_user != 'root'
 
     - name: start PD by systemd
       systemd: name=pd.service state=started enabled=yes
-      when: use_systemd and ansible_user == 'root'
+      when: deployment_method == 'systemd' and ansible_user == 'root'
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -128,20 +128,20 @@
   tags:
     - tikv
   tasks:
-    - name: start TiKV
+    - name: start TiKV by supervise
       shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
-      when: not use_systemd
+      when: deployment_method == 'supervise'
       with_items:
         - tikv
 
     - name: start TiKV by systemd
       systemd: name=tikv@{{ tikv_port }}.service state=started enabled=yes
       become: true
-      when: use_systemd and ansible_user != 'root'
+      when: deployment_method == 'systemd' and ansible_user != 'root'
 
     - name: start TiKV by systemd
       systemd: name=tikv@{{ tikv_port }}.service state=started enabled=yes
-      when: use_systemd and ansible_user == 'root'
+      when: deployment_method == 'systemd' and ansible_user == 'root'
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -159,20 +159,20 @@
       file: path={{ pump_data_dir }}/.node state=absent
       when: enable_binlog
 
-    - name: start pump
+    - name: start pump by supervise
       shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
-      when: enable_binlog and not use_systemd
+      when: enable_binlog and deployment_method == 'supervise'
       with_items:
         - pump
 
     - name: start pump by systemd
       systemd: name=pump.service state=started enabled=yes
       become: true
-      when: enable_binlog and use_systemd and ansible_user != 'root'
+      when: enable_binlog and deployment_method == 'systemd' and ansible_user != 'root'
 
     - name: start pump by systemd
       systemd: name=pump.service state=started enabled=yes
-      when: enable_binlog and use_systemd and ansible_user == 'root'
+      when: enable_binlog and deployment_method == 'systemd' and ansible_user == 'root'
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -182,20 +182,20 @@
         host={{ ansible_host }} port={{ pump_port }} state=present
       when: enable_binlog
 
-    - name: start TiDB
+    - name: start TiDB by supervise
       shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
-      when: not use_systemd
+      when: deployment_method == 'supervise'
       with_items:
         - tidb
 
     - name: start TiDB by systemd
       systemd: name=tidb@{{ tidb_port }}.service state=started enabled=yes
       become: true
-      when: use_systemd and ansible_user != 'root'
+      when: deployment_method == 'systemd' and ansible_user != 'root'
 
     - name: start TiDB by systemd
       systemd: name=tidb@{{ tidb_port }}.service state=started enabled=yes
-      when: use_systemd and ansible_user == 'root'
+      when: deployment_method == 'systemd' and ansible_user == 'root'
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -211,20 +211,20 @@
   roles:
     - { role: grafana, grafana_exec_vars_only: true }
   tasks:
-    - name: start grafana
+    - name: start grafana by supervise
       shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
-      when: not use_systemd
+      when: deployment_method == 'supervise'
       with_items:
         - grafana
 
     - name: start grafana by systemd
       systemd: name=grafana.service state=started enabled=yes
-      when: use_systemd and ansible_user != 'root'
+      when: deployment_method == 'systemd' and ansible_user != 'root'
       become: true
 
     - name: start grafana by systemd
       systemd: name=grafana.service state=started enabled=yes
-      when: use_systemd and ansible_user == 'root'
+      when: deployment_method == 'systemd' and ansible_user == 'root'
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -269,4 +269,3 @@
       vars:
         - ansible_become: false
         - ansible_connection: local
-

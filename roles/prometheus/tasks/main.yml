@@ -37,16 +37,17 @@
     replace="{{ cluster_name }}"
   when: alert_rules_result.changed
 
-- name: create scripts
+- name: deploy supervise
   include_role:
-    name: scripts
+    name: supervise
+  when: deployment_method == 'supervise'
   vars:
     this_role_name: prometheus
 
-- name: systemd
+- name: deploy systemd
   include_role:
     name: systemd
-  when: use_systemd
+  when: deployment_method == 'systemd'
   vars:
     this_role_name: prometheus
     service_name: prometheus

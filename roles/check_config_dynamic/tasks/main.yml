@@ -143,9 +143,9 @@
   stat: path={{ deploy_dir }}/bin/supervise get_md5=false get_checksum=false
   register: supervise_st
   when:
+    - deployment_method == 'supervise'
     - deploy_dir_st.stat.isdir is defined
     - deploy_dir_st.stat.isdir
-    - use_supervise
 
 - name: config skip variables (default)
   set_fact:
@@ -166,6 +166,7 @@
   set_fact:
     skip_supervise: true
   when:
+    - deployment_method == 'supervise'
     - supervise_st.stat.executable is defined
     - supervise_st.stat.executable
-    - use_supervise
+

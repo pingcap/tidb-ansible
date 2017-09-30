@@ -49,16 +49,17 @@
   command: mv "{{ pd_conf_st.backup_file }}" "{{ backup_dir }}"
   when: pd_conf_st.changed and pd_conf_st.backup_file is defined
 
-- name: create scripts
+- name: deploy supervise
   include_role:
-    name: scripts
+    name: supervise
+  when: deployment_method == 'supervise'
   vars:
     this_role_name: pd
 
-- name: systemd
+- name: deploy systemd
   include_role:
     name: systemd
-  when: use_systemd
+  when: deployment_method == 'systemd'
   vars:
     this_role_name: pd
     service_name: pd
@@ -77,4 +78,3 @@
 - name: prepare firewalld white list
   set_fact:
     firewalld_ports: "{{ [pd_peer_port ~ '/tcp', pd_client_port ~ '/tcp'] + firewalld_ports }}"
-

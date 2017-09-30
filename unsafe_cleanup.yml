@@ -25,11 +25,11 @@
         killall -9 tikv-server tidb-server pd-server;
         killall -9 pump drainer;
         true
-      when: not use_systemd
+      when: deployment_method == 'supervise'
 
     - name: clean systemd config
       shell: "rm -f /etc/systemd/system/{{ item }}"
-      when: use_systemd and ansible_user == "root"
+      when: deployment_method == 'systemd' and ansible_user == "root"
       with_items:
         - grafana.service
         - prometheus.service
@@ -47,7 +47,7 @@
     - name: clean systemd config
       shell: "rm -f /etc/systemd/system/{{ item }}"
       become: true
-      when: use_systemd and ansible_user != "root"
+      when: deployment_method == 'systemd' and ansible_user != "root"
       with_items:
         - grafana.service
         - prometheus.service

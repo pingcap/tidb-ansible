@@ -1,5 +1,5 @@
 ---
-# tasks file for tidb
+# tasks file for pump
 
 - name: create deploy directories
   file: path="{{ item }}" state=directory mode=0755
@@ -11,16 +11,17 @@
 - name: deploy pump binary
   copy: src="{{ resources_dir }}/bin/pump" dest="{{ deploy_dir }}/bin/" mode=0755
 
-- name: create scripts
+- name: deploy supervise
   include_role:
-    name: scripts
+    name: supervise
+  when: deployment_method == 'supervise'
   vars:
     this_role_name: pump
 
-- name: systemd
+- name: deploy systemd
   include_role:
     name: systemd
-  when: use_systemd
+  when: deployment_method == 'systemd'
   vars:
     this_role_name: pump
     service_name: pump

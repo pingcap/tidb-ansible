@@ -16,16 +16,17 @@
   command: mv "{{ tidb_binary.backup_file }}" "{{ backup_dir }}"
   when: tidb_binary.changed and tidb_binary.backup_file is defined
 
-- name: create scripts
+- name: deploy supervise
   include_role:
-    name: scripts
+    name: supervise
+  when: deployment_method == 'supervise'
   vars:
     this_role_name: tidb
 
-- name: systemd
+- name: deploy systemd
   include_role:
     name: systemd
-  when: use_systemd
+  when: deployment_method == 'systemd'
   vars:
     this_role_name: tidb
     service_name: tidb@{{ tidb_port }}

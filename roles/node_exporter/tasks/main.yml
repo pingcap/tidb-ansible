@@ -9,16 +9,17 @@
 - name: deploy node_exporter binary
   copy: src="{{ resources_dir }}/bin/node_exporter" dest="{{ deploy_dir }}/bin" mode=0755
 
-- name: create scripts
+- name: deploy supervise
   include_role:
-    name: scripts
+    name: supervise
+  when: deployment_method == 'supervise'
   vars:
     this_role_name: node_exporter
 
-- name: systemd
+- name: deploy systemd
   include_role:
     name: systemd
-  when: use_systemd
+  when: deployment_method == 'systemd'
   vars:
     this_role_name: node_exporter
     service_name: node_exporter
