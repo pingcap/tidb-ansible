@@ -445,29 +445,43 @@
             }, 
             {
               "intervalFactor": 2, 
-              "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_down_count\"}", 
+              "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_disconnected_count\"}", 
               "step": 20, 
               "refId": "B", 
+              "legendFormat": "Disconnect Stores"
+            }, 
+            {
+              "intervalFactor": 2, 
+              "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_low_space_count\"}", 
+              "step": 20, 
+              "refId": "C", 
+              "legendFormat": "LowSpace Stores"
+            }, 
+            {
+              "intervalFactor": 2, 
+              "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_down_count\"}", 
+              "step": 20, 
+              "refId": "D", 
               "legendFormat": "Down Stores"
             }, 
             {
               "intervalFactor": 2, 
               "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_offline_count\"}", 
               "step": 20, 
-              "refId": "C", 
+              "refId": "E", 
               "legendFormat": "Offline Stores"
             }, 
             {
               "intervalFactor": 2, 
               "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_tombstone_count\"}", 
               "step": 20, 
-              "refId": "D", 
+              "refId": "F", 
               "legendFormat": "Tombstone Stores"
             }
           ], 
           "transparent": false, 
           "hideTimeOverride": false, 
-          "fontSize": "120%", 
+          "fontSize": "100%", 
           "datasource": "${DS_TIDB-CLUSTER}", 
           "error": false, 
           "type": "table", 
@@ -3098,6 +3112,86 @@
               "show": true, 
               "max": null, 
               "format": "s", 
+              "min": "0", 
+              "label": null
+            }, 
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "s", 
+              "min": null, 
+              "label": null
+            }
+          ], 
+          "xaxis": {
+            "show": true, 
+            "values": [], 
+            "mode": "time", 
+            "name": null
+          }, 
+          "seriesOverrides": [], 
+          "percentage": false, 
+          "type": "graph", 
+          "error": false, 
+          "editable": true, 
+          "grid": {}, 
+          "stack": false, 
+          "timeShift": null, 
+          "aliasColors": {}, 
+          "lines": true, 
+          "points": false, 
+          "datasource": "${DS_TIDB-CLUSTER}", 
+          "pointradius": 5
+        }, 
+        {
+          "bars": false, 
+          "timeFrom": null, 
+          "links": [], 
+          "thresholds": [], 
+          "nullPointMode": "null as zero", 
+          "renderer": "flot", 
+          "id": 54, 
+          "linewidth": 1, 
+          "steppedLine": false, 
+          "targets": [
+            {
+              "hide": false, 
+              "expr": "sum(rate(pd_scheduler_region_heartbeat{instance=\"$instance\"}[1m])) by (store, type)", 
+              "step": 4, 
+              "legendFormat": "store{{store}}-{{type}}", 
+              "intervalFactor": 2, 
+              "refId": "A"
+            }
+          ], 
+          "fill": 0, 
+          "span": 6, 
+          "title": "Region heartbeat", 
+          "tooltip": {
+            "sort": 0, 
+            "shared": true, 
+            "value_type": "individual", 
+            "msResolution": false
+          }, 
+          "legend": {
+            "rightSide": true, 
+            "total": false, 
+            "min": false, 
+            "max": true, 
+            "show": true, 
+            "current": false, 
+            "hideEmpty": true, 
+            "values": true, 
+            "alignAsTable": true, 
+            "avg": false, 
+            "hideZero": true
+          }, 
+          "yaxes": [
+            {
+              "logBase": 1, 
+              "show": true, 
+              "max": null, 
+              "format": "ops", 
               "min": "0", 
               "label": null
             }, 
