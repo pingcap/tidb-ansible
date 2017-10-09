@@ -1,20 +1,18 @@
 ---
 
+- name: do local docker images preparation
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  roles:
+    - { role: local_docker, when: deployment_method == 'docker' }
+
 - name: do local binary preparation
   hosts: localhost
   connection: local
   become: false
   gather_facts: false
   roles:
-    - local
+    - { role: local, when: deployment_method != 'docker' }
   vars:
     - ansible_become: false
-  when: deployment_method != 'docker'
-
-- name: do local docker images preparation
-  hosts: localhost
-  connection: local
-  gather_facts: false
-  roles:
-    - local_docker
-  when: deployment_method == 'docker'
