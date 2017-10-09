@@ -1,7 +1,7 @@
 ---
 
-- name: deploy node-exporter image
-  copy: src="{{ downloads_dir }}/node-exporter.tar" dest="{{ deploy_dir }}/images" mode=0755
+- name: deploy pushgateway image
+  copy: src="{{ downloads_dir }}/pushgateway.tar" dest="{{ deploy_dir }}/images" mode=0755
 
 - name: create run script
   template:
@@ -16,13 +16,13 @@
   include_role:
     name: docker
   vars:
-    this_role_name: node_exporter
-    service_name: node-exporter
+    this_role_name: pushgateway
+    service_name: pushgateway
 
 - name: load docker image from archive
   docker_image:
     state: present
     force: yes
-    name: prom/node-exporter
-    tag: "{{ node_exporter_tag }}"
-    load_path: "{{ images_dir }}/node-exporter.tar"
+    name: prom/pushgateway
+    tag: "{{ pushgateway_tag }}"
+    load_path: "{{ images_dir }}/pushgateway.tar"

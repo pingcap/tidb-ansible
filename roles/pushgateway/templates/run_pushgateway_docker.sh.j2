@@ -1,0 +1,13 @@
+#!/bin/bash
+set -e
+ulimit -n 1000000
+
+# WARNING: This file was auto-generated. Do not edit!
+#          All your edit might be overwritten!
+DEPLOY_DIR={{ deploy_dir }}
+cd "${DEPLOY_DIR}" || exit 1
+
+exec docker run -d --restart=on-failure -p {{ pushgateway_port }}:9091 \
+  -v /etc/localtime:/etc/localtime:ro \
+  --name="pushgateway" \
+  prom/pushgateway:{{ pushgateway_tag }}
