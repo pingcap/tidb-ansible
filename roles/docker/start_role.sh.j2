@@ -3,4 +3,5 @@ set -e
 
 # WARNING: This file was auto-generated. Do not edit!
 #          All your edit might be overwritten!
-docker start {{ service_name }}
+docker rm -f {{ service_name }} &>/dev/null || true
+exec ./run_{{ this_role_name }}.sh

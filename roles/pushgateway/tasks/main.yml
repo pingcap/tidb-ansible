@@ -1,16 +1,6 @@
 ---
 
-- include: binary_deployment.yml
-  when: deployment_method != 'docker'
- 
-- include: supervise_deployment.yml
-  when: deployment_method == 'supervise'
-
-- include: systemd_deployment.yml
-  when: deployment_method == 'systemd'
-
-- include: docker_deployment.yml
-  when: deployment_method == 'docker'
+- include: "{{ deployment_method }}_deployment.yml"
 
 - name: prepare firewalld white list
   set_fact:
