@@ -1,17 +1,6 @@
 ---
 
-- name: create deploy directories
-  file: path={{ item }} state=directory mode=0755
-  with_items:
-  - "{{ prometheus_log_dir }}"
-  - "{{ prometheus_data_dir }}"
-  - "{{ deploy_dir }}/status/{{ role_name }}"
-
-- name: deploy prometheus binary
-  copy: src="{{ resources_dir }}/bin/prometheus" dest="{{ deploy_dir }}/bin/" mode=0755
-
 # FIXME: how to handle customized alert.rules & config file
-
 - name: get config file stat
   stat: path={{ deploy_dir }}/conf/prometheus.yml
   register: st_conf
@@ -37,31 +26,17 @@
     replace="{{ cluster_name }}"
   when: alert_rules_result.changed
 
-- name: deploy supervise
-  include_role:
-    name: supervise
+- include: binary_deployment.yml
+  when: deployment_method != 'docker'
+
+- include: supervise_deployment.yml
   when: deployment_method == 'supervise'
-  vars:
-    this_role_name: prometheus
 
-- name: deploy systemd
-  include_role:
-    name: systemd
+- include: systemd_deployment.yml
   when: deployment_method == 'systemd'
-  vars:
-    this_role_name: prometheus
-    service_name: prometheus
 
-- name: create run script
-  template:
-    src: "{{ item }}_{{ role_name }}.sh.j2"
-    dest: "{{ deploy_dir }}/scripts/{{ item }}_{{ role_name }}.sh"
-    mode: "0755"
-    backup: yes
-  with_items:
-    - run
-  vars:
-    role_status_dir: status/{{ role_name }}
+- include: docker_deployment.yml
+  when: deployment_method == 'docker'
 
 - name: prepare firewalld white list
   set_fact:
