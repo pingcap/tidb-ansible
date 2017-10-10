@@ -3,59 +3,13 @@
 - name: create deploy directories (1/2)
   file: path="{{ item }}" state=directory mode=0755
   with_items:
-  - "{{ deploy_dir }}/opt"
-
-- name: deploy grafana binary
-  unarchive: >
-    creates="{{ deploy_dir }}/opt/grafana/bin/grafana-server"
-    src={{ downloads_dir }}/grafana-{{ grafana_version }}.tar.gz dest={{ deploy_dir }}/opt/
-
-- name: rename grafana deploy dir
-  shell: >
-    creates="{{ deploy_dir }}/opt/grafana/bin/grafana-server"
-    mv {{ deploy_dir }}/opt/grafana-{{ grafana_version }}-* "{{ deploy_dir }}/opt/grafana"
-
-- name: create deploy directories (2/2)
-  file: path="{{ item }}" state=directory mode=0755
-  with_items:
   - "{{ grafana_log_dir }}"
   - "{{ grafana_data_dir }}"
-  - "{{ grafana_dashboards_dir }}"
-  - "{{ grafana_plugins_dir }}"
-  - "{{ deploy_dir }}/status/{{ role_name }}"
-
-- name: create grafana configuration file
-  template: >
-    src=grafana.ini.j2 dest={{ deploy_dir }}/opt/grafana/conf/grafana.ini mode=0644
 
 - name: push data source file
   template: src=data_source.json.j2 dest={{ grafana_data_dir }}/data_source.json mode=0644
 
-- name: deploy supervise
-  include_role:
-    name: supervise
-  when: deployment_method == 'supervise'
-  vars:
-    this_role_name: grafana
-
-- name: deploy systemd
-  include_role:
-    name: systemd
-  when: deployment_method == 'systemd'
-  vars:
-    this_role_name: grafana
-    service_name: grafana
-
-- name: create run script
-  template:
-    src: "{{ item }}_{{ role_name }}.sh.j2"
-    dest: "{{ deploy_dir }}/scripts/{{ item }}_{{ role_name }}.sh"
-    mode: "0755"
-    backup: yes
-  with_items:
-    - run
-  vars:
-    role_status_dir: status/{{ role_name }}
+- include: "{{ deployment_method }}_deployment.yml"
 
 - name: prepare firewalld white list
   set_fact:

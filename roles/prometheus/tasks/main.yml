@@ -26,6 +26,11 @@
     replace="{{ cluster_name }}"
   when: alert_rules_result.changed
 
+- name: create deploy data directory
+  file: path={{ item }} state=directory mode=0755
+  with_items:
+  - "{{ prometheus_data_dir }}"
+
 - include: "{{ deployment_method }}_deployment.yml"
 
 - name: prepare firewalld white list

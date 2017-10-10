@@ -1,0 +1,33 @@
+---
+
+- name: create deploy directories (2/2)
+  file: path="{{ item }}" state=directory mode=0755
+  with_items:
+  - "{{ grafana_docker_log_dir }}"
+
+- name: deploy grafana image
+  copy: src="{{ downloads_dir }}/grafana.tar" dest="{{ deploy_dir }}/images" mode=0755
+
+- name: create run script
+  template:
+    src: "{{ item }}_{{ role_name }}_docker.sh.j2"
+    dest: "{{ deploy_dir }}/scripts/{{ item }}_{{ role_name }}.sh"
+    mode: "0755"
+    backup: yes
+  with_items:
+    - run
+
+- name: create startup script
+  include_role:
+    name: docker
+  vars:
+    this_role_name: grafana
+    service_name: grafana
+
+- name: load docker image from archive
+  docker_image:
+    state: present
+    force: yes
+    name: grafana/grafana
+    tag: "{{ grafana_tag }}"
+    load_path: "{{ images_dir }}/grafana.tar"

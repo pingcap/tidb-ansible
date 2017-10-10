@@ -12,7 +12,6 @@ cd "${DEPLOY_DIR}" || exit 1
 exec > >(tee -i -a "{{ prometheus_log_dir }}/{{ prometheus_log_filename }}")
 exec 2>&1
 
-
 exec bin/prometheus \
     --config.file="{{ deploy_dir }}/conf/prometheus.yml" \
     --web.listen-address=":{{ prometheus_port }}" \

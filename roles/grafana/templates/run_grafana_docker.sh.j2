@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+ulimit -n 1000000
+
+# WARNING: This file was auto-generated. Do not edit!
+#          All your edit might be overwritten!
+DEPLOY_DIR={{ deploy_dir }}
+cd "${DEPLOY_DIR}" || exit 1
+
+exec docker run -d --restart=on-failure -p {{ grafana_port }}:3000 \
+  -v /etc/localtime:/etc/localtime:ro \
+  -v "{{ grafana_data_dir }}:/var/lib/grafana" \
+  -v "{{ grafana_docker_log_dir }}:/var/log/grafana" \
+  --name="grafana" \
+  grafana/grafana:{{ grafana_tag }}
