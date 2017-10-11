@@ -1,0 +1,15 @@
+---
+
+- name: deploy pump binary
+  copy: src="{{ resources_dir }}/bin/pump" dest="{{ deploy_dir }}/bin/" mode=0755
+
+- name: create run script
+  template:
+    src: "{{ item }}_{{ role_name }}.sh.j2"
+    dest: "{{ deploy_dir }}/scripts/{{ item }}_{{ role_name }}.sh"
+    mode: "0755"
+    backup: yes
+  with_items:
+    - run
+  vars:
+    role_status_dir: status/{{ role_name }}

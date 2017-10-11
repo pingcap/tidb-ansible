@@ -1,0 +1,46 @@
+#!/bin/bash
+set -e
+ulimit -n 1000000
+
+DEPLOY_DIR={{ deploy_dir }}
+cd "${DEPLOY_DIR}" || exit 1
+
+# WARNING: This file was auto-generated. Do not edit!
+#          All your edit might be overwritten!
+{% set my_ip = hostvars[inventory_hostname].ansible_host | default(hostvars[inventory_hostname].inventory_hostname) -%}
+
+{% set metric_host = hostvars[groups.monitoring_servers[0]].ansible_host | default(hostvars[groups.monitoring_servers[0]].inventory_hostname)
+    if groups.get('monitoring_servers', []) else "" -%}
+{% set metric_port = hostvars[groups.monitoring_servers[0]].pushgateway_port if metric_host else "" -%}
+{% set metric_addr = metric_host ~ ":" ~ metric_port if metric_host else "" -%}
+{% set metric_interval = tidb_metric_interval if metric_host else "0" -%}
+
+{% set all_pd = [] -%}
+{% set pd_hosts = groups.pd_servers %}
+{% for host in pd_hosts -%}
+  {% set pd_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
+  {% set pd_port = hostvars[host].pd_client_port -%}
+  {% set _ = all_pd.append("http://%s:%s" % (pd_ip, pd_port)) -%}
+{% endfor -%}
+
+exec docker run -d --restart=on-failure \
+  --net=host \
+  -v /etc/localtime:/etc/localtime:ro \
+  -v "{{ pump_docker_log_dir }}:/var/log" \
+  -v "{{ pump_data_dir }}:/data" \
+  -v "{{ status_dir }}:/status" \
+  -u `id -u {{ deploy_user }}` \
+  --ulimit nofile=1000000:1000000 \
+  --hostname "pump" \
+  --name "pump" \
+  pingcap/tidb-binlog:{{ tidb_version }} \
+  /pump \
+  --gc="{{ pump_gc }}" \
+  --addr="0.0.0.0:{{ pump_port }}" \
+  --advertise-addr="{{ my_ip }}:{{ pump_port }}" \
+  --pd-urls="{{ all_pd | join(',') }}" \
+  --data-dir=/data \
+  --socket="/status/pump.sock" \
+  --log-file="/var/log/{{ pump_log_filename }}" \
+  --metrics-addr="{{ metric_addr }}" \
+  --metrics-interval="{{ metric_interval }}"

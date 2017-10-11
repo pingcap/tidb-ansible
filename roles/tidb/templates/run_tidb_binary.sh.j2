@@ -24,7 +24,7 @@ cd "${DEPLOY_DIR}" || exit 1
 exec bin/tidb-server \
     -P {{ tidb_port }} \
     --store=tikv --path="{{ all_pd | join(',') }}" \
-    --config conf/tidb.toml \
+    --config=conf/tidb.toml \
     --status="{{ tidb_status_port }}" \
 {% if enable_binlog %}
     --binlog-socket="{{ pump_socket }}" \
