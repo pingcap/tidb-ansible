@@ -23,7 +23,7 @@ exec docker run -d --restart=on-failure \
   -p {{ pd_client_port }}:2379 \
   -p {{ pd_peer_port }}:2380 \
   -v /etc/localtime:/etc/localtime:ro \
-  -v "{{ pd_conf_dir }}/pd.toml:/etc/pd.toml" \
+  -v "{{ pd_conf_dir }}/pd.toml:/etc/pd.toml:ro" \
   -v "{{ pd_data_dir }}:/data" \
   -v "{{ pd_docker_log_dir }}:/var/log" \
   -u `id -u {{ deploy_user }}` \
@@ -37,6 +37,6 @@ exec docker run -d --restart=on-failure \
   --advertise-peer-urls=http://{{my_ip}}:2380 \
   --initial-cluster="{{ all_pd | join(',') }}" \
   --data-dir=/data \
-  --config=/etc/pd.toml \
   -L "{{ pd_log_level }}" \
-  --log-file="/var/log/{{ pd_log_filename }}"
+  --log-file="/var/log/{{ pd_log_filename }}" \
+  --config=/etc/pd.toml
