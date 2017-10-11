@@ -27,6 +27,7 @@ exec docker run -d --restart=on-failure \
   -v "{{ pd_data_dir }}:/data" \
   -v "{{ pd_docker_log_dir }}:/var/log" \
   -u `id -u {{ deploy_user }}` \
+  --ulimit nofile=1000000:1000000 \
   --hostname "{{ pd_name_prefix }}{{ my_peer_id }}" \
   --name "{{ pd_name_prefix }}{{ my_peer_id }}" \
   pingcap/pd:{{ tidb_version }} \

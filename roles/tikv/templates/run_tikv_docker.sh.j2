@@ -35,7 +35,7 @@ exec docker run -d --restart=on-failure \
   -v "{{ tikv_docker_log_dir }}:/var/log" \
   -u `id -u {{ deploy_user }}` \
   --ulimit nofile=1000000:1000000 \
-  --hostname "tikv-{{ my_ip }}-{{ tikv_port }}" \
+  --hostname "tikv-{{ tikv_port }}" \
   --name "tikv-{{ tikv_port }}" \
   pingcap/tikv:{{ tidb_version }} \
   --addr="0.0.0.0:20160" \
