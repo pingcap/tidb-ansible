@@ -402,7 +402,7 @@
                     "legendFormat": "{{job}} - {{type}}",
                     "metric": "",
                     "refId": "A",
-                    "step": 4
+                    "step": 10
                   },
                   "params": [
                     "A",
@@ -839,6 +839,111 @@
               "show": false
             }
           ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "decimals": 1,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {},
+          "id": 1481,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "hideEmpty": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 250,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null as zero",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "histogram_quantile(1.0, sum(rate(tikv_raftstore_region_size_bucket[1m])) by (le))",
+              "intervalFactor": 2,
+              "legendFormat": "max",
+              "metric": "",
+              "refId": "A",
+              "step": 10
+            },
+            {
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_region_size_bucket[1m])) by (le))",
+              "intervalFactor": 2,
+              "legendFormat": "99%",
+              "metric": "",
+              "refId": "B",
+              "step": 10
+            },
+            {
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_raftstore_region_size_bucket[1m])) by (le))",
+              "intervalFactor": 2,
+              "legendFormat": "95%",
+              "metric": "",
+              "refId": "C",
+              "step": 10
+            },
+            {
+              "expr": "sum(rate(tikv_raftstore_region_size_sum[1m])) / sum(rate(tikv_raftstore_region_size_count[1m])) ",
+              "intervalFactor": 2,
+              "legendFormat": "avg",
+              "metric": "",
+              "refId": "D",
+              "step": 10
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "approximate region size",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 2,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "bytes",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ]
         }
       ],
       "repeat": null,
@@ -894,21 +999,21 @@
               "intervalFactor": 2,
               "legendFormat": "99%",
               "refId": "A",
-              "step": 10
+              "step": 4
             },
             {
               "expr": "histogram_quantile(0.95, sum(rate(tikv_raftstore_raft_process_duration_secs_bucket{type='tick'}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "C",
-              "step": 10
+              "step": 4
             },
             {
               "expr": "sum(rate(tikv_raftstore_raft_process_duration_secs_sum{type='tick'}[1m])) / sum(rate(tikv_raftstore_raft_process_duration_secs_count{type='tick'}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "B",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [
@@ -997,7 +1102,7 @@
               "intervalFactor": 2,
               "legendFormat": "{{job}}",
               "refId": "C",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [
@@ -1128,21 +1233,21 @@
               "intervalFactor": 2,
               "legendFormat": "99%",
               "refId": "A",
-              "step": 10
+              "step": 4
             },
             {
               "expr": "histogram_quantile(0.95, sum(rate(tikv_raftstore_raft_process_duration_secs_bucket{type='ready'}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "C",
-              "step": 10
+              "step": 4
             },
             {
               "expr": "sum(rate(tikv_raftstore_raft_process_duration_secs_sum{type='ready'}[1m])) / sum(rate(tikv_raftstore_raft_process_duration_secs_count{type='ready'}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "B",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [
@@ -1231,7 +1336,7 @@
               "intervalFactor": 2,
               "legendFormat": "{{job}}",
               "refId": "C",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [
@@ -1319,7 +1424,7 @@
               "legendFormat": "{{type}}",
               "metric": "tikv_raftstore_raft_ready_handled_total",
               "refId": "A",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -1396,7 +1501,7 @@
               "legendFormat": "{{job}}",
               "metric": "",
               "refId": "A",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -1475,7 +1580,7 @@
               "legendFormat": "{{type}}",
               "metric": "tikv_raftstore_proposal_total",
               "refId": "A",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -1555,7 +1660,7 @@
               "legendFormat": "{{type}}",
               "metric": "tikv_raftstore_proposal_total",
               "refId": "A",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -1635,7 +1740,7 @@
               "legendFormat": "{{job}}",
               "metric": "",
               "refId": "A",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -1715,7 +1820,7 @@
               "legendFormat": "{{job}}",
               "metric": "tikv_raftstore_proposal_total",
               "refId": "A",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -1795,7 +1900,7 @@
               "legendFormat": "{{job}}",
               "metric": "tikv_raftstore_log_lag_bucket",
               "refId": "A",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -1875,7 +1980,7 @@
               "legendFormat": "{{job}}",
               "metric": "tikv_raftstore_propose_log_size_bucket",
               "refId": "A",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -1955,7 +2060,7 @@
               "legendFormat": "{{type}}",
               "metric": "tikv_raftstore_admin_cmd_total",
               "refId": "A",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -2035,7 +2140,7 @@
               "legendFormat": "{{job}}",
               "metric": "tikv_raftstore_admin_cmd_total",
               "refId": "A",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -2115,7 +2220,7 @@
               "legendFormat": "{{type}}",
               "metric": "tikv_raftstore_check_split_total",
               "refId": "A",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -2196,7 +2301,7 @@
               "legendFormat": "{{job}}",
               "metric": "tikv_raftstore_check_split_duration_seconds_bucket",
               "refId": "A",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -2275,7 +2380,7 @@
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
               "refId": "A",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -2351,7 +2456,7 @@
               "intervalFactor": 2,
               "legendFormat": "{{job}}",
               "refId": "A",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -2429,7 +2534,7 @@
               "intervalFactor": 2,
               "legendFormat": "{{job}}",
               "refId": "A",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -2598,21 +2703,21 @@
               "legendFormat": " 99%",
               "metric": "",
               "refId": "A",
-              "step": 20
+              "step": 4
             },
             {
               "expr": "histogram_quantile(0.95, sum(rate(tikv_raftstore_apply_log_duration_seconds_bucket[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "B",
-              "step": 20
+              "step": 4
             },
             {
               "expr": "sum(rate(tikv_raftstore_apply_log_duration_seconds_sum[1m])) / sum(rate(tikv_raftstore_apply_log_duration_seconds_count[1m])) ",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "C",
-              "step": 20
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -2689,7 +2794,7 @@
               "intervalFactor": 2,
               "legendFormat": " {{job}}",
               "refId": "A",
-              "step": 20
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -2767,21 +2872,21 @@
               "legendFormat": " 99%",
               "metric": "",
               "refId": "A",
-              "step": 20
+              "step": 4
             },
             {
               "expr": "histogram_quantile(0.95, sum(rate(tikv_raftstore_append_log_duration_seconds_bucket[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "B",
-              "step": 20
+              "step": 4
             },
             {
               "expr": "sum(rate(tikv_raftstore_append_log_duration_seconds_sum[1m])) / sum(rate(tikv_raftstore_append_log_duration_seconds_count[1m]))",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "C",
-              "step": 20
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -2858,7 +2963,7 @@
               "intervalFactor": 2,
               "legendFormat": "{{job}} ",
               "refId": "A",
-              "step": 20
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -2936,21 +3041,21 @@
               "legendFormat": "99%",
               "metric": "tikv_raftstore_request_wait_time_duration_secs_bucket",
               "refId": "A",
-              "step": 20
+              "step": 4
             },
             {
               "expr": "histogram_quantile(0.95, sum(rate(tikv_raftstore_request_wait_time_duration_secs_bucket[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "B",
-              "step": 20
+              "step": 4
             },
             {
               "expr": "sum(rate(tikv_raftstore_request_wait_time_duration_secs_sum[1m])) / sum(rate(tikv_raftstore_request_wait_time_duration_secs_count[1m]))",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "C",
-              "step": 20
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -3027,7 +3132,7 @@
               "intervalFactor": 2,
               "legendFormat": "{{job}}",
               "refId": "A",
-              "step": 20
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -3120,7 +3225,7 @@
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
               "refId": "A",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -3203,7 +3308,7 @@
               "legendFormat": "{{status}}",
               "metric": "tikv_raftstore_raft_process_duration_secs_bucket",
               "refId": "A",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -3283,21 +3388,21 @@
               "intervalFactor": 2,
               "legendFormat": "99%",
               "refId": "A",
-              "step": 10
+              "step": 4
             },
             {
               "expr": "histogram_quantile(0.95, sum(rate(tikv_storage_engine_async_request_duration_seconds_bucket{type=\"snapshot\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "B",
-              "step": 10
+              "step": 4
             },
             {
               "expr": "sum(rate(tikv_storage_engine_async_request_duration_seconds_sum{type=\"snapshot\"}[1m])) / sum(rate(tikv_storage_engine_async_request_duration_seconds_count{type=\"snapshot\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "C",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -3377,21 +3482,21 @@
               "intervalFactor": 2,
               "legendFormat": "99%",
               "refId": "A",
-              "step": 10
+              "step": 4
             },
             {
               "expr": "histogram_quantile(0.95, sum(rate(tikv_storage_engine_async_request_duration_seconds_bucket{type=\"write\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "B",
-              "step": 10
+              "step": 4
             },
             {
               "expr": "sum(rate(tikv_storage_engine_async_request_duration_seconds_sum{type=\"write\"}[1m])) / sum(rate(tikv_storage_engine_async_request_duration_seconds_count{type=\"write\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "C",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -4673,21 +4778,21 @@
               "intervalFactor": 2,
               "legendFormat": "99%",
               "refId": "A",
-              "step": 10
+              "step": 4
             },
             {
               "expr": "histogram_quantile(0.95, sum(rate(tikv_coprocessor_request_duration_seconds_bucket{req=\"select\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "B",
-              "step": 10
+              "step": 4
             },
             {
               "expr": " sum(rate(tikv_coprocessor_request_duration_seconds_sum{req=\"select\"}[1m])) /  sum(rate(tikv_coprocessor_request_duration_seconds_count{req=\"select\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "C",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -4767,21 +4872,21 @@
               "legendFormat": "99%",
               "metric": "tikv_coprocessor_request_duration_seconds_bucket",
               "refId": "A",
-              "step": 10
+              "step": 4
             },
             {
               "expr": "histogram_quantile(0.95, sum(rate(tikv_coprocessor_request_duration_seconds_bucket{req=\"index\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "B",
-              "step": 10
+              "step": 4
             },
             {
               "expr": "sum(rate(tikv_coprocessor_request_duration_seconds_sum{req=\"index\"}[1m])) / sum(rate(tikv_coprocessor_request_duration_seconds_count{req=\"index\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "C",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -4861,7 +4966,7 @@
               "legendFormat": "{{job}}-{{req}}",
               "metric": "tikv_coprocessor_request_duration_seconds_bucket",
               "refId": "A",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -4939,21 +5044,21 @@
               "intervalFactor": 2,
               "legendFormat": "99%",
               "refId": "A",
-              "step": 10
+              "step": 4
             },
             {
               "expr": "histogram_quantile(0.95, sum(rate(tikv_coprocessor_request_wait_seconds_bucket{req=\"select\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "B",
-              "step": 10
+              "step": 4
             },
             {
               "expr": " sum(rate(tikv_coprocessor_request_wait_seconds_sum{req=\"select\"}[1m])) /  sum(rate(tikv_coprocessor_request_wait_seconds_count{req=\"select\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "C",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -5031,21 +5136,21 @@
               "intervalFactor": 2,
               "legendFormat": "99%",
               "refId": "A",
-              "step": 10
+              "step": 4
             },
             {
               "expr": "histogram_quantile(0.95, sum(rate(tikv_coprocessor_request_wait_seconds_bucket{req=\"index\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "B",
-              "step": 10
+              "step": 4
             },
             {
               "expr": " sum(rate(tikv_coprocessor_request_wait_seconds_sum{req=\"index\"}[1m])) /  sum(rate(tikv_coprocessor_request_wait_seconds_count{req=\"index\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "C",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -5123,7 +5228,7 @@
               "intervalFactor": 2,
               "legendFormat": "{{job}}-{{req}}",
               "refId": "B",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -5201,21 +5306,21 @@
               "intervalFactor": 2,
               "legendFormat": "99%",
               "refId": "A",
-              "step": 10
+              "step": 4
             },
             {
               "expr": "histogram_quantile(0.95, sum(rate(tikv_coprocessor_request_handle_seconds_bucket{req=\"select\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "B",
-              "step": 10
+              "step": 4
             },
             {
               "expr": " sum(rate(tikv_coprocessor_request_handle_seconds_sum{req=\"select\"}[1m])) /  sum(rate(tikv_coprocessor_request_handle_seconds_count{req=\"select\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "C",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -5293,21 +5398,21 @@
               "intervalFactor": 2,
               "legendFormat": "99%",
               "refId": "A",
-              "step": 10
+              "step": 4
             },
             {
               "expr": "histogram_quantile(0.95, sum(rate(tikv_coprocessor_request_handle_seconds_bucket{req=\"index\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "B",
-              "step": 10
+              "step": 4
             },
             {
               "expr": " sum(rate(tikv_coprocessor_request_handle_seconds_sum{req=\"index\"}[1m])) /  sum(rate(tikv_coprocessor_request_handle_seconds_count{req=\"index\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "C",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -5385,7 +5490,7 @@
               "intervalFactor": 2,
               "legendFormat": "{{job}}-{{req}}",
               "refId": "B",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -5466,7 +5571,7 @@
               "legendFormat": "{{req}}",
               "metric": "tikv_coprocessor_scan_keys_bucket",
               "refId": "A",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -5547,7 +5652,7 @@
               "legendFormat": "{{type}}",
               "metric": "",
               "refId": "A",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -5628,7 +5733,7 @@
               "legendFormat": "{{reason}}",
               "metric": "tikv_coprocessor_request_error",
               "refId": "A",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -5709,7 +5814,7 @@
               "legendFormat": "{{ req }} - {{priority}}",
               "metric": "tikv_coprocessor_request_error",
               "refId": "A",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -5790,7 +5895,7 @@
               "legendFormat": "{{tag}}",
               "metric": "scan_details",
               "refId": "B",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -5872,7 +5977,7 @@
               "legendFormat": "{{tag}}",
               "metric": "scan_details",
               "refId": "B",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -5953,7 +6058,7 @@
               "legendFormat": "{{tag}}",
               "metric": "scan_details",
               "refId": "B",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -6034,7 +6139,7 @@
               "legendFormat": "{{tag}}",
               "metric": "scan_details",
               "refId": "B",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -6115,7 +6220,7 @@
               "legendFormat": "{{tag}}",
               "metric": "scan_details",
               "refId": "B",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -6197,7 +6302,7 @@
               "legendFormat": "{{tag}}",
               "metric": "scan_details",
               "refId": "B",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -6278,7 +6383,7 @@
               "legendFormat": "{{tag}}",
               "metric": "scan_details",
               "refId": "B",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -6359,7 +6464,7 @@
               "legendFormat": "{{tag}}",
               "metric": "scan_details",
               "refId": "B",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -6451,7 +6556,7 @@
               "legendFormat": " max",
               "metric": "",
               "refId": "A",
-              "step": 20
+              "step": 4
             },
             {
               "expr": "histogram_quantile(0.99, sum(rate(tikv_storage_mvcc_versions_bucket[1m])) by (le))",
@@ -6459,7 +6564,7 @@
               "legendFormat": "99%",
               "metric": "",
               "refId": "B",
-              "step": 20
+              "step": 4
             },
             {
               "expr": "histogram_quantile(0.95, sum(rate(tikv_storage_mvcc_versions_bucket[1m])) by (le))",
@@ -6467,7 +6572,7 @@
               "legendFormat": " 95%",
               "metric": "",
               "refId": "C",
-              "step": 20
+              "step": 4
             },
             {
               "expr": "sum(rate(tikv_storage_mvcc_versions_sum[1m])) / sum(rate(tikv_storage_mvcc_versions_count[1m])) ",
@@ -6475,7 +6580,7 @@
               "legendFormat": "avg",
               "metric": "",
               "refId": "D",
-              "step": 20
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -6555,7 +6660,7 @@
               "legendFormat": " max",
               "metric": "",
               "refId": "A",
-              "step": 20
+              "step": 4
             },
             {
               "expr": "histogram_quantile(0.99, sum(rate(tikv_storage_mvcc_gc_delete_versions_bucket[1m])) by (le))",
@@ -6563,7 +6668,7 @@
               "legendFormat": "99%",
               "metric": "",
               "refId": "B",
-              "step": 20
+              "step": 4
             },
             {
               "expr": "histogram_quantile(0.95, sum(rate(tikv_storage_mvcc_gc_delete_versions_bucket[1m])) by (le))",
@@ -6571,7 +6676,7 @@
               "legendFormat": " 95%",
               "metric": "",
               "refId": "C",
-              "step": 20
+              "step": 4
             },
             {
               "expr": "sum(rate(tikv_storage_mvcc_gc_delete_versions_sum[1m])) / sum(rate(tikv_storage_mvcc_gc_delete_versions_count[1m])) ",
@@ -6579,7 +6684,7 @@
               "legendFormat": "avg",
               "metric": "",
               "refId": "D",
-              "step": 20
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -6656,7 +6761,7 @@
               "legendFormat": "total",
               "metric": "tikv_storage_command_total",
               "refId": "A",
-              "step": 20
+              "step": 4
             },
             {
               "expr": "sum(rate(tikv_storage_gc_skipped_counter[1m]))",
@@ -6664,7 +6769,7 @@
               "legendFormat": "skipped",
               "metric": "tikv_storage_gc_skipped_counter",
               "refId": "B",
-              "step": 20
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -6743,7 +6848,7 @@
               "legendFormat": "{{type}}",
               "metric": "",
               "refId": "A",
-              "step": 20
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -6844,7 +6949,7 @@
               "interval": "",
               "intervalFactor": 2,
               "refId": "A",
-              "step": 240
+              "step": 60
             }
           ],
           "thresholds": "",
@@ -6921,7 +7026,7 @@
               "expr": "max(tidb_tikvclient_gc_config{type=\"tikv_gc_run_interval\"})",
               "intervalFactor": 2,
               "refId": "A",
-              "step": 240
+              "step": 60
             }
           ],
           "thresholds": "",
@@ -7366,12 +7471,13 @@
     },
     {
       "collapse": true,
-      "height": 250,
+      "height": "300",
       "panels": [
         {
           "aliasColors": {},
           "bars": false,
           "datasource": "${DS_TEST-CLUSTER}",
+          "decimals": 1,
           "editable": true,
           "error": false,
           "fill": 1,
@@ -7387,6 +7493,89 @@
             "min": false,
             "rightSide": true,
             "show": true,
+            "sideWidth": 400,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(tikv_worker_handled_task_total[1m])) by (name)",
+              "intervalFactor": 2,
+              "legendFormat": "{{name}}",
+              "metric": "tikv_pd_heartbeat_tick_total",
+              "refId": "A",
+              "step": 4
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Worker Handled Tasks",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "decimals": 1,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {},
+          "id": 1395,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "hideEmpty": true,
+            "hideZero": false,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 400,
             "total": false,
             "values": true
           },
@@ -7409,13 +7598,13 @@
               "legendFormat": "{{name}}",
               "metric": "tikv_pd_heartbeat_tick_total",
               "refId": "A",
-              "step": 40
+              "step": 4
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Pending Task Total",
+          "title": "Worker Pending Tasks",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -7546,7 +7735,7 @@
               "legendFormat": "{{job}}",
               "metric": "tikv_thread_cpu_seconds_total",
               "refId": "A",
-              "step": 20
+              "step": 4
             }
           ],
           "thresholds": [
@@ -7634,7 +7823,7 @@
               "legendFormat": "{{job}}",
               "metric": "tikv_thread_cpu_seconds_total",
               "refId": "A",
-              "step": 20
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -7712,7 +7901,7 @@
               "legendFormat": "{{job}}",
               "metric": "tikv_thread_cpu_seconds_total",
               "refId": "A",
-              "step": 20
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -7794,7 +7983,7 @@
               "legendFormat": "{{job}}",
               "metric": "tikv_thread_cpu_seconds_total",
               "refId": "A",
-              "step": 20
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -7875,7 +8064,7 @@
               "intervalFactor": 2,
               "legendFormat": "{{job}}",
               "refId": "A",
-              "step": 20
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -7957,7 +8146,7 @@
               "legendFormat": "{{job}}",
               "metric": "tikv_thread_cpu_seconds_total",
               "refId": "A",
-              "step": 20
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -8037,7 +8226,7 @@
               "legendFormat": "{{job}}",
               "metric": "tikv_thread_cpu_seconds_total",
               "refId": "A",
-              "step": 20
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -8119,7 +8308,7 @@
               "legendFormat": "{{job}}",
               "metric": "tikv_thread_cpu_seconds_total",
               "refId": "A",
-              "step": 20
+              "step": 4
             }
           ],
           "thresholds": [
@@ -8210,7 +8399,7 @@
               "intervalFactor": 2,
               "legendFormat": "{{job}}",
               "refId": "A",
-              "step": 20
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -11348,7 +11537,7 @@
             "min": false,
             "rightSide": true,
             "show": true,
-            "sideWidth": 300,
+            "sideWidth": 350,
             "total": false,
             "values": true
           },
@@ -11366,17 +11555,17 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_raftstore_pd_request_sent_total[1m])) by (type, status)",
+              "expr": "sum(rate(tikv_pd_request_duration_seconds_count[1m])) by (type)",
               "intervalFactor": 2,
-              "legendFormat": "{{ type }} - {{ status }}",
+              "legendFormat": "{{ type }}",
               "refId": "A",
-              "step": 40
+              "step": 4
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "PD sent requests",
+          "title": "PD requests",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -11423,7 +11612,7 @@
             "min": false,
             "rightSide": true,
             "show": true,
-            "sideWidth": 300,
+            "sideWidth": 350,
             "total": false,
             "values": true
           },
@@ -11441,17 +11630,17 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_raftstore_pd_heartbeat_sent_total[1m])) by (type, status)",
+              "expr": "sum(rate(tikv_pd_request_duration_seconds_sum[1m])) by (type) / sum(rate(tikv_pd_request_duration_seconds_count[1m])) by (type)",
               "intervalFactor": 2,
-              "legendFormat": "{{ type }} - {{status}}",
+              "legendFormat": "{{ type }}",
               "refId": "A",
-              "step": 40
+              "step": 4
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "PD recv heartbeats",
+          "title": "PD request duration (average)",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -11466,7 +11655,7 @@
           },
           "yaxes": [
             {
-              "format": "short",
+              "format": "s",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -11498,7 +11687,7 @@
             "min": false,
             "rightSide": true,
             "show": true,
-            "sideWidth": 300,
+            "sideWidth": 350,
             "total": false,
             "values": true
           },
@@ -11516,17 +11705,17 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_pd_msg_send_duration_seconds_count[1m])) by (job)",
+              "expr": "sum(rate(tikv_pd_heartbeat_message_total[1m])) by (type)",
               "intervalFactor": 2,
-              "legendFormat": "{{ job }}",
+              "legendFormat": "{{ type }}",
               "refId": "A",
-              "step": 40
+              "step": 4
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "PD sent messages",
+          "title": "PD heartbeats",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -11564,7 +11753,7 @@
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "fill": 1,
-          "id": 1214,
+          "id": 1396,
           "legend": {
             "alignAsTable": true,
             "avg": false,
@@ -11573,7 +11762,7 @@
             "min": false,
             "rightSide": true,
             "show": true,
-            "sideWidth": 300,
+            "sideWidth": 350,
             "total": false,
             "values": true
           },
@@ -11591,17 +11780,18 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.9999, sum(rate(tikv_pd_msg_send_duration_seconds_bucket[1m])) by (le, job))",
+              "expr": "sum(rate(tikv_pd_validate_peer_total[1m])) by (type)",
               "intervalFactor": 2,
-              "legendFormat": "{{ job }}",
+              "legendFormat": "{{ type }}",
+              "metric": "",
               "refId": "A",
-              "step": 40
+              "step": 4
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "99.99% PD sent duration",
+          "title": "PD validate peers",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -11616,7 +11806,7 @@
           },
           "yaxes": [
             {
-              "format": "s",
+              "format": "ops",
               "label": null,
               "logBase": 1,
               "max": null,
