@@ -7,12 +7,17 @@
   - "{{ resources_dir }}"
   - "{{ resources_dir }}/bin"
 
-# preflight checks
 - name: create packages.yml
-  template: src=packages.yml.j2 dest={{ playbook_dir }}/conf/packages.yml
+  template: src=common_packages.yml.j2 dest={{ playbook_dir }}/conf/common_packages.yml
 
-- include_vars: file={{ playbook_dir }}/conf/packages.yml
+- name: create specific deployment method packages.yml
+  template: src={{ deployment_method }}_packages.yml.j2 dest={{ playbook_dir }}/conf/{{ deployment_method }}_packages.yml
 
+- include_vars: file={{ playbook_dir }}/conf/common_packages.yml
+
+- include_vars: file={{ playbook_dir }}/conf/{{ deployment_method }}_packages.yml
+
+# preflight checks
 - name: detect outbound network
   shell: >
     warn=no
@@ -34,29 +39,17 @@
   set_fact: under_gfw={{ gfw_st.stdout.strip() != '0' }}
 
 # do actual downloading
-
 - name: download tidb binary
   get_url: url={{ item.url }} dest={{ downloads_dir }}/{{ item.name }}-{{ item.version }}.tar.gz force=yes validate_certs=no
   with_items: "{{ tidb_packages }}"
   when: has_outbound_network
 
-- name: download TiSpark packages
-  get_url: url={{ item.url }} dest={{ downloads_dir }}/{{ item.name }} force=yes validate_certs=no
-  with_items: "{{ tispark_packages }}"
+- name: download common binary
+  get_url: url={{ item.url }} dest={{ downloads_dir }}/{{ item.name }}-{{ item.version }}.tar.gz force=yes validate_certs=no
+  with_items: "{{ common_packages }}"
   when: has_outbound_network
 
-- name: download other binary
-  get_url: url={{ item.url }} dest={{ downloads_dir }}/{{ item.name }}-{{ item.version }}.tar.gz validate_certs=no
-  with_items: "{{ third_party_packages }}"
-  when: has_outbound_network and not under_gfw
-
-- name: download other binary under gfw
-  get_url: |
-    url=http://download.pingcap.org/{{ item.name }}-{{ item.version }}.tar.gz
-    dest={{ downloads_dir }}/{{ item.name }}-{{ item.version }}.tar.gz
-    validate_certs=no
-  with_items: "{{ third_party_packages }}"
-  when: has_outbound_network and under_gfw
+- include: "{{ deployment_method }}_deployment.yml"
 
 - name: unarchive tidb binary
   shell: ls -1 {{ item.name }}-{{ item.version }}.tar.gz | xargs -n1 tar xzf
@@ -64,46 +57,18 @@
     chdir: "{{ downloads_dir }}"
     warn: no
   with_items: "{{ tidb_packages }}"
-  
-- name: unarchive tispark-sample-data
-  shell: ls -1 tispark-sample-data.tar.gz | xargs -n1 tar xzf
-  args:
-    chdir: "{{ downloads_dir }}"
-    warn: no
 
-- name: unarchive third party binary
+- name: unarchive common binary
   shell: ls -1 {{ item.name }}-{{ item.version }}.tar.gz | xargs -n1 tar xzf
   args:
     chdir: "{{ downloads_dir }}"
     warn: no
-  with_items: "{{ third_party_packages }}"
-
+  with_items: "{{ common_packages }}"
 
 - name: cp tidb binary
   shell: >
     cp -v {{ downloads_dir }}/{{ item.name }}-{{ item.version}}*/bin/* "{{ resources_dir }}/bin/"
   with_items: "{{ tidb_packages }}"
-
-- name: cp tispark-sample-data
-  shell: >
-    cp -rfv {{ downloads_dir }}/tispark-sample-data "{{ resources_dir }}/bin/"
-
-- name: cp monitoring binary
-  shell: >
-    cp -v {{ downloads_dir }}/{{ item }}-*/{{ item }} "{{ resources_dir }}/bin/{{ item }}"
-  with_items:
-    - alertmanager
-    - prometheus
-    - node_exporter
-    - pushgateway
-
-- name: cp daemontools binary
-  shell: >
-    cp -v {{ downloads_dir }}/daemontools-*/bin/{{ item }} "{{ resources_dir }}/bin/"
-  with_items:
-    - supervise
-    - svstat
-    - svc
 
 - name: cp fio binary
   shell: >

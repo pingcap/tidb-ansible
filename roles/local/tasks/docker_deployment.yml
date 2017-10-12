@@ -2,14 +2,11 @@
 
 - name: download tidb docker images
   docker_image:
-    name: "pingcap/{{ item }}"
-    tag: "{{ tidb_version }}"
-    archive_path: "{{ downloads_dir }}/{{ item }}.tar"
-  with_items:
-     - pd
-     - tikv
-     - tidb
-     - tidb-binlog
+    name: "{{ item.name }}"
+    tag: "{{ item.tag }}"
+    archive_path: "{{ downloads_dir }}/{{ item.service }}.tar"
+  with_items: "{{ tidb_images }}"
+  when: has_outbound_network
 
 - name: download third party docker images
   docker_image:
@@ -17,3 +14,4 @@
     tag: "{{ item.tag }}"
     archive_path: "{{ downloads_dir }}/{{ item.service }}.tar"
   with_items: "{{ third_party_images }}"
+  when: has_outbound_network

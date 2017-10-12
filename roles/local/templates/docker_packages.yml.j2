@@ -1,0 +1,36 @@
+---
+
+tidb_images:
+  - name: pingcap/tidb
+    tag: {{ tidb_version }}
+    service: tidb
+  - name: pingcap/tikv
+    tag: {{ tidb_version }}
+    service: tikv
+  - name: pingcap/pd
+    tag: {{ tidb_version }}
+    service: pd
+  - name: pingcap/tidb-binlog
+{% if tidb_version == 'rc2.2' %}
+    tag: rc2.2
+{% else %}
+    tag: latest
+{% endif %}
+    service: tidb-binlog
+  - name: pingcap/tidb-tools
+    tag: latest
+    service: tidb-tools
+
+third_party_images:
+  - name: prom/node-exporter
+    tag: v0.14.0
+    service: node-exporter
+  - name: prom/prometheus
+    tag: v1.5.2
+    service: prometheus
+  - name: prom/pushgateway
+    tag: v0.3.1
+    service: pushgateway
+  - name: grafana/grafana
+    tag: 4.1.2
+    service: grafana
