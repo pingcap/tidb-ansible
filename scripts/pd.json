@@ -10,6 +10,87 @@
       "repeatRowId": null, 
       "panels": [
         {
+          "id": 55,
+          "title": "PD Role",
+          "span": 2,
+          "type": "singlestat",
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "delta(pd_server_tso{type=\"save\",instance=\"$instance\"}[15s])",
+              "intervalFactor": 2,
+              "metric": "pd_server_tso",
+              "step": 60,
+              "legendFormat": ""
+            }
+          ],
+          "links": [],
+          "datasource": "${DS_TIDB-CLUSTER}",
+          "maxDataPoints": 100,
+          "interval": null,
+          "cacheTimeout": null,
+          "format": "none",
+          "prefix": "",
+          "postfix": "",
+          "nullText": null,
+          "valueMaps": [
+            {
+              "value": "null",
+              "op": "=",
+              "text": "N/A"
+            }
+          ],
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "rangeMaps": [
+            {
+              "from": "1",
+              "to": "100000",
+              "text": "Leader"
+            },
+            {
+              "from": "0",
+              "to": "1",
+              "text": "Follower"
+            }
+          ],
+          "mappingType": 2,
+          "nullPointMode": "connected",
+          "valueName": "current",
+          "prefixFontSize": "50%",
+          "valueFontSize": "50%",
+          "postfixFontSize": "50%",
+          "thresholds": "",
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "sparkline": {
+            "show": false,
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "fillColor": "rgba(31, 118, 189, 0.18)"
+          },
+          "gauge": {
+            "show": false,
+            "minValue": 0,
+            "maxValue": 100,
+            "thresholdMarkers": true,
+            "thresholdLabels": false
+          }
+        },
+        {
           "mappingTypes": [
             {
               "name": "value to text", 
@@ -279,7 +360,7 @@
           "id": 37, 
           "maxDataPoints": 100, 
           "mappingType": 1, 
-          "span": 2, 
+          "span": 1, 
           "colorBackground": false, 
           "title": "Leader Balance Ratio", 
           "sparkline": {
@@ -356,7 +437,7 @@
           "id": 36, 
           "maxDataPoints": 100, 
           "mappingType": 1, 
-          "span": 2, 
+          "span": 1, 
           "colorBackground": false, 
           "title": "Region Balance Ratio", 
           "sparkline": {
