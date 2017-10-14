@@ -32,7 +32,6 @@
 - name: create account
   user: name={{ deploy_user }} group={{ deploy_user }}
 
-# FIXME: bad in root
 - name: create top deploy dir when under root
   file: path="{{ deploy_dir }}" state=directory mode=0755 owner={{ deploy_user }} group={{ deploy_user }}
 
@@ -58,7 +57,6 @@
   lineinfile: dest=/etc/hosts line='127.0.0.1     ip-{{ ansible_default_ipv4.address | replace(\".\",\"-\") }}'
   when: set_hostname
 
-# need root
 - name: determine if firewalld is running
   command: bash -c 'firewall-cmd --state || exit 0'
   register: firewalld_running
