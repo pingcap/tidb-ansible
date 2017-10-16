@@ -21,8 +21,6 @@
 #          All your edit might be overwritten!
 # WARNING: The following configuration commented is set in run_pd.sh
 
-# FIXME: not support server section yet
-# [server]
 # name = "{{ pd_name_prefix }}{{ my_peer_id }}"
 # data-dir = "{{ pd_data_dir}}"
 
@@ -34,10 +32,6 @@
 
 # initial-cluster = ""
 # initial-cluster-state = "new"
-# join = ""
-
-# log-level = ""
-# log-file = ""
 
 {% for item, value in pd_conf.server | dictsort -%}
 {{ item }} = {{ value | to_json }}
@@ -46,6 +40,19 @@
 [metric]
 {% for item, value in pd_conf.metric | dictsort -%}
 {{ item }} = {{ value | to_json }}
+{% endfor %}
+
+[log]
+{% for item, value in pd_conf.log | dictsort_by_value_type -%}
+{% if value is not mapping -%}
+{{ item }} = {{ value | to_json}}
+{% else %}
+
+[log.{{ item }}]
+{% for sub_item, sub_value in value | dictsort -%}
+{{ sub_item }} = {{ sub_value | to_json }}
+{% endfor %}
+{% endif %}
 {% endfor %}
 
 [schedule]

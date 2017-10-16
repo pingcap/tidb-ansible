@@ -2,28 +2,53 @@
 # default configuration file for pd in yaml format
 
 server:
-  # name: pd
-  # data-dir: data.pd
+  # name: "pd"
+  # data-dir: "default.pd"
+  #
   # client-urls: "http://127.0.0.1:2379"
-  # # advertise-client-urls:
+  # # if not set, use ${client-urls}
+  # advertise-client-urls: ""
+  #
   # peer-urls: "http://127.0.0.1:2380"
-  # advertise-peer-urls:
-  # initial-cluster:
-  #   - pd: http://127.0.0.1:2380
-  # initial-cluster-state: new
+  # # if not set, use ${peer-urls}
+  # advertise-peer-urls: ""
+  #
+  # initial-cluster: "pd=http://127.0.0.1:2380"
+  # initial-cluster-state: "new"
+
   lease: 3
-  tso-save-interval: 3s
-  max-peer-count: 3
+  tso-save-interval: "3s"
+
+log:
+  level: "info"
+
+  # log format, one of json, text, console
+  #format: "text"
+
+  # disable automatic timestamps in output
+  #disable-timestamp: false
+
+  # file logging
+  file:
+    #filename: ""
+    # max log file size in MB
+    #max-size: 300
+    # max log file keep days
+    #max-days: 28
+    # maximum number of old log files to retain
+    #max-backups: 7
+    # rotate log by day
+    #log-rotate: true
 
 metric:
   # prometheus client push interval, set "0s" to disable prometheus.
-  interval: 15s
+  interval: "15s"
   # prometheus pushgateway address, leaves it empty will disable prometheus.
   address: ""
 
 schedule:
   max-snapshot-count: 3
-  max-store-down-time: 1h
+  max-store-down-time: "1h"
   leader-schedule-limit: 64
   region-schedule-limit: 16
   replica-schedule-limit: 24
