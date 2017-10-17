@@ -36,18 +36,18 @@
   tasks:
     - name: restart node_exporter by supervise
       shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
-      when: deployment_method == 'supervise'
+      when: process_supervision == 'supervise'
       with_items:
         - node_exporter
 
     - name: restart node_exporter by systemd
       systemd: name=node_exporter.service state=restarted
       become: true
-      when: deployment_method == 'systemd' and ansible_user != "root"
+      when: process_supervision == 'systemd' and ansible_user != "root"
 
     - name: restart node_exporter by systemd
       systemd: name=node_exporter.service state=restarted
-      when: deployment_method == 'systemd' and ansible_user == "root"
+      when: process_supervision == 'systemd' and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -64,7 +64,7 @@
   tasks:
     - name: restart monitoring modules by supervise
       shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
-      when: deployment_method == 'supervise'
+      when: process_supervision == 'supervise'
       with_items:
         - pushgateway
         - prometheus
@@ -72,14 +72,14 @@
     - name: restart monitoring modules by systemd
       systemd: name={{ item }} state=restarted
       become: true
-      when: deployment_method == 'systemd' and ansible_user != "root"
+      when: process_supervision == 'systemd' and ansible_user != "root"
       with_items:
         - pushgateway.service
         - prometheus.service
 
     - name: restart monitoring modules by systemd
       systemd: name={{ item }} state=restarted
-      when: deployment_method == 'systemd' and ansible_user == "root"
+      when: process_supervision == 'systemd' and ansible_user == "root"
       with_items:
         - pushgateway.service
         - prometheus.service
@@ -103,18 +103,18 @@
   tasks:
     - name: restart PD by supervise
       shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
-      when: deployment_method == 'supervise'
+      when: process_supervision == 'supervise'
       with_items:
         - pd
 
     - name: restart PD by systemd
       systemd: name=pd.service state=restarted
       become: true
-      when: deployment_method == 'systemd' and ansible_user != "root"
+      when: process_supervision == 'systemd' and ansible_user != "root"
 
     - name: restart PD by systemd
       systemd: name=pd.service state=restarted
-      when: deployment_method == 'systemd' and ansible_user == "root"
+      when: process_supervision == 'systemd' and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -130,18 +130,18 @@
   tasks:
     - name: restart TiKV by supervise
       shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
-      when: deployment_method == 'supervise'
+      when: process_supervision == 'supervise'
       with_items:
         - tikv
 
     - name: restart TiKV by systemd
-      systemd: name=tikv@{{ tikv_port }}.service state=restarted
+      systemd: name=tikv-{{ tikv_port }}.service state=restarted
       become: true
-      when: deployment_method == 'systemd' and ansible_user != "root"
+      when: process_supervision == 'systemd' and ansible_user != "root"
 
     - name: restart TiKV by systemd
-      systemd: name=tikv@{{ tikv_port }}.service state=restarted
-      when: deployment_method == 'systemd' and ansible_user == "root"
+      systemd: name=tikv-{{ tikv_port }}.service state=restarted
+      when: process_supervision == 'systemd' and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -157,7 +157,7 @@
   tasks:
     - name: restart pump by supervise
       shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
-      when: deployment_method == 'supervise'
+      when: process_supervision == 'supervise'
       with_items:
         - pump
       when: enable_binlog
@@ -165,11 +165,11 @@
     - name: restart pump by systemd
       systemd: name=pump.service state=restarted
       become: true
-      when: enable_binlog and deployment_method == 'systemd' and ansible_user != "root"
+      when: enable_binlog and process_supervision == 'systemd' and ansible_user != "root"
 
     - name: restart pump by systemd
       systemd: name=pump.service state=restarted
-      when: enable_binlog and deployment_method == 'systemd' and ansible_user == "root"
+      when: enable_binlog and process_supervision == 'systemd' and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -181,18 +181,18 @@
 
     - name: restart TiDB by supervise
       shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
-      when: deployment_method == 'supervise'
+      when: process_supervision == 'supervise'
       with_items:
         - tidb
 
     - name: restart TiDB by systemd
-      systemd: name=tidb@{{ tidb_port }}.service state=restarted
+      systemd: name=tidb-{{ tidb_port }}.service state=restarted
       become: true
-      when: deployment_method == 'systemd' and ansible_user != "root"
+      when: process_supervision == 'systemd' and ansible_user != "root"
 
     - name: restart TiDB by systemd
-      systemd: name=tidb@{{ tidb_port }}.service state=restarted
-      when: deployment_method == 'systemd' and ansible_user == "root"
+      systemd: name=tidb-{{ tidb_port }}.service state=restarted
+      when: process_supervision == 'systemd' and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -211,18 +211,18 @@
   tasks:
     - name: restart grafana by supervise
       shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
-      when: deployment_method == 'supervise'
+      when: process_supervision == 'supervise'
       with_items:
         - grafana
 
     - name: restart grafana by systemd
       systemd: name=grafana.service state=restarted
       become: true
-      when: deployment_method == 'systemd' and ansible_user != "root"
+      when: process_supervision == 'systemd' and ansible_user != "root"
 
     - name: restart grafana by systemd
       systemd: name=grafana.service state=restarted
-      when: deployment_method == 'systemd' and ansible_user == "root"
+      when: process_supervision == 'systemd' and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root

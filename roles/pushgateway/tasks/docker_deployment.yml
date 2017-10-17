@@ -12,13 +12,6 @@
   with_items:
     - run
 
-- name: create startup script
-  include_role:
-    name: docker
-  vars:
-    this_role_name: pushgateway
-    service_name: pushgateway
-
 - name: load docker image from archive
   docker_image:
     state: present
@@ -26,3 +19,5 @@
     name: prom/pushgateway
     tag: "{{ pushgateway_tag }}"
     load_path: "{{ images_dir }}/pushgateway.tar"
+
+- include: "{{ process_supervision }}_deployment.yml"

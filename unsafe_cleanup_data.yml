@@ -33,18 +33,18 @@
   tasks:
     - name: stop TiDB by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      when: deployment_method == 'supervise'
+      when: process_supervision == 'supervise'
       with_items:
         - tidb
 
     - name: stop TiDB by systemd
-      systemd: name=tidb@{{ tidb_port }}.service state=stopped
+      systemd: name=tidb-{{ tidb_port }}.service state=stopped
       become: true
-      when: deployment_method == 'systemd' and ansible_user != "root"
+      when: process_supervision == 'systemd' and ansible_user != "root"
 
     - name: stop TiDB by systemd
-      systemd: name=tidb@{{ tidb_port }}.service state=stopped
-      when: deployment_method == 'systemd' and ansible_user == "root"
+      systemd: name=tidb-{{ tidb_port }}.service state=stopped
+      when: process_supervision == 'systemd' and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -57,16 +57,16 @@
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
       with_items:
         - pump
-      when: enable_binlog and deployment_method == 'supervise'
+      when: enable_binlog and process_supervision == 'supervise'
 
     - name: stop pump by systemd
       systemd: name=pump.service state=stopped
       become: true
-      when: enable_binlog and deployment_method == 'systemd' and ansible_user != "root"
+      when: enable_binlog and process_supervision == 'systemd' and ansible_user != "root"
 
     - name: stop pump by systemd
       systemd: name=pump.service state=stopped
-      when: enable_binlog and deployment_method == 'systemd' and ansible_user == "root"
+      when: enable_binlog and process_supervision == 'systemd' and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -84,18 +84,18 @@
   tasks:
   - name: stop TiKV by supervise
     shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-    when: deployment_method == 'supervise'
+    when: process_supervision == 'supervise'
     with_items:
     - tikv
 
   - name: stop TiKV by systemd
-    systemd: name=tikv@{{ tikv_port }}.service state=stopped
+    systemd: name=tikv-{{ tikv_port }}.service state=stopped
     become: true
-    when: deployment_method == 'systemd' and ansible_user != "root"
+    when: process_supervision == 'systemd' and ansible_user != "root"
 
   - name: stop TiKV by systemd
-    systemd: name=tikv@{{ tikv_port }}.service state=stopped
-    when: deployment_method == 'systemd' and ansible_user == "root"
+    systemd: name=tikv-{{ tikv_port }}.service state=stopped
+    when: process_supervision == 'systemd' and ansible_user == "root"
     vars:
       - ansible_become: false
       - ansible_become_user: root
@@ -130,18 +130,18 @@
   tasks:
   - name: stop PD by supervise
     shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-    when: deployment_method == 'supervise'
+    when: process_supervision == 'supervise'
     with_items:
     - pd
 
   - name: stop PD by systemd
     systemd: name=pd.service state=stopped
     become: true
-    when: deployment_method == 'systemd' and ansible_user != "root"
+    when: process_supervision == 'systemd' and ansible_user != "root"
 
   - name: stop PD by systemd
     systemd: name=pd.service state=stopped
-    when: deployment_method == 'systemd' and ansible_user == "root"
+    when: process_supervision == 'systemd' and ansible_user == "root"
     vars:
       - ansible_become: false
       - ansible_become_user: root

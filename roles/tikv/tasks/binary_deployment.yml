@@ -23,3 +23,6 @@
 - name: backup script file
   command: mv "{{ tikv_script.backup_file }}" "{{ backup_dir }}"
   when: tikv_script.changed and tikv_script.backup_file is defined
+
+- include: "{{ process_supervision }}_deployment.yml"
+

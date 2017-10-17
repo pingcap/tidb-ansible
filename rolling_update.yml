@@ -42,20 +42,20 @@
       tags:
         - restart
       shell: cd {{ deploy_dir }}/scripts && ./stop_node_exporter.sh
-      when: deployment_method == 'supervise'
+      when: process_supervision == 'supervise'
 
     - name: stop NodeExporter by systemd
       tags:
         - restart
       systemd: name=node_exporter.service state=stopped
       become: true
-      when: deployment_method == 'systemd' and ansible_user != "root"
+      when: process_supervision == 'systemd' and ansible_user != "root"
 
     - name: stop NodeExporter by systemd
       tags:
         - restart
       systemd: name=node_exporter.service state=stopped
-      when: deployment_method == 'systemd' and ansible_user == "root"
+      when: process_supervision == 'systemd' and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -69,20 +69,20 @@
       tags:
         - restart
       shell: cd {{ deploy_dir }}/scripts && ./start_node_exporter.sh
-      when: deployment_method == 'supervise'
+      when: process_supervision == 'supervise'
 
     - name: start NodeExporter by systemd
       tags:
         - restart
       systemd: name=node_exporter.service state=started
       become: true
-      when: deployment_method == 'systemd' and ansible_user != "root"
+      when: process_supervision == 'systemd' and ansible_user != "root"
 
     - name: start NodeExporter by systemd
       tags:
         - restart
       systemd: name=node_exporter.service state=started
-      when: deployment_method == 'systemd' and ansible_user == "root"
+      when: process_supervision == 'systemd' and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -106,20 +106,20 @@
       tags:
         - restart
       shell: cd {{ deploy_dir }}/scripts && ./stop_pd.sh
-      when: deployment_method == 'supervise'
+      when: process_supervision == 'supervise'
 
     - name: stop PD by systemd
       tags:
         - restart
       systemd: name=pd.service state=stopped
       become: true
-      when: deployment_method == 'systemd' and ansible_user != "root"
+      when: process_supervision == 'systemd' and ansible_user != "root"
 
     - name: stop PD by systemd
       tags:
         - restart
       systemd: name=pd.service state=stopped
-      when: deployment_method == 'systemd' and ansible_user == "root"
+      when: process_supervision == 'systemd' and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -133,20 +133,20 @@
       tags:
         - restart
       shell: cd {{ deploy_dir }}/scripts && ./start_pd.sh
-      when: deployment_method == 'supervise'
+      when: process_supervision == 'supervise'
 
     - name: start PD by systemd
       tags:
         - restart
       systemd: name=pd.service state=started
       become: true
-      when: deployment_method == 'systemd' and ansible_user != "root"
+      when: process_supervision == 'systemd' and ansible_user != "root"
 
     - name: start PD by systemd
       tags:
         - restart
       systemd: name=pd.service state=started
-      when: deployment_method == 'systemd' and ansible_user == "root"
+      when: process_supervision == 'systemd' and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -170,20 +170,20 @@
       tags:
         - restart
       shell: cd {{ deploy_dir }}/scripts && ./stop_tikv.sh
-      when: deployment_method == 'supervise'
+      when: process_supervision == 'supervise'
 
     - name: stop TiKV by systemd
       tags:
         - restart
-      systemd: name=tikv@{{ tikv_port }}.service state=stopped
+      systemd: name=tikv-{{ tikv_port }}.service state=stopped
       become: true
-      when: deployment_method == 'systemd' and ansible_user != "root"
+      when: process_supervision == 'systemd' and ansible_user != "root"
 
     - name: stop TiKV by systemd
       tags:
         - restart
-      systemd: name=tikv@{{ tikv_port }}.service state=stopped
-      when: deployment_method == 'systemd' and ansible_user == "root"
+      systemd: name=tikv-{{ tikv_port }}.service state=stopped
+      when: process_supervision == 'systemd' and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -202,20 +202,20 @@
       tags:
         - restart
       shell: cd {{ deploy_dir }}/scripts && ./start_tikv.sh
-      when: deployment_method == 'supervise'
+      when: process_supervision == 'supervise'
 
     - name: start TiKV by systemd
       tags:
         - restart
-      systemd: name=tikv@{{ tikv_port }}.service state=started
+      systemd: name=tikv-{{ tikv_port }}.service state=started
       become: true
-      when: deployment_method == 'systemd' and ansible_user != "root"
+      when: process_supervision == 'systemd' and ansible_user != "root"
 
     - name: start TiKV by systemd
       tags:
         - restart
-      systemd: name=tikv@{{ tikv_port }}.service state=started
-      when: deployment_method == 'systemd' and ansible_user == "root"
+      systemd: name=tikv-{{ tikv_port }}.service state=started
+      when: process_supervision == 'systemd' and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -242,20 +242,20 @@
       tags:
         - restart
       shell: cd {{ deploy_dir }}/scripts && ./stop_tidb.sh
-      when: deployment_method == 'supervise'
+      when: process_supervision == 'supervise'
 
     - name: stop TiDB by systemd
       tags:
         - restart
-      systemd: name=tidb@{{ tidb_port }}.service state=stopped
+      systemd: name=tidb-{{ tidb_port }}.service state=stopped
       become: true
-      when: deployment_method == 'systemd' and ansible_user != "root"
+      when: process_supervision == 'systemd' and ansible_user != "root"
 
     - name: stop TiDB by systemd
       tags:
         - restart
-      systemd: name=tidb@{{ tidb_port }}.service state=stopped
-      when: deployment_method == 'systemd' and ansible_user == "root"
+      systemd: name=tidb-{{ tidb_port }}.service state=stopped
+      when: process_supervision == 'systemd' and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -271,20 +271,20 @@
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
       with_items:
         - pump
-      when: enable_binlog and deployment_method == 'supervise'
+      when: enable_binlog and process_supervision == 'supervise'
 
     - name: stop pump by systemd
       tags:
         - restart
       systemd: name=pump.service state=stopped
       become: true
-      when: enable_binlog and deployment_method == 'systemd' and ansible_user != "root"
+      when: enable_binlog and process_supervision == 'systemd' and ansible_user != "root"
 
     - name: stop pump by systemd
       tags:
         - restart
       systemd: name=pump.service state=stopped
-      when: enable_binlog and deployment_method == 'systemd' and ansible_user == "root"
+      when: enable_binlog and process_supervision == 'systemd' and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -298,7 +298,7 @@
       tags:
         - restart
       shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
-      when: enable_binlog and deployment_method == 'supervise'
+      when: enable_binlog and process_supervision == 'supervise'
       with_items:
         - pump
 
@@ -307,13 +307,13 @@
         - restart
       systemd: name=pump.service state=started enabled=yes
       become: true
-      when: enable_binlog and deployment_method == 'systemd' and ansible_user != 'root'
+      when: enable_binlog and process_supervision == 'systemd' and ansible_user != 'root'
 
     - name: start pump by systemd
       tags:
         - restart
       systemd: name=pump.service state=started enabled=yes
-      when: enable_binlog and deployment_method == 'systemd' and ansible_user == 'root'
+      when: enable_binlog and process_supervision == 'systemd' and ansible_user == 'root'
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -327,20 +327,20 @@
       tags:
         - restart
       shell: cd {{ deploy_dir }}/scripts && ./start_tidb.sh
-      when: deployment_method == 'supervise'
+      when: process_supervision == 'supervise'
 
     - name: start TiDB by systemd
       tags:
         - restart
-      systemd: name=tidb@{{ tidb_port }}.service state=started
+      systemd: name=tidb-{{ tidb_port }}.service state=started
       become: true
-      when: deployment_method == 'systemd' and ansible_user != "root"
+      when: process_supervision == 'systemd' and ansible_user != "root"
 
     - name: start TiDB by systemd
       tags:
         - restart
-      systemd: name=tidb@{{ tidb_port }}.service state=started
-      when: deployment_method == 'systemd' and ansible_user == "root"
+      systemd: name=tidb-{{ tidb_port }}.service state=started
+      when: process_supervision == 'systemd' and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
