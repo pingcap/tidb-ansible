@@ -12,13 +12,6 @@
   with_items:
     - run
 
-- name: create startup script
-  include_role:
-    name: docker
-  vars:
-    this_role_name: node_exporter
-    service_name: node-exporter
-
 - name: load docker image from archive
   docker_image:
     state: present
@@ -26,3 +19,5 @@
     name: prom/node-exporter
     tag: "{{ node_exporter_tag }}"
     load_path: "{{ images_dir }}/node-exporter.tar"
+
+- include: "{{ process_supervision }}_deployment.yml"
