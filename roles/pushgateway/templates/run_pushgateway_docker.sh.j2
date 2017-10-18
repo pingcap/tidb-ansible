@@ -7,7 +7,7 @@ ulimit -n 1000000
 DEPLOY_DIR={{ deploy_dir }}
 cd "${DEPLOY_DIR}" || exit 1
 
-exec docker run -d --restart=on-failure -p {{ pushgateway_port }}:9091 \
+exec docker run -p {{ pushgateway_port }}:9091 \
   -v /etc/localtime:/etc/localtime:ro \
   -u `id -u {{ deploy_user }}` \
   --name="pushgateway" \

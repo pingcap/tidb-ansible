@@ -25,7 +25,7 @@
   tasks:
     - name: remove pushgateway and prometheus container
       docker_container:
-          name: {{ item }}
+          name: "{{ item }}"
           state: absent
       with_items:
         - pushgateway
@@ -42,14 +42,14 @@
   tasks:
     - name: remove TiKV container
       docker_container:
-          name: tikv-{{ tikv_port }}
+          name: "tikv-{{ tikv_port }}"
           state: absent
 
 - hosts: tidb_servers
   tasks:
     - name: remove tidb container
       docker_container:
-          name: tidb-{{ tidb_port }}
+          name: "tidb-{{ tidb_port }}"
           state: absent
           
     - name: remove pump container

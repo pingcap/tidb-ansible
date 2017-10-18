@@ -19,7 +19,7 @@ cd "${DEPLOY_DIR}" || exit 1
   {% set _ = all_pd.append("%s=http://%s:%s" % (other_pd_name, other_ip, other_port)) -%}
 {% endfor -%}
 
-exec docker run -d --restart=on-failure \
+exec docker run \
   -p {{ pd_client_port }}:2379 \
   -p {{ pd_peer_port }}:2380 \
   -v /etc/localtime:/etc/localtime:ro \

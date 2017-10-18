@@ -23,7 +23,7 @@ cd "${DEPLOY_DIR}" || exit 1
   {% set _ = all_pd.append("http://%s:%s" % (pd_ip, pd_port)) -%}
 {% endfor -%}
 
-exec docker run -d --restart=on-failure \
+exec docker run \
   --net=host \
   -v /etc/localtime:/etc/localtime:ro \
   -v "{{ pump_docker_log_dir }}:/var/log" \

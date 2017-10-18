@@ -18,7 +18,7 @@ cd "${DEPLOY_DIR}" || exit 1
 
 {% set my_id = groups.tidb_servers.index(inventory_hostname) + 1 -%}
 
-exec docker run -d --restart=on-failure \
+exec docker run \
   -p {{ tidb_port }}:4000 \
   -p {{ tidb_status_port }}:10080 \
   -v /etc/localtime:/etc/localtime:ro \

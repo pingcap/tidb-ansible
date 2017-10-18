@@ -27,7 +27,7 @@ echo $stat
 
 echo $$ > "status/{{ role_name }}.pid"
 
-exec docker run -d --restart=on-failure \
+exec docker run \
   -p {{ tikv_port }}:20160 \
   -v /etc/localtime:/etc/localtime:ro \
   -v "{{ tikv_conf_dir }}/tikv.toml:/etc/tikv.toml:ro" \
