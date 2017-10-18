@@ -7,8 +7,8 @@ After=docker.service
 LimitNOFILE=1000000
 User={{ deploy_user }}
 ExecStart={{ deploy_dir }}/scripts/run_{{ this_role_name }}.sh
-ExecStartPre=-docker rm -f {{ service_name }}
-ExecStop=docker stop {{ service_name }}
+ExecStartPre=-{{ docker_bin_dir }}/docker rm -f {{ service_name }}
+ExecStop={{ docker_bin_dir }}/docker stop {{ service_name }}
 Restart=on-failure
 
 [Install]
