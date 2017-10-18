@@ -226,6 +226,13 @@
       wait_for_pid: |
         pid_file={{ deploy_dir }}/status/tikv.pid timeout=300
         thread_name_regex='endpoint' state=present
+      when: deployment_method == 'binary'
+
+    - name: wait up
+      tags:
+        - restart
+      wait_for: host={{ ansible_host }} port={{ tikv_port }} state=present
+      when: deployment_method == 'docker'
 
 
 - name: rolling update TiDB cluster
