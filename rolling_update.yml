@@ -352,9 +352,10 @@
         - ansible_become: false
         - ansible_become_user: root
 
-    - name: wait TiDB up
+    - name: wait up
       tags:
         - restart
       wait_for: |
-        host={{ ansible_host }} port={{ tidb_port }} state=present
-        search_regex='TiDB'
+        host={{ ansible_host }} port={{ tidb_status_port }} state=present
+        send='GET /status HTTP/1.0\r\n\r\n' search_regex='TiDB'
+

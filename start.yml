@@ -207,8 +207,8 @@
 
     - name: wait up
       wait_for: |
-        host={{ ansible_host }} port={{ tidb_port }} state=present
-        search_regex='TiDB'
+        host={{ ansible_host }} port={{ tidb_status_port }} state=present
+        send='GET /status HTTP/1.0\r\n\r\n' search_regex='TiDB'
 
 - hosts: grafana_servers
   tags:
