@@ -162,10 +162,9 @@
   tasks:
     - name: restart pump by supervise
       shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
-      when: process_supervision == 'supervise'
       with_items:
         - pump
-      when: enable_binlog
+      when: enable_binlog and process_supervision == 'supervise'
 
     - name: restart pump by systemd
       systemd: name=pump.service state=restarted
