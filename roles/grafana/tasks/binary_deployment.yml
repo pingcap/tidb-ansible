@@ -1,11 +1,9 @@
 ---
 
-- name: create deploy directories (2/2)
+- name: create binary deploy directories (1/2)
   file: path="{{ item }}" state=directory mode=0755
   with_items:
   - "{{ deploy_dir }}/opt"
-  - "{{ grafana_dashboards_dir }}"
-  - "{{ grafana_plugins_dir }}"
 
 - name: deploy grafana binary
   unarchive: >
@@ -16,6 +14,12 @@
   shell: >
     creates="{{ deploy_dir }}/opt/grafana/bin/grafana-server"
     mv {{ deploy_dir }}/opt/grafana-{{ grafana_version }}-* "{{ deploy_dir }}/opt/grafana"
+
+- name: create binary deploy directories (2/2)
+  file: path="{{ item }}" state=directory mode=0755
+  with_items:
+  - "{{ grafana_dashboards_dir }}"
+  - "{{ grafana_plugins_dir }}"
 
 - name: create grafana configuration file
   template: >
