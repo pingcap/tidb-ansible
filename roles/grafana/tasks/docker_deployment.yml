@@ -1,10 +1,5 @@
 ---
 
-- name: create deploy directories (2/2)
-  file: path="{{ item }}" state=directory mode=0755
-  with_items:
-  - "{{ grafana_docker_log_dir }}"
-
 - name: deploy grafana image
   copy: src="{{ downloads_dir }}/grafana.tar" dest="{{ deploy_dir }}/images" mode=0755
 
