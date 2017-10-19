@@ -76,6 +76,15 @@
   with_items:
     - fio
 
+- name: cp daemontools binary
+  shell: >
+    cp -v {{ downloads_dir }}/daemontools-*/bin/{{ item }} "{{ resources_dir }}/bin/"
+  with_items:
+    - supervise
+    - svstat
+    - svc
+  when: process_supervision == 'supervise'
+
 - name: clean up download dir
   shell: >
     cd "{{ downloads_dir }}" && find . -mindepth 1 -maxdepth 1 -type d -exec rm -rf {} \;
