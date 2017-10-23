@@ -1,6 +1,17 @@
 ---
 
-- name: setting kernel params
+- name: setting absent kernel params
+  sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    sysctl_set: yes
+    ignoreerrors: yes
+    state: absent
+  with_items:
+    - { name: 'net.ipv4.tcp_tw_recycle', value: 0 }
+  when: tuning_kernel_parameters
+
+- name: setting present kernel params
   sysctl: name="{{ item.name }}" value="{{ item.value }}" state=present
   with_items:
     - { name: 'net.core.somaxconn', value: 32768 }
