@@ -144,6 +144,13 @@
     - name: wait TiKV down (via PID)
       wait_for_pid: pid_file={{ deploy_dir }}/status/tikv.pid timeout=300 state=absent
 
+    - command: cat {{ deploy_dir }}/status/tikv.pid
+      register: old_tikv_pid
+
+    - name: display old tikv pid
+      debug:
+        msg: "tikv binary or docker pid: {{ old_tikv_pid.stdout }}"
+
 - hosts: tidb_servers
   tags:
     - tidb

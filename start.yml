@@ -156,6 +156,14 @@
       wait_for: host={{ ansible_host }} port={{ tikv_port }} state=present
       when: deployment_method == 'docker'
 
+    - command: cat {{ deploy_dir }}/status/tikv.pid
+      register: new_tikv_pid
+
+    - name: display new tikv pid
+      debug:
+        msg: "tikv binary or docker pid: {{ new_tikv_pid.stdout }}"
+
+
 - hosts: tidb_servers
   tags:
     - tidb
