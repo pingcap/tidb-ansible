@@ -7,15 +7,6 @@
   - "{{ pd_log_dir }}"
   - "{{ pd_conf_dir }}"
   - "{{ pd_data_dir }}"
-  - "{{ deploy_dir }}/status/{{ role_name }}"
-
-- name: deploy binary
-  copy: src="{{ resources_dir }}/bin/pd-server" dest="{{ deploy_dir }}/bin/" mode=0755 backup=yes
-  register: pd_binary
-
-- name: backup bianry file
-  command: mv "{{ pd_binary.backup_file }}" "{{ backup_dir }}"
-  when: pd_binary.changed and pd_binary.backup_file is defined
 
 - name: load customized config
   include_vars: file={{ playbook_dir }}/conf/pd.yml name=pd_conf_custom
@@ -49,32 +40,8 @@
   command: mv "{{ pd_conf_st.backup_file }}" "{{ backup_dir }}"
   when: pd_conf_st.changed and pd_conf_st.backup_file is defined
 
-- name: create scripts
-  include_role:
-    name: scripts
-  vars:
-    this_role_name: pd
-
-- name: systemd
-  include_role:
-    name: systemd
-  when: use_systemd
-  vars:
-    this_role_name: pd
-    service_name: pd
-
-- name: create startup script
-  template:
-    src: "{{ item }}_{{ role_name }}.sh.j2"
-    dest: "{{ deploy_dir }}/scripts/{{ item }}_{{ role_name }}.sh"
-    mode: "0755"
-    backup: yes
-  with_items:
-    - run
-  vars:
-    role_status_dir: status/{{ role_name }}
+- include: "{{ deployment_method }}_deployment.yml"
 
 - name: prepare firewalld white list
   set_fact:
     firewalld_ports: "{{ [pd_peer_port ~ '/tcp', pd_client_port ~ '/tcp'] + firewalld_ports }}"
-

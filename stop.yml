@@ -34,20 +34,20 @@
   tags:
     - node_exporter
   tasks:
-    - name: stop node_exporter
+    - name: stop node_exporter by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
       with_items:
         - node_exporter
-      when: not use_systemd
+      when: process_supervision == 'supervise'
 
     - name: stop node_exporter by systemd
       systemd: name=node_exporter.service state=stopped
       become: true
-      when: use_systemd and ansible_user != "root"
+      when: process_supervision == 'systemd' and ansible_user != "root"
 
     - name: stop node_exporter by systemd
       systemd: name=node_exporter.service state=stopped
-      when: use_systemd and ansible_user == "root"
+      when: process_supervision == 'systemd' and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -60,16 +60,16 @@
     - pushgateway
     - prometheus
   tasks:
-    - name: stop monitoring modules
+    - name: stop monitoring modules by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
       with_items:
         - pushgateway
         - prometheus
-      when: not use_systemd
+      when: process_supervision == 'supervise'
 
     - name: stop monitoring modules by systemd
       systemd: name={{ item }} state=stopped
-      when: use_systemd and ansible_user != "root"
+      when: process_supervision == 'systemd' and ansible_user != "root"
       become: true
       with_items:
         - pushgateway.service
@@ -77,7 +77,7 @@
 
     - name: stop monitoring modules by systemd
       systemd: name={{ item }} state=stopped
-      when: use_systemd and ansible_user == "root"
+      when: process_supervision == 'systemd' and ansible_user == "root"
       with_items:
         - pushgateway.service
         - prometheus.service
@@ -95,20 +95,20 @@
   tags:
     - pd
   tasks:
-    - name: stop PD
+    - name: stop PD by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      when: not use_systemd
+      when: process_supervision == 'supervise'
       with_items:
         - pd
 
     - name: stop PD by systemd
       systemd: name=pd.service state=stopped
       become: true
-      when: use_systemd and ansible_user != "root"
+      when: process_supervision == 'systemd' and ansible_user != "root"
 
     - name: stop PD by systemd
       systemd: name=pd.service state=stopped
-      when: use_systemd and ansible_user == "root"
+      when: process_supervision == 'systemd' and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -120,20 +120,20 @@
   tags:
     - tikv
   tasks:
-    - name: stop TiKV
+    - name: stop TiKV by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      when: not use_systemd
+      when: process_supervision == 'supervise'
       with_items:
         - tikv
 
     - name: stop TiKV by systemd
-      systemd: name=tikv@{{ tikv_port }}.service state=stopped
+      systemd: name=tikv-{{ tikv_port }}.service state=stopped
       become: true
-      when: use_systemd and ansible_user != "root"
+      when: process_supervision == 'systemd' and ansible_user != "root"
 
     - name: stop TiKV by systemd
-      systemd: name=tikv@{{ tikv_port }}.service state=stopped
-      when: use_systemd and ansible_user == "root"
+      systemd: name=tikv-{{ tikv_port }}.service state=stopped
+      when: process_supervision == 'systemd' and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -144,24 +144,31 @@
     - name: wait TiKV down (via PID)
       wait_for_pid: pid_file={{ deploy_dir }}/status/tikv.pid timeout=300 state=absent
 
+    - command: cat {{ deploy_dir }}/status/tikv.pid
+      register: old_tikv_pid
+
+    - name: display old tikv pid
+      debug:
+        msg: "tikv binary or docker pid: {{ old_tikv_pid.stdout }}"
+
 - hosts: tidb_servers
   tags:
     - tidb
   tasks:
-    - name: stop TiDB
+    - name: stop TiDB by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      when: not use_systemd
+      when: process_supervision == 'supervise'
       with_items:
         - tidb
 
     - name: stop TiDB by systemd
-      systemd: name=tidb@{{ tidb_port }}.service state=stopped
+      systemd: name=tidb-{{ tidb_port }}.service state=stopped
       become: true
-      when: use_systemd and ansible_user != "root"
+      when: process_supervision == 'systemd' and ansible_user != "root"
 
     - name: stop TiDB by systemd
-      systemd: name=tidb@{{ tidb_port }}.service state=stopped
-      when: use_systemd and ansible_user == "root"
+      systemd: name=tidb-{{ tidb_port }}.service state=stopped
+      when: process_supervision == 'systemd' and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -169,20 +176,20 @@
     - name: wait TiDB down
       wait_for: host={{ ansible_host }} port={{ tidb_port }} state=stopped
 
-    - name: stop pump
+    - name: stop pump by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      when: enable_binlog and not use_systemd
+      when: enable_binlog and process_supervision == 'supervise'
       with_items:
         - pump
 
     - name: stop pump by systemd
       systemd: name=pump.service state=stopped
       become: true
-      when: enable_binlog and use_systemd and ansible_user != "root"
+      when: enable_binlog and process_supervision == 'systemd' and ansible_user != "root"
 
     - name: stop pump by systemd
       systemd: name=pump.service state=stopped
-      when: enable_binlog and use_systemd and ansible_user == "root"
+      when: enable_binlog and process_supervision == 'systemd' and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -196,20 +203,20 @@
   tags:
     - grafana
   tasks:
-    - name: stop monitoring modules
+    - name: stop monitoring modules by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      when: not use_systemd
+      when: process_supervision == 'supervise'
       with_items:
         - grafana
 
     - name: stop monitoring modules by systemd
       systemd: name=grafana.service state=stopped
       become: true
-      when: use_systemd and ansible_user != "root"
+      when: process_supervision == 'systemd' and ansible_user != "root"
 
     - name: stop monitoring modules by systemd
       systemd: name=grafana.service state=stopped
-      when: use_systemd and ansible_user == "root"
+      when: process_supervision == 'systemd' and ansible_user == "root"
       vars:
         - ansible_become: false
         - ansible_become_user: root

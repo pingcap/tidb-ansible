@@ -48,6 +48,10 @@ if [ -e "${STATUS_DIR}/pid" ]; then
     # fi
 fi
 
+{% if deployment_method == 'docker' %}
+{{ docker_bin_dir }}/docker rm -f {{ service_name }} &>/dev/null || true
+{% endif %}
+
 nohup bin/supervise "${STATUS_DIR}" "${DEPLOY_DIR}/scripts/run_{{ this_role_name | default(role_name) }}.sh" &>/dev/null &
 
 echo $! > "${STATUS_DIR}/pid"

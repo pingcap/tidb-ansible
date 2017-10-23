@@ -7,7 +7,7 @@
   become_user: root
   when:
     - ansible_user == 'root'
-  vars: # ugly workaround
+  vars:
     - ansible_become: false
 
 - name: gather facts
@@ -19,7 +19,6 @@
   group_by: key="{{ ansible_distribution }}-{{ ansible_distribution_version }}"
   changed_when: false
 
-# this fixes include + become
 - name: guess deploy_user - set ansible_user as default
   set_fact:
     deploy_user: "{{ ansible_user }}"
@@ -40,7 +39,7 @@
   become_user: root
   when:
     - ansible_user == 'root'
-  vars: # ugly workaround
+  vars:
     - ansible_become: false
     - ansible_become_user: root
 

@@ -6,16 +6,7 @@
   with_items:
   - "{{ tikv_log_dir }}"
   - "{{ tikv_data_dir }}"
-  - "{{ deploy_dir }}/status/{{ role_name }}"
-  - "{{ deploy_dir }}/conf"
-
-- name: deploy binary
-  copy: src="{{ resources_dir }}/bin/tikv-server" dest="{{ deploy_dir }}/bin/" mode=0755 backup=yes
-  register: tikv_binary
-
-- name: backup bianry file
-  command: mv "{{ tikv_binary.backup_file }}" "{{ backup_dir }}"
-  when: tikv_binary.changed and tikv_binary.backup_file is defined
+  - "{{ tikv_conf_dir }}"
 
 - name: load customized config
   include_vars: file={{ playbook_dir }}/conf/tikv.yml name=tikv_conf_custom
@@ -53,35 +44,7 @@
   command: mv "{{ tikv_conf_st.backup_file }}" "{{ backup_dir }}"
   when: tikv_conf_st.changed and tikv_conf_st.backup_file is defined
 
-- name: create scripts
-  include_role:
-    name: scripts
-  vars:
-    this_role_name: tikv
-
-- name: systemd
-  include_role:
-    name: systemd
-  when: use_systemd
-  vars:
-    this_role_name: tikv
-    service_name: tikv@{{ tikv_port }}
-
-- name: create run script
-  template:
-    src: "{{ item }}_{{ role_name }}.sh.j2"
-    dest: "{{ deploy_dir }}/scripts/{{ item }}_{{ role_name }}.sh"
-    mode: "0755"
-    backup: yes
-  with_items:
-    - run
-  vars:
-    role_status_dir: status/{{ role_name }}
-  register: tikv_script
-
-- name: backup script file
-  command: mv "{{ tikv_script.backup_file }}" "{{ backup_dir }}"
-  when: tikv_script.changed and tikv_script.backup_file is defined
+- include: "{{ deployment_method }}_deployment.yml"
 
 - name: prepare firewalld white list
   set_fact:

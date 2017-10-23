@@ -25,11 +25,11 @@
         killall -9 tikv-server tidb-server pd-server;
         killall -9 pump drainer;
         true
-      when: not use_systemd
+      when: process_supervision == 'supervise'
 
     - name: clean systemd config
       shell: "rm -f /etc/systemd/system/{{ item }}"
-      when: use_systemd and ansible_user == "root"
+      when: process_supervision == 'systemd' and ansible_user == "root"
       with_items:
         - grafana.service
         - prometheus.service
@@ -39,7 +39,6 @@
         - pump.service
         - tidb*.service
         - tikv*.service
-
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -47,7 +46,7 @@
     - name: clean systemd config
       shell: "rm -f /etc/systemd/system/{{ item }}"
       become: true
-      when: use_systemd and ansible_user != "root"
+      when: process_supervision == 'systemd' and ansible_user != "root"
       with_items:
         - grafana.service
         - prometheus.service
@@ -71,3 +70,7 @@
 
     - name: cleaning up deploy dir
       file: path={{ deploy_dir }} state=absent
+
+- include: unsafe_cleanup_container.yml
+  when: deployment_method == 'docker'
+

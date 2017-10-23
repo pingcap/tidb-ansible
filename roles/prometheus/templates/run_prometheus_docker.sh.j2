@@ -1,0 +1,20 @@
+#!/bin/bash
+set -e
+ulimit -n 1000000
+
+# WARNING: This file was auto-generated. Do not edit!
+#          All your edit might be overwritten!
+DEPLOY_DIR={{ deploy_dir }}
+cd "${DEPLOY_DIR}" || exit 1
+
+exec docker run -p {{ prometheus_port }}:9090 \
+  -v /etc/localtime:/etc/localtime:ro \
+  -v "{{ prometheus_data_dir }}:/prometheus" \
+  -v "{{ deploy_dir }}/conf/prometheus.yml:/etc/prometheus/prometheus.yml" \
+  -v "{{ deploy_dir }}/conf/alert.rules:/etc/prometheus/alert.rules" \
+  -u `id -u {{ deploy_user }}` \
+  --name="prometheus" \
+  prom/prometheus:{{ prometheus_tag }} \
+  --config.file=/etc/prometheus/prometheus.yml \
+  --storage.local.path=/prometheus \
+  --storage.local.retention="{{ prometheus_storage_retention }}"
