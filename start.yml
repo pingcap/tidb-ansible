@@ -42,11 +42,11 @@
 
     - name: start node_exporter by systemd
       become: true
-      systemd: name=node_exporter.service state=started enabled=yes
+      systemd: name=node_exporter.service state=started enabled=no
       when: process_supervision == 'systemd' and ansible_user != 'root'
 
     - name: start node_exporter by systemd
-      systemd: name=node_exporter.service state=started enabled=yes
+      systemd: name=node_exporter.service state=started enabled=no
       when: process_supervision == 'systemd' and ansible_user == 'root'
       vars:
         - ansible_become: false
@@ -70,7 +70,7 @@
         - prometheus
 
     - name: start monitoring modules by systemd
-      systemd: name={{ item }} state=started enabled=yes
+      systemd: name={{ item }} state=started enabled=no
       when: process_supervision == 'systemd' and ansible_user != 'root'
       become: true
       with_items:
@@ -78,7 +78,7 @@
         - prometheus.service
 
     - name: start monitoring modules by systemd
-      systemd: name={{ item }} state=started enabled=yes
+      systemd: name={{ item }} state=started enabled=no
       when: process_supervision == 'systemd' and ansible_user == 'root'
       with_items:
         - pushgateway.service
@@ -108,12 +108,12 @@
         - pd
 
     - name: start PD by systemd
-      systemd: name=pd.service state=started enabled=yes
+      systemd: name=pd.service state=started enabled=no
       become: true
       when: process_supervision == 'systemd' and ansible_user != 'root'
 
     - name: start PD by systemd
-      systemd: name=pd.service state=started enabled=yes
+      systemd: name=pd.service state=started enabled=no
       when: process_supervision == 'systemd' and ansible_user == 'root'
       vars:
         - ansible_become: false
@@ -135,12 +135,12 @@
         - tikv
 
     - name: start TiKV by systemd
-      systemd: name=tikv-{{ tikv_port }}.service state=started enabled=yes
+      systemd: name=tikv-{{ tikv_port }}.service state=started enabled=no
       become: true
       when: process_supervision == 'systemd' and ansible_user != 'root'
 
     - name: start TiKV by systemd
-      systemd: name=tikv-{{ tikv_port }}.service state=started enabled=yes
+      systemd: name=tikv-{{ tikv_port }}.service state=started enabled=no
       when: process_supervision == 'systemd' and ansible_user == 'root'
       vars:
         - ansible_become: false
@@ -179,12 +179,12 @@
         - pump
 
     - name: start pump by systemd
-      systemd: name=pump.service state=started enabled=yes
+      systemd: name=pump.service state=started enabled=no
       become: true
       when: enable_binlog and process_supervision == 'systemd' and ansible_user != 'root'
 
     - name: start pump by systemd
-      systemd: name=pump.service state=started enabled=yes
+      systemd: name=pump.service state=started enabled=no
       when: enable_binlog and process_supervision == 'systemd' and ansible_user == 'root'
       vars:
         - ansible_become: false
@@ -202,12 +202,12 @@
         - tidb
 
     - name: start TiDB by systemd
-      systemd: name=tidb-{{ tidb_port }}.service state=started enabled=yes
+      systemd: name=tidb-{{ tidb_port }}.service state=started enabled=no
       become: true
       when: process_supervision == 'systemd' and ansible_user != 'root'
 
     - name: start TiDB by systemd
-      systemd: name=tidb-{{ tidb_port }}.service state=started enabled=yes
+      systemd: name=tidb-{{ tidb_port }}.service state=started enabled=no
       when: process_supervision == 'systemd' and ansible_user == 'root'
       vars:
         - ansible_become: false
@@ -231,12 +231,12 @@
         - grafana
 
     - name: start grafana by systemd
-      systemd: name=grafana.service state=started enabled=yes
+      systemd: name=grafana.service state=started enabled=no
       when: process_supervision == 'systemd' and ansible_user != 'root'
       become: true
 
     - name: start grafana by systemd
-      systemd: name=grafana.service state=started enabled=yes
+      systemd: name=grafana.service state=started enabled=no
       when: process_supervision == 'systemd' and ansible_user == 'root'
       vars:
         - ansible_become: false

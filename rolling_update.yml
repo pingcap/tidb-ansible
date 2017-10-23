@@ -326,14 +326,14 @@
     - name: start pump by systemd
       tags:
         - restart
-      systemd: name=pump.service state=started enabled=yes
+      systemd: name=pump.service state=started
       become: true
       when: enable_binlog and process_supervision == 'systemd' and ansible_user != 'root'
 
     - name: start pump by systemd
       tags:
         - restart
-      systemd: name=pump.service state=started enabled=yes
+      systemd: name=pump.service state=started
       when: enable_binlog and process_supervision == 'systemd' and ansible_user == 'root'
       vars:
         - ansible_become: false
