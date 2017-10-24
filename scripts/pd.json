@@ -141,7 +141,7 @@
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "pd_cluster_status{instance=\"$instance\",type=\"storage_capacity\"}", 
+              "expr": "sum(pd_cluster_status{instance=\"$instance\",namespace=~\"$namespace\",type=\"storage_capacity\"})", 
               "step": 60, 
               "refId": "A"
             }
@@ -218,7 +218,7 @@
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "pd_cluster_status{instance=\"$instance\",type=\"storage_size\"}", 
+              "expr": "sum(pd_cluster_status{instance=\"$instance\",namespace=~\"$namespace\",type=\"storage_size\"})", 
               "step": 60, 
               "refId": "A"
             }
@@ -296,7 +296,7 @@
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "pd_cluster_status{instance=\"$instance\",type=\"region_count\"}", 
+              "expr": "sum(pd_cluster_status{instance=\"$instance\",namespace=~\"$namespace\",type=\"region_count\"})", 
               "step": 60, 
               "refId": "A"
             }
@@ -372,7 +372,7 @@
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "holt_winters(pd_cluster_status{instance=\"$instance\",type=\"leader_balance_ratio\"}[5m], 0.8, 0.1)", 
+              "expr": "1 - min(pd_scheduler_balance_score{instance=\"$instance\", namespace=~\"$namespace\", type=\"leader\"}) / max(pd_scheduler_balance_score{instance=\"$instance\", namespace=~\"$namespace\", type=\"leader\"})", 
               "step": 60, 
               "refId": "A"
             }
@@ -449,7 +449,7 @@
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "holt_winters(pd_cluster_status{instance=\"$instance\",type=\"region_balance_ratio\"}[5m], 0.2, 0.1)", 
+              "expr": "1 - min(pd_scheduler_balance_score{instance=\"$instance\", namespace=~\"$namespace\", type=\"region\"}) / max(pd_scheduler_balance_score{instance=\"$instance\", namespace=~\"$namespace\", type=\"region\"})", 
               "step": 60, 
               "refId": "A", 
               "legendFormat": ""
@@ -516,7 +516,7 @@
           "scroll": false, 
           "targets": [
             {
-              "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_up_count\"}", 
+              "expr": "sum(pd_cluster_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"store_up_count\"})", 
               "metric": "pd_cluster_status", 
               "interval": "", 
               "step": 20, 
@@ -526,35 +526,35 @@
             }, 
             {
               "intervalFactor": 2, 
-              "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_disconnected_count\"}", 
+              "expr": "sum(pd_cluster_status{instance=\"$instance\", namespace=~\"$namespace\",type=\"store_disconnected_count\"})", 
               "step": 20, 
               "refId": "B", 
               "legendFormat": "Disconnect Stores"
             }, 
             {
               "intervalFactor": 2, 
-              "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_low_space_count\"}", 
+              "expr": "sum(pd_cluster_status{instance=\"$instance\", namespace=~\"$namespace\",type=\"store_low_space_count\"})", 
               "step": 20, 
               "refId": "C", 
               "legendFormat": "LowSpace Stores"
             }, 
             {
               "intervalFactor": 2, 
-              "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_down_count\"}", 
+              "expr": "sum(pd_cluster_status{instance=\"$instance\", namespace=~\"$namespace\",type=\"store_down_count\"})", 
               "step": 20, 
               "refId": "D", 
               "legendFormat": "Down Stores"
             }, 
             {
               "intervalFactor": 2, 
-              "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_offline_count\"}", 
+              "expr": "sum(pd_cluster_status{instance=\"$instance\", namespace=~\"$namespace\",type=\"store_offline_count\"})", 
               "step": 20, 
               "refId": "E", 
               "legendFormat": "Offline Stores"
             }, 
             {
               "intervalFactor": 2, 
-              "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_tombstone_count\"}", 
+              "expr": "sum(pd_cluster_status{instance=\"$instance\", namespace=~\"$namespace\",type=\"store_tombstone_count\"})", 
               "step": 20, 
               "refId": "F", 
               "legendFormat": "Tombstone Stores"
@@ -613,7 +613,7 @@
           "targets": [
             {
               "hide": false, 
-              "expr": "pd_cluster_status{instance=\"$instance\",type=\"storage_size\"}", 
+              "expr": "pd_cluster_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"storage_size\"}", 
               "step": 10, 
               "legendFormat": "strage size", 
               "intervalFactor": 2, 
@@ -621,7 +621,7 @@
             }, 
             {
               "hide": false, 
-              "expr": "avg(pd_cluster_status{type=\"storage_size\"}) / avg(pd_cluster_status{type=\"storage_capacity\"})", 
+              "expr": "avg(pd_cluster_status{type=\"storage_size\", namespace=~\"$namespace\"}) / avg(pd_cluster_status{type=\"storage_capacity\", namespace=~\"$namespace\"})", 
               "step": 20, 
               "legendFormat": "used ratio", 
               "intervalFactor": 4, 
@@ -746,7 +746,7 @@
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "pd_cluster_status{instance=\"$instance\",type=\"region_count\"}", 
+              "expr": "sum(pd_cluster_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"region_count\"})", 
               "step": 10, 
               "refId": "A", 
               "legendFormat": "count"
@@ -804,7 +804,7 @@
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "sum(delta(pd_schedule_operators_count{instance=\"$instance\",state=\"finished\"}[1m])) by (type,state)", 
+              "expr": "sum(delta(pd_schedule_operators_count{instance=\"$instance\"}[1m])) by (type)", 
               "step": 10, 
               "refId": "A", 
               "legendFormat": "{{type}}"
@@ -889,7 +889,7 @@
           "id": 40, 
           "fill": 1, 
           "span": 6, 
-          "title": "Leader Balance Ratio", 
+          "title": "Store leader score", 
           "tooltip": {
             "sort": 0, 
             "shared": true, 
@@ -897,29 +897,23 @@
             "msResolution": false
           }, 
           "legend": {
+            "rightSide": true,
+            "alignAsTable": true,
             "total": false, 
             "show": false, 
-            "max": false, 
-            "min": false, 
-            "current": false, 
+            "max": true, 
+            "min": true, 
+            "current": true, 
             "values": false, 
             "avg": false
           }, 
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "pd_cluster_status{instance=\"$instance\",type=\"leader_balance_ratio\"}", 
+              "expr": "pd_scheduler_balance_score{instance=\"$instance\", namespace=~\"$namespace\", type=\"leader\"}", 
               "step": 10, 
               "refId": "A", 
-              "legendFormat": "leader max diff ratio"
-            }, 
-            {
-              "hide": true, 
-              "expr": "min(pd_cluster_status{type=\"leader_balance_ratio\"})", 
-              "step": 4, 
-              "legendFormat": "ratio", 
-              "intervalFactor": 2, 
-              "refId": "B"
+              "legendFormat": "tikv-{{store}}"
             }
           ], 
           "yaxes": [
@@ -951,49 +945,6 @@
           "type": "graph", 
           "error": false, 
           "editable": true, 
-          "alert": {
-            "noDataState": "no_data", 
-            "name": "Leader Banlace Ratio alert", 
-            "frequency": "60s", 
-            "notifications": [], 
-            "handler": 1, 
-            "executionErrorState": "alerting", 
-            "message": "Region leader balance ratio is high.", 
-            "conditions": [
-              {
-                "operator": {
-                  "type": "and"
-                }, 
-                "query": {
-                  "params": [
-                    "B", 
-                    "1m", 
-                    "now"
-                  ], 
-                  "model": {
-                    "hide": true, 
-                    "expr": "min(pd_cluster_status{type=\"leader_balance_ratio\"})", 
-                    "step": 4, 
-                    "legendFormat": "ratio", 
-                    "intervalFactor": 2, 
-                    "refId": "B"
-                  }, 
-                  "datasourceId": 1
-                }, 
-                "evaluator": {
-                  "type": "gt", 
-                  "params": [
-                    0.2
-                  ]
-                }, 
-                "reducer": {
-                  "type": "avg", 
-                  "params": []
-                }, 
-                "type": "query"
-              }
-            ]
-          }, 
           "grid": {}, 
           "stack": false, 
           "timeShift": null, 
@@ -1024,7 +975,7 @@
           "id": 41, 
           "fill": 1, 
           "span": 6, 
-          "title": "Region Balance Ratio", 
+          "title": "Store region score", 
           "tooltip": {
             "sort": 0, 
             "shared": true, 
@@ -1032,6 +983,8 @@
             "msResolution": false
           }, 
           "legend": {
+            "rightSide": true,
+            "alignAsTable": true,
             "total": false, 
             "show": false, 
             "max": false, 
@@ -1043,19 +996,11 @@
           "targets": [
             {
               "hide": false, 
-              "expr": "pd_cluster_status{instance=\"$instance\",type=\"region_balance_ratio\"}", 
+              "expr": "pd_scheduler_balance_score{instance=\"$instance\", namespace=~\"$namespace\", type=\"region\"}", 
               "step": 10, 
               "legendFormat": "\bstore balance ratio", 
               "intervalFactor": 2, 
               "refId": "A"
-            }, 
-            {
-              "hide": true, 
-              "expr": "min(pd_cluster_status{type=\"region_balance_ratio\"})", 
-              "step": 4, 
-              "legendFormat": "ratio", 
-              "intervalFactor": 2, 
-              "refId": "B"
             }
           ], 
           "yaxes": [
@@ -1087,49 +1032,6 @@
           "type": "graph", 
           "error": false, 
           "editable": true, 
-          "alert": {
-            "noDataState": "no_data", 
-            "name": "Region Balance Ratio alert", 
-            "frequency": "60s", 
-            "notifications": [], 
-            "handler": 1, 
-            "executionErrorState": "alerting", 
-            "message": "Store balance ratio is high", 
-            "conditions": [
-              {
-                "operator": {
-                  "type": "and"
-                }, 
-                "query": {
-                  "params": [
-                    "B", 
-                    "5m", 
-                    "now"
-                  ], 
-                  "model": {
-                    "hide": true, 
-                    "expr": "min(pd_cluster_status{type=\"region_balance_ratio\"})", 
-                    "step": 4, 
-                    "legendFormat": "ratio", 
-                    "intervalFactor": 2, 
-                    "refId": "B"
-                  }, 
-                  "datasourceId": 1
-                }, 
-                "evaluator": {
-                  "type": "gt", 
-                  "params": [
-                    0.2
-                  ]
-                }, 
-                "reducer": {
-                  "type": "avg", 
-                  "params": []
-                }, 
-                "type": "query"
-              }
-            ]
-          }, 
           "grid": {}, 
           "stack": false, 
           "timeShift": null, 
@@ -3628,6 +3530,26 @@
         "tagsQuery": null, 
         "options": [], 
         "includeAll": false
+      },
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": "${DS_TIDB-CLUSTER}",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Namespace",
+        "multi": false,
+        "name": "namespace",
+        "options": [],
+        "query": "label_values(pd_cluster_status{instance=\"$instance\"}, namespace)",
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
       }
     ]
   }
