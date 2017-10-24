@@ -11,11 +11,11 @@
     state: stopped
   when: time_server is defined
 
-- name: Adjust Time | Start to adjust time with {{ time_server }}
+- name: Adjust Time - Start to adjust time with {{ time_server }}
   shell: ntpdate {{ time_server }}
   when: time_server is defined
 
-- name: Adjust Time | Make sure ntpd service has been started
+- name: Adjust Time - Make sure ntpd service has been started
   service:
     name: ntpd
     state: started
