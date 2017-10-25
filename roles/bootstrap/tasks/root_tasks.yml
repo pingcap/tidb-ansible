@@ -1,5 +1,8 @@
 ---
 
+- name: make sure ip_conntrack mod has been loaded
+  shell: lsmod |grep conntrack || modprobe ip_conntrack
+
 - name: setting absent kernel params
   sysctl:
     name: "{{ item.name }}"
@@ -88,29 +91,29 @@
 
 # modify irqbalance configuration file
 - name: check centos configuration file exists
-  stat: path=/etc/sysconfig/irqbalance 
+  stat: path=/etc/sysconfig/irqbalance
   register: centos_irq_config_file
 
 - name: check debian configuration file exists
-  stat: path=/etc/default/irqbalance 
+  stat: path=/etc/default/irqbalance
   register: debian_irq_config_file
 
 - name: modify centos irqbalance configuration file
-  lineinfile: 
-    dest=/etc/sysconfig/irqbalance 
+  lineinfile:
+    dest=/etc/sysconfig/irqbalance
     regexp='(?<!_)ONESHOT='
     line='ONESHOT=yes'
-  when: 
-    - tuning_irqbalance_value 
+  when:
+    - tuning_irqbalance_value
     - centos_irq_config_file.stat.exists
 
 - name: modify debian irqbalance configuration file
-  lineinfile: 
-    dest=/etc/default/irqbalance 
+  lineinfile:
+    dest=/etc/default/irqbalance
     regexp='ONESHOT='
     line='ONESHOT="1"'
-  when: 
-    - tuning_irqbalance_value 
+  when:
+    - tuning_irqbalance_value
     - debian_irq_config_file.stat.exists
 
 # start/enable irqbalance value
