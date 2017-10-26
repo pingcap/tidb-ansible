@@ -2,9 +2,25 @@
 
 - name: Debian/Ubuntu - install python
   raw: sudo apt-get install -y python
-  when: "'Ubuntu' in distro or 'Debian' in distro"
+  when:
+    - "'Ubuntu' in distro or 'Debian' in distro"
+    - "not has_python"
 
 - name: Redhat/CentOS - install python
   raw: sudo yum install -y python
+  when:
+    - "'CentOS' in distro"
+    - "not has_python"
+
+- name: Redhat/CentOS - Make sure ntp has been installed
+  yum:
+    name: ntp
+    state: present
   when: "'CentOS' in distro"
+
+- name: Debian/Ubuntu - Make sure ntp has been installed
+  apt:
+    name: ntp
+    state: present
+  when: "'Ubuntu' in distro or 'Debian' in distro"
 
