@@ -157,6 +157,8 @@
   set_fact:
     skip_create_deploy_dir: true
   when:
+    - deploy_dir_st is defined
+    - deploy_dir_st.stat is defined
     - deploy_dir_st.stat.writeable is defined
     - deploy_dir_st.stat.writeable
     - deploy_dir_st.stat.readable
@@ -167,6 +169,8 @@
     skip_supervise: true
   when:
     - process_supervision == 'supervise'
+    - supervise_st is defined
+    - supervise_st.stat is defined
     - supervise_st.stat.executable is defined
     - supervise_st.stat.executable
 
