@@ -10,6 +10,7 @@ ExecStart={{ deploy_dir }}/scripts/run_{{ this_role_name }}.sh
 ExecStartPre=-{{ docker_bin_dir }}/docker rm -f {{ service_name }}
 ExecStop={{ docker_bin_dir }}/docker stop {{ service_name }}
 Restart=always
+RestartSec=15s
 
 [Install]
 WantedBy=multi-user.target
