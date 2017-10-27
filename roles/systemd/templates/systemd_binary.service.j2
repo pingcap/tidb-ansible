@@ -4,9 +4,10 @@ After=syslog.target network.target remote-fs.target nss-lookup.target
 
 [Service]
 LimitNOFILE=1000000
+User={{ deploy_user }}
 ExecStart={{ deploy_dir }}/scripts/run_{{ this_role_name }}.sh
 Restart=always
-User={{ deploy_user }}
+RestartSec=15s
 
 [Install]
 WantedBy=multi-user.target
