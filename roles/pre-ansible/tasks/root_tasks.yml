@@ -16,28 +16,48 @@
     - "'CentOS' in distro"
     - "not has_python"
 
-- name: Redhat/CentOS - Make sure ntp, ntpdate, ntpstat have been installed
+- name: Redhat/CentOS - Make sure ntp, ntpstat have been installed
   yum:
     name: "{{ item }}"
     state: present
   with_items:
     - ntp
-    - ntpdate
   when:
     - "'CentOS' in distro"
     - enable_ntpd
 
-- name: Debian/Ubuntu - Make sure ntp, ntpdate, ntpstat have been installed
+- name: Redhat/CentOS - Make sure ntpdate have been installed
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - ntpdate
+  when:
+    - "'CentOS' in distro"
+    - enable_ntpd
+    - time_server is defined
+
+- name: Debian/Ubuntu - Make sure ntp, ntpstat have been installed
   apt:
     name: "{{ item }}"
     state: present
   with_items:
     - ntp
-    - ntpdate
     - ntpstat
   when:
     - "'Ubuntu' in distro or 'Debian' in distro"
     - enable_ntpd
+
+- name: Debian/Ubuntu - Make sure ntpdate have been installed
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - ntpdate
+  when:
+    - "'Ubuntu' in distro or 'Debian' in distro"
+    - enable_ntpd
+    - time_server is defined
 
 - name: Adjust Time | Make sure ntpd service has been stopped
   service:
