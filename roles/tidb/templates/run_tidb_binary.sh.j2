@@ -25,7 +25,7 @@ exec bin/tidb-server \
 {% if enable_binlog %}
     --binlog-socket="{{ pump_socket }}" \
 {% endif %}
-{% if tidb_slow_query_filename is defined %}
-     --log-slow-query="{{ tidb_log_dir }}/{{ tidb_slow_query_filename }}" \
+{% if enable_slow_query_log %}
+    --log-slow-query="{{ tidb_log_dir }}/{{ tidb_slow_query_filename }}" \
 {% endif %}
     --log-file="{{ tidb_log_dir }}/{{ tidb_log_filename }}" 2> "{{ tidb_log_dir }}/{{ tidb_stderr_filename }}"

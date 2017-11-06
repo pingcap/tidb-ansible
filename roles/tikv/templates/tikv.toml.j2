@@ -5,8 +5,9 @@
 #   Time(based on ms): ms, s, m, h
 #    e.g.: 78_000 = "1.3m"
 
-# log level: trace, debug, info, warn, error, off.
-# log-level = "info"
+{% for item, value in tikv_conf.global | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
 
 [server]
 {% for item, value in tikv_conf.server | dictsort -%}
