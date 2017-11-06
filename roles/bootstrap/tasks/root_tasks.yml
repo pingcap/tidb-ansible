@@ -54,8 +54,8 @@
   file: path="{{ raftdb_path }}" state=directory mode=0755 owner={{ deploy_user }} group={{ deploy_user }}
   when: raftdb_path is defined
 
-- name: set timezone to Asia/Shanghai
-  timezone: name=Asia/Shanghai
+- name: set timezone to {{ timezone }}
+  timezone: name={{ timezone }}
 
 - name: set hostname if hostname is not distinguishable
   hostname: name=ip-{{ ansible_default_ipv4.address | replace(".","-") }}
@@ -88,29 +88,29 @@
 
 # modify irqbalance configuration file
 - name: check centos configuration file exists
-  stat: path=/etc/sysconfig/irqbalance 
+  stat: path=/etc/sysconfig/irqbalance
   register: centos_irq_config_file
 
 - name: check debian configuration file exists
-  stat: path=/etc/default/irqbalance 
+  stat: path=/etc/default/irqbalance
   register: debian_irq_config_file
 
 - name: modify centos irqbalance configuration file
-  lineinfile: 
-    dest=/etc/sysconfig/irqbalance 
+  lineinfile:
+    dest=/etc/sysconfig/irqbalance
     regexp='(?<!_)ONESHOT='
     line='ONESHOT=yes'
-  when: 
-    - tuning_irqbalance_value 
+  when:
+    - tuning_irqbalance_value
     - centos_irq_config_file.stat.exists
 
 - name: modify debian irqbalance configuration file
-  lineinfile: 
-    dest=/etc/default/irqbalance 
+  lineinfile:
+    dest=/etc/default/irqbalance
     regexp='ONESHOT='
     line='ONESHOT="1"'
-  when: 
-    - tuning_irqbalance_value 
+  when:
+    - tuning_irqbalance_value
     - debian_irq_config_file.stat.exists
 
 # start/enable irqbalance value
