@@ -32,8 +32,6 @@ exec docker run \
   --hostname "tidb-{{ my_id }}" \
   --name "tidb-{{ tidb_port }}" \
   pingcap/tidb:{{ tidb_version }} \
-  --store=tikv \
-  -L="{{ tidb_log_level }}" \
   --log-file="/var/log/{{ tidb_log_filename }}" \
   --path="{{ all_pd | join(',') }}" \
 {% if enable_binlog %}

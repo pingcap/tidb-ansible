@@ -5,10 +5,9 @@
 #   Time(based on ms): ms, s, m, h
 #    e.g.: 78_000 = "1.3m"
 
-# log level: trace, debug, info, warn, error, off.
-# log-level = "info"
-# file to store log, write to stderr if it's empty.
-# log-file = ""
+{% for item, value in tikv_conf.global | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
 
 [server]
 {% for item, value in tikv_conf.server | dictsort -%}
@@ -37,6 +36,11 @@
 
 [raftstore]
 {% for item, value in tikv_conf.raftstore | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+
+[coprocessor]
+{% for item, value in tikv_conf.coprocessor | dictsort -%}
 {{ item }} = {{ value | to_json }}
 {% endfor %}
 

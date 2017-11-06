@@ -13,7 +13,7 @@ cd "${DEPLOY_DIR}" || exit 1
     if groups.get('monitoring_servers', []) else "" -%}
 {% set metric_port = hostvars[groups.monitoring_servers[0]].pushgateway_port if metric_host else "" -%}
 {% set metric_addr = metric_host ~ ":" ~ metric_port if metric_host else "" -%}
-{% set metric_interval = tidb_metric_interval if metric_host else "0" -%}
+{% set metric_interval = pump_metric_interval if metric_host else "0" -%}
 
 {% set all_pd = [] -%}
 {% set pd_hosts = groups.pd_servers %}

@@ -1,39 +1,7 @@
-{% set my_ip = hostvars[inventory_hostname].ansible_host | default(hostvars[inventory_hostname].inventory_hostname) -%}
+# PD Configuration
+initial-cluster-state = "new"
 
-{% set my_peer_id = groups.pd_servers.index(inventory_hostname) + 1 -%}
-
-{% set all_pd = [] -%}
-
-{% for host in groups.pd_servers -%}
-  {% set other_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
-  {% set other_port = hostvars[host].pd_peer_port -%}
-  {% set other_pd_name_surfix = groups.pd_servers.index(host) + 1 -%}
-  {% set other_pd_name = pd_name_prefix ~ other_pd_name_surfix -%}
-  {% set _ = all_pd.append("%s=http://%s:%s" % (other_pd_name, other_ip, other_port)) -%}
-{% endfor -%}
-
-{% set metric_host = hostvars[groups.monitoring_servers[0]].ansible_host | default(hostvars[groups.monitoring_servers[0]].inventory_hostname) if groups.get('monitoring_servers', []) else '' -%}
-{% set metric_port = hostvars[groups.monitoring_servers[0]].pushgateway_port if metric_host else '' -%}
-{% set metric_interval = pd_metric_interval if metric_host else "0s" -%}
-
-# PD Configuration.
-# WARNING: This file was auto-generated. Do not edit!
-#          All your edit might be overwritten!
-# WARNING: The following configuration commented is set in run_pd.sh
-
-# name = "{{ pd_name_prefix }}{{ my_peer_id }}"
-# data-dir = "{{ pd_data_dir}}"
-
-# client-urls = ""
-# advertise-client-urls = ""
-
-# peer-urls = ""
-# advertise-peer-urls = ""
-
-# initial-cluster = ""
-# initial-cluster-state = "new"
-
-{% for item, value in pd_conf.server | dictsort -%}
+{% for item, value in pd_conf.global | dictsort -%}
 {{ item }} = {{ value | to_json }}
 {% endfor %}
 
