@@ -13,7 +13,7 @@
     name: python
     state: present
   when:
-    - 'CentOS' in distro
+    - "'CentOS' in distro"
     - "not has_python"
 
 - name: Redhat/CentOS - Make sure ntp, ntpdate, ntpstat have been installed
@@ -24,7 +24,7 @@
     - ntp
     - ntpdate
   when:
-    - 'CentOS' in distro
+    - "'CentOS' in distro"
     - enable_ntpd
 
 - name: Debian/Ubuntu - Make sure ntp, ntpdate, ntpstat have been installed
@@ -44,7 +44,7 @@
     name: ntpd
     state: stopped
   when:
-    - 'CentOS' in distro
+    - "'CentOS' in distro"
     - enable_ntpd
     - time_server is defined
 
@@ -66,7 +66,7 @@
     name: ntpd
     state: started
   when:
-    - 'CentOS' in distro
+    - "'CentOS' in distro"
     - enable_ntpd
 
 - name: Adjust Time | Make sure ntpd service has been started
