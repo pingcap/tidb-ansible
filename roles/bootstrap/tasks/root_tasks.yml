@@ -54,8 +54,8 @@
   file: path="{{ raftdb_path }}" state=directory mode=0755 owner={{ deploy_user }} group={{ deploy_user }}
   when: raftdb_path is defined
 
-- name: set timezone to Asia/Shanghai
-  timezone: name=Asia/Shanghai
+- name: set timezone to {{ timezone }}
+  timezone: name={{ timezone }}
 
 - name: set hostname if hostname is not distinguishable
   hostname: name=ip-{{ ansible_default_ipv4.address | replace(".","-") }}
