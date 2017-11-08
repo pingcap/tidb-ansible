@@ -1,7 +1,7 @@
 ---
 
 - name: Benchmark the direct write speed of tikv deploy_dir disk with dd command
-  shell: "LANG='en_US.UTF-8' dd bs=4k count=250000 oflag=direct if=/dev/zero of={{ deploy_dir }}/dd_test.txt 2>&1 | awk '/MB/{print $(NF-1)}'"
+  shell: "LANG='en_US.UTF-8' LC_NUMERIC='en_US.UTF-8' dd bs=4k count=250000 oflag=direct if=/dev/zero of={{ deploy_dir }}/dd_test.txt 2>&1 | awk '/MB/{print $(NF-1)}'"
   register: disk_write_speed
 
 - debug:
