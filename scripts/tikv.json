@@ -5656,13 +5656,18 @@
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "seriesOverrides": [],
+          "seriesOverrides": [
+            {
+              "alias": "select",
+              "yaxis": 2
+            }
+          ],
           "span": 6,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_coprocessor_scan_keys_bucket[1m])) by (req)",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_coprocessor_scan_keys_bucket[1m])) by (le, req))",
               "interval": "",
               "intervalFactor": 2,
               "legendFormat": "{{req}}",
