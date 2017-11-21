@@ -5662,7 +5662,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_coprocessor_scan_keys_bucket[1m])) by (le, req))  ",
+              "expr": "histogram_quantile(0.99, avg(rate(tikv_coprocessor_scan_keys_bucket[1m])) by (le, req))  ",
               "interval": "",
               "intervalFactor": 2,
               "legendFormat": "{{req}}-99%",
@@ -5671,7 +5671,7 @@
               "step": 10
             },
             {
-              "expr": "histogram_quantile(0.95, sum(rate(tikv_coprocessor_scan_keys_bucket[1m])) by (le, req))  ",
+              "expr": "histogram_quantile(0.95, avg(rate(tikv_coprocessor_scan_keys_bucket[1m])) by (le, req))  ",
               "intervalFactor": 2,
               "legendFormat": "{{req}}-95%",
               "metric": "tikv_coprocessor_scan_keys_bucket",
@@ -5679,7 +5679,7 @@
               "step": 10
             },
             {
-              "expr": "histogram_quantile(0.90, sum(rate(tikv_coprocessor_scan_keys_bucket[1m])) by (le, req))  ",
+              "expr": "histogram_quantile(0.90, avg(rate(tikv_coprocessor_scan_keys_bucket[1m])) by (le, req))  ",
               "intervalFactor": 2,
               "legendFormat": "{{req}}-90%",
               "metric": "tikv_coprocessor_scan_keys_bucket",
