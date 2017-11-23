@@ -6,7 +6,7 @@
   register: st_conf
 
 - name: get alert conf stat
-  stat: path={{ deploy_dir }}/conf/alert.rules
+  stat: path={{ deploy_dir }}/conf/alert.rules.yml
   register: st_alert_conf
 
 - name: create configuration file if not exist
@@ -15,13 +15,13 @@
     hosts: "{{ groups['all'] | list }}"
 
 - name: copy alert rules file if not exist
-  copy: src=alert.rules dest="{{ deploy_dir }}/conf/alert.rules" mode=0644
+  copy: src=alert.rules.yml dest="{{ deploy_dir }}/conf/alert.rules.yml" mode=0644
   when: not st_alert_conf.stat.exists
   register: alert_rules_result
 
-- name: set alert rules label if alert.rules changes
+- name: set alert rules label if alert.rules.yml changes
   replace: >
-    dest={{ deploy_dir }}/conf/alert.rules
+    dest={{ deploy_dir }}/conf/alert.rules.yml
     regexp="ENV_LABELS_ENV"
     replace="{{ cluster_name }}"
   when: alert_rules_result.changed
