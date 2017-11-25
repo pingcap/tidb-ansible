@@ -2147,7 +2147,7 @@
               "calculatedInterval": "2s",
               "datasourceErrors": {},
               "errors": {},
-              "expr": "rate(node_disk_read_time_ms{instance=\"$host\"}[1m]) / rate(node_disk_reads_completed{instance=\"$host\"}[1m])",
+              "expr": "rate(node_disk_read_time_ms{instance=\"$host\"}[1m]) / 1000 / rate(node_disk_reads_completed{instance=\"$host\"}[1m])",
               "intervalFactor": 1,
               "legendFormat": "{{ device }}",
               "metric": "node_disk_io_time_ms",
@@ -2234,7 +2234,7 @@
               "calculatedInterval": "2s",
               "datasourceErrors": {},
               "errors": {},
-              "expr": "rate(node_disk_write_time_ms{instance=\"$host\"}[1m]) / rate(node_disk_writes_completed{instance=\"$host\"}[1m])",
+              "expr": "rate(node_disk_write_time_ms{instance=\"$host\"}[1m]) / 1000 / rate(node_disk_writes_completed{instance=\"$host\"}[1m])",
               "intervalFactor": 1,
               "legendFormat": "{{ device }}",
               "metric": "node_disk_io_time_ms",
@@ -2574,5 +2574,5 @@
   },
   "timezone": "browser",
   "title": "TiDB Cluster - node",
-  "version": 4
+  "version": 6
 }
