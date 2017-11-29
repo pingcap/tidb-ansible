@@ -13,6 +13,11 @@
 # limitations under the License.
 
 - name: do fetch logfile informations
-  hosts: all
+  hosts: pd_servers,tidb_servers,tikv_servers
   roles:
     - fetch_logfile
+
+- hosts: localhost
+  tasks:
+    - name: archive all log files
+      shell: "cd {{ fetch_log_dir }} && tar czvf cluster_log.tar.gz * && find ./ -mindepth 1 ! -name 'cluster_log.tar.gz' |xargs rm -rf"
