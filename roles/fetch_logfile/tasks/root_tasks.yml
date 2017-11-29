@@ -1,0 +1,48 @@
+---
+
+- name: environment check (deploy dir)
+  stat: path={{ deploy_dir }} get_md5=false get_checksum=false
+  register: deploy_dir_st
+
+- name: environment check (supervise)
+  stat: path={{ deploy_dir }}/log/{{ hostvars[inventory_hostname].inventory_hostname}}-log.tar.gz get_md5=false get_checksum=false
+  register: archive_log_st
+  when:
+    - deploy_dir_st.stat.isdir is defined
+    - deploy_dir_st.stat.isdir
+
+- name: Guess deploy_user - set ansible_user as default
+  set_fact:
+    deploy_user: "{{ ansible_user }}"
+  when: deploy_user is not defined
+
+- name: Guess deploy_user - use become_user under root
+  set_fact:
+    deploy_user: "{{ ansible_become_user }}"
+  when: deploy_user == 'root' and ansible_become_user is defined and ansible_become_user
+
+- name: archive log files
+  shell: "cd {{ deploy_dir }}/log ; echo -e \"###### CPU ######\n`LANG=en_US.UTF-8 cat /proc/cpuinfo |egrep '(processor|cpu MHz)'`\n\n\n###### MEMORY(MB) ######\n`LANG=en_US.UTF-8 free -m`\n\n\n###### DISK ######\n`LANG=en_US.UTF-8 df -h`\n\n\n###### SYSCTL ######\n`sysctl -p`\n\n\n###### ULIMIT ######\n`su {{ deploy_user }} -c 'ulimit -a'`\" > system.info ; cp /var/log/messages . ; tar czPf {{ hostvars[inventory_hostname].inventory_hostname }}-log.tar.gz *.log messages system.info --exclude=node_exporter.log --exclude=pushgateway.log --exclude=prometheus.log --exclude=grafana.log ; echo ''"
+  when: not archive_log_st.stat.exists
+
+- name: fetch log files
+  fetch:
+    src: "{{ deploy_dir }}/log/{{ hostvars[inventory_hostname].inventory_hostname }}-log.tar.gz"
+    dest: "{{ fetch_log_dir }}/"
+    flat: yes
+    validate_checksum: no
+
+- name: remove archive log file
+  file:
+    path: "{{ deploy_dir }}/log/{{ hostvars[inventory_hostname].inventory_hostname }}-log.tar.gz"
+    state: absent
+
+- name: remove system info file
+  file:
+    path: "{{ deploy_dir }}/log/system.info"
+    state: absent
+
+- name: remove system info file
+  file:
+    path: "{{ deploy_dir }}/log/messages"
+    state: absent
