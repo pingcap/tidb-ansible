@@ -1,18 +1,17 @@
 ---
 
-- name: archive log files
-  shell: "(cd {{ deploy_dir }}/log && find . -type f -name \'*log*\' -mtime -2 |xargs tar zfc {{ deploy_dir }}/log/lastest_2_days.tar.gz )"
+- include: root_tasks.yml
+  static: no
+  become: false
+  become_user: root
+  when:
+    - ansible_user == 'root'
+  vars: # ugly workaround
+    - ansible_become: false
+    - ansible_become_user: root
 
-
-
-- name: fetch log files
-  fetch:
-    src: "{{ deploy_dir }}/log/lastest_2_days.tar.gz"
-    dest: "{{ fetch_log_dir }}/{{ hostvars[inventory_hostname].inventory_hostname }}_lastest_2_days.tar.gz"
-    flat: yes
-
-- name: remove archive log file
-  file:
-    path: "{{ deploy_dir }}/log/lastest_2_days.tar.gz"
-    state: absent
-    
+- include: root_tasks.yml
+  static: no
+  become: true
+  when:
+    - ansible_user != 'root'
