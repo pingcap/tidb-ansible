@@ -5,8 +5,8 @@ initial-cluster-state = "new"
 {{ item }} = {{ value | to_json }}
 {% endfor %}
 
-[metric]
-{% for item, value in pd_conf.metric | dictsort -%}
+[security]
+{% for item, value in pd_conf.security | dictsort -%}
 {{ item }} = {{ value | to_json }}
 {% endfor %}
 
@@ -21,6 +21,11 @@ initial-cluster-state = "new"
 {{ sub_item }} = {{ sub_value | to_json }}
 {% endfor %}
 {% endif %}
+{% endfor %}
+
+[metric]
+{% for item, value in pd_conf.metric | dictsort -%}
+{{ item }} = {{ value | to_json }}
 {% endfor %}
 
 [schedule]

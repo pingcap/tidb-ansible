@@ -69,3 +69,8 @@
 {% endfor %}
 {% endif %}
 {% endfor %}
+
+[security]
+{% for item, value in tikv_conf.security | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
