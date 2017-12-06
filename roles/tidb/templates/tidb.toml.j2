@@ -37,6 +37,11 @@
 {{ item }} = {{ value | to_json }}
 {% endfor %}
 
+[proxy-protocol]
+{% for item, value in tidb_conf.proxy_protocol | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+
 [plan-cache]
 {% for item, value in tidb_conf.plan_cache | dictsort -%}
 {{ item }} = {{ value | to_json }}
@@ -58,4 +63,9 @@
 {{ sub_item }} = {{ sub_value | to_json }}
 {% endfor %}
 {% endif %}
+{% endfor %}
+
+[tikv-client]
+{% for item, value in tidb_conf.tikv_client | dictsort -%}
+{{ item }} = {{ value | to_json }}
 {% endfor %}
