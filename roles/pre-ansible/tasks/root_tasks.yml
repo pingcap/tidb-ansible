@@ -26,16 +26,16 @@
     - "'CentOS' in distro"
     - enable_ntpd
 
-- name: Redhat/CentOS - Make sure ntpdate have been installed
-  yum:
-    name: "{{ item }}"
-    state: present
-  with_items:
-    - ntpdate
-  when:
-    - "'CentOS' in distro"
-    - enable_ntpd
-    - time_server is defined
+# - name: Redhat/CentOS - Make sure ntpdate have been installed
+#   yum:
+#     name: "{{ item }}"
+#     state: present
+#   with_items:
+#     - ntpdate
+#   when:
+#     - "'CentOS' in distro"
+#     - enable_ntpd
+#     - time_server is defined
 
 - name: Debian/Ubuntu - Make sure ntp, ntpstat have been installed
   apt:
@@ -48,51 +48,51 @@
     - "'Ubuntu' in distro or 'Debian' in distro"
     - enable_ntpd
 
-- name: Debian/Ubuntu - Make sure ntpdate have been installed
-  apt:
-    name: "{{ item }}"
-    state: present
-  with_items:
-    - ntpdate
-  when:
-    - "'Ubuntu' in distro or 'Debian' in distro"
-    - enable_ntpd
-    - time_server is defined
+# - name: Debian/Ubuntu - Make sure ntpdate have been installed
+#   apt:
+#     name: "{{ item }}"
+#     state: present
+#   with_items:
+#     - ntpdate
+#   when:
+#     - "'Ubuntu' in distro or 'Debian' in distro"
+#     - enable_ntpd
+#     - time_server is defined
 
-- name: Adjust Time | Make sure ntpd service has been stopped
-  service:
-    name: ntpd
-    state: stopped
-  when:
-    - "'CentOS' in distro"
-    - enable_ntpd
-    - time_server is defined
-
-- name: Adjust Time | Make sure ntp service has been stopped
-  service:
-    name: ntp
-    state: stopped
-  when:
-    - "'Ubuntu' in distro or 'Debian' in distro"
-    - enable_ntpd
-    - time_server is defined
-
-- name: Adjust Time | Start to adjust time with {{ time_server }}
-  shell: ntpdate {{ time_server }}
-  when: enable_ntpd and time_server is defined
-
-- name: Adjust Time | Make sure ntpd service has been started
-  service:
-    name: ntpd
-    state: started
-  when:
-    - "'CentOS' in distro"
-    - enable_ntpd
-
-- name: Adjust Time | Make sure ntpd service has been started
-  service:
-    name: ntp
-    state: started
-  when:
-    - "'Ubuntu' in distro or 'Debian' in distro"
-    - enable_ntpd
+# - name: Adjust Time | Make sure ntpd service has been stopped
+#   service:
+#     name: ntpd
+#     state: stopped
+#   when:
+#     - "'CentOS' in distro"
+#     - enable_ntpd
+#     - time_server is defined
+#
+# - name: Adjust Time | Make sure ntp service has been stopped
+#   service:
+#     name: ntp
+#     state: stopped
+#   when:
+#     - "'Ubuntu' in distro or 'Debian' in distro"
+#     - enable_ntpd
+#     - time_server is defined
+#
+# - name: Adjust Time | Start to adjust time with {{ time_server }}
+#   shell: ntpdate {{ time_server }}
+#   when: enable_ntpd and time_server is defined
+#
+# - name: Adjust Time | Make sure ntpd service has been started
+#   service:
+#     name: ntpd
+#     state: started
+#   when:
+#     - "'CentOS' in distro"
+#     - enable_ntpd
+#
+# - name: Adjust Time | Make sure ntpd service has been started
+#   service:
+#     name: ntp
+#     state: started
+#   when:
+#     - "'Ubuntu' in distro or 'Debian' in distro"
+#     - enable_ntpd
