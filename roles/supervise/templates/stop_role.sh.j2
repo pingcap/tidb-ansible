@@ -11,17 +11,15 @@ cd "${DEPLOY_DIR}" || exit 1
 bin/svc -d "${STATUS_DIR}" &>/dev/null || true
 
 # check by supervise pid
-if [ -e "${STATUS_DIR}/pid" ]; then
-    _pid=$(cat "${STATUS_DIR}/pid")
-    if [ "$(basename "$(readlink /proc/${_pid}/exe)")" == "supervise" ]; then
-        kill ${_pid}
-        rm -f "${STATUS_DIR}/*"
+if [ ! -z $(readlink /proc/$(cat ${STATUS_DIR}/pid)/exe) ]; then
+    if [ "$(basename "$(readlink /proc/$(cat ${STATUS_DIR}/pid)/exe)")" == "supervise" ]; then
+        kill $(cat ${STATUS_DIR}/pid)
     fi
 fi
 
 # check by svstat
 _check=$(bin/svstat "${STATUS_DIR}" 2>/dev/null)
-if echo "${_check}" | grep 'up pid' | grep -v 'want down' &>/dev/null; then
+if echo "${_check}" | grep 'up pid' &>/dev/null; then
     _pid=$(echo "${_check}" | cut -d' ' -f 4)
     if [ "$(readlink /proc/${_pid}/cwd)" == "${DEPLOY_DIR}" ]; then
         kill ${_pid}
