@@ -1,8 +1,8 @@
 {
   "__inputs": [
     {
-      "name": "DS_TEST-CLUSTER",
-      "label": "test-cluster",
+      "name": "DS_TIDB-MASTER",
+      "label": "tidb-master",
       "description": "",
       "type": "datasource",
       "pluginId": "prometheus",
@@ -14,7 +14,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "4.1.2"
+      "version": "4.5.2"
     },
     {
       "type": "panel",
@@ -57,15 +57,10 @@
       "height": 250,
       "panels": [
         {
-          "columns": [
-            {
-              "text": "Avg",
-              "value": "avg"
-            }
-          ],
-          "datasource": "${DS_TEST-CLUSTER}",
+          "columns": [],
+          "datasource": "${DS_TIDB-MASTER}",
           "fontSize": "100%",
-          "hideTimeOverride": false,
+          "hideTimeOverride": true,
           "id": 57,
           "links": [],
           "pageSize": null,
@@ -81,9 +76,28 @@
               "dateFormat": "YYYY-MM-DD HH:mm:ss",
               "pattern": "Time",
               "sanitize": false,
-              "type": "string"
+              "type": "hidden"
             },
             {
+              "alias": "Host",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "link": false,
+              "pattern": "instance",
+              "preserveFormat": false,
+              "sanitize": false,
+              "thresholds": [],
+              "type": "string",
+              "unit": "short"
+            },
+            {
+              "alias": "CPU Num",
               "colorMode": "value",
               "colors": [
                 "rgba(30, 232, 22, 0.97)",
@@ -91,7 +105,8 @@
                 "rgba(245, 54, 54, 0.9)"
               ],
               "decimals": 0,
-              "pattern": "/.*/",
+              "link": false,
+              "pattern": "Value",
               "thresholds": [],
               "type": "number",
               "unit": "short"
@@ -100,26 +115,23 @@
           "targets": [
             {
               "expr": "count(node_cpu{mode=\"user\"}) by (instance)",
+              "format": "table",
               "intervalFactor": 2,
               "legendFormat": "{{ instance }}",
               "refId": "A",
-              "step": 20
+              "step": 2
             }
           ],
+          "timeFrom": "1s",
           "title": "Virtual CPUs",
-          "transform": "timeseries_aggregations",
+          "transform": "table",
           "type": "table"
         },
         {
-          "columns": [
-            {
-              "text": "Avg",
-              "value": "avg"
-            }
-          ],
-          "datasource": "${DS_TEST-CLUSTER}",
+          "columns": [],
+          "datasource": "${DS_TIDB-MASTER}",
           "fontSize": "100%",
-          "hideTimeOverride": false,
+          "hideTimeOverride": true,
           "id": 59,
           "links": [],
           "pageSize": null,
@@ -135,7 +147,7 @@
               "dateFormat": "YYYY-MM-DD HH:mm:ss",
               "pattern": "Time",
               "sanitize": false,
-              "type": "string"
+              "type": "hidden"
             },
             {
               "colorMode": "value",
@@ -145,29 +157,78 @@
                 "rgba(245, 54, 54, 0.9)"
               ],
               "decimals": 0,
-              "pattern": "/.*/",
+              "pattern": "__name__",
+              "thresholds": [],
+              "type": "hidden",
+              "unit": "decbytes"
+            },
+            {
+              "alias": "",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "pattern": "job",
+              "thresholds": [],
+              "type": "hidden",
+              "unit": "short"
+            },
+            {
+              "alias": "Host",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "pattern": "instance",
+              "thresholds": [],
+              "type": "string",
+              "unit": "short"
+            },
+            {
+              "alias": "Memory",
+              "colorMode": "value",
+              "colors": [
+                "rgba(50, 172, 45, 0.97)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(245, 54, 54, 0.9)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 0,
+              "pattern": "Value",
               "thresholds": [],
               "type": "number",
-              "unit": "decbytes"
+              "unit": "bytes"
             }
           ],
           "targets": [
             {
               "expr": "node_memory_MemTotal",
+              "format": "table",
               "intervalFactor": 2,
               "legendFormat": "{{ instance }}",
               "refId": "A",
-              "step": 20
+              "step": 2
             }
           ],
+          "timeFrom": "1s",
           "title": "Total Memory",
-          "transform": "timeseries_aggregations",
+          "transform": "table",
           "type": "table"
         },
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "decimals": 1,
           "fill": 1,
           "id": 55,
@@ -191,6 +252,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -214,6 +276,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -241,7 +304,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "fill": 0,
           "id": 58,
           "legend": {
@@ -264,6 +329,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -287,6 +353,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -314,7 +381,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "fill": 1,
           "id": 60,
           "legend": {
@@ -337,6 +406,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -374,6 +444,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -401,7 +472,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "decimals": 2,
           "fill": 1,
           "id": 62,
@@ -425,6 +498,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 12,
           "stack": false,
           "steppedLine": false,
@@ -455,6 +529,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -482,7 +557,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "fill": 1,
           "id": 61,
           "legend": {
@@ -505,6 +582,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 12,
           "stack": false,
           "steppedLine": false,
@@ -528,6 +606,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -573,7 +652,7 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(50, 172, 45, 0.97)"
           ],
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "${DS_TIDB-MASTER}",
           "format": "none",
           "gauge": {
             "maxValue": 100,
@@ -622,6 +701,7 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": false
           },
+          "tableColumn": "",
           "targets": [
             {
               "expr": "delta(pd_server_tso{type=\"save\",instance=\"$instance\"}[1m])",
@@ -660,7 +740,7 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(50, 172, 45, 0.97)"
           ],
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "${DS_TIDB-MASTER}",
           "decimals": null,
           "editable": true,
           "error": false,
@@ -707,6 +787,7 @@
             "lineColor": "rgb(21, 179, 65)",
             "show": true
           },
+          "tableColumn": "",
           "targets": [
             {
               "expr": "pd_cluster_status{instance=\"$instance\",type=\"storage_capacity\"}",
@@ -737,7 +818,7 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(50, 172, 45, 0.97)"
           ],
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "${DS_TIDB-MASTER}",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -785,6 +866,7 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": true
           },
+          "tableColumn": "",
           "targets": [
             {
               "expr": "pd_cluster_status{instance=\"$instance\",type=\"storage_size\"}",
@@ -815,7 +897,7 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(50, 172, 45, 0.97)"
           ],
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "${DS_TIDB-MASTER}",
           "format": "none",
           "gauge": {
             "maxValue": 100,
@@ -859,6 +941,7 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": true
           },
+          "tableColumn": "",
           "targets": [
             {
               "expr": "pd_cluster_status{instance=\"$instance\",type=\"region_count\"}",
@@ -887,7 +970,7 @@
               "value": "current"
             }
           ],
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "${DS_TIDB-MASTER}",
           "editable": true,
           "error": false,
           "fontSize": "100%",
@@ -1034,7 +1117,9 @@
           },
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "decimals": 2,
           "editable": true,
           "error": false,
@@ -1064,6 +1149,7 @@
               "yaxis": 2
             }
           ],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -1105,6 +1191,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -1132,7 +1219,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "fill": 1,
           "id": 31,
           "legend": {
@@ -1153,6 +1242,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -1176,6 +1266,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -1246,7 +1337,9 @@
           },
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "decimals": 4,
           "editable": true,
           "error": false,
@@ -1271,6 +1364,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -1311,6 +1405,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -1381,7 +1476,9 @@
           },
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "decimals": 4,
           "editable": true,
           "error": false,
@@ -1406,6 +1503,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -1447,6 +1545,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -1474,7 +1573,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "editable": true,
           "error": false,
           "fill": 0,
@@ -1504,6 +1605,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": true,
@@ -1536,6 +1638,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -1563,7 +1666,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "fill": 1,
           "id": 32,
           "legend": {
@@ -1589,6 +1694,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -1612,6 +1718,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -1639,7 +1746,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "fill": 1,
           "id": 33,
           "legend": {
@@ -1664,6 +1773,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 12,
           "stack": false,
           "steppedLine": false,
@@ -1688,6 +1798,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -1727,7 +1838,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "editable": true,
           "error": false,
           "fill": 0,
@@ -1764,6 +1877,7 @@
               "lines": false
             }
           ],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -1788,6 +1902,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -1815,7 +1930,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "fill": 1,
           "id": 34,
           "legend": {
@@ -1838,6 +1955,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -1868,6 +1986,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -1895,7 +2014,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "fill": 0,
           "id": 35,
           "legend": {
@@ -1919,6 +2040,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 4,
           "stack": false,
           "steppedLine": false,
@@ -1949,6 +2071,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -2018,7 +2141,9 @@
           },
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -2042,6 +2167,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 4,
           "stack": false,
           "steppedLine": false,
@@ -2081,6 +2207,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -2108,7 +2235,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "decimals": null,
           "editable": true,
           "error": false,
@@ -2139,6 +2268,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 4,
           "stack": false,
           "steppedLine": false,
@@ -2163,6 +2293,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -2190,7 +2321,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -2222,6 +2355,7 @@
               "lines": false
             }
           ],
+          "spaceLength": 10,
           "span": 6,
           "stack": true,
           "steppedLine": true,
@@ -2253,6 +2387,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -2280,7 +2415,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "fill": 0,
           "id": 36,
           "legend": {
@@ -2305,6 +2442,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -2329,6 +2467,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -2356,7 +2495,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "fill": 1,
           "id": 37,
           "legend": {
@@ -2381,6 +2522,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -2404,6 +2546,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -2431,7 +2574,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "fill": 1,
           "id": 38,
           "legend": {
@@ -2455,6 +2600,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -2478,6 +2624,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -2505,7 +2652,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "fill": 1,
           "id": 39,
           "legend": {
@@ -2528,6 +2677,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -2551,6 +2701,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -2578,7 +2729,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "fill": 1,
           "id": 40,
           "legend": {
@@ -2603,6 +2756,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -2626,6 +2780,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -2695,7 +2850,9 @@
           },
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "decimals": 2,
           "fill": 0,
           "id": 41,
@@ -2721,6 +2878,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -2753,6 +2911,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -2780,7 +2939,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "fill": 1,
           "id": 42,
           "legend": {
@@ -2803,6 +2964,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -2827,6 +2989,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -2897,7 +3060,9 @@
           },
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "decimals": null,
           "editable": true,
           "error": false,
@@ -2926,6 +3091,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -2959,6 +3125,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -2986,7 +3153,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "fill": 1,
           "id": 43,
           "legend": {
@@ -3011,6 +3180,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -3034,6 +3204,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -3073,7 +3244,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "editable": true,
           "error": false,
           "fill": 0,
@@ -3104,6 +3277,7 @@
               "lines": false
             }
           ],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -3137,6 +3311,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -3164,7 +3339,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "editable": true,
           "error": false,
           "fill": 0,
@@ -3190,6 +3367,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -3214,6 +3392,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -3241,7 +3420,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "decimals": 1,
           "fill": 0,
           "id": 44,
@@ -3266,6 +3447,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": true,
           "steppedLine": false,
@@ -3289,6 +3471,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -3316,7 +3499,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "decimals": 1,
           "fill": 0,
           "id": 45,
@@ -3343,6 +3528,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -3367,6 +3553,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -3437,7 +3624,9 @@
           },
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -3467,6 +3656,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -3500,6 +3690,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -3527,7 +3718,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -3559,6 +3752,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -3584,6 +3778,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -3611,7 +3806,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "decimals": 1,
           "fill": 1,
           "id": 46,
@@ -3635,6 +3832,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -3658,6 +3856,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -3685,7 +3884,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "decimals": 2,
           "fill": 1,
           "id": 51,
@@ -3710,6 +3911,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -3734,6 +3936,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -3761,7 +3964,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "decimals": 5,
           "fill": 1,
           "id": 47,
@@ -3786,6 +3991,7 @@
           "renderer": "flot",
           "repeat": null,
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -3823,6 +4029,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -3850,7 +4057,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "decimals": 5,
           "fill": 1,
           "id": 48,
@@ -3874,6 +4083,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -3911,6 +4121,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -3938,7 +4149,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "decimals": 5,
           "fill": 1,
           "id": 49,
@@ -3962,6 +4175,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -4000,6 +4214,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -4027,7 +4242,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "decimals": 5,
           "fill": 1,
           "id": 50,
@@ -4051,6 +4268,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -4088,6 +4306,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -4115,7 +4334,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "decimals": 1,
           "fill": 0,
           "id": 52,
@@ -4140,6 +4361,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -4164,6 +4386,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -4191,7 +4414,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "decimals": 1,
           "fill": 0,
           "id": 53,
@@ -4216,6 +4441,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -4240,6 +4466,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -4267,7 +4494,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TIDB-MASTER}",
           "decimals": 1,
           "fill": 1,
           "id": 54,
@@ -4292,6 +4521,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 12,
           "stack": false,
           "steppedLine": false,
@@ -4315,6 +4545,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -4356,7 +4587,7 @@
       {
         "allValue": null,
         "current": {},
-        "datasource": "${DS_TEST-CLUSTER}",
+        "datasource": "${DS_TIDB-MASTER}",
         "hide": 0,
         "includeAll": false,
         "label": null,
@@ -4406,5 +4637,5 @@
   },
   "timezone": "browser",
   "title": "TiDB Cluster - Overview",
-  "version": 3
+  "version": 2
 }
