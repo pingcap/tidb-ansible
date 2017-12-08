@@ -22,13 +22,10 @@ bin/svc -u "${STATUS_DIR}" &>/dev/null || true
 # check by svstat
 _check=$(bin/svstat "${STATUS_DIR}" 2>/dev/null)
 if echo "${_check}" | grep 'up pid' &>/dev/null; then
-    _pid=$(echo "${_check}" | cut -d' ' -f 4)
-    if [ -e "/proc/${_pid}/cwd" ] && [ "$(readlink /proc/${_pid}/cwd)" == "${DEPLOY_DIR}" ]; then
+    _pid=$(echo "${_check}" | cut -d' ' -f 4 | cut -d',' -f 1)
+    if [ -e "/proc/${_pid}/cwd" ] && [ "`echo $(readlink /proc/${_pid}/cwd) | sed -r "s/^(.*)\/status.*$/\1/"`" == "${DEPLOY_DIR}" ]; then
         echo "ok: already started!"
         exit 0
-    else
-        echo "warning: status dir is not clean"
-        rm "${STATUS_DIR}/pid"
     fi
 fi
 
@@ -36,16 +33,8 @@ fi
 if [ -e "${STATUS_DIR}/pid" ]; then
     _pid=$(cat "${STATUS_DIR}/pid")
     if [ -e "/proc/${_pid}/cwd" ] && [ "$(readlink /proc/${_pid}/cwd)" == "${DEPLOY_DIR}" ]; then
-        echo "ok: already started!"
-        exit 0
-    else
-        echo "warning: status dir is not clean"
-        rm "${STATUS_DIR}/pid"
+	kill -9 ${_pid}
     fi
-    # if ps aux | grep supervise | grep -v grep | grep "${_pid}" &>/dev/null; then
-    #     echo "error: supervise of pid ${_pid} is alive! but process is down!"
-    #     exit 1
-    # fi
 fi
 
 nohup bin/supervise "${STATUS_DIR}" "${DEPLOY_DIR}/scripts/run_{{ this_role_name | default(role_name) }}.sh" &>/dev/null &

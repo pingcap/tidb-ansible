@@ -57,15 +57,10 @@
       "height": 250,
       "panels": [
         {
-          "columns": [
-            {
-              "text": "Avg",
-              "value": "avg"
-            }
-          ],
+          "columns": [],
           "datasource": "${DS_TEST-CLUSTER}",
           "fontSize": "100%",
-          "hideTimeOverride": false,
+          "hideTimeOverride": true,
           "id": 57,
           "links": [],
           "pageSize": null,
@@ -81,7 +76,7 @@
               "dateFormat": "YYYY-MM-DD HH:mm:ss",
               "pattern": "Time",
               "sanitize": false,
-              "type": "string"
+              "type": "hidden"
             },
             {
               "colorMode": "value",
@@ -91,7 +86,21 @@
                 "rgba(245, 54, 54, 0.9)"
               ],
               "decimals": 0,
-              "pattern": "/.*/",
+              "pattern": "Metric",
+              "thresholds": [],
+              "type": "string",
+              "unit": "short"
+            },
+            {
+              "colorMode": "value",
+              "colors": [
+                "rgba(50, 172, 45, 0.97)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(245, 54, 54, 0.9)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 0,
+              "pattern": "Value",
               "thresholds": [],
               "type": "number",
               "unit": "short"
@@ -103,23 +112,19 @@
               "intervalFactor": 2,
               "legendFormat": "{{ instance }}",
               "refId": "A",
-              "step": 20
+              "step": 2
             }
           ],
+          "timeFrom": "1s",
           "title": "Virtual CPUs",
-          "transform": "timeseries_aggregations",
+          "transform": "timeseries_to_rows",
           "type": "table"
         },
         {
-          "columns": [
-            {
-              "text": "Avg",
-              "value": "avg"
-            }
-          ],
+          "columns": [],
           "datasource": "${DS_TEST-CLUSTER}",
           "fontSize": "100%",
-          "hideTimeOverride": false,
+          "hideTimeOverride": true,
           "id": 59,
           "links": [],
           "pageSize": null,
@@ -135,7 +140,7 @@
               "dateFormat": "YYYY-MM-DD HH:mm:ss",
               "pattern": "Time",
               "sanitize": false,
-              "type": "string"
+              "type": "hidden"
             },
             {
               "colorMode": "value",
@@ -145,10 +150,24 @@
                 "rgba(245, 54, 54, 0.9)"
               ],
               "decimals": 0,
-              "pattern": "/.*/",
+              "pattern": "Metric",
+              "thresholds": [],
+              "type": "string",
+              "unit": "decbytes"
+            },
+            {
+              "colorMode": "value",
+              "colors": [
+                "rgba(50, 172, 45, 0.97)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(245, 54, 54, 0.9)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 0,
+              "pattern": "Value",
               "thresholds": [],
               "type": "number",
-              "unit": "decbytes"
+              "unit": "bytes"
             }
           ],
           "targets": [
@@ -157,11 +176,12 @@
               "intervalFactor": 2,
               "legendFormat": "{{ instance }}",
               "refId": "A",
-              "step": 20
+              "step": 2
             }
           ],
+          "timeFrom": "1s",
           "title": "Total Memory",
-          "transform": "timeseries_aggregations",
+          "transform": "timeseries_to_rows",
           "type": "table"
         },
         {
