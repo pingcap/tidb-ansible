@@ -944,103 +944,6 @@
               "show": false
             }
           ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
-          "decimals": 1,
-          "editable": true,
-          "error": false,
-          "fill": 0,
-          "grid": {},
-          "id": 1584,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": true,
-            "hideEmpty": true,
-            "max": true,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "sideWidth": 250,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null as zero",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 12,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "sum(rate(tikv_scheduler_too_busy_total[1m])) by (job)",
-              "intervalFactor": 2,
-              "legendFormat": "scheduler-{{job}}",
-              "metric": "",
-              "refId": "A",
-              "step": 4
-            },
-            {
-              "expr": "sum(rate(tikv_channel_full_total[1m])) by (job)",
-              "intervalFactor": 2,
-              "legendFormat": "channelfull-{{job}}",
-              "metric": "",
-              "refId": "B",
-              "step": 4
-            },
-            {
-              "expr": "sum(rate(tikv_coprocessor_request_error{type='full'}[1m])) by (job)",
-              "intervalFactor": 2,
-              "legendFormat": "coprocessor-{{job}}",
-              "metric": "",
-              "refId": "C",
-              "step": 4
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "server is busy",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "sort": 2,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "none",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": "0",
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": false
-            }
-          ]
         }
       ],
       "repeat": null,
@@ -5662,29 +5565,13 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, avg(rate(tikv_coprocessor_scan_keys_bucket[1m])) by (le, req))  ",
+              "expr": "sum(rate(tikv_coprocessor_scan_keys_bucket[1m])) by (req)",
               "interval": "",
               "intervalFactor": 2,
-              "legendFormat": "{{req}}-99%",
+              "legendFormat": "{{req}}",
               "metric": "tikv_coprocessor_scan_keys_bucket",
               "refId": "A",
-              "step": 10
-            },
-            {
-              "expr": "histogram_quantile(0.95, avg(rate(tikv_coprocessor_scan_keys_bucket[1m])) by (le, req))  ",
-              "intervalFactor": 2,
-              "legendFormat": "{{req}}-95%",
-              "metric": "tikv_coprocessor_scan_keys_bucket",
-              "refId": "B",
-              "step": 10
-            },
-            {
-              "expr": "histogram_quantile(0.90, avg(rate(tikv_coprocessor_scan_keys_bucket[1m])) by (le, req))  ",
-              "intervalFactor": 2,
-              "legendFormat": "{{req}}-90%",
-              "metric": "tikv_coprocessor_scan_keys_bucket",
-              "refId": "C",
-              "step": 10
+              "step": 4
             }
           ],
           "thresholds": [],

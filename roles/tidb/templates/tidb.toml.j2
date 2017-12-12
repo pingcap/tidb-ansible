@@ -37,35 +37,7 @@
 {{ item }} = {{ value | to_json }}
 {% endfor %}
 
-[proxy-protocol]
-{% for item, value in tidb_conf.proxy_protocol | dictsort -%}
-{{ item }} = {{ value | to_json }}
-{% endfor %}
-
 [plan-cache]
 {% for item, value in tidb_conf.plan_cache | dictsort -%}
-{{ item }} = {{ value | to_json }}
-{% endfor %}
-
-[prepared-plan-cache]
-{% for item, value in tidb_conf.prepared_plan_cache | dictsort -%}
-{{ item }} = {{ value | to_json }}
-{% endfor %}
-
-[opentracing]
-{% for item, value in tidb_conf.opentracing | dictsort_by_value_type -%}
-{% if value is not mapping -%}
-{{ item }} = {{ value | to_json }}
-{% else %}
-
-[opentracing.{{ item }}]
-{% for sub_item, sub_value in value | dictsort -%}
-{{ sub_item }} = {{ sub_value | to_json }}
-{% endfor %}
-{% endif %}
-{% endfor %}
-
-[tikv-client]
-{% for item, value in tidb_conf.tikv_client | dictsort -%}
 {{ item }} = {{ value | to_json }}
 {% endfor %}

@@ -1,8 +1,8 @@
 {
   "__inputs": [
     {
-      "name": "DS_TIDB-CLUSTER",
-      "label": "tidb-cluster",
+      "name": "TEST-CLUSTER",
+      "label": "TEST-cluster",
       "description": "",
       "type": "datasource",
       "pluginId": "prometheus",
@@ -56,11 +56,11 @@
       "type": "dashboards"
     }
   ],
-  "refresh": "30s",
+  "refresh": "1m",
   "rows": [
     {
       "collapse": false,
-      "height": 299,
+      "height": "300px",
       "panels": [
         {
           "cacheTimeout": null,
@@ -71,7 +71,7 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(50, 172, 45, 0.97)"
           ],
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "format": "none",
           "gauge": {
             "maxValue": 100,
@@ -127,7 +127,7 @@
               "legendFormat": "",
               "metric": "pd_server_tso",
               "refId": "A",
-              "step": 40
+              "step": 60
             }
           ],
           "thresholds": "",
@@ -152,11 +152,11 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(50, 172, 45, 0.97)"
           ],
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "decimals": null,
           "editable": true,
           "error": false,
-          "format": "decbytes",
+          "format": "bits",
           "gauge": {
             "maxValue": 100,
             "minValue": 0,
@@ -201,10 +201,10 @@
           },
           "targets": [
             {
-              "expr": "sum(pd_cluster_status{instance=\"$instance\",namespace=~\"$namespace\",type=\"storage_capacity\"})",
+              "expr": "pd_cluster_status{instance=\"$instance\",type=\"storage_capacity\"}",
               "intervalFactor": 2,
               "refId": "A",
-              "step": 40
+              "step": 60
             }
           ],
           "thresholds": "",
@@ -229,11 +229,11 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(50, 172, 45, 0.97)"
           ],
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "decimals": 1,
           "editable": true,
           "error": false,
-          "format": "decbytes",
+          "format": "bits",
           "gauge": {
             "maxValue": 100,
             "minValue": 0,
@@ -279,10 +279,10 @@
           },
           "targets": [
             {
-              "expr": "sum(pd_cluster_status{instance=\"$instance\",namespace=~\"$namespace\",type=\"storage_size\"})",
+              "expr": "pd_cluster_status{instance=\"$instance\",type=\"storage_size\"}",
               "intervalFactor": 2,
               "refId": "A",
-              "step": 40
+              "step": 60
             }
           ],
           "thresholds": "",
@@ -307,7 +307,7 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(50, 172, 45, 0.97)"
           ],
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "editable": true,
           "error": false,
           "format": "none",
@@ -355,10 +355,10 @@
           },
           "targets": [
             {
-              "expr": "sum(pd_cluster_status{instance=\"$instance\",namespace=~\"$namespace\",type=\"leader_count\"})",
+              "expr": "pd_cluster_status{instance=\"$instance\",type=\"region_count\"}",
               "intervalFactor": 2,
               "refId": "A",
-              "step": 40
+              "step": 60
             }
           ],
           "thresholds": "",
@@ -383,7 +383,7 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(245, 54, 54, 0.9)"
           ],
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "editable": true,
           "error": false,
           "format": "percentunit",
@@ -432,10 +432,10 @@
           },
           "targets": [
             {
-              "expr": "1 - min(pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"leader_score\"}) / max(pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"leader_score\"})",
+              "expr": "holt_winters(pd_cluster_status{instance=\"$instance\",type=\"leader_balance_ratio\"}[5m], 0.8, 0.1)",
               "intervalFactor": 2,
               "refId": "A",
-              "step": 40
+              "step": 60
             }
           ],
           "thresholds": "0.01,0.5",
@@ -460,7 +460,7 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(245, 54, 54, 0.9)"
           ],
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "decimals": null,
           "editable": true,
           "error": false,
@@ -509,11 +509,11 @@
           },
           "targets": [
             {
-              "expr": "1 - min(pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"region_score\"}) / max(pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"region_score\"})",
+              "expr": "holt_winters(pd_cluster_status{instance=\"$instance\",type=\"region_balance_ratio\"}[5m], 0.2, 0.1)",
               "intervalFactor": 2,
               "legendFormat": "",
               "refId": "A",
-              "step": 40
+              "step": 60
             }
           ],
           "thresholds": "0.05,0.5",
@@ -536,7 +536,7 @@
               "value": "current"
             }
           ],
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "editable": true,
           "error": false,
           "fontSize": "100%",
@@ -578,48 +578,48 @@
           ],
           "targets": [
             {
-              "expr": "sum(pd_cluster_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"store_up_count\"})",
+              "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_up_count\"}",
               "interval": "",
               "intervalFactor": 2,
               "legendFormat": "Up Stores",
               "metric": "pd_cluster_status",
               "refId": "A",
-              "step": 20
+              "step": 30
             },
             {
-              "expr": "sum(pd_cluster_status{instance=\"$instance\", namespace=~\"$namespace\",type=\"store_disconnected_count\"})",
+              "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_disconnected_count\"}",
               "intervalFactor": 2,
               "legendFormat": "Disconnect Stores",
               "refId": "B",
-              "step": 20
+              "step": 30
             },
             {
-              "expr": "sum(pd_cluster_status{instance=\"$instance\", namespace=~\"$namespace\",type=\"store_low_space_count\"})",
+              "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_low_space_count\"}",
               "intervalFactor": 2,
               "legendFormat": "LowSpace Stores",
               "refId": "C",
-              "step": 20
+              "step": 30
             },
             {
-              "expr": "sum(pd_cluster_status{instance=\"$instance\", namespace=~\"$namespace\",type=\"store_down_count\"})",
+              "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_down_count\"}",
               "intervalFactor": 2,
               "legendFormat": "Down Stores",
               "refId": "D",
-              "step": 20
+              "step": 30
             },
             {
-              "expr": "sum(pd_cluster_status{instance=\"$instance\", namespace=~\"$namespace\",type=\"store_offline_count\"})",
+              "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_offline_count\"}",
               "intervalFactor": 2,
               "legendFormat": "Offline Stores",
               "refId": "E",
-              "step": 20
+              "step": 30
             },
             {
-              "expr": "sum(pd_cluster_status{instance=\"$instance\", namespace=~\"$namespace\",type=\"store_tombstone_count\"})",
+              "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_tombstone_count\"}",
               "intervalFactor": 2,
               "legendFormat": "Tombstone Stores",
               "refId": "F",
-              "step": 20
+              "step": 30
             }
           ],
           "title": "Store Status",
@@ -643,12 +643,12 @@
                 "query": {
                   "datasourceId": 1,
                   "model": {
-                    "expr": "avg(pd_cluster_status{type=\"storage_size\", namespace=~\"$namespace\"}) / avg(pd_cluster_status{type=\"storage_capacity\", namespace=~\"$namespace\"})",
+                    "expr": "avg(pd_cluster_status{type=\"storage_size\"}) / avg(pd_cluster_status{type=\"storage_capacity\"})",
                     "hide": false,
                     "intervalFactor": 4,
                     "legendFormat": "used ratio",
                     "refId": "B",
-                    "step": 20
+                    "step": 3600
                   },
                   "params": [
                     "B",
@@ -673,7 +673,7 @@
           },
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "decimals": 2,
           "editable": true,
           "error": false,
@@ -708,20 +708,20 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "pd_cluster_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"storage_size\"}",
+              "expr": "pd_cluster_status{instance=\"$instance\",type=\"storage_size\"}",
               "hide": false,
               "intervalFactor": 2,
               "legendFormat": "strage size",
               "refId": "A",
-              "step": 10
+              "step": 20
             },
             {
-              "expr": "avg(pd_cluster_status{type=\"storage_size\", namespace=~\"$namespace\"}) / avg(pd_cluster_status{type=\"storage_capacity\", namespace=~\"$namespace\"})",
+              "expr": "avg(pd_cluster_status{type=\"storage_size\"}) / avg(pd_cluster_status{type=\"storage_capacity\"})",
               "hide": false,
               "intervalFactor": 4,
               "legendFormat": "used ratio",
               "refId": "B",
-              "step": 20
+              "step": 40
             }
           ],
           "thresholds": [
@@ -771,7 +771,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "decimals": null,
           "editable": true,
           "error": false,
@@ -801,11 +801,11 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(pd_cluster_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"region_count\"})",
+              "expr": "pd_cluster_status{instance=\"$instance\",type=\"region_count\"}",
               "intervalFactor": 2,
               "legendFormat": "count",
               "refId": "A",
-              "step": 10
+              "step": 20
             }
           ],
           "thresholds": [],
@@ -847,7 +847,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -879,11 +879,12 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(delta(pd_schedule_operators_count{instance=\"$instance\"}[1m])) by (type)",
+              "expr": "sum(delta(pd_schedule_operators_count{instance=\"$instance\",event=\"finish\"}[1m])) by (type,event)",
+              "hide": false,
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
               "refId": "A",
-              "step": 10
+              "step": 20
             }
           ],
           "thresholds": [],
@@ -921,23 +922,54 @@
               "show": true
             }
           ]
-        }
-      ],
-      "repeat": null,
-      "repeatIteration": null,
-      "repeatRowId": null,
-      "showTitle": true,
-      "title": "Cluster",
-      "titleSize": "h4"
-    },
-    {
-      "collapse": false,
-      "height": 250,
-      "panels": [
+        },
         {
+          "alert": {
+            "conditions": [
+              {
+                "evaluator": {
+                  "params": [
+                    0.2
+                  ],
+                  "type": "gt"
+                },
+                "operator": {
+                  "type": "and"
+                },
+                "query": {
+                  "datasourceId": 1,
+                  "model": {
+                    "expr": "min(pd_cluster_status{type=\"leader_balance_ratio\"})",
+                    "hide": true,
+                    "intervalFactor": 2,
+                    "legendFormat": "ratio",
+                    "refId": "B",
+                    "step": 4
+                  },
+                  "params": [
+                    "B",
+                    "1m",
+                    "now"
+                  ]
+                },
+                "reducer": {
+                  "params": [],
+                  "type": "avg"
+                },
+                "type": "query"
+              }
+            ],
+            "executionErrorState": "alerting",
+            "frequency": "60s",
+            "handler": 1,
+            "message": "Region leader balance ratio is high.",
+            "name": "Leader Banlace Ratio alert",
+            "noDataState": "no_data",
+            "notifications": []
+          },
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "decimals": 4,
           "editable": true,
           "error": false,
@@ -945,15 +977,13 @@
           "grid": {},
           "id": 40,
           "legend": {
-            "alignAsTable": true,
             "avg": false,
-            "current": true,
-            "max": true,
+            "current": false,
+            "max": false,
             "min": false,
-            "rightSide": true,
-            "show": true,
+            "show": false,
             "total": false,
-            "values": true
+            "values": false
           },
           "lines": true,
           "linewidth": 2,
@@ -969,10 +999,18 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"leader_score\"}",
+              "expr": "pd_cluster_status{instance=\"$instance\",type=\"leader_balance_ratio\"}",
               "intervalFactor": 2,
-              "legendFormat": "tikv-{{store}}",
+              "legendFormat": "leader max diff ratio",
               "refId": "A",
+              "step": 10
+            },
+            {
+              "expr": "min(pd_cluster_status{type=\"leader_balance_ratio\"})",
+              "hide": true,
+              "intervalFactor": 2,
+              "legendFormat": "ratio",
+              "refId": "B",
               "step": 4
             }
           ],
@@ -987,7 +1025,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Store leader score",
+          "title": "Leader Balance Ratio",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -1021,9 +1059,52 @@
           ]
         },
         {
+          "alert": {
+            "conditions": [
+              {
+                "evaluator": {
+                  "params": [
+                    0.2
+                  ],
+                  "type": "gt"
+                },
+                "operator": {
+                  "type": "and"
+                },
+                "query": {
+                  "datasourceId": 1,
+                  "model": {
+                    "expr": "min(pd_cluster_status{type=\"region_balance_ratio\"})",
+                    "hide": true,
+                    "intervalFactor": 2,
+                    "legendFormat": "ratio",
+                    "refId": "B",
+                    "step": 4
+                  },
+                  "params": [
+                    "B",
+                    "5m",
+                    "now"
+                  ]
+                },
+                "reducer": {
+                  "params": [],
+                  "type": "avg"
+                },
+                "type": "query"
+              }
+            ],
+            "executionErrorState": "alerting",
+            "frequency": "60s",
+            "handler": 1,
+            "message": "Store balance ratio is high",
+            "name": "Region Balance Ratio alert",
+            "noDataState": "no_data",
+            "notifications": []
+          },
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "decimals": 4,
           "editable": true,
           "error": false,
@@ -1031,15 +1112,13 @@
           "grid": {},
           "id": 41,
           "legend": {
-            "alignAsTable": true,
             "avg": false,
-            "current": true,
-            "max": true,
+            "current": false,
+            "max": false,
             "min": false,
-            "rightSide": true,
-            "show": true,
+            "show": false,
             "total": false,
-            "values": true
+            "values": false
           },
           "lines": true,
           "linewidth": 2,
@@ -1055,11 +1134,19 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"region_score\"}",
+              "expr": "pd_cluster_status{instance=\"$instance\",type=\"region_balance_ratio\"}",
               "hide": false,
               "intervalFactor": 2,
-              "legendFormat": "tikv-{{store}}",
+              "legendFormat": "\bstore balance ratio",
               "refId": "A",
+              "step": 10
+            },
+            {
+              "expr": "min(pd_cluster_status{type=\"region_balance_ratio\"})",
+              "hide": true,
+              "intervalFactor": 2,
+              "legendFormat": "ratio",
+              "refId": "B",
               "step": 4
             }
           ],
@@ -1074,7 +1161,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Store region score",
+          "title": "Region Balance Ratio",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -1106,305 +1193,13 @@
               "show": true
             }
           ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
-          "fill": 1,
-          "id": 56,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": true,
-            "max": true,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"leader_size\"}",
-              "intervalFactor": 2,
-              "legendFormat": "tikv-{{store}}",
-              "refId": "A",
-              "step": 4
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Store leader size",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "mbytes",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": false
-            }
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
-          "fill": 1,
-          "id": 57,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": true,
-            "max": true,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"region_size\"}",
-              "intervalFactor": 2,
-              "legendFormat": "tikv-{{store}}",
-              "refId": "A",
-              "step": 4
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Store region size",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "mbytes",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": false
-            }
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
-          "fill": 1,
-          "id": 58,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": true,
-            "max": true,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"leader_count\"}",
-              "intervalFactor": 2,
-              "legendFormat": "tikv-{{store}}",
-              "refId": "A",
-              "step": 4
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Store leader count",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": false
-            }
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
-          "fill": 1,
-          "id": 59,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": true,
-            "max": true,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"region_count\"}",
-              "intervalFactor": 2,
-              "legendFormat": "tikv-{{store}}",
-              "refId": "A",
-              "step": 4
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Store region count",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": false
-            }
-          ]
         }
       ],
       "repeat": null,
       "repeatIteration": null,
       "repeatRowId": null,
-      "showTitle": false,
-      "title": "Balance",
+      "showTitle": true,
+      "title": "Cluster",
       "titleSize": "h4"
     },
     {
@@ -1414,7 +1209,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "fill": 1,
           "id": 45,
           "legend": {
@@ -1446,7 +1241,7 @@
               "intervalFactor": 2,
               "legendFormat": "{{type}}-{{state}}",
               "refId": "A",
-              "step": 10
+              "step": 20
             }
           ],
           "thresholds": [],
@@ -1487,7 +1282,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "fill": 0,
           "id": 47,
           "legend": {
@@ -1521,7 +1316,7 @@
               "legendFormat": "{{kind}}",
               "metric": "pd_scheduler_status",
               "refId": "A",
-              "step": 10
+              "step": 20
             }
           ],
           "thresholds": [],
@@ -1562,7 +1357,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "fill": 0,
           "id": 46,
           "legend": {
@@ -1597,7 +1392,7 @@
               "legendFormat": "{{kind}}",
               "metric": "pd_scheduler_status",
               "refId": "A",
-              "step": 10
+              "step": 20
             }
           ],
           "thresholds": [],
@@ -1638,7 +1433,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "fill": 0,
           "id": 50,
           "legend": {
@@ -1670,13 +1465,13 @@
               "intervalFactor": 2,
               "legendFormat": "{{store}}",
               "refId": "A",
-              "step": 4
+              "step": 10
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Hot write region's leader distribution",
+          "title": "Hot region's leader distribution",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -1711,7 +1506,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "fill": 0,
           "id": 51,
           "legend": {
@@ -1743,13 +1538,13 @@
               "intervalFactor": 2,
               "legendFormat": "{{store}}",
               "refId": "A",
-              "step": 4
+              "step": 10
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Hot write region's peer distribution",
+          "title": "Hot region's peer distribution",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -1784,7 +1579,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "fill": 1,
           "id": 48,
           "legend": {
@@ -1817,13 +1612,13 @@
               "legendFormat": "{{store}}",
               "metric": "pd_hotspot_status",
               "refId": "A",
-              "step": 4
+              "step": 10
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Hot write region's leader written bytes",
+          "title": "Hot region's leader written bytes",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -1858,7 +1653,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "fill": 1,
           "id": 49,
           "legend": {
@@ -1890,7 +1685,7 @@
               "intervalFactor": 2,
               "legendFormat": "{{store}}",
               "refId": "A",
-              "step": 4
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -1931,300 +1726,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
-          "fill": 0,
-          "id": 60,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "pd_hotspot_status{instance=\"$instance\",type=\"hot_read_region_as_leader\"}",
-              "intervalFactor": 2,
-              "legendFormat": "{{store}}",
-              "refId": "A",
-              "step": 4
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Hot read region's leader distribution",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "xaxis": {
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
-          "fill": 0,
-          "id": 61,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "pd_hotspot_status{instance=\"$instance\",type=\"hot_read_region_as_peer\"}",
-              "intervalFactor": 2,
-              "legendFormat": "{{store}}",
-              "refId": "A",
-              "step": 4
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Hot read region's peer distribution",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
-          "fill": 1,
-          "id": 62,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "pd_hotspot_status{instance=\"$instance\",type=\"total_read_bytes_as_leader\"}",
-              "intervalFactor": 2,
-              "legendFormat": "{{store}}",
-              "metric": "pd_hotspot_status",
-              "refId": "A",
-              "step": 4
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Hot read region's leader read bytes",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "bytes",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
-          "fill": 1,
-          "id": 63,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "pd_hotspot_status{instance=\"$instance\",type=\"total_read_bytes_as_peer\"}",
-              "intervalFactor": 2,
-              "legendFormat": "{{store}}",
-              "refId": "A",
-              "step": 4
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Hot read region's peer read bytes",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "decbytes",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "fill": 1,
           "id": 52,
           "legend": {
@@ -2257,7 +1759,7 @@
               "legendFormat": "{{name}}",
               "metric": "pd_scheduler_event_count",
               "refId": "A",
-              "step": 4
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -2298,7 +1800,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "fill": 1,
           "id": 53,
           "legend": {
@@ -2331,7 +1833,7 @@
               "legendFormat": "{{name}}",
               "metric": "pd_scheduler_event_count",
               "refId": "A",
-              "step": 4
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -2384,7 +1886,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "decimals": null,
           "editable": true,
           "error": false,
@@ -2423,7 +1925,7 @@
               "intervalFactor": 2,
               "legendFormat": "{{grpc_method}}",
               "refId": "A",
-              "step": 4
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -2465,7 +1967,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "editable": true,
           "error": false,
           "fill": 0,
@@ -2504,7 +2006,7 @@
               "intervalFactor": 2,
               "legendFormat": "{{grpc_method}}",
               "refId": "A",
-              "step": 4
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -2546,7 +2048,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "editable": true,
           "error": false,
           "fill": 0,
@@ -2593,7 +2095,7 @@
               "intervalFactor": 2,
               "legendFormat": "{{grpc_method}}",
               "refId": "B",
-              "step": 4
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -2652,7 +2154,7 @@
                     "intervalFactor": 2,
                     "legendFormat": "{{instance}} etch disk wal fsync rate",
                     "refId": "A",
-                    "step": 4
+                    "step": 1200
                   },
                   "params": [
                     "A",
@@ -2677,7 +2179,7 @@
           },
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "decimals": 1,
           "fill": 1,
           "id": 44,
@@ -2708,7 +2210,7 @@
               "intervalFactor": 2,
               "legendFormat": "{{instance}} etch disk wal fsync rate",
               "refId": "A",
-              "step": 4
+              "step": 10
             }
           ],
           "thresholds": [
@@ -2763,13 +2265,13 @@
       "titleSize": "h4"
     },
     {
-      "collapse": true,
+      "collapse": false,
       "height": "300px",
       "panels": [
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -2805,7 +2307,7 @@
               "intervalFactor": 2,
               "legendFormat": "{{instance}} : {{result}}",
               "refId": "A",
-              "step": 2
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -2847,7 +2349,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -2883,7 +2385,7 @@
               "intervalFactor": 2,
               "legendFormat": "{{instance}} {{result}}",
               "refId": "A",
-              "step": 4
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -2925,7 +2427,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -2973,7 +2475,7 @@
               "intervalFactor": 2,
               "legendFormat": "{{instance}} average",
               "refId": "B",
-              "step": 4
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -3015,7 +2517,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -3054,7 +2556,7 @@
               "legendFormat": "{{instance}}",
               "metric": "",
               "refId": "A",
-              "step": 4
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -3097,7 +2599,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -3144,7 +2646,7 @@
               "intervalFactor": 2,
               "legendFormat": "{{instance}} average",
               "refId": "B",
-              "step": 4
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -3187,7 +2689,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -3224,7 +2726,7 @@
               "legendFormat": "{{instance}}",
               "metric": "",
               "refId": "A",
-              "step": 4
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -3267,7 +2769,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -3304,7 +2806,7 @@
               "legendFormat": "{{instance}}",
               "metric": "",
               "refId": "A",
-              "step": 4
+              "step": 10
             }
           ],
           "thresholds": [],
@@ -3353,13 +2855,13 @@
       "titleSize": "h4"
     },
     {
-      "collapse": true,
+      "collapse": false,
       "height": "300",
       "panels": [
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -3395,7 +2897,7 @@
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
               "refId": "A",
-              "step": 2
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -3437,7 +2939,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -3478,14 +2980,14 @@
               "intervalFactor": 2,
               "legendFormat": "{{type}} 98th percentile",
               "refId": "A",
-              "step": 2
+              "step": 4
             },
             {
               "expr": "avg(rate(pd_client_request_handle_requests_duration_seconds_sum[30s])) by (type) /  avg(rate(pd_client_request_handle_requests_duration_seconds_count[30s])) by (type)",
               "intervalFactor": 2,
               "legendFormat": "{{type}} average",
               "refId": "B",
-              "step": 2
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -3533,254 +3035,13 @@
       "titleSize": "h4"
     },
     {
-      "collapse": true,
+      "collapse": false,
       "height": "300",
       "panels": [
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "grid": {},
-          "id": 31,
-          "legend": {
-            "alignAsTable": false,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": false,
-            "show": false,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 12,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "sum(rate(tikv_pd_msg_send_duration_seconds_count[1m]))",
-              "intervalFactor": 2,
-              "legendFormat": "",
-              "refId": "A",
-              "step": 2
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "send_message_count",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "grid": {},
-          "id": 32,
-          "legend": {
-            "alignAsTable": false,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": false,
-            "show": false,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "histogram_quantile(0.95, sum(rate(tikv_pd_msg_send_duration_seconds_bucket[30s])) by (le))",
-              "intervalFactor": 2,
-              "legendFormat": "",
-              "refId": "A",
-              "step": 4
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "95% send_message_duration_seconds",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "s",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
-          "editable": true,
-          "error": false,
-          "fill": 0,
-          "grid": {},
-          "id": 33,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": false,
-            "hideEmpty": true,
-            "hideZero": true,
-            "max": true,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null as zero",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "histogram_quantile(0.98, sum(rate(tikv_pd_msg_send_duration_seconds_bucket[60s])) by (type, le))",
-              "hide": true,
-              "intervalFactor": 2,
-              "legendFormat": "98th percentile",
-              "refId": "A",
-              "step": 4
-            },
-            {
-              "expr": "rate(tikv_pd_msg_send_duration_seconds_sum[30s]) / rate(tikv_pd_msg_send_duration_seconds_count[30s])",
-              "intervalFactor": 2,
-              "legendFormat": "{{job}}",
-              "refId": "B",
-              "step": 4
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "send_message_duration_seconds",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "s",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": "0",
-              "show": true
-            },
-            {
-              "format": "s",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "editable": true,
           "error": false,
           "fill": 0,
@@ -3808,7 +3069,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
-          "span": 6,
+          "span": 12,
           "stack": false,
           "steppedLine": false,
           "targets": [
@@ -3915,7 +3176,7 @@
           },
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "decimals": 2,
           "fill": 1,
           "id": 42,
@@ -3996,7 +3257,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TIDB-CLUSTER}",
+          "datasource": "${TEST-CLUSTER}",
           "fill": 1,
           "id": 43,
           "legend": {
@@ -4096,7 +3357,7 @@
       {
         "allValue": null,
         "current": {},
-        "datasource": "${DS_TIDB-CLUSTER}",
+        "datasource": "${TEST-CLUSTER}",
         "hide": 0,
         "includeAll": false,
         "label": null,
@@ -4112,31 +3373,11 @@
         "tagsQuery": null,
         "type": "query",
         "useTags": false
-      },
-      {
-        "allValue": ".*",
-        "current": {},
-        "datasource": "${DS_TIDB-CLUSTER}",
-        "hide": 0,
-        "includeAll": true,
-        "label": "Namespace",
-        "multi": false,
-        "name": "namespace",
-        "options": [],
-        "query": "label_values(pd_cluster_status{instance=\"$instance\"}, namespace)",
-        "refresh": 1,
-        "regex": "",
-        "sort": 1,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
       }
     ]
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {
@@ -4165,6 +3406,6 @@
     ]
   },
   "timezone": "browser",
-  "title": "TiDB Cluster - pd",
+  "title": "TEST-Cluster-PD",
   "version": 4
 }

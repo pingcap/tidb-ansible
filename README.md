@@ -19,8 +19,8 @@ You can use the TiDB-Ansible configuration file to set up the cluster topology, 
 
 ## Where to get binary
 
-- http://download.pingcap.org/tidb-v1.0.0-linux-amd64-unportable.tar.gz
-- http://download.pingcap.org/tidb-v1.0.0-linux-amd64-unportable-centos6.tar.gz
+- http://download.pingcap.org/tidb-v1.0.4-linux-amd64-unportable.tar.gz
+- http://download.pingcap.org/tidb-v1.0.4-linux-amd64-unportable-centos6.tar.gz
 - http://download.pingcap.org/tidb-binlog-latest-linux-amd64.tar.gz
 - http://download.pingcap.org/tidb-tools-latest-linux-amd64.tar.gz
 - http://download.pingcap.org/sysbench-static-linux-amd64.tar.gz
