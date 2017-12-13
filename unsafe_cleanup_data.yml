@@ -29,7 +29,9 @@
     - check_config_dynamic
 
 - name: TiDB cluster
-  hosts: tidb_servers by supervise
+  hosts: tidb_servers
+  tags:
+    - tidb
   tasks:
     - name: stop TiDB by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
