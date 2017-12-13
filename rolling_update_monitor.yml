@@ -1,0 +1,287 @@
+---
+# Copyright 2016 PingCAP, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# The rolling update playbook of TiDB
+
+- name: check config locally
+  hosts: localhost
+  any_errors_fatal: true
+  tags:
+    - always
+  roles:
+    - check_config_static
+
+- name: gather all facts, and check dest
+  hosts: all
+  any_errors_fatal: true
+  tags:
+    - always
+  roles:
+    - check_config_dynamic
+
+- name: rolling update NodeExporter
+  hosts: monitored_servers
+  any_errors_fatal: true
+  tags:
+    - node_exporter
+  roles:
+    - node_exporter
+  post_tasks:
+    - name: stop NodeExporter by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./stop_node_exporter.sh
+      when: process_supervision == 'supervise'
+
+    - name: stop NodeExporter by systemd
+      systemd: name=node_exporter.service state=stopped
+      become: true
+      when: process_supervision == 'systemd' and ansible_user != "root"
+
+    - name: stop NodeExporter by systemd
+      systemd: name=node_exporter.service state=stopped
+      when: process_supervision == 'systemd' and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
+
+    - name: wait NodeExporter down
+      wait_for: host={{ ansible_host }} port={{ node_exporter_port }} state=stopped
+
+    - name: start NodeExporter by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./start_node_exporter.sh
+      when: process_supervision == 'supervise'
+
+    - name: start NodeExporter by systemd
+      systemd: name=node_exporter.service state=started
+      become: true
+      when: process_supervision == 'systemd' and ansible_user != "root"
+
+    - name: start NodeExporter by systemd
+      systemd: name=node_exporter.service state=started
+      when: process_supervision == 'systemd' and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
+
+    - name: wait NodeExporter up
+      wait_for: |
+        host={{ ansible_host }} port={{ node_exporter_port }} state=present
+        send='GET /metrics HTTP/1.0\r\n\r\n' search_regex='200 OK'
+
+- name: rolling update pushgateway
+  hosts: monitoring_servers
+  any_errors_fatal: true
+  tags:
+    - pushgateway
+  roles:
+    - pushgateway
+  post_tasks:
+    - name: stop pushgateway by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      with_items:
+        - pushgateway
+      when: process_supervision == 'supervise'
+
+    - name: stop pushgateway by systemd
+      systemd: name={{ item }} state=stopped
+      when: process_supervision == 'systemd' and ansible_user != "root"
+      become: true
+      with_items:
+        - pushgateway.service
+
+    - name: stop pushgateway by systemd
+      systemd: name={{ item }} state=stopped
+      when: process_supervision == 'systemd' and ansible_user == "root"
+      with_items:
+        - pushgateway.service
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
+
+    - name: wait pushgateway down
+      wait_for: host={{ ansible_host }} port={{ pushgateway_port }} state=stopped
+      
+    - name: start pushgateway by supervise
+      shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
+      when: process_supervision == 'supervise'
+      with_items:
+        - pushgateway
+
+    - name: start pushgateway by systemd
+      systemd: name={{ item }} state=started enabled=no
+      when: process_supervision == 'systemd' and ansible_user != 'root'
+      become: true
+      with_items:
+        - pushgateway.service
+
+    - name: start pushgateway by systemd
+      systemd: name={{ item }} state=started enabled=no
+      when: process_supervision == 'systemd' and ansible_user == 'root'
+      with_items:
+        - pushgateway.service
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
+
+    - name: wait pushgateway up
+      wait_for: |
+        host={{ ansible_host }} port={{ pushgateway_port }} state=present
+        send='GET /metrics HTTP/1.0\r\n\r\n' search_regex='200 OK'
+
+- name: rolling update prometheus
+  hosts: monitoring_servers
+  any_errors_fatal: true
+  tags:
+    - prometheus
+  roles:
+    - prometheus
+  post_tasks:
+    - name: stop prometheus by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      with_items:
+        - prometheus
+      when: process_supervision == 'supervise'
+
+    - name: stop prometheus by systemd
+      systemd: name={{ item }} state=stopped
+      when: process_supervision == 'systemd' and ansible_user != "root"
+      become: true
+      with_items:
+        - prometheus.service
+
+    - name: stop prometheus by systemd
+      systemd: name={{ item }} state=stopped
+      when: process_supervision == 'systemd' and ansible_user == "root"
+      with_items:
+        - prometheus.service
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
+
+    - name: wait prometheus down
+      wait_for: host={{ ansible_host }} port={{ prometheus_port }} state=stopped
+    
+    - name: start monitoring modules by supervise
+      shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
+      when: process_supervision == 'supervise'
+      with_items:
+        - prometheus
+
+    - name: start prometheus by systemd
+      systemd: name={{ item }} state=started enabled=no
+      when: process_supervision == 'systemd' and ansible_user != 'root'
+      become: true
+      with_items:
+        - prometheus.service
+
+    - name: start prometheus by systemd
+      systemd: name={{ item }} state=started enabled=no
+      when: process_supervision == 'systemd' and ansible_user == 'root'
+      with_items:
+        - prometheus.service
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
+
+    - name: wait prometheus up
+      wait_for: |
+        host={{ ansible_host }} port={{ prometheus_port }} state=present
+        send='GET /metrics HTTP/1.0\r\n\r\n' search_regex='200 OK'
+
+- name: rolling update grafana
+  hosts: grafana_servers
+  any_errors_fatal: true
+  tags:
+    - grafana
+  roles:
+    - { role: grafana, grafana_exec_vars_only: true }
+  post_tasks:
+    - name: stop monitoring modules by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      when: process_supervision == 'supervise'
+      with_items:
+        - grafana
+
+    - name: stop monitoring modules by systemd
+      systemd: name=grafana.service state=stopped
+      become: true
+      when: process_supervision == 'systemd' and ansible_user != "root"
+
+    - name: stop monitoring modules by systemd
+      systemd: name=grafana.service state=stopped
+      when: process_supervision == 'systemd' and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
+
+    - name: wait grafana down
+      wait_for: host={{ ansible_host }} port={{ grafana_port }} state=stopped
+    
+    - name: start grafana by supervise
+      shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
+      when: process_supervision == 'supervise'
+      with_items:
+        - grafana
+
+    - name: start grafana by systemd
+      systemd: name=grafana.service state=started enabled=no
+      when: process_supervision == 'systemd' and ansible_user != 'root'
+      become: true
+
+    - name: start grafana by systemd
+      systemd: name=grafana.service state=started enabled=no
+      when: process_supervision == 'systemd' and ansible_user == 'root'
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
+
+    - name: wait grafana up
+      wait_for: |
+        host={{ ansible_host }} port={{ grafana_port }} state=present
+        send='GET /login HTTP/1.0\r\n\r\n' search_regex='200 OK'
+
+    - name: import grafana data source
+      shell: >
+        chdir={{ grafana_data_dir }}
+        warn=no
+        curl -q -X POST -d @data_source.json --header 'Content-Type: application/json'
+        "http://{{ grafana_admin_user }}:{{ grafana_admin_password }}@127.0.0.1:{{ grafana_port }}/api/datasources"
+
+    - name: import grafana dashboards - prepare config
+      delegate_to: localhost
+      template: src=grafana.dest.json.j2 dest={{ playbook_dir }}/scripts/dests.json
+      vars:
+        - ansible_become: false
+        - ansible_connection: local
+        - grafana_dest_config:
+            name: "{{ cluster_name | title }}"
+            url: "http://{{ inventory_hostname }}:{{ grafana_port }}/"
+            user: "{{ grafana_admin_user }}"
+            password: "{{ grafana_admin_password }}"
+            datasource: "{{ cluster_name }}"
+            titles:
+              node: "{{ cluster_name | title }}-Node-Export"
+              pd:   "{{ cluster_name | title }}-PD"
+              tidb: "{{ cluster_name | title }}-TiDB"
+              tikv: "{{ cluster_name | title }}-TiKV"
+              overview: "{{ cluster_name | title }}-Overview"
+              disk_performance: "{{ cluster_name | title }}-Disk Performance"
+
+    - name: import grafana dashboards - run import script
+      delegate_to: localhost
+      shell: >-
+        chdir={{ playbook_dir }}/scripts
+        ./grafana-config-copy.py
+      vars:
+        - ansible_become: false
+        - ansible_connection: local
