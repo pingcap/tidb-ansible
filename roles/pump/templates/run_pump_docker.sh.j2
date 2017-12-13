@@ -39,6 +39,7 @@ exec docker run \
   --addr="0.0.0.0:{{ pump_port }}" \
   --advertise-addr="{{ my_ip }}:{{ pump_port }}" \
   --pd-urls="{{ all_pd | join(',') }}" \
+  --zookeeper-addrs="{{ zookeeper_addrs }}" \
   --data-dir=/data \
   --socket="/status/pump.sock" \
   --log-file="/var/log/{{ pump_log_filename }}" \
