@@ -7,7 +7,10 @@
 
 - name: Warn if TiDB host not exists
   debug: msg="No tidb host is specified. This cluster will run into a RawKV mode."
-  when: "groups.get('tidb_servers', []) | length == 0"
+  when:
+    - "groups.get('tidb_servers', []) | length == 0"
+    - deploy_without_tidb is defined
+    - "not deploy_without_tidb"
 
 - name: Ensure PD host exists
   fail: msg="One, or more pd hosts may be specified."

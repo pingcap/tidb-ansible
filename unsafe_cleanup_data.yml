@@ -28,8 +28,11 @@
   roles:
     - check_config_dynamic
 
+
 - name: TiDB cluster
-  hosts: tidb_servers by supervise
+  hosts: tidb_servers
+  tags:
+    - tidb
   tasks:
     - name: stop TiDB by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
@@ -48,7 +51,6 @@
       vars:
         - ansible_become: false
         - ansible_become_user: root
-
 
     - name: wait TiDB down
       wait_for: host={{ ansible_host }} port={{ tidb_port }} state=stopped
@@ -78,6 +80,7 @@
 
     - name: clean pump data
       file: path={{ pump_data_dir }} state=absent
+
 
 - name: TiKV cluster
   hosts: tikv_servers
@@ -124,6 +127,7 @@
   - name: create new TiKV raftdb data dir
     file: path={{ raftdb_path }} state=directory mode=0755
     when: raftdb_path is defined
+
 
 - name: PD cluster
   hosts: pd_servers
