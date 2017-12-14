@@ -7,13 +7,8 @@ ulimit -n 1000000
 DEPLOY_DIR={{ deploy_dir }}
 cd "${DEPLOY_DIR}" || exit 1
 
-exec docker run -p {{ node_exporter_port }}:9100 \
-  -v "/proc:/host/proc:ro" \
-  -v "/sys:/host/sys:ro" \
-  -v "/:/rootfs:ro" \
+exec docker run \
   --net="host" \
+  --pid="host" \
   --name="node_exporter" \
-  prom/node-exporter:{{ node_exporter_tag }} \
-  -collector.procfs /host/proc \
-  -collector.sysfs /host/sys \
-  -collector.filesystem.ignored-mount-points "^/(sys|proc|dev|host|etc)($|/)"
+  prom/node-exporter:{{ node_exporter_tag }}

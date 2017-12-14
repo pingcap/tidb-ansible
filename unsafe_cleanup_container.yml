@@ -46,12 +46,14 @@
           state: absent
 
 - hosts: tidb_servers
+  tags:
+    - tidb
   tasks:
     - name: remove tidb container
       docker_container:
           name: "tidb-{{ tidb_port }}"
           state: absent
-          
+
     - name: remove pump container
       docker_container:
           name: pump
@@ -64,4 +66,3 @@
       docker_container:
           name: grafana
           state: absent
-
