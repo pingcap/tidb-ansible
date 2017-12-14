@@ -111,7 +111,7 @@
 
     - name: wait pushgateway down
       wait_for: host={{ ansible_host }} port={{ pushgateway_port }} state=stopped
-      
+
     - name: start pushgateway by supervise
       shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
       when: process_supervision == 'supervise'
@@ -172,7 +172,7 @@
 
     - name: wait prometheus down
       wait_for: host={{ ansible_host }} port={{ prometheus_port }} state=stopped
-    
+
     - name: start monitoring modules by supervise
       shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
       when: process_supervision == 'supervise'
@@ -229,7 +229,7 @@
 
     - name: wait grafana down
       wait_for: host={{ ansible_host }} port={{ grafana_port }} state=stopped
-    
+
     - name: start grafana by supervise
       shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
       when: process_supervision == 'supervise'
