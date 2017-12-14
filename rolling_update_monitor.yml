@@ -78,6 +78,7 @@
         host={{ ansible_host }} port={{ node_exporter_port }} state=present
         send='GET /metrics HTTP/1.0\r\n\r\n' search_regex='200 OK'
 
+
 - name: rolling update pushgateway
   hosts: monitoring_servers
   any_errors_fatal: true
@@ -138,6 +139,7 @@
         host={{ ansible_host }} port={{ pushgateway_port }} state=present
         send='GET /metrics HTTP/1.0\r\n\r\n' search_regex='200 OK'
 
+
 - name: rolling update prometheus
   hosts: monitoring_servers
   any_errors_fatal: true
@@ -197,6 +199,7 @@
       wait_for: |
         host={{ ansible_host }} port={{ prometheus_port }} state=present
         send='GET /metrics HTTP/1.0\r\n\r\n' search_regex='200 OK'
+
 
 - name: rolling update grafana
   hosts: grafana_servers
