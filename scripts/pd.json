@@ -859,7 +859,7 @@
             "current": true,
             "max": true,
             "min": false,
-            "rightSide": false,
+            "rightSide": true,
             "show": true,
             "sideWidth": 300,
             "total": false,
@@ -1403,7 +1403,7 @@
       "repeat": null,
       "repeatIteration": null,
       "repeatRowId": null,
-      "showTitle": false,
+      "showTitle": true,
       "title": "Balance",
       "titleSize": "h4"
     },
@@ -1420,13 +1420,13 @@
           "legend": {
             "alignAsTable": true,
             "avg": false,
-            "current": false,
-            "max": false,
+            "current": true,
+            "max": true,
             "min": false,
             "rightSide": true,
             "show": true,
             "total": false,
-            "values": false
+            "values": true
           },
           "lines": true,
           "linewidth": 1,
@@ -1442,9 +1442,9 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(delta(pd_schedule_operators_count{instance=\"$instance\"}[1m])) by (type,state)",
+              "expr": "sum(delta(pd_schedule_operators_count{instance=\"$instance\"}[1m])) by (type)",
               "intervalFactor": 2,
-              "legendFormat": "{{type}}-{{state}}",
+              "legendFormat": "{{type}}",
               "refId": "A",
               "step": 10
             }
@@ -1452,7 +1452,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Schedule operators count with state",
+          "title": "Schedule operators count by type",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -1493,14 +1493,14 @@
           "legend": {
             "alignAsTable": true,
             "avg": false,
-            "current": false,
-            "max": false,
+            "current": true,
+            "max": true,
             "min": false,
             "rightSide": true,
             "show": true,
             "sortDesc": true,
             "total": false,
-            "values": false
+            "values": true
           },
           "lines": true,
           "linewidth": 1,
@@ -1516,9 +1516,9 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "pd_scheduler_status{type=\"limit\",instance=\"$instance\"}",
+              "expr": "sum(delta(pd_schedule_operators_count{instance=\"$instance\"}[1m])) by (event)",
               "intervalFactor": 2,
-              "legendFormat": "{{kind}}",
+              "legendFormat": "{{event}}",
               "metric": "pd_scheduler_status",
               "refId": "A",
               "step": 10
@@ -1527,7 +1527,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Scheduler limit",
+          "title": "Schedule operators count by state",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -2230,13 +2230,13 @@
           "legend": {
             "alignAsTable": true,
             "avg": false,
-            "current": false,
-            "max": false,
+            "current": true,
+            "max": true,
             "min": false,
             "rightSide": true,
             "show": true,
             "total": false,
-            "values": false
+            "values": true
           },
           "lines": true,
           "linewidth": 1,
@@ -2248,16 +2248,16 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "span": 6,
-          "stack": false,
+          "stack": true,
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(delta(pd_scheduler_event_count{instance=\"$instance\", type=\"balance-leader-scheduler\"}[1m])) by (name)",
+              "expr": "sum(delta(pd_scheduler_event_count{instance=\"$instance\", type=\"balance-leader-scheduler\"}[5m])) by (name)",
               "intervalFactor": 2,
               "legendFormat": "{{name}}",
               "metric": "pd_scheduler_event_count",
               "refId": "A",
-              "step": 4
+              "step": 20
             }
           ],
           "thresholds": [],
@@ -2304,13 +2304,13 @@
           "legend": {
             "alignAsTable": true,
             "avg": false,
-            "current": false,
-            "max": false,
+            "current": true,
+            "max": true,
             "min": false,
             "rightSide": true,
             "show": true,
             "total": false,
-            "values": false
+            "values": true
           },
           "lines": true,
           "linewidth": 1,
@@ -2322,11 +2322,11 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "span": 6,
-          "stack": false,
+          "stack": true,
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(delta(pd_scheduler_event_count{instance=\"$instance\", type=\"balance-region-scheduler\"}[1m])) by (name)",
+              "expr": "sum(rate(pd_scheduler_event_count{instance=\"$instance\", type=\"balance-region-scheduler\"}[5m])) by (name)",
               "intervalFactor": 2,
               "legendFormat": "{{name}}",
               "metric": "pd_scheduler_event_count",
@@ -3533,7 +3533,7 @@
       "titleSize": "h4"
     },
     {
-      "collapse": true,
+      "collapse": false,
       "height": "300",
       "panels": [
         {
@@ -3789,7 +3789,7 @@
           "legend": {
             "alignAsTable": true,
             "avg": false,
-            "current": false,
+            "current": true,
             "hideEmpty": true,
             "hideZero": true,
             "max": true,
@@ -3813,10 +3813,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(pd_scheduler_region_heartbeat{instance=\"$instance\"}[1m])) by (store, type, status)",
+              "expr": "sum(rate(pd_scheduler_region_heartbeat{instance=\"$instance\", type=\"report\"}[5m]) * 60) by (store, status)",
               "hide": false,
               "intervalFactor": 2,
-              "legendFormat": "store{{store}}-{{type}}-{{status}}",
+              "legendFormat": "store{{store}}-{{status}}",
               "refId": "A",
               "step": 4
             }
@@ -3824,7 +3824,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Region heartbeat",
+          "title": "Region heartbeat recv",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -3840,7 +3840,87 @@
           },
           "yaxes": [
             {
-              "format": "ops",
+              "format": "opm",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "s",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": "${DS_TIDB-CLUSTER}",
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {},
+          "id": 64,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "hideEmpty": true,
+            "hideZero": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null as zero",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(pd_scheduler_region_heartbeat{type=\"push\",instance=\"$instance\"}[5m])*60) by (store, status)",
+              "hide": false,
+              "intervalFactor": 2,
+              "legendFormat": "store{{store}}-{{status}}",
+              "refId": "A",
+              "step": 4
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Region schedule push",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "opm",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -4166,5 +4246,5 @@
   },
   "timezone": "browser",
   "title": "TiDB Cluster - pd",
-  "version": 4
+  "version": 5
 }
