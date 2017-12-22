@@ -91,59 +91,6 @@
     - name: wait prometheus down
       wait_for: host={{ ansible_host }} port={{ prometheus_port }} state=stopped
 
-- hosts: pd_servers
-  tags:
-    - pd
-  tasks:
-    - name: stop PD
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      when: not use_systemd
-      with_items:
-        - pd
-
-    - name: stop PD by systemd
-      systemd: name=pd.service state=stopped
-      become: true
-      when: use_systemd and ansible_user != "root"
-
-    - name: stop PD by systemd
-      systemd: name=pd.service state=stopped
-      when: use_systemd and ansible_user == "root"
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
-
-    - name: wait PD down
-      wait_for: host={{ ansible_host }} port={{ pd_client_port }} state=stopped
-
-- hosts: tikv_servers
-  tags:
-    - tikv
-  tasks:
-    - name: stop TiKV
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      when: not use_systemd
-      with_items:
-        - tikv
-
-    - name: stop TiKV by systemd
-      systemd: name=tikv@{{ tikv_port }}.service state=stopped
-      become: true
-      when: use_systemd and ansible_user != "root"
-
-    - name: stop TiKV by systemd
-      systemd: name=tikv@{{ tikv_port }}.service state=stopped
-      when: use_systemd and ansible_user == "root"
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
-
-    - name: wait TiKV down (via Port)
-      wait_for: host={{ ansible_host }} port={{ tikv_port }} state=stopped
-
-    - name: wait TiKV down (via PID)
-      wait_for_pid: pid_file={{ deploy_dir }}/status/tikv.pid timeout=300 state=absent
-
 - hosts: tidb_servers
   tags:
     - tidb
@@ -191,6 +138,59 @@
       wait_for: |
         host={{ ansible_host }} port={{ pump_port }} state=stopped
       when: enable_binlog
+
+- hosts: tikv_servers
+  tags:
+    - tikv
+  tasks:
+    - name: stop TiKV
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      when: not use_systemd
+      with_items:
+        - tikv
+
+    - name: stop TiKV by systemd
+      systemd: name=tikv@{{ tikv_port }}.service state=stopped
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: stop TiKV by systemd
+      systemd: name=tikv@{{ tikv_port }}.service state=stopped
+      when: use_systemd and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
+
+    - name: wait TiKV down (via Port)
+      wait_for: host={{ ansible_host }} port={{ tikv_port }} state=stopped
+
+    - name: wait TiKV down (via PID)
+      wait_for_pid: pid_file={{ deploy_dir }}/status/tikv.pid timeout=300 state=absent
+
+- hosts: pd_servers
+  tags:
+    - pd
+  tasks:
+    - name: stop PD
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      when: not use_systemd
+      with_items:
+        - pd
+
+    - name: stop PD by systemd
+      systemd: name=pd.service state=stopped
+      become: true
+      when: use_systemd and ansible_user != "root"
+
+    - name: stop PD by systemd
+      systemd: name=pd.service state=stopped
+      when: use_systemd and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
+
+    - name: wait PD down
+      wait_for: host={{ ansible_host }} port={{ pd_client_port }} state=stopped
 
 - hosts: grafana_servers
   tags:
