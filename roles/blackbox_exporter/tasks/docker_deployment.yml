@@ -1,7 +1,7 @@
 ---
 
-- name: deploy node-exporter image
-  copy: src="{{ downloads_dir }}/node-exporter.tar" dest="{{ deploy_dir }}/images" mode=0755
+- name: deploy blackbox_exporter image
+  copy: src="{{ downloads_dir }}/blackbox-exporter.tar" dest="{{ deploy_dir }}/images" mode=0755
 
 - name: create run script
   template:
@@ -16,9 +16,9 @@
   docker_image:
     state: present
     force: yes
-    name: prom/node-exporter
+    name: prom/blackbox_exporter
     tag: "{{ node_exporter_tag }}"
-    load_path: "{{ images_dir }}/node-exporter.tar"
+    load_path: "{{ images_dir }}/blackbox-exporter.tar"
 
 - include: "{{ process_supervision }}_deployment.yml"
 

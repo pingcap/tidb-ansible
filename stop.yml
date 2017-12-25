@@ -33,27 +33,38 @@
 - hosts: monitored_servers
   tags:
     - node_exporter
+    - blackbox_exporter
   tasks:
-    - name: stop node_exporter by supervise
+    - name: stop node_exporter/blackbox_exporter by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
       with_items:
         - node_exporter
+        - blackbox_exporter
       when: process_supervision == 'supervise'
 
-    - name: stop node_exporter by systemd
-      systemd: name=node_exporter.service state=stopped
+    - name: stop {{ item }} by systemd
+      systemd: name={{ item }} state=stopped
       become: true
       when: process_supervision == 'systemd' and ansible_user != "root"
+      with_items:
+        - node_exporter.service
+        - blackbox_exporter.service
 
-    - name: stop node_exporter by systemd
-      systemd: name=node_exporter.service state=stopped
+    - name: stop {{ item }} by systemd
+      systemd: name={{ item }} state=stopped
       when: process_supervision == 'systemd' and ansible_user == "root"
+      with_items:
+        - node_exporter.service
+        - blackbox_exporter.service
       vars:
         - ansible_become: false
         - ansible_become_user: root
 
     - name: wait node_exporter down
       wait_for: host={{ ansible_host }} port={{ node_exporter_port }} state=stopped
+
+    - name: wait blackbox_exporter down
+      wait_for: host={{ ansible_host }} port={{ blackbox_exporter_port }} state=stopped
 
 - hosts: monitoring_servers
   tags:

@@ -46,7 +46,7 @@ scrape_configs:
 {% endfor %}
 
 {% for ip in target_hosts %}
-  - job_name: "blackbox_exporter_{{ ip }}"
+  - job_name: "blackbox_exporter_{{ ip }}_icmp"
     scrape_interval: 6s
     metrics_path: /probe
     params:
@@ -70,7 +70,26 @@ scrape_configs:
         target_label: __address__
         replacement: {{ ip }}:{{ blackbox_exporter_port }}
 
+{% if pushgateway_host %}
+  - job_name: "blackbox_exporter_{{ ip }}_http"
+    scrape_interval: 30s
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+    - targets: 
+      - 'http://{{ pushgateway_host }}:{{ pushgateway_port }}/metrics'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: {{ ip }}:{{ blackbox_exporter_port }}
+{% endif %}
+
 {% endfor %}
+
 
 
 # Load and evaluate rules in this file every 'evaluation_interval' seconds.

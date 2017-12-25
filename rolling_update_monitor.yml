@@ -79,6 +79,56 @@
         send='GET /metrics HTTP/1.0\r\n\r\n' search_regex='200 OK'
 
 
+
+- name: rolling update BlackBox Exporter
+  hosts: monitored_servers
+  any_errors_fatal: true
+  tags:
+    - blackbox_exporter
+  roles:
+    - blackbox_exporter
+  post_tasks:
+    - name: stop BlackBox Exporter by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./stop_blackbox_exporter.sh
+      when: process_supervision == 'supervise'
+
+    - name: stop BlackBox Exporter by systemd
+      systemd: name=blackbox_exporter.service state=stopped
+      become: true
+      when: process_supervision == 'systemd' and ansible_user != "root"
+
+    - name: stop BlackBox Exporter by systemd
+      systemd: name=blackbox_exporter.service state=stopped
+      when: process_supervision == 'systemd' and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
+
+    - name: wait BlackBox Exporter down
+      wait_for: host={{ ansible_host }} port={{ blackbox_exporter_port }} state=stopped
+
+    - name: start BlackBox Exporter by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./start_blackbox_exporter.sh
+      when: process_supervision == 'supervise'
+
+    - name: start BlackBox Exporter by systemd
+      systemd: name=blackbox_exporter.service state=started
+      become: true
+      when: process_supervision == 'systemd' and ansible_user != "root"
+
+    - name: start BlackBox Exporter by systemd
+      systemd: name=blackbox_exporter.service state=started
+      when: process_supervision == 'systemd' and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
+
+    - name: wait BlackBox Exporter up
+      wait_for: |
+        host={{ ansible_host }} port={{ blackbox_exporter_port }} state=present
+        send='GET / HTTP/1.0\r\n\r\n' search_regex='200 OK'
+
+
 - name: rolling update pushgateway
   hosts: monitoring_servers
   any_errors_fatal: true
