@@ -42,7 +42,7 @@
         - blackbox_exporter
       when: process_supervision == 'supervise'
 
-    - name: stop {{ item }} by systemd
+    - name: stop node_exporter/blackbox_exporter by systemd
       systemd: name={{ item }} state=stopped
       become: true
       when: process_supervision == 'systemd' and ansible_user != "root"
@@ -50,7 +50,7 @@
         - node_exporter.service
         - blackbox_exporter.service
 
-    - name: stop {{ item }} by systemd
+    - name: stop node_exporter/blackbox_exporter by systemd
       systemd: name={{ item }} state=stopped
       when: process_supervision == 'systemd' and ansible_user == "root"
       with_items:
