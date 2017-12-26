@@ -43,6 +43,7 @@
   get_url:
     url: "{{ item.url }}"
     dest: "{{ downloads_dir }}/{{ item.name }}-{{ item.version }}.tar.gz"
+    checksum: "{{ item.checksum | default(omit) }}"
     force: yes
     validate_certs: no
   register: get_url_result
@@ -56,6 +57,7 @@
   get_url:
     url: "{{ item.url }}"
     dest: "{{ downloads_dir }}/{{ item.name }}-{{ item.version }}.tar.gz"
+    checksum: "{{ item.checksum | default(omit) }}"
     force: yes
     validate_certs: no
   register: get_url_result
