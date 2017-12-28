@@ -85,21 +85,26 @@
   any_errors_fatal: true
   tags:
     - blackbox_exporter
+  pre_tasks:
+    - name: check blackbox_exporter existed
+      stat:
+        path: "{{ deploy_dir }}/conf/blackbox.yml"
+      register:  blackbox_exporter_configure_file
   roles:
     - blackbox_exporter
   post_tasks:
     - name: stop BlackBox Exporter by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_blackbox_exporter.sh
-      when: process_supervision == 'supervise'
+      when: process_supervision == 'supervise' and  blackbox_exporter_configure_file.stat.exists == True
 
     - name: stop BlackBox Exporter by systemd
       systemd: name=blackbox_exporter.service state=stopped
       become: true
-      when: process_supervision == 'systemd' and ansible_user != "root"
+      when: process_supervision == 'systemd' and ansible_user != "root" and blackbox_exporter_configure_file.stat.exists == True
 
     - name: stop BlackBox Exporter by systemd
       systemd: name=blackbox_exporter.service state=stopped
-      when: process_supervision == 'systemd' and ansible_user == "root"
+      when: process_supervision == 'systemd' and ansible_user == "root" and blackbox_exporter_configure_file.stat.exists == True
       vars:
         - ansible_become: false
         - ansible_become_user: root
