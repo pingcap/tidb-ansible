@@ -57,6 +57,35 @@
         host={{ ansible_host }} port={{ node_exporter_port }} state=present
         send='GET /metrics HTTP/1.0\r\n\r\n' search_regex='200 OK'
 
+
+- hosts: monitored_servers
+  tags:
+    - blackbox_exporter
+  tasks:
+    - name: start blackbox_exporter by supervise
+      shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
+      when: process_supervision == 'supervise'
+      with_items:
+        - blackbox_exporter
+
+    - name: start blackbox_exporter by systemd
+      become: true
+      systemd: name=blackbox_exporter.service state=started enabled=no
+      when: process_supervision == 'systemd' and ansible_user != 'root'
+
+    - name: start blackbox_exporter by systemd
+      systemd: name=blackbox_exporter.service state=started enabled=no
+      when: process_supervision == 'systemd' and ansible_user == 'root'
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
+
+    - name: wait up
+      wait_for: |
+        host={{ ansible_host }} port={{ blackbox_exporter_port }} state=present
+        send='GET / HTTP/1.0\r\n\r\n' search_regex='200 OK'
+
+
 - hosts: monitoring_servers
   tags:
     - pushgateway
@@ -273,6 +302,7 @@
               tikv: "{{ cluster_name | title }}-TiKV"
               overview: "{{ cluster_name | title }}-Overview"
               disk_performance: "{{ cluster_name | title }}-Disk Performance"
+              blackbox_exporter: "{{ cluster_name | title }}-Blackbox_Exporter"
 
     - name: import grafana dashboards - run import script
       delegate_to: localhost
