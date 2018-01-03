@@ -37,6 +37,61 @@ scrape_configs:
 {% endif -%}
 {% endfor -%}
 
+{% set target_hosts = [] -%}
+{% for host in hosts -%}
+{% set ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) or host -%}
+{% if ip not in target_hosts %}
+{% set _ = target_hosts.append(ip) -%}
+{% endif -%}
+{% endfor %}
+
+{% for ip in target_hosts %}
+  - job_name: "blackbox_exporter_{{ ip }}_icmp"
+    scrape_interval: 6s
+    metrics_path: /probe
+    params:
+      module: [icmp]
+    static_configs:
+    - targets: 
+{% for target_host in target_hosts %}
+      - '{{ target_host }}'
+{% endfor %}
+    relabel_configs:
+      - source_labels: [__address__]
+        regex: (.*)(:80)?
+        target_label: __param_target
+        replacement: ${1}
+      - source_labels: [__param_target]
+        regex: (.*)
+        target_label: ping
+        replacement: ${1}
+      - source_labels: []
+        regex: .*
+        target_label: __address__
+        replacement: {{ ip }}:{{ blackbox_exporter_port }}
+
+{% if pushgateway_host %}
+  - job_name: "blackbox_exporter_{{ ip }}_http"
+    scrape_interval: 30s
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+    - targets: 
+      - 'http://{{ pushgateway_host }}:{{ pushgateway_port }}/metrics'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: {{ ip }}:{{ blackbox_exporter_port }}
+{% endif %}
+
+{% endfor %}
+
+
+
 # Load and evaluate rules in this file every 'evaluation_interval' seconds.
 rule_files:
   - 'alert.rules.yml'

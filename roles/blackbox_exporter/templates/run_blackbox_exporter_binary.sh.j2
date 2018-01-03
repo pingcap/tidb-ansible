@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+ulimit -n 1000000
+
+# WARNING: This file was auto-generated. Do not edit!
+#          All your edit might be overwritten!
+DEPLOY_DIR={{ deploy_dir }}
+cd "${DEPLOY_DIR}" || exit 1
+
+exec > >(tee -i -a "{{ blackbox_exporter_log_dir }}/{{ blackbox_exporter_log_filename }}")
+exec 2>&1
+
+exec bin/blackbox_exporter --web.listen-address=":{{ blackbox_exporter_port }}" \
+    --log.level="{{ blackbox_exporter_log_level }}" \
+    --config.file="conf/blackbox.yml"

@@ -30,6 +30,7 @@
   hosts: monitored_servers
   roles:
     - { role: node_exporter, when: "groups.monitoring_servers | default(False)" }
+    - { role: blackbox_exporter, when: "groups.monitoring_servers | default(False)" }
 
 - name: deploying monitoring server
   hosts: monitoring_servers

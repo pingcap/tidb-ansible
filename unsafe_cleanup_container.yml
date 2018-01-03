@@ -16,10 +16,13 @@
 
 - hosts: monitored_servers
   tasks:
-    - name: remove node_exporter container
+    - name: remove node_exporter/blackbox_exporter container
       docker_container:
-          name: node_exporter
+          name: "{{ item }}"
           state: absent
+      with_items:
+        - node_exporter
+        - blackbox_exporter
 
 - hosts: monitoring_servers
   tasks:
