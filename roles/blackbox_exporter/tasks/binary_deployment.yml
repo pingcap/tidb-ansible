@@ -20,6 +20,9 @@
   become: true
   when:
     - ansible_user != 'root'
+  vars:
+    - ansible_become: false
+    - ansible_become_user: root
 
 - name: create run script
   template:
