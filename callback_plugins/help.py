@@ -5,7 +5,7 @@ __metaclass__ = type
 DOCUMENTATION = '''
     callback: help
     type: notification
-    short_description: oneline help message output
+    short_description: oneline help message
     version_added: historical
     description:
       - This plugin will print help message when tasks fail.
@@ -19,5 +19,8 @@ class CallbackModule(CallbackBase):
     CALLBACK_NAME = 'help'
     CALLBACK_NEEDS_WHITELIST = True
 
-    def runner_on_failed(self, host, res, ignore_errors=False):
-        self._display.warning("Ask for help!!!")
+    def v2_runner_on_failed(self, result, ignore_errors=False):
+        self._display.warning("Ask for help: Send an email to sre@pingcap.com, attached with the tidb-ansible/inventory.ini and tidb-ansible/log/ansible.log files and the error message.")
+
+    def v2_runner_on_unreachable(self, result):
+        self._display.warning("Ask for help: Send an email to sre@pingcap.com, attached with the tidb-ansible/inventory.ini and tidb-ansible/log/ansible.log files and the error message.")
