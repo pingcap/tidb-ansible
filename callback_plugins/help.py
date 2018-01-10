@@ -14,6 +14,7 @@ DOCUMENTATION = '''
 from ansible.plugins.callback import CallbackBase
 from ansible import constants as C
 import os
+import logging
 
 class CallbackModule(CallbackBase):
     CALLBACK_VERSION = 2.0
@@ -27,6 +28,12 @@ class CallbackModule(CallbackBase):
 
         if not os.path.exists(os.path.dirname(C.DEFAULT_LOG_PATH)):
             os.makedirs(os.path.dirname(C.DEFAULT_LOG_PATH))
+
+        self.logger.setLevel(logging.DEBUG)
+        self.logger = logging.getLogger('help')
+        log_path = os.path.dirname(C.DEFAULT_LOG_PATH) + "help.log"
+        self.handler = logging.FileHandler(log_path)
+        self.logger.addHandler(self.handler)
 
     def print_help_message(self):
         self._display.display("Ask for help:", color=C.COLOR_WARN)
