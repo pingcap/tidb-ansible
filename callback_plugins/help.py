@@ -27,6 +27,7 @@ class CallbackModule(CallbackBase):
 
         if not os.path.exists(os.path.dirname(C.DEFAULT_LOG_PATH)):
             os.makedirs(os.path.dirname(C.DEFAULT_LOG_PATH))
+
     def print_help_message(self):
         self._display.display("Ask for help:", color=C.COLOR_WARN)
         self._display.display("sre@pingcap.com", color=C.COLOR_HIGHLIGHT)
