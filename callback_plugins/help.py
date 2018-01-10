@@ -44,7 +44,7 @@ class CallbackModule(CallbackBase):
         self._display.display("Send an email to the above address, attached with the tidb-ansible/inventory.ini and tidb-ansible/log/ansible.log files and the error message.", color=C.COLOR_WARN)
 
     def v2_runner_on_failed(self, result, ignore_errors=False):
-        self.print_help_message()
+        #self.print_help_message()
         data = {
             'status': "FAILED",
             'host': self.hostname,
@@ -54,22 +54,14 @@ class CallbackModule(CallbackBase):
             'ansible_task': result._task,
             'ansible_result': self._dump_results(result._result)
         }
-        self.logger.error("ansible failed", extra=data)
+        self.logger.error('Ansible FAILED %s; playbook: %s; host: %s; task: %s; message: %s', self.hostname, self.playbook, result._host.name, result._task, self._dump_results(result._result))
 
     def v2_runner_on_unreachable(self, result):
-        self.print_help_message()
-        data = {
-            'status': "UNREACHABLE",
-            'host': self.hostname,
-            'ansible_type': "task",
-            'ansible_playbook': self.playbook,
-            'ansible_host': result._host.name,
-            'ansible_task': result._task,
-            'ansible_result': self._dump_results(result._result)
-        }
-        self.logger.error("ansible unreachable", extra=data)
+        #self.print_help_message()
+        self.logger.error('Ansible UNREACHABLE %s; playbook: %s; host: %s; task: %s; message: %s', self.hostname, self.playbook, result._host.name, result._task, self._dump_results(result._result))
 
     def v2_playbook_on_start(self, playbook):
+        self.playbook = playbook._file_name
         self._display.banner("START")
         open(HELP_FILE, 'w').close()
 
@@ -82,4 +74,4 @@ class CallbackModule(CallbackBase):
         if count > 0:
             for count, line in enumerate(open(HELP_FILE, 'r')):
                 self._display.display(line, color=C.COLOR_ERROR)
-        self.print_help_message()
+            self.print_help_message()
