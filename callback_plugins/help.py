@@ -44,11 +44,11 @@ class CallbackModule(CallbackBase):
     def v2_runner_on_failed(self, result, ignore_errors=False):
         if not ignore_errors:
             self.print_help_message()
-            self.logger.error('[%s]: Ansible FAILED! => playbook: %s; task: %s; message: %s', result._host.name, self.playbook, result._task, self._dump_results(result._result))
+            self.logger.error('[%s]: Ansible FAILED! => playbook: %s; %s; message: %s', result._host.name, self.playbook, result._task, self._dump_results(result._result))
 
     def v2_runner_on_unreachable(self, result):
         self.print_help_message()
-        self.logger.error('[%s]: Ansible UNREACHABLE! => playbook: %s; task: %s; message: %s', result._host.name, self.playbook, result._task, self._dump_results(result._result))
+        self.logger.error('[%s]: Ansible UNREACHABLE! => playbook: %s; %s; message: %s', result._host.name, self.playbook, result._task, self._dump_results(result._result))
 
     def v2_playbook_on_start(self, playbook):
         self.playbook = playbook._file_name
