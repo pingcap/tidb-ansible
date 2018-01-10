@@ -17,36 +17,5 @@ You can use the TiDB-Ansible configuration file to set up the cluster topology, 
 [English](https://github.com/pingcap/docs/blob/master/op-guide/ansible-deployment.md)
 [简体中文](https://github.com/pingcap/docs-cn/blob/master/op-guide/ansible-deployment.md)
 
-## Where to get binary
-
-- http://download.pingcap.org/tidb-v1.0.5-linux-amd64-unportable.tar.gz
-- http://download.pingcap.org/tidb-binlog-latest-linux-amd64.tar.gz
-- http://download.pingcap.org/tidb-tools-latest-linux-amd64.tar.gz
-- http://download.pingcap.org/sysbench-static-linux-amd64.tar.gz
-- http://download.pingcap.org/mydumper-linux-amd64.tar.gz
-- http://download.pingcap.org/opbin.tar.gz
-
-Above binaries will be automatically downloaded by:
-
-    ansible-playbook local_prepare.yml
-
-## Common Tasks
-
-```
-ansible all -m user -a 'name=tidb shell=/bin/bash groups=wheel append=yes'
-
-ansible-playbook deploy.yml --list-hosts
-
-ansible-playbook deploy.yml -k -K
-
-ansible-playbook rolling_update.yml -k
-```
-
-## Special Tasks
-
-Rolling update TiKV only:
-
-    ansible-playbook rolling_update.yml --tags tikv
-
 ## License
 TiDB-Ansible is under the Apache 2.0 license. 
