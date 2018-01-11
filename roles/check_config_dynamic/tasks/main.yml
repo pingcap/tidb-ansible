@@ -22,14 +22,16 @@
   when: enable_ntpd
 
 - name: Preflight check - Red Hat Enterprise Linux/CentOS 6 is deprecated
-  debug:
-    msg: "Support for running TiDB on Red Hat Enterprise Linux 6 and CentOS 6 is deprecated, and will be removed in a future release."
+  fail:
+    msg: "Please use CentOS 7.3 and above. See https://github.com/pingcap/docs/blob/master/op-guide/recommendation.md"
   when: "ansible_os_family == 'RedHat' and ansible_distribution_major_version == '6'"
 
-- name: Preflight check - Fail if this machine lacks sufficient RAM.
+- name: Preflight check - Check TiDB server's RAM.
   fail:
-    msg: This machine does not have sufficient RAM to run TiDB.
-  when: ansible_memtotal_mb < required_ram|int
+    msg: "This machine does not have sufficient RAM to run TiDB, at least {{ tidb_min_ram }} MB."
+  when:
+    - 'tidb_servers' in group_names
+    - ansible_memtotal_mb < tidb_min_ram|int
 
 - name: Set enable_binlog - set default
   set_fact:
@@ -172,4 +174,3 @@
     - supervise_st.stat is defined
     - supervise_st.stat.executable is defined
     - supervise_st.stat.executable
-
