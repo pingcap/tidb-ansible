@@ -151,3 +151,12 @@ groups:
       description: 'alert: sum(rate(etcd_disk_wal_fsync_duration_seconds_count[1m]))
         by (instance) instance: {{ $labels.instance }}   values:{{ $value }}'
       summary: PD etcd disk fsync is down
+  - alert: tidb_alive_check_down_and_restart
+    expr: tools_tidb_check_alive{status="fail"} > 0
+    for: 1m
+    labels:
+      channels: alerts
+      env: test-cluster
+    annotations:
+      description: 'alert: tools_tidb_check_alive{status=''fail''} > 1 instance: {{ $labels.instance }}   values:{{ $value }}'
+      summary: tidb_alive_check_down_and_restart
