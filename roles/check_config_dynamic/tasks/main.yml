@@ -1,6 +1,6 @@
 ---
 
-- name: Disk space check - fail when disk is full
+- name: Disk space check - Fail task when disk is full
   raw: df -h . | tail -n1
   register: disk_space_st
   failed_when: " '100%' in disk_space_st.stdout "
@@ -14,23 +14,51 @@
     msg: "Red Hat Enterprise Linux/CentOS 6 is deprecated. Please use CentOS 7.3 and above. See https://github.com/pingcap/docs/blob/master/op-guide/recommendation.md"
   when: "ansible_os_family == 'RedHat' and ansible_distribution_major_version == '6'"
 
-- name: Preflight check - System Time
+- name: Preflight check - System time
   fail:
     msg: "System clock is wrong relative to current host: {{ ansible_date_time.epoch | epoch_time_diff}} seconds."
   when: ansible_date_time.epoch | epoch_time_diff | abs > max_time_diff_seconds
 
-- name: Preflight check - NTP Service
+- name: Preflight check - Set NTP service status
   shell: ntpstat | grep -w synchronised | wc -l
   register: ntp_st
   changed_when: false
   when: enable_ntpd
 
-- name: Preflight check - NTP Service
+- name: Preflight check - NTP service
   fail:
     msg: "NTP service is not running or ntpstat is not synchronised to NTP server. See https://github.com/pingcap/docs/blob/master/op-guide/ansible-deployment.md#how-to-check-whether-the-ntp-service-is-normal ."
   when:
     - enable_ntpd
     - ntp_st.stdout|int != 1
+
+- name: Preflight check - Check TiDB server's CPU
+  fail:
+    msg: "This machine does not have sufficient CPU to run TiDB, at least {{ tidb_min_cpu }} cores."
+  when:
+    - "'tidb_servers' in group_names"
+    - ansible_processor_vcpus < tidb_min_cpu|int
+
+- name: Preflight check - Check TiKV server's CPU
+  fail:
+    msg: "This machine does not have sufficient CPU to run TiKV, at least {{ tikv_min_cpu }} cores."
+  when:
+    - "'tikv_servers' in group_names"
+    - ansible_processor_vcpus < tikv_min_cpu|int
+
+- name: Preflight check - Check PD server's CPU
+  fail:
+    msg: "This machine does not have sufficient CPU to run PD, at least {{ pd_min_cpu }} cores."
+  when:
+    - "'pd_servers' in group_names"
+    - ansible_processor_vcpus < pd_min_cpu|int
+
+- name: Preflight check - Check Monitor server's CPU
+  fail:
+    msg: "This machine does not have sufficient CPU to run Monitor, at least {{ monitor_min_cpu }} cores."
+  when:
+    - "'monitoring_servers' in group_names"
+    - ansible_processor_vcpus < monitor_min_cpu|int
 
 - name: Preflight check - Check TiDB server's RAM
   fail:
@@ -41,21 +69,21 @@
 
 - name: Preflight check - Check TiKV server's RAM
   fail:
-    msg: "This machine does not have sufficient RAM to run TiKV, at least {{ tidb_min_ram }} MB."
+    msg: "This machine does not have sufficient RAM to run TiKV, at least {{ tikv_min_ram }} MB."
   when:
     - "'tikv_servers' in group_names"
     - ansible_memtotal_mb < tikv_min_ram|int
 
 - name: Preflight check - Check PD server's RAM
   fail:
-    msg: "This machine does not have sufficient RAM to run PD, at least {{ tidb_min_ram }} MB."
+    msg: "This machine does not have sufficient RAM to run PD, at least {{ pd_min_ram }} MB."
   when:
     - "'pd_servers' in group_names"
     - ansible_memtotal_mb < pd_min_ram|int
 
 - name: Preflight check - Check Monitor server's RAM
   fail:
-    msg: "This machine does not have sufficient RAM to run PD, at least {{ tidb_min_ram }} MB."
+    msg: "This machine does not have sufficient RAM to run PD, at least {{ monitor_min_ram }} MB."
   when:
     - "'monitoring_servers' in group_names"
     - ansible_memtotal_mb < monitor_min_ram|int
