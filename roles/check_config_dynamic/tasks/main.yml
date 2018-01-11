@@ -36,28 +36,28 @@
   fail:
     msg: "This machine does not have sufficient RAM to run TiDB, at least {{ tidb_min_ram }} MB."
   when:
-    - 'tidb_servers' in group_names
+    - "'tidb_servers' in group_names"
     - ansible_memtotal_mb < tidb_min_ram|int
 
 - name: Preflight check - Check TiKV server's RAM
   fail:
     msg: "This machine does not have sufficient RAM to run TiKV, at least {{ tidb_min_ram }} MB."
   when:
-    - 'tikv_servers' in group_names
+    - "'tikv_servers' in group_names"
     - ansible_memtotal_mb < tikv_min_ram|int
 
 - name: Preflight check - Check PD server's RAM
   fail:
     msg: "This machine does not have sufficient RAM to run PD, at least {{ tidb_min_ram }} MB."
   when:
-    - 'pd_servers' in group_names
+    - "'pd_servers' in group_names"
     - ansible_memtotal_mb < pd_min_ram|int
 
 - name: Preflight check - Check Monitor server's RAM
   fail:
     msg: "This machine does not have sufficient RAM to run PD, at least {{ tidb_min_ram }} MB."
   when:
-    - 'monitoring_servers' in group_names
+    - "'monitoring_servers' in group_names"
     - ansible_memtotal_mb < monitor_min_ram|int
 
 - name: Set enable_binlog - set default
