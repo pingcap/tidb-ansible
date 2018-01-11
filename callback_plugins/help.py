@@ -55,14 +55,16 @@ class CallbackModule(CallbackBase):
         open(FAIL_LOGFILE, 'w').close()
 
     def v2_playbook_on_stats(self, stats):
-        count = -1
-        for count, line in enumerate(open(FAIL_LOGFILE, 'r')):
-            pass
-        count += 1
-        if count > 0:
-            self._display.banner("ERROR MESSAGE SUMMARY")
-            for count, line in enumerate(open(FAIL_LOGFILE, 'r')):
-                self._display.display(line, color=C.COLOR_ERROR)
-            self.print_help_message()
-        else:
-            self._display.display("Congrats! All goes well. :-)", color=C.COLOR_OK)
+        if os.path.isfile(FAIL_LOGFILE):
+            with open(FAIL_LOGFILE, 'r') as f:
+                count = -1
+                for count, line in enumerate(f):
+                    pass
+                count += 1
+                if count > 0:
+                    self._display.banner("ERROR MESSAGE SUMMARY")
+                    for _, line in enumerate(f):
+                        self._display.display(line, color=C.COLOR_ERROR)
+                    self.print_help_message()
+                else:
+                    self._display.display("Congrats! All goes well. :-)", color=C.COLOR_OK)
