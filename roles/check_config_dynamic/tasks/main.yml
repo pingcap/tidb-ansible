@@ -1,6 +1,6 @@
 ---
 
-- name: disk space check - fail when disk is full
+- name: Disk space check - fail when disk is full
   raw: df -h . | tail -n1
   register: disk_space_st
   failed_when: " '100%' in disk_space_st.stdout "
@@ -9,29 +9,56 @@
 - name: get facts
   setup:
 
+- name: Preflight check - System version
+  fail:
+    msg: "Red Hat Enterprise Linux/CentOS 6 is deprecated. Please use CentOS 7.3 and above. See https://github.com/pingcap/docs/blob/master/op-guide/recommendation.md"
+  when: "ansible_os_family == 'RedHat' and ansible_distribution_major_version == '6'"
+
 - name: Preflight check - System Time
   fail:
     msg: "System clock is wrong relative to current host: {{ ansible_date_time.epoch | epoch_time_diff}} seconds."
   when: ansible_date_time.epoch | epoch_time_diff | abs > max_time_diff_seconds
 
-- name: Preflight check - fail when NTP service is not running or ntpstat is not synchronised to NTP server
+- name: Preflight check - NTP Service
   shell: ntpstat | grep -w synchronised | wc -l
   register: ntp_st
-  failed_when: ntp_st.stdout|int != 1
   changed_when: false
   when: enable_ntpd
 
-- name: Preflight check - Red Hat Enterprise Linux/CentOS 6 is deprecated
+- name: Preflight check - NTP Service
   fail:
-    msg: "Please use CentOS 7.3 and above. See https://github.com/pingcap/docs/blob/master/op-guide/recommendation.md"
-  when: "ansible_os_family == 'RedHat' and ansible_distribution_major_version == '6'"
+    msg: "NTP service is not running or ntpstat is not synchronised to NTP server. See https://github.com/pingcap/docs/blob/master/op-guide/ansible-deployment.md#how-to-check-whether-the-ntp-service-is-normal ."
+  when:
+    - enable_ntpd
+    - ntp_st.stdout|int != 1
 
-- name: Preflight check - Check TiDB server's RAM.
+- name: Preflight check - Check TiDB server's RAM
   fail:
     msg: "This machine does not have sufficient RAM to run TiDB, at least {{ tidb_min_ram }} MB."
   when:
     - 'tidb_servers' in group_names
     - ansible_memtotal_mb < tidb_min_ram|int
+
+- name: Preflight check - Check TiKV server's RAM
+  fail:
+    msg: "This machine does not have sufficient RAM to run TiKV, at least {{ tidb_min_ram }} MB."
+  when:
+    - 'tikv_servers' in group_names
+    - ansible_memtotal_mb < tikv_min_ram|int
+
+- name: Preflight check - Check PD server's RAM
+  fail:
+    msg: "This machine does not have sufficient RAM to run PD, at least {{ tidb_min_ram }} MB."
+  when:
+    - 'pd_servers' in group_names
+    - ansible_memtotal_mb < pd_min_ram|int
+
+- name: Preflight check - Check Monitor server's RAM
+  fail:
+    msg: "This machine does not have sufficient RAM to run PD, at least {{ tidb_min_ram }} MB."
+  when:
+    - 'monitoring_servers' in group_names
+    - ansible_memtotal_mb < monitor_min_ram|int
 
 - name: Set enable_binlog - set default
   set_fact:
