@@ -5,7 +5,7 @@ __metaclass__ = type
 DOCUMENTATION = '''
     callback: help
     type: notification
-    short_description: oneline help message
+    short_description: print help message
     version_added: historical
     description:
       - This plugin will print help message when tasks fail.
@@ -38,7 +38,7 @@ class CallbackModule(CallbackBase):
 
     def print_help_message(self):
         self._display.display("Ask for help:", color=C.COLOR_WARN)
-        self._display.display("sre@pingcap.com", color=C.COLOR_HIGHLIGHT)
+        self._display.display("Contact us: sre@pingcap.com", color=C.COLOR_HIGHLIGHT)
         self._display.display("It seems that you encounter some problems. You can send an email to the above address, attached with the tidb-ansible/inventory.ini and tidb-ansible/log/ansible.log files and the error message, or new issue on https://github.com/pingcap/docs/issues. We'll try our best to help you deploy a TiDB cluster. Thanks. :-)", color=C.COLOR_WARN)
 
     def v2_runner_on_failed(self, result, ignore_errors=False):
@@ -65,4 +65,4 @@ class CallbackModule(CallbackBase):
                 self._display.display(line, color=C.COLOR_ERROR)
             self.print_help_message()
         else:
-            self._display.display("Congrats! All goes well.", color=C.COLOR_OK)
+            self._display.display("Congrats! All goes well. :-)", color=C.COLOR_OK)
