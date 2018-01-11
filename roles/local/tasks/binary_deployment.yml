@@ -1,17 +1,41 @@
 ---
 
 - name: download other binary
-  get_url: url={{ item.url }} dest={{ downloads_dir }}/{{ item.name }}-{{ item.version }}.tar.gz validate_certs=no
+  get_url:
+    url: "{{ item.url }}"
+    dest: "{{ downloads_dir }}/{{ item.name }}-{{ item.version }}.tar.gz"
+    checksum: "{{ item.checksum | default(omit) }}"
+    validate_certs: no
+  register: get_url_result
+  until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
+  retries: 4
+  delay: "{{ retry_stagger | random + 3 }}"
   with_items: "{{ third_party_packages }}"
   when: has_outbound_network and not under_gfw
 
 - name: download other binary under gfw
-  get_url: url={{ item.url }} dest={{ downloads_dir }}/{{ item.name }}-{{ item.version }}.tar.gz validate_certs=no
+  get_url:
+    url: "{{ item.url }}"
+    dest: "{{ downloads_dir }}/{{ item.name }}-{{ item.version }}.tar.gz"
+    checksum: "{{ item.checksum | default(omit) }}"
+    validate_certs: no
+  register: get_url_result
+  until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
+  retries: 4
+  delay: "{{ retry_stagger | random + 3 }}"
   with_items: "{{ third_party_packages_under_gfw }}"
   when: has_outbound_network and under_gfw
 
 - name: download TiSpark packages
-  get_url: url={{ item.url }} dest={{ downloads_dir }}/{{ item.name }} force=yes validate_certs=no
+  get_url:
+    url: "{{ item.url }}"
+    dest: "{{ downloads_dir }}/{{ item.name }}"
+    checksum: "{{ item.checksum | default(omit) }}"
+    validate_certs: no
+  register: get_url_result
+  until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
+  retries: 4
+  delay: "{{ retry_stagger | random + 3 }}"
   with_items: "{{ tispark_packages }}"
   when: has_outbound_network
 
