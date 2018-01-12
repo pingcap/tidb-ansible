@@ -83,7 +83,7 @@
 
 - name: Preflight check - Check Monitor server's RAM
   fail:
-    msg: "This machine does not have sufficient RAM to run PD, at least {{ monitor_min_ram }} MB."
+    msg: "This machine does not have sufficient RAM to run Monitor, at least {{ monitor_min_ram }} MB."
   when:
     - "'monitoring_servers' in group_names"
     - ansible_memtotal_mb < monitor_min_ram|int
@@ -155,14 +155,21 @@
     - "'tidb_servers' in group_names"
   with_items: "{{ ansible_mounts }}"
 
-- name: Preflight check - Check TiKV server's disk space
-  fail:
-    msg: 'The file system mounted at {{ item.mount }} does not meet minimum disk space requirement: {{ item.size_available }} < {{ tikv_min_disk }}'
+- set_fact:
+    tikv_disk_alert: "true"
   when:
+    - "'tikv_servers' in group_names"
     - item.mount == deploy_partition.stdout
     - item.size_available < tikv_min_disk|int
-    - "'tikv_servers' in group_names"
   with_items: "{{ ansible_mounts }}"
+
+- name: Preflight check - Check TiKV server's disk space
+  fail:
+    msg: 'The file system mounted at {{ deploy_partition.stdout}} does not meet minimum disk space requirement: at least {{ tikv_min_disk }}'
+  when:
+    - tikv_disk_alert is defined
+    - tikv_disk_alert
+    - "'tikv_servers' in group_names"
 
 - name: Preflight check - Check PD server's disk space
   fail:
