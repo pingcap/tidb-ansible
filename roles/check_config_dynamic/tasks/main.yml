@@ -112,7 +112,7 @@
   set_fact: deploy_dir="/home/{{ deploy_user }}/deploy"
   when: deploy_dir is not defined
 
-- name: Preflight check - Never deploy under root user
+- name: Preflight check - Deploy user
   fail:
     msg: Never deploy under root user
   when: deploy_user=='root'
@@ -132,7 +132,7 @@
     msg: 'The umask of the system ({{ umask.stdout.strip() }}) prevents successful installation. We suggest a standard umask such as 0022.'
   when: umask.stdout.strip()[-2:] not in ('00', '02', '20', '22')
 
-- name: Preflight check - Verify minimum open fds
+- name: Preflight check - ulimit -n
   fail:
     msg: 'The default max number of file descriptors is too low {{ ulimit.stdout }} should be {{ min_open_fds }}'
   when: ulimit.stdout|int < min_open_fds|int
@@ -146,10 +146,40 @@
   register: deploy_partition
   changed_when: False
 
-- name: Preflight check - Does deploy dir meet minimum disk space requirement
+- name: Preflight check - Check TiDB server's disk space
   fail:
-    msg: 'The file system mounted at {{ item.mount }} does not meet minimum disk space requirement: {{ item.size_available }} < {{ minimum_deploy_space }}'
-  when: "item.mount == deploy_partition.stdout and item.size_available < minimum_deploy_space|int"
+    msg: 'The file system mounted at {{ item.mount }} does not meet minimum disk space requirement: {{ item.size_available }} < {{ tidb_min_disk }}'
+  when:
+    - item.mount == deploy_partition.stdout
+    - item.size_available < tidb_min_disk|int
+    - "'tidb_servers' in group_names"
+  with_items: "{{ ansible_mounts }}"
+
+- name: Preflight check - Check TiKV server's disk space
+  fail:
+    msg: 'The file system mounted at {{ item.mount }} does not meet minimum disk space requirement: {{ item.size_available }} < {{ tikv_min_disk }}'
+  when:
+    - item.mount == deploy_partition.stdout
+    - item.size_available < tikv_min_disk|int
+    - "'tikv_servers' in group_names"
+  with_items: "{{ ansible_mounts }}"
+
+- name: Preflight check - Check PD server's disk space
+  fail:
+    msg: 'The file system mounted at {{ item.mount }} does not meet minimum disk space requirement: {{ item.size_available }} < {{ pd_min_disk }}'
+  when:
+    - item.mount == deploy_partition.stdout
+    - item.size_available < pd_min_disk|int
+    - "'pd_servers' in group_names"
+  with_items: "{{ ansible_mounts }}"
+
+- name: Preflight check - Check Monitor server's disk space
+  fail:
+    msg: 'The file system mounted at {{ item.mount }} does not meet minimum disk space requirement: {{ item.size_available }} < {{ monitor_min_disk }}'
+  when:
+    - item.mount == deploy_partition.stdout
+    - item.size_available < monitor_min_disk|int
+    - "'monitoring_servers' in group_names"
   with_items: "{{ ansible_mounts }}"
 
 - set_fact:
