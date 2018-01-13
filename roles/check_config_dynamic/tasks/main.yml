@@ -10,10 +10,10 @@
   setup:
   #setup: gather_subset=network
 
-- name: Preflight check - System Time
-  fail:
-    msg: "System clock is wrong relative to current host: {{ ansible_date_time.epoch | epoch_time_diff}} seconds."
-  when: ansible_date_time.epoch | epoch_time_diff | abs > max_time_diff_seconds
+# - name: Preflight check - System Time
+#   fail:
+#     msg: "System clock is wrong relative to current host: {{ ansible_date_time.epoch | epoch_time_diff}} seconds."
+#   when: ansible_date_time.epoch | epoch_time_diff | abs > max_time_diff_seconds
 
 - name: Preflight check - fail when NTP service is not running or ntpstat is not synchronised to NTP server
   shell: ntpstat | grep -w synchronised | wc -l
