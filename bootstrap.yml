@@ -27,6 +27,12 @@
     - pre-ansible
     - bootstrap
 
+- name: check system
+  hosts: all
+  roles:
+    - check_system_necessary
+    - { role: check_system_optional, when: not dev_mode }
+
 - name: tikv_servers machine benchmark
   hosts: tikv_servers
   gather_facts: false
