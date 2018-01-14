@@ -27,8 +27,20 @@
     - pre-ansible
     - bootstrap
 
-- name: machine benchmark
+- name: tikv_servers machine benchmark
   hosts: tikv_servers
+  gather_facts: false
+  roles:
+    - { role: machine_benchmark, when: not dev_mode }
+
+- name: tidb_servers machine benchmark
+  hosts: tidb_servers
+  gather_facts: false
+  roles:
+    - { role: machine_benchmark, when: not dev_mode }
+
+- name: pd_servers machine benchmark
+  hosts: pd_servers
   gather_facts: false
   roles:
     - { role: machine_benchmark, when: not dev_mode }
