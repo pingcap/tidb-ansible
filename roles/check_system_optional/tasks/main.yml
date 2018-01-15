@@ -89,7 +89,7 @@
   with_items: "{{ ansible_mounts }}"
 
 - name: Preflight check - Check TiDB server's disk space
-  fail:
+  debug:
     msg: 'The file system mounted at {{ deploy_partition.stdout }} does not meet minimum disk space requirement: at least {{ tidb_min_disk/1000000000 }} GB.'
   when:
     - tidb_disk_alert is defined
@@ -105,7 +105,7 @@
   with_items: "{{ ansible_mounts }}"
 
 - name: Preflight check - Check TiKV server's disk space
-  fail:
+  debug:
     msg: 'The file system mounted at {{ deploy_partition.stdout }} does not meet minimum disk space requirement: at least {{ tikv_min_disk/1000000000 }} GB.'
   when:
     - tikv_disk_alert is defined
@@ -121,7 +121,7 @@
   with_items: "{{ ansible_mounts }}"
 
 - name: Preflight check - Check PD server's disk space
-  fail:
+  debug:
     msg: 'The file system mounted at {{ deploy_partition.stdout }} does not meet minimum disk space requirement: at least {{ pd_min_disk/1000000000 }} GB.'
   when:
     - pd_disk_alert is defined
@@ -137,7 +137,7 @@
   with_items: "{{ ansible_mounts }}"
 
 - name: Preflight check - Check Monitor server's disk space
-  fail:
+  debug:
     msg: 'The file system mounted at {{ deploy_partition.stdout }} does not meet minimum disk space requirement: at least {{ monitor_min_disk/1000000000 }} GB.'
   when:
     - monitor_disk_alert is defined
