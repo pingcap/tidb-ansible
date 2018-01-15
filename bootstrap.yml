@@ -27,14 +27,17 @@
     - pre-ansible
     - bootstrap
 
-- name: machine benchmark
+- name: check system
+  hosts: all
+  roles:
+    - check_system_necessary
+    - { role: check_system_optional, when: not dev_mode }
+
+- name: tikv_servers machine benchmark
   hosts: tikv_servers
   gather_facts: false
   roles:
-    - { role: machine_benchmark, when: machine_benchmark }
-
-# FIXME: will fail when using pipeline connection
-#    - check_config_dynamic
+    - { role: machine_benchmark, when: not dev_mode }
 
 - name: create ops scripts
   hosts: localhost

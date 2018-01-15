@@ -1,6 +1,6 @@
 ---
 
-- name: disk space check - fail when disk is full
+- name: Disk space check - Fail task when disk is full
   raw: df -h . | tail -n1
   register: disk_space_st
   failed_when: " '100%' in disk_space_st.stdout "
@@ -8,29 +8,19 @@
 
 - name: get facts
   setup:
-  #setup: gather_subset=network
 
-- name: Preflight check - System Time
-  fail:
-    msg: "System clock is wrong relative to current host: {{ ansible_date_time.epoch | epoch_time_diff}} seconds."
-  when: ansible_date_time.epoch | epoch_time_diff | abs > max_time_diff_seconds
-
-- name: Preflight check - fail when NTP service is not running or ntpstat is not synchronised to NTP server
+- name: Preflight check - Set NTP service status
   shell: ntpstat | grep -w synchronised | wc -l
   register: ntp_st
-  failed_when: ntp_st.stdout|int != 1
   changed_when: false
   when: enable_ntpd
 
-- name: Preflight check - Red Hat Enterprise Linux/CentOS 6 is deprecated
-  debug:
-    msg: "Support for running TiDB on Red Hat Enterprise Linux 6 and CentOS 6 is deprecated, and will be removed in a future release."
-  when: "ansible_os_family == 'RedHat' and ansible_distribution_major_version == '6'"
-
-- name: Preflight check - Fail if this machine lacks sufficient RAM.
+- name: Preflight check - NTP service
   fail:
-    msg: This machine does not have sufficient RAM to run TiDB.
-  when: ansible_memtotal_mb < required_ram|int
+    msg: "NTP service is not running or ntpstat is not synchronised to NTP server. See https://github.com/pingcap/docs/blob/master/op-guide/ansible-deployment.md#how-to-check-whether-the-ntp-service-is-normal ."
+  when:
+    - enable_ntpd
+    - ntp_st.stdout|int != 1
 
 - name: Set enable_binlog - set default
   set_fact:
@@ -56,7 +46,7 @@
   set_fact: deploy_dir="/home/{{ deploy_user }}/deploy"
   when: deploy_dir is not defined
 
-- name: Preflight check - Never deploy under root user
+- name: Preflight check - Deploy user
   fail:
     msg: Never deploy under root user
   when: deploy_user=='root'
@@ -76,50 +66,10 @@
     msg: 'The umask of the system ({{ umask.stdout.strip() }}) prevents successful installation. We suggest a standard umask such as 0022.'
   when: umask.stdout.strip()[-2:] not in ('00', '02', '20', '22')
 
-- name: Preflight check - Verify minimum open fds
+- name: Preflight check - ulimit -n
   fail:
     msg: 'The default max number of file descriptors is too low {{ ulimit.stdout }} should be {{ min_open_fds }}'
   when: ulimit.stdout|int < min_open_fds|int
-
-- name: Set deploy dir if not presented
-  set_fact: deploy_dir="/home/{{ deploy_user }}/deploy"
-  when: deploy_dir is not defined
-
-- name: Determine which mountpoint deploy dir exists on
-  shell: "df {{ deploy_dir }} | tail -n1 | awk '{print $NF}'"
-  register: deploy_partition
-  changed_when: False
-
-- name: Preflight check - Does deploy dir meet minimum disk space requirement
-  fail:
-    msg: 'The file system mounted at {{ item.mount }} does not meet minimum disk space requirement: {{ item.size_available }} < {{ minimum_deploy_space }}'
-  when: "item.mount == deploy_partition.stdout and item.size_available < minimum_deploy_space|int"
-  with_items: "{{ ansible_mounts }}"
-
-- set_fact:
-    xfs_filesystem: "true"
-  when: "'tikv_servers' in group_names and item.mount == deploy_partition.stdout and item.fstype == 'xfs'"
-  with_items: "{{ ansible_mounts }}"
-
-- name: Preflight check - Check bug if file system is xfs
-  shell: cd {{ deploy_dir }} && fallocate -n -o 0 -l 9192 tidb_test && printf 'a%.0s' {1..5000} > tidb_test && truncate -s 5000 tidb_test && fallocate -p -n -o 5000 -l 4192 tidb_test && LANG=en_US.UTF-8  stat tidb_test |awk 'NR==2{print $2}'
-  register: xfs_result
-  when: "'tikv_servers' in group_names and xfs_filesystem is defined and xfs_filesystem"
-
-- name: Preflight check - Clean check file for xfs file system
-  file: path={{ deploy_dir }}/tidb_test state=absent
-
-- name: Preflight check - Does deploy dir meet ext4 or xfs file system requirement[1]
-  set_fact:
-    fssystem_check_result: true
-  when: "('tikv_servers' in group_names and item.mount == deploy_partition.stdout and item.fstype == 'ext4') or ('tikv_servers' in group_names and xfs_filesystem is defined and xfs_filesystem and xfs_result.stdout|int == 5000)"
-  with_items: "{{ ansible_mounts }}"
-
-- name: Preflight check - Does deploy dir meet ext4 or xfs file system requirement[2]
-  fail:
-    msg: 'The file system mounted at {{ item.mount }} does not meet ext4 or xfs file system requirement'
-  when: "'tikv_servers' in group_names and item.mount == deploy_partition.stdout and fssystem_check_result is not defined"
-  with_items: "{{ ansible_mounts }}"
 
 - name: Preflight check - Get deploy dir permissions
   stat: path={{ deploy_dir }}
@@ -173,4 +123,3 @@
     - supervise_st.stat is defined
     - supervise_st.stat.executable is defined
     - supervise_st.stat.executable
-
