@@ -247,6 +247,24 @@
         host={{ ansible_host }} port={{ tidb_status_port }} state=present
         send='GET /status HTTP/1.0\r\n\r\n' search_regex='TiDB'
 
+    - name: start tidb_alive by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
+      when: enable_check_tidb and process_supervision == 'supervise'
+      with_items:
+        - tidb_alive
+
+    - name: start tidb_alive by systemd
+      systemd: name=tidb_alive.service state=started enabled=no
+      become: true
+      when: enable_check_tidb and process_supervision == 'systemd' and ansible_user != 'root'
+
+    - name: start tidb_alive by systemd
+      systemd: name=tidb_alive.service state=started enabled=no
+      when: enable_check_tidb and process_supervision == 'systemd' and ansible_user == 'root'
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
+
 - hosts: grafana_servers
   tags:
     - grafana

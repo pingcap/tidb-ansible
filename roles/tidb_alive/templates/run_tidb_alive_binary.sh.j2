@@ -1,0 +1,28 @@
+#!/bin/bash
+set -e
+ulimit -n 1000000
+
+# WARNING: This file was auto-generated. Do not edit!
+#          All your edit might be overwritten!
+{% set my_ip = hostvars[inventory_hostname].ansible_host | default(hostvars[inventory_hostname].inventory_hostname) -%}
+
+{% set metric_host = hostvars[groups.monitoring_servers[0]].ansible_host | default(hostvars[groups.monitoring_servers[0]].inventory_hostname)
+    if groups.get('monitoring_servers', []) else "" -%}
+{% set metric_port = hostvars[groups.monitoring_servers[0]].pushgateway_port if metric_host else "" -%}
+{% set metric_addr = metric_host ~ ":" ~ metric_port if metric_host else "" -%}
+
+DEPLOY_DIR={{ deploy_dir }}
+cd "${DEPLOY_DIR}" || exit 1
+
+exec > >(tee -i -a "{{ mysql_alive_log_dir }}/{{ mysql_alive_log_filename }}")
+exec 2>&1
+
+exec bin/mysql_alive \
+    -host "127.0.0.1" \
+    -interval 60 \
+    -metrics "{{ metric_addr }}" \
+    -user "{{ tidb_check_alive_user }}" \
+    -password "{{ tidb_check_alive_password }}" \
+    -port {{ tidb_port }} \
+    -suffix-command "{{ deploy_dir }}/scripts/stop_tidb.sh && {{ deploy_dir }}/scripts/start_tidb.sh" \
+    >> "{{ mysql_alive_log_dir }}/{{ mysql_alive_log_filename }}"
