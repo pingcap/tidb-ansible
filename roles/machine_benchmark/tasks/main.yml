@@ -2,21 +2,6 @@
 - name: deploy fio
   copy: src="{{ resources_dir }}/bin/fio" dest="{{ deploy_dir }}/fio" mode=0755
 
-- name: Benchmark the direct write speed of deploy_dir disk with dd command
-  shell: "LANG='en_US.UTF-8' LC_NUMERIC='en_US.UTF-8' dd bs=4k count=250000 oflag=direct if=/dev/zero of={{ deploy_dir }}/dd_test.txt 2>&1 | awk '/MB/{print $(NF-1)}'"
-  register: disk_write_speed
-
-- name: Clean dd benchmark temporary file
-  file: path={{ deploy_dir }}/dd_test.txt state=absent
-
-- debug:
-    msg: "run command on server: {{ disk_write_speed.cmd }}, and the result is {{ disk_write_speed.stdout }} MB/s."
-
-- name: Preflight check - Does the write speed of deploy_dir disk meet requirement
-  fail:
-    msg: 'dd: the write speed of deploy_dir disk is too slow: {{ disk_write_speed.stdout }} MB/s < {{ min_ssd_write_speed }} MB/s, it is strongly recommended to use SSD disks for TiKV, TiDB and PD, or there might be performance issues.'
-  when: disk_write_speed.stdout|int < min_ssd_write_speed|int
-
 - name: Benchmark randread iops of deploy_dir disk with fio command
   shell: "cd {{ deploy_dir }} && LANG='en_US.UTF-8' ./fio -ioengine=libaio -bs=32k -direct=1 -thread -rw=randread  -size={{ benchmark_size }} -filename=fio_randread_test.txt -name='PingCAP' -iodepth=4 -runtime=60 | awk -F, '/iops/{print $3}' | awk -F'=' '{print $2}'"
   register: disk_randread_iops
@@ -87,3 +72,18 @@
   fail:
     msg: 'fio mixed randread and sequential write test: sequential write latency of deploy_dir disk is too low: {{ disk_mix_write_lat }} usec > {{ max_ssd_mix_write_lat }} usec, it is strongly recommended to use SSD disks for TiKV, TiDB and PD, or there might be performance issues.'
   when: disk_mix_write_lat|int > max_ssd_mix_write_lat|int
+
+- name: Benchmark the direct write speed of deploy_dir disk with dd command
+  shell: "LANG='en_US.UTF-8' LC_NUMERIC='en_US.UTF-8' dd bs=4k count=250000 oflag=direct if=/dev/zero of={{ deploy_dir }}/dd_test.txt 2>&1 | awk '/MB/{print $(NF-1)}'"
+  register: disk_write_speed
+
+- name: Clean dd benchmark temporary file
+  file: path={{ deploy_dir }}/dd_test.txt state=absent
+
+- debug:
+    msg: "run command on server: {{ disk_write_speed.cmd }}, and the result is {{ disk_write_speed.stdout }} MB/s."
+
+- name: Preflight check - Does the write speed of deploy_dir disk meet requirement
+  fail:
+    msg: 'dd: the write speed of deploy_dir disk is too slow: {{ disk_write_speed.stdout }} MB/s < {{ min_ssd_write_speed }} MB/s, it is strongly recommended to use SSD disks for TiKV, TiDB and PD, or there might be performance issues.'
+  when: disk_write_speed.stdout|int < min_ssd_write_speed|int
