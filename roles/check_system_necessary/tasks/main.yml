@@ -64,13 +64,23 @@
 - name: Preflight check - Clean check file for xfs file system
   file: path={{ deploy_dir }}/tidb_test state=absent
 
-- name: Preflight check - Does deploy dir meet ext4 or xfs file system requirement[1]
+- name: Preflight check - Does deploy dir meet ext4 file system requirement
+  fail:
+    msg: 'The file system of {{ item.mount }} does not mount with ext4 nodelalloc option.'
+  when:
+    - "'tikv_servers' in group_names"
+    - item.mount == deploy_partition.stdout
+    - item.fstype == 'ext4'
+    - item.options.find("nodelalloc") == -1
+  with_items: "{{ ansible_mounts }}"
+
+- name: Preflight check - set fssystem_check_result status
   set_fact:
     fssystem_check_result: true
   when: "('tikv_servers' in group_names and item.mount == deploy_partition.stdout and item.fstype == 'ext4') or ('tikv_servers' in group_names and xfs_filesystem is defined and xfs_filesystem and xfs_result.stdout|int == 5000)"
   with_items: "{{ ansible_mounts }}"
 
-- name: Preflight check - Does deploy dir meet ext4 or xfs file system requirement[2]
+- name: Preflight check - Does deploy dir meet ext4 or xfs file system requirement
   fail:
     msg: 'The file system mounted at {{ item.mount }} does not meet ext4 or xfs file system requirement'
   when: "'tikv_servers' in group_names and item.mount == deploy_partition.stdout and fssystem_check_result is not defined"
