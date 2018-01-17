@@ -14,6 +14,7 @@ DOCUMENTATION = '''
 from ansible.plugins.callback import CallbackBase
 from ansible import constants as C
 import os
+import io
 import logging
 
 FAIL_LOGFILE = os.path.dirname(C.DEFAULT_LOG_PATH) + "/fail.log"
@@ -64,7 +65,7 @@ class CallbackModule(CallbackBase):
 
             if count > 0:
                 self._display.banner("ERROR MESSAGE SUMMARY")
-                with open(FAIL_LOGFILE, 'r') as f:
+                with io.open(FAIL_LOGFILE, 'r', encoding="utf-8") as f:
                     for _, line in enumerate(f):
                         self._display.display(line, color=C.COLOR_ERROR)
                     self.print_help_message()
