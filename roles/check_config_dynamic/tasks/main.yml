@@ -109,13 +109,30 @@
 - name: Preflight check - Clean check file for xfs file system
   file: path={{ deploy_dir }}/tidb_test state=absent
 
-- name: Preflight check - Does deploy dir meet ext4 or xfs file system requirement[1]
+- set_fact:
+    ext4_filesystem_alert: "true"
+  when:
+    - "'tikv_servers' in group_names"
+    - item.mount == deploy_partition.stdout
+    - item.fstype == 'ext4'
+    - item.options.find("nodelalloc") == -1
+  with_items: "{{ ansible_mounts }}"
+
+- name: Preflight check - Does deploy dir meet ext4 file system requirement
+  fail:
+    msg: "You don't mount the file system of {{ deploy_partition.stdout }} with ext4 nodelalloc option. See https://github.com/pingcap/docs/blob/master/op-guide/ansible-deployment.md#mount-the-data-disk-ext4-filesystem-with-options."
+  when:
+    - "'tikv_servers' in group_names"
+    - ext4_filesystem_alert is defined
+    - ext4_filesystem_alert
+
+- name: Preflight check - set fssystem_check_result status
   set_fact:
     fssystem_check_result: true
   when: "('tikv_servers' in group_names and item.mount == deploy_partition.stdout and item.fstype == 'ext4') or ('tikv_servers' in group_names and xfs_filesystem is defined and xfs_filesystem and xfs_result.stdout|int == 5000)"
   with_items: "{{ ansible_mounts }}"
 
-- name: Preflight check - Does deploy dir meet ext4 or xfs file system requirement[2]
+- name: Preflight check - Does deploy dir meet ext4 or xfs file system requirement
   fail:
     msg: 'The file system mounted at {{ item.mount }} does not meet ext4 or xfs file system requirement'
   when: "'tikv_servers' in group_names and item.mount == deploy_partition.stdout and fssystem_check_result is not defined"
