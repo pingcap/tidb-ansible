@@ -1,5 +1,12 @@
 ---
 
+- name: create deploy directories
+  file: path={{ item }} state=directory mode=0755
+  with_items:
+  - "{{ prometheus_log_dir }}"
+  - "{{ prometheus_data_dir }}"
+  - "{{ deploy_dir }}/status/{{ role_name }}"
+
 # FIXME: how to handle customized alert.rules & config file
 - name: get config file stat
   stat: path={{ deploy_dir }}/conf/prometheus.yml
