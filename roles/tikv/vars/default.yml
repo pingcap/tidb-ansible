@@ -134,10 +134,14 @@ raftstore:
   # Interval (s) to check region whether the data are consistent.
   # consistency-check-interval: 0
 
+  # Use delete range to drop a large number of continuous keys.
+  # use-delete-range: false
+
 coprocessor:
   # When it is true, it will try to split a region with table prefix if
-  # that region crosses tables.
-  # split-region-on-table: false
+  # that region crosses tables. It is recommended to turn off this option
+  # if there will be a large number of tables created.
+  # split-region-on-table: true
   # When the region's size exceeds region-max-size, we will split the region
   # into two which the left region's size will be region-split-size or a little
   # bit smaller.
@@ -237,11 +241,12 @@ rocksdb:
   # Enable or disable the pipelined write
   # enable-pipelined-write: true
 
-  # set backup path, if not set, use "backup" under store path.
-  # backup-dir: "/tmp/tikv/store/backup"
+  # Allows OS to incrementally sync files to disk while they are being
+  # written, asynchronously, in the background.
+  # bytes-per-sync: "0MB"
 
   # Allows OS to incrementally sync WAL to disk while it is being written.
-  # wal-bytes-per-sync: 0
+  # wal-bytes-per-sync: "0KB"
 
   # Column Family default used to store actual data of the database.
   defaultcf:
@@ -326,6 +331,9 @@ rocksdb:
     # 16     =>  00.78 %
     # read-amp-bytes-per-bit: 0
 
+    # Pick target size of each level dynamically.
+    # dynamic-level-bytes: false
+
   # options for Column Family write
   # Column Family write used to store commit informations in MVCC model
   writecf:
@@ -346,6 +354,7 @@ rocksdb:
     # pin-l0-filter-and-index-blocks: true
     # compaction-pri: 3
     # read-amp-bytes-per-bit: 0
+    # dynamic-level-bytes: false
 
   lockcf:
     # compression-per-level: ["no", "no", "no", "no", "no", "no", "no"]
@@ -363,6 +372,7 @@ rocksdb:
     # pin-l0-filter-and-index-blocks: true
     # compaction-pri: 0
     # read-amp-bytes-per-bit: 0
+    # dynamic-level-bytes: false
 
 raftdb:
   # max-sub-compactions: 1
@@ -399,6 +409,7 @@ raftdb:
     # compaction-pri: 0
     # read-amp-bytes-per-bit: 0
     # wal-bytes-per-sync: 0
+    # dynamic-level-bytes: false
 
 security:
   # set the path for certificates. Empty string means disabling secure connectoins.
