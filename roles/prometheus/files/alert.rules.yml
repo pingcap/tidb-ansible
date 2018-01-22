@@ -5,7 +5,7 @@ groups:
     expr: rate(tidb_domain_load_schema_total{type="failed"}[1m]) > 0
     for: 1s
     labels:
-      env: test-cluster
+      env: ENV_LABELS_ENV
     annotations:
       description: 'alert: rate(tidb_domain_load_schema_total{type=''failed''} instance:
         {{ $labels.instance }} values: {{ $value }}'
@@ -15,7 +15,7 @@ groups:
       > 5
     for: 1m
     labels:
-      env: test-cluster
+      env: ENV_LABELS_ENV
     annotations:
       description: 'alert: histogram_quantile(1, rate(tidb_domain_load_schema_duration_bucket
         [5m])) instance: {{ $labels.instance }}  values: {{ $value }}'
@@ -24,7 +24,7 @@ groups:
     expr: go_memstats_heap_inuse_bytes{job="tidb"} > 1e+09
     for: 10m
     labels:
-      env: test-cluster
+      env: ENV_LABELS_ENV
     annotations:
       description: 'alert: go_memstats_heap_inuse_bytes{job=''tidb''} instance: {{
         $labels.instance }}  values: {{ $value }}'
@@ -34,7 +34,7 @@ groups:
       BY (le, instance)) > 1
     for: 5s
     labels:
-      env: test-cluster
+      env: ENV_LABELS_ENV
     annotations:
       description: 'instance: {{ $labels.instance }} values: {{ $value }} alert: histogram_quantile(0.99,
         sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le, instance))
@@ -46,7 +46,7 @@ groups:
     for: 1m
     labels:
       channels: alerts
-      env: test-cluster
+      env: ENV_LABELS_ENV
     annotations:
       description: 'alert: sum(rate(tidb_tikvclient_region_err_total{type=''server_is_busy''}[1m]))
         instance: {{ $labels.instance }} values: {{ $value }}'
@@ -57,7 +57,7 @@ groups:
     for: 1m
     labels:
       channels: alerts
-      env: test-cluster
+      env: ENV_LABELS_ENV
     annotations:
       description: 'alert: sum(rate(tikv_raftstore_raft_process_nanos_total{type=''ready''[1m]))
         by (type, instance) / 1000000000 instance: {{ $labels.instance }} values:
@@ -69,7 +69,7 @@ groups:
     for: 1m
     labels:
       channels: alerts
-      env: test-cluster
+      env: ENV_LABELS_ENV
     annotations:
       description: 'alert: sum(rate(tikv_server_raft_store_msg_total{type=''unreachable''}[1m]))
         > 10  values:{{ $value }}'
@@ -79,7 +79,7 @@ groups:
     for: 1s
     labels:
       channels: alerts
-      env: test-cluster
+      env: ENV_LABELS_ENV
     annotations:
       description: 'alert: sum(rate(tikv_channel_full_total[1m])) by (type, instance)  instance:
         {{ $labels.instance }}  values: {{ $value }}'
@@ -88,7 +88,7 @@ groups:
     expr: sum(rate(tikv_coprocessor_pending_request[1m])) BY (type, instance) > 2
     for: 10s
     labels:
-      env: test-cluster
+      env: ENV_LABELS_ENV
     annotations:
       description: 'alert: sum(rate(tikv_coprocessor_pending_request[1m])) by (type,instance)
         > 2 type: {{ $labels.type }} instance: {{ $labels.instance }}  values: {{
@@ -98,7 +98,7 @@ groups:
     expr: sum(tikv_scheduler_contex_total) BY (job) > 300
     for: 2m
     labels:
-      env: test-cluster
+      env: ENV_LABELS_ENV
     annotations:
       description: 'alert: sum(tikv_scheduler_contex_total) by (job) > 300 instance:
         {{ $labels.instance }}  values: {{ $value }}'
@@ -107,7 +107,7 @@ groups:
     expr: rate(tikv_thread_cpu_seconds_total{name="raftstore"}[1m]) > 0.8
     for: 1m
     labels:
-      env: test-cluster
+      env: ENV_LABELS_ENV
     annotations:
       description: 'alert: rate(tikv_thread_cpu_seconds_total{name=''raftstore''}[1m])
         > 0.8 instance {{ $labels.instance }} values: {{ $value }}'
@@ -116,7 +116,7 @@ groups:
     expr: rate(tikv_thread_cpu_seconds_total{name="endpoint-pool"}[1m]) > 0.9
     for: 1m
     labels:
-      env: test-cluster
+      env: ENV_LABELS_ENV
     annotations:
       description: 'alert: rate(tikv_thread_cpu_seconds_total{name=''endpoint-pool''}[1m])
         > 0.9 instance {{ $labels.instance }} values: {{ $value }}'
@@ -125,7 +125,7 @@ groups:
     expr: rate(tikv_thread_cpu_seconds_total{name="sched-worker-pool"}[1m]) > 0.9
     for: 1m
     labels:
-      env: test-cluster
+      env: ENV_LABELS_ENV
     annotations:
       description: 'alert: rate(tikv_thread_cpu_seconds_total{name=''sched-worker-pool''}[1m])
         > 0.9 instance {{ $labels.instance }} values: {{ $value }}'
@@ -135,7 +135,7 @@ groups:
     for: 1s
     labels:
       channels: alerts
-      env: test-cluster
+      env: ENV_LABELS_ENV
     annotations:
       description: 'alert: delta(tikv_pd_heartbeat_tick_total{type=''leader''}[30s])
         > 10 instance: {{ $labels.instance }}   values:{{ $value }}'
@@ -146,7 +146,7 @@ groups:
     for: 1m
     labels:
       channels: alerts
-      env: test-cluster
+      env: ENV_LABELS_ENV
     annotations:
       description: 'alert: sum(rate(etcd_disk_wal_fsync_duration_seconds_count[1m]))
         by (instance) instance: {{ $labels.instance }}   values:{{ $value }}'
@@ -156,7 +156,7 @@ groups:
     for: 1m
     labels:
       channels: alerts
-      env: test-cluster
+      env: ENV_LABELS_ENV
     annotations:
       description: 'alert: tools_tidb_check_alive{status=''fail''} > 1 instance: {{ $labels.instance }}   values:{{ $value }}'
       summary: tidb_alive_check_down_and_restart
