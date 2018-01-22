@@ -42,7 +42,7 @@ if not dests:
 
 def export_dashboard(api_url, api_key, dashboard_name):
     req = urllib2.Request(api_url + 'api/dashboards/db/' + dashboard_name,
-                          headers={'Authorization': "Bearer {}".format(api_key)})
+                          headers={'Authorization': "Bearer {0}".format(api_key)})
 
     resp = urllib2.urlopen(req)
     data = json.load(resp)
@@ -72,7 +72,7 @@ def fill_dashboard_with_dest_config(dashboard, dest, type_='node'):
 def import_dashboard(api_url, api_key, dashboard):
     payload = {'dashboard': dashboard,
                'overwrite': True}
-    headers = {'Authorization': "Bearer {}".format(api_key),
+    headers = {'Authorization': "Bearer {0}".format(api_key),
                'Content-Type': 'application/json'}
     req = urllib2.Request(api_url + 'api/dashboards/db',
                           headers=headers,
@@ -89,7 +89,7 @@ def import_dashboard_via_user_pass(api_url, user, password, dashboard):
     payload = {'dashboard': dashboard,
                'overwrite': True}
     auth_string = base64.b64encode('%s:%s' % (user, password))
-    headers = {'Authorization': "Basic {}".format(auth_string),
+    headers = {'Authorization': "Basic {0}".format(auth_string),
                'Content-Type': 'application/json'}
     req = urllib2.Request(api_url + 'api/dashboards/db',
                           headers=headers,
@@ -105,14 +105,14 @@ def import_dashboard_via_user_pass(api_url, user, password, dashboard):
 
 if __name__ == '__main__':
     for type_ in src['dashboards']:
-        print("[load] from <{}>:{}".format(
+        print("[load] from <{0}>:{1}".format(
           src['dashboards'][type_], type_))
 
         dashboard = json.load(open(src['dashboards'][type_]))
 
         for dest in dests:
             dashboard = fill_dashboard_with_dest_config(dashboard, dest, type_)
-            print("[import] as <{}> to [{}]".format(
+            print("[import] as <{0}> to [{1}]".format(
                 dashboard['title'], dest['name']), end='\t............. ')
             if 'user' in dest:
                 ret = import_dashboard_via_user_pass(dest['url'], dest['user'], dest['password'], dashboard)
