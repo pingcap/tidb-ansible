@@ -8,16 +8,6 @@
   vars:
     ansible_become: false
 
-# - name: Get os_version from /etc/os-release
-#   raw: "([ -f /etc/os-release ] && grep '^VERSION_ID=' /etc/os-release | sed s'/VERSION_ID=//' | tr -d \\\") || ([ -f /etc/redhat-release ] && cat /etc/redhat-release | cut '-d ' -f4 | cut '-d.' -f1)"
-#   register: os_version_st
-#   vars:
-#     ansible_become: false
-#
-# - name: set os_version facts
-#   set_fact:
-#     os_version: "{{ os_version_st.stdout | trim }}"
-
 # Debian GNU/Linux, Ubuntu, Fedora, CentOS, CoreOS
 - name: Get distro name from /etc/os-release
   raw: "([ -f /etc/os-release ] && grep '^NAME=' /etc/os-release | sed s'/NAME=//' | tr -d \\\") || ([ -f /etc/redhat-release ] && cat /etc/redhat-release | cut '-d ' -f1)"
