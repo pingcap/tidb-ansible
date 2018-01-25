@@ -30,7 +30,7 @@
         - ntpdate
       when:
         - "'CentOS' in distro"
-        - time_server is defined
+        - ntp_server is defined
 
     - name: Debian/Ubuntu - Make sure ntp, ntpstat have been installed
       apt:
@@ -50,7 +50,7 @@
         - ntpdate
       when:
         - "'Ubuntu' in distro or 'Debian' in distro"
-        - time_server is defined
+        - ntp_server is defined
 
     - name: Adjust Time | Make sure ntpd service has been stopped
       service:
@@ -58,7 +58,7 @@
         state: stopped
       when:
         - "'CentOS' in distro"
-        - time_server is defined
+        - ntp_server is defined
 
     - name: Adjust Time | Make sure ntp service has been stopped
       service:
@@ -66,11 +66,11 @@
         state: stopped
       when:
         - "'Ubuntu' in distro or 'Debian' in distro"
-        - time_server is defined
+        - ntp_server is defined
 
-    - name: Adjust Time | Start to adjust time with {{ time_server }}
-      shell: ntpdate {{ time_server }}
-      when: time_server is defined
+    - name: Adjust Time | Start to adjust time with {{ ntp_server }}
+      shell: ntpdate {{ ntp_server }}
+      when: ntp_server is defined
 
     - name: Adjust Time | Make sure ntpd service has been started
       service:
