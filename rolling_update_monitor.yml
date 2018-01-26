@@ -253,6 +253,9 @@
         host={{ ansible_host }} port={{ grafana_port }} state=present
         send='GET /login HTTP/1.0\r\n\r\n' search_regex='200 OK'
 
+    - set_fact:
+        grafana_host: "{{ ansible_host }}"
+
     - name: import grafana data source
       shell: >
         chdir={{ grafana_data_dir }}
@@ -268,7 +271,7 @@
         - ansible_connection: local
         - grafana_dest_config:
             name: "{{ cluster_name | title }}"
-            url: "http://{{ inventory_hostname }}:{{ grafana_port }}/"
+            url: "http://{{ grafana_host }}:{{ grafana_port }}/"
             user: "{{ grafana_admin_user }}"
             password: "{{ grafana_admin_password }}"
             datasource: "{{ cluster_name }}"
