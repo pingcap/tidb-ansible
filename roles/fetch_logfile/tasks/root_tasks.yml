@@ -52,7 +52,7 @@
 - name: collect tidb log
   shell: "cd {{ log_dir }}; tar czPf {{ inventory_hostname }}-tidb.tar.gz tidb.log tidb_stderr.log messages system_info;"
   when:
-    - not log_dir_st.stat.exists
+    - not archive_log_st.stat.exists
     - "'tidb_servers' in group_names"
 
 - name: fetch pd log file
