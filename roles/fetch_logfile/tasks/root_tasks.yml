@@ -4,7 +4,7 @@
   stat: path={{ deploy_dir }} get_md5=false get_checksum=false
   register: deploy_dir_st
 
-- name: environment check (supervise)
+- name: environment check (archive log)
   stat: path={{ deploy_dir }}/log/{{ hostvars[inventory_hostname].inventory_hostname}}-log.tar.gz get_md5=false get_checksum=false
   register: archive_log_st
   when:
@@ -28,7 +28,7 @@
 - name: fetch log files
   fetch:
     src: "{{ deploy_dir }}/log/{{ hostvars[inventory_hostname].inventory_hostname }}-log.tar.gz"
-    dest: "{{ fetch_log_dir }}/"
+    dest: "{{ fetch_log_dir }}/{{ inventory_hostname }}"
     flat: yes
     validate_checksum: no
 
