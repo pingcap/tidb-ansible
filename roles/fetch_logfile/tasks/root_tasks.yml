@@ -55,18 +55,56 @@
     - not log_dir_st.stat.exists
     - "'tidb_servers' in group_names"
 
-- name: fetch log files
+- name: fetch pd log file
   fetch:
-    src: "{{ log_dir }}/{{ inventory_hostname }}-log.tar.gz"
+    src: "{{ log_dir }}/{{ inventory_hostname }}-pd.tar.gz"
     dest: "{{ fetch_log_dir }}/{{ inventory_hostname }}/"
     flat: yes
     validate_checksum: no
+  when: "'pd_servers' in group_names"
 
-- name: remove archive log file
+- name: fetch tikv log file
+  fetch:
+    src: "{{ log_dir }}/{{ inventory_hostname }}-tikv.tar.gz"
+    dest: "{{ fetch_log_dir }}/{{ inventory_hostname }}/"
+    flat: yes
+    validate_checksum: no
+  when: "'tikv_servers' in group_names"
+
+- name: fetch tidb log file
+  fetch:
+    src: "{{ log_dir }}/{{ inventory_hostname }}-tidb.tar.gz"
+    dest: "{{ fetch_log_dir }}/{{ inventory_hostname }}/"
+    flat: yes
+    validate_checksum: no
+  when: "'tidb_servers' in group_names"
+
+- name: remove pd log file
   file:
     path: "{{ log_dir }}/{{ item }}"
     state: absent
   with_items:
-    - "{{ inventory_hostname }}-log.tar.gz"
+    - "{{ inventory_hostname }}-pd.tar.gz"
     - system_info
     - messages
+  when: "'pd_servers' in group_names"
+
+- name: remove tikv log file
+  file:
+    path: "{{ log_dir }}/{{ item }}"
+    state: absent
+  with_items:
+    - "{{ inventory_hostname }}-tikv.tar.gz"
+    - system_info
+    - messages
+  when: "'tikv_servers' in group_names"
+
+- name: remove tidb log file
+  file:
+    path: "{{ log_dir }}/{{ item }}"
+    state: absent
+  with_items:
+    - "{{ inventory_hostname }}-tidb.tar.gz"
+    - system_info
+    - messages
+  when: "'tidb_servers' in group_names"
