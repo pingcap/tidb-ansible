@@ -38,19 +38,19 @@
   when: not archive_log_st.stat.exists
 
 - name: collect pd log
-  shell: "cd {{ log_dir }}; tar czPf {{ inventory_hostname }}-log.tar.gz pd.log pd_stderr.log messages system_info;"
+  shell: "cd {{ log_dir }}; tar czPf {{ inventory_hostname }}-pd.tar.gz pd.log pd_stderr.log messages system_info;"
   when:
     - not archive_log_st.stat.exists
     - "'pd_servers' in group_names"
 
 - name: collect tikv log
-  shell: "cd {{ log_dir }}; tar czPf {{ inventory_hostname }}-log.tar.gz tikv.log tikv_stderr.log messages system_info;"
+  shell: "cd {{ log_dir }}; tar czPf {{ inventory_hostname }}-tikv.tar.gz tikv.log tikv_stderr.log messages system_info;"
   when:
     - not archive_log_st.stat.exists
     - "'tikv_servers' in group_names"
 
 - name: collect tidb log
-  shell: "cd {{ log_dir }}; tar czPf {{ inventory_hostname }}-log.tar.gz tidb.log tidb_stderr.log messages system_info;"
+  shell: "cd {{ log_dir }}; tar czPf {{ inventory_hostname }}-tidb.tar.gz tidb.log tidb_stderr.log messages system_info;"
   when:
     - not log_dir_st.stat.exists
     - "'tidb_servers' in group_names"
