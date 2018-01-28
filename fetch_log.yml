@@ -13,6 +13,8 @@
 # limitations under the License.
 
 - hosts: localhost
+  tags:
+    - always
   tasks:
     - name: cleaning up fetch_tmp_dir
       file: path={{ fetch_tmp_dir }} state=absent
@@ -23,12 +25,30 @@
         - "{{ fetch_tmp_dir }}"
         - "{{ fetch_log_dir }}"
 
-- name: fetch log
-  hosts: pd_servers,tidb_servers,tikv_servers
+- name: fetch pd log
+  hosts: pd_servers
+  tags:
+    - pd
+  roles:
+    - fetch_log
+
+- name: fetch tikv log
+  hosts: tikv_servers
+  tags:
+    - tikv
+  roles:
+    - fetch_log
+
+- name: fetch tidb log
+  hosts: tidb_servers
+  tags:
+    - tidb
   roles:
     - fetch_log
 
 - hosts: localhost
+  tags:
+    - always
   tasks:
     - name: archive all log files
       shell: "cd {{ fetch_tmp_dir }} && tar czvf {{ fetch_log_dir }}/cluster_log_`date +%Y%m%d-%H%M`.tar.gz ."
