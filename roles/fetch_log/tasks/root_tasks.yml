@@ -16,12 +16,9 @@
   stat: path={{ log_dir }} get_md5=false get_checksum=false
   register: log_dir_st
 
-- name: environment check (archive log)
-  stat: path={{ log_dir }}/{{ inventory_hostname }}-log.tar.gz get_md5=false get_checksum=false
-  register: archive_log_st
-  when:
-    - log_dir_st.stat.isdir is defined
-    - log_dir_st.stat.isdir
+- fail:
+    msg: "{{ log_dir }} must exist and is a directory."
+  when: log_dir_st.stat.isdir is not defined or log_dir_st.stat.isdir == False
 
 - name: Guess deploy_user - set ansible_user as default
   set_fact:
@@ -35,30 +32,26 @@
 
 - name: collect system info
   shell: "cd {{ log_dir }}; echo -e \"###### CPU ######\n`LANG=en_US.UTF-8 cat /proc/cpuinfo |egrep '(processor|cpu MHz)'`\n\n\n###### MEMORY(MB) ######\n`LANG=en_US.UTF-8 free -m`\n\n\n###### DISK ######\n`LANG=en_US.UTF-8 df -h`\n\n\n###### SYSCTL ######\n`sysctl -p`\n\n\n###### ULIMIT ######\n`su {{ deploy_user }} -c 'ulimit -a'`\" > system_info; cp /var/log/messages . ;"
-  when: not archive_log_st.stat.exists
 
 - name: collect pd log
   shell: "cd {{ log_dir }}; tar czPf {{ inventory_hostname }}-pd.tar.gz pd.log pd_stderr.log messages system_info;"
   when:
-    - not archive_log_st.stat.exists
     - "'pd_servers' in group_names"
 
 - name: collect tikv log
   shell: "cd {{ log_dir }}; tar czPf {{ inventory_hostname }}-tikv.tar.gz tikv.log tikv_stderr.log messages system_info;"
   when:
-    - not archive_log_st.stat.exists
     - "'tikv_servers' in group_names"
 
 - name: collect tidb log
   shell: "cd {{ log_dir }}; tar czPf {{ inventory_hostname }}-tidb.tar.gz tidb.log tidb_stderr.log messages system_info;"
   when:
-    - not archive_log_st.stat.exists
     - "'tidb_servers' in group_names"
 
 - name: fetch pd log file
   fetch:
     src: "{{ log_dir }}/{{ inventory_hostname }}-pd.tar.gz"
-    dest: "{{ fetch_log_dir }}/{{ inventory_hostname }}/"
+    dest: "{{ fetch_tmp_dir }}/{{ inventory_hostname }}/"
     flat: yes
     validate_checksum: no
   when: "'pd_servers' in group_names"
@@ -66,7 +59,7 @@
 - name: fetch tikv log file
   fetch:
     src: "{{ log_dir }}/{{ inventory_hostname }}-tikv.tar.gz"
-    dest: "{{ fetch_log_dir }}/{{ inventory_hostname }}/"
+    dest: "{{ fetch_tmp_dir }}/{{ inventory_hostname }}/"
     flat: yes
     validate_checksum: no
   when: "'tikv_servers' in group_names"
@@ -74,7 +67,7 @@
 - name: fetch tidb log file
   fetch:
     src: "{{ log_dir }}/{{ inventory_hostname }}-tidb.tar.gz"
-    dest: "{{ fetch_log_dir }}/{{ inventory_hostname }}/"
+    dest: "{{ fetch_tmp_dir }}/{{ inventory_hostname }}/"
     flat: yes
     validate_checksum: no
   when: "'tidb_servers' in group_names"
