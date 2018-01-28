@@ -31,7 +31,7 @@
   when: deploy_user == 'root' and ansible_become_user is defined and ansible_become_user
 
 - name: collect system info
-  shell: "cd {{ log_dir }}; echo -e \"###### CPU ######\n`LANG=en_US.UTF-8 cat /proc/cpuinfo |egrep '(processor|cpu MHz)'`\n\n\n###### MEMORY(MB) ######\n`LANG=en_US.UTF-8 free -m`\n\n\n###### DISK ######\n`LANG=en_US.UTF-8 df -h`\n\n\n###### SYSCTL ######\n`sysctl -p`\n\n\n###### ULIMIT ######\n`su {{ deploy_user }} -c 'ulimit -a'`\" > system_info; cp /var/log/messages . ;"
+  shell: "cd {{ log_dir }}; echo -e \"###### CPU ######\n`LANG=en_US.UTF-8 cat /proc/cpuinfo |egrep '(processor|cpu MHz)'`\n\n\n###### MEMORY(MB) ######\n`LANG=en_US.UTF-8 free -m`\n\n\n###### DISK ######\n`LANG=en_US.UTF-8 df -hT`\n\n\n###### SYSCTL ######\n`sysctl -p`\n\n\n###### ULIMIT ######\n`su {{ deploy_user }} -c 'ulimit -a'`\" > system_info; cp /var/log/messages . ;"
 
 - name: collect pd log
   shell: "cd {{ log_dir }}; tar czPf {{ inventory_hostname }}-pd.tar.gz pd.log pd_stderr.log messages system_info;"

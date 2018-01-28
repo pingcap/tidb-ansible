@@ -50,8 +50,22 @@
   tags:
     - always
   tasks:
+    - name: cp inventory.ini
+      shell: "cd {{ fetch_tmp_dir }} && cp {{ playbook_dir }}/inventory.ini ."
+
+    - name: get datetime
+      shell: date +%Y%m%d-%H%M
+      register: datetime
+      changed_when: false
+
+    - set_fact:
+        archive_name: "cluster_log_{{ datetime.stdout | trim }}.tar.gz"
+
     - name: archive all log files
-      shell: "cd {{ fetch_tmp_dir }} && tar czvf {{ fetch_log_dir }}/cluster_log_`date +%Y%m%d-%H%M`.tar.gz ."
+      shell: "cd {{ fetch_tmp_dir }} && tar czvf {{ fetch_log_dir }}/{{ archive_name }} ."
 
     - name: cleaning up fetch_tmp_dir
       file: path={{ fetch_tmp_dir }} state=absent
+
+    - debug:
+      msg: "Logpath: {{ fetch_log_dir }}/{{ archive_name }}"
