@@ -39,7 +39,7 @@
     system_dir: "{{ log_dir }}/system"
 
 - name: collect os release
-  shell: "cd {{ system_dir }} && [ -f /etc/os-release ] && cp /etc/os-release ."
+  shell: "cd {{ system_dir }} && ([ -f /etc/os-release ] && cp /etc/os-release .) || true"
 
 - name: collect uname output
   shell: "cd {{ system_dir }} && LANG=en_US.UTF-8 uname -a > uname"
@@ -57,10 +57,10 @@
   shell: "cd {{ system_dir }} && LANG=en_US.UTF-8 dmesg > dmesg"
 
 - name: collect message
-  shell: "cd {{ system_dir }} && [ -f /var/log/messages ] && cp /var/log/messages ."
+  shell: "cd {{ system_dir }} && ([ -f /var/log/messages ] && cp /var/log/messages .) || true"
 
 - name: collect ubuntu syslog
-  shell: "cd {{ system_dir }} && [ -f /var/log/syslog ] && cp /var/log/syslog ."
+  shell: "cd {{ system_dir }} && ([ -f /var/log/syslog ] && cp /var/log/syslog .) || true"
 
 - name: collect lscpu output
   shell: "cd {{ system_dir }} && LANG=en_US.UTF-8 lscpu > lscpu"
