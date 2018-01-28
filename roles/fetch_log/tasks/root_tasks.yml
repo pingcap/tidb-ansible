@@ -30,21 +30,65 @@
     deploy_user: "{{ ansible_become_user }}"
   when: deploy_user == 'root' and ansible_become_user is defined and ansible_become_user
 
-- name: collect system info
-  shell: "cd {{ log_dir }}; echo -e \"###### CPU ######\n`LANG=en_US.UTF-8 cat /proc/cpuinfo |egrep '(processor|cpu MHz)'`\n\n\n###### MEMORY(MB) ######\n`LANG=en_US.UTF-8 free -m`\n\n\n###### DISK ######\n`LANG=en_US.UTF-8 df -hT`\n\n\n###### SYSCTL ######\n`sysctl -p`\n\n\n###### ULIMIT ######\n`su {{ deploy_user }} -c 'ulimit -a'`\" > system_info; cp /var/log/messages . ;"
+- name: create system directory
+  file: path={{ item }} state=directory mode=0755
+  with_items:
+    - "{{ log_dir }}/system"
+
+- set_fact:
+    system_dir: "{{ log_dir }}/system"
+
+- name: collect os release
+  shell: "cd {{ system_dir }} && [ -f /etc/os-release ] && cp /etc/os-release ."
+
+- name: collect uname output
+  shell: "cd {{ system_dir }} && LANG=en_US.UTF-8 uname > uname"
+
+- name: collect ulimit output
+  shell: "cd {{ system_dir }} && su {{ deploy_user }} -c 'ulimit -a' > ulimit"
+
+- name: collect sysctl.conf
+  shell: "cd {{ system_dir }} && [ -f /etc/sysctl.conf ] && cp /etc/sysctl.conf ."
+
+- name: collect sysctl output
+  shell: "cd {{ system_dir }} && LANG=en_US.UTF-8 sysctl -a > sysctl_a"
+
+- name: collect dmesg output
+  shell: "cd {{ system_dir }} && LANG=en_US.UTF-8 dmesg > dmesg"
+
+- name: collect message
+  shell: "cd {{ system_dir }} && [ -f /var/log/messages ] && cp /var/log/messages ."
+
+- name: collect lscpu output
+  shell: "cd {{ system_dir }} && LANG=en_US.UTF-8 lscpu > lscpu"
+
+- name: collect cpuinfo
+  shell: "cd {{ system_dir }} && LANG=en_US.UTF-8 cat /proc/cpuinfo > cpuinfo"
+
+- name: collect free output
+  shell: "cd {{ system_dir }} && LANG=en_US.UTF-8 free -m > free_m"
+
+- name: collect meminfo
+  shell: "cd {{ system_dir }} && LANG=en_US.UTF-8 cat /proc/meminfo > meminfo"
+
+- name: collect df output
+  shell: "cd {{ system_dir }} && LANG=en_US.UTF-8 df -hT > df"
+
+- name: collect mount output
+  shell: "cd {{ system_dir }} && LANG=en_US.UTF-8 mount > mount"
 
 - name: collect pd log
-  shell: "cd {{ log_dir }}; tar czPf {{ inventory_hostname }}-pd.tar.gz pd.log pd_stderr.log messages system_info;"
+  shell: "cd {{ log_dir }}; tar czPf {{ inventory_hostname }}-pd.tar.gz pd.log pd_stderr.log messages system;"
   when:
     - "'pd_servers' in group_names"
 
 - name: collect tikv log
-  shell: "cd {{ log_dir }}; tar czPf {{ inventory_hostname }}-tikv.tar.gz tikv.log tikv_stderr.log messages system_info;"
+  shell: "cd {{ log_dir }}; tar czPf {{ inventory_hostname }}-tikv.tar.gz tikv.log tikv_stderr.log messages system;"
   when:
     - "'tikv_servers' in group_names"
 
 - name: collect tidb log
-  shell: "cd {{ log_dir }}; tar czPf {{ inventory_hostname }}-tidb.tar.gz tidb.log tidb_stderr.log messages system_info;"
+  shell: "cd {{ log_dir }}; tar czPf {{ inventory_hostname }}-tidb.tar.gz tidb.log tidb_stderr.log messages system;"
   when:
     - "'tidb_servers' in group_names"
 
@@ -78,7 +122,7 @@
     state: absent
   with_items:
     - "{{ inventory_hostname }}-pd.tar.gz"
-    - system_info
+    - system
     - messages
   when: "'pd_servers' in group_names"
 
@@ -88,7 +132,7 @@
     state: absent
   with_items:
     - "{{ inventory_hostname }}-tikv.tar.gz"
-    - system_info
+    - system
     - messages
   when: "'tikv_servers' in group_names"
 
@@ -98,6 +142,6 @@
     state: absent
   with_items:
     - "{{ inventory_hostname }}-tidb.tar.gz"
-    - system_info
+    - system
     - messages
   when: "'tidb_servers' in group_names"
