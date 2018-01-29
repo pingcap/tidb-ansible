@@ -1,7 +1,7 @@
 ---
 
 - name: setting kernel params
-  sysctl: name="{{ item.name }}" value="{{ item.value }}" state=present
+  sysctl: name="{{ item.name }}" value="{{ item.value }}" ignoreerrors=yes state=present
   with_items:
     - { name: 'net.core.somaxconn', value: 32768 }
     - { name: 'vm.swappiness', value: 0 }
