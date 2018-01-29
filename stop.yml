@@ -106,19 +106,19 @@
   tags:
     - tidb
   tasks:
-    - name: stop tidb_alive by supervise
+    - name: stop tidb-alive by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
       when: enable_check_tidb and process_supervision == 'supervise'
       with_items:
-        - tidb_alive
+        - tidb-alive
 
-    - name: stop tidb_alive by systemd
-      systemd: name=tidb_alive.service state=stopped
+    - name: stop tidb-alive by systemd
+      systemd: name=tidb-alive.service state=stopped
       become: true
       when: enable_check_tidb and process_supervision == 'systemd' and ansible_user != "root"
 
-    - name: stop tidb_alive by systemd
-      systemd: name=tidb_alive.service state=stopped
+    - name: stop tidb-alive by systemd
+      systemd: name=tidb-alive.service state=stopped
       when: enable_check_tidb and process_supervision == 'systemd' and ansible_user == "root"
       vars:
         - ansible_become: false

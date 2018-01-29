@@ -18,15 +18,6 @@
 
 - hosts: all
   tasks:
-    - name: killing all process
-      shell: >
-        killall -9 supervise;
-        killall -9 node_exporter blackbox_exporter prometheus pushgateway grafana-server tidb_alive;
-        killall -9 tikv-server tidb-server pd-server;
-        killall -9 pump drainer;
-        true
-      when: process_supervision == 'supervise'
-
     - name: clean systemd config
       shell: "rm -f /etc/systemd/system/{{ item }}"
       when: process_supervision == 'systemd' and ansible_user == "root"
@@ -36,11 +27,11 @@
         - pushgateway.service
         - node_exporter.service
         - blackbox_exporter.service
-        - tidb_alive.service
         - pd*.service
         - pump.service
         - tidb*.service
         - tikv*.service
+        - tidb-alive.service
       vars:
         - ansible_become: false
         - ansible_become_user: root
@@ -55,11 +46,19 @@
         - pushgateway.service
         - node_exporter.service
         - blackbox_exporter.service
-        - tidb_alive.service
         - pd*.service
         - tidb*.service
         - pump.service
         - tikv*.service
+        - tidb-alive.service
+
+    - name: killing all process
+      shell: >
+        killall -9 supervise;
+        killall -9 node_exporter blackbox_exporter prometheus pushgateway grafana-server;
+        killall -9 tikv-server tidb-server pd-server mysql-alive;
+        killall -9 pump drainer;
+        true
 
     - name: cleaning up wal dir
       file: path={{ wal_dir }} state=absent
@@ -77,4 +76,3 @@
 
 - include: unsafe_cleanup_container.yml
   when: deployment_method == 'docker'
-
