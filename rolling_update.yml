@@ -196,7 +196,7 @@
     - tidb
   roles:
     - { role: pump, when: enable_binlog, tags: ["deploy"] }
-    - { role: pump, when: enable_check_tidb, tags: ["deploy"] }
+    - { role: tidb_alive, when: enable_check_tidb, tags: ["deploy"] }
     - { role: tidb, tags: ["deploy"] }
   post_tasks:
     - name: stop tidb_alive by supervise
