@@ -19,8 +19,54 @@
 # This is useful for setting default environmental settings.
 
 # Example:
-#spark.eventLog.dir: "hdfs://namenode:8021/directory"
+# spark.eventLog.dir: "hdfs://namenode:8021/directory"
 # spark.executor.extraJavaOptions  -XX:+PrintGCDetails -Dkey=value -Dnumbers="one two three"
+
 spark.eventLog.enabled: false
 spark.serializer: org.apache.spark.serializer.KryoSerializer
-spark.driver.memory: 1g
+spark.driver.memory: 2g
+
+# TiSpark configuration items 
+
+# PD Cluster Addresses, split by comma.
+# Do not need to fill, it will be automatically generated through ansible 
+# spark.tispark.pd.addresses: 127.0.0.1:2379
+
+# Max frame size of GRPC response 
+spark.tispark.grpc.framesize: 268435456
+
+# GRPC timeout time in seconds 
+spark.tispark.grpc.timeout_in_sec: 100
+
+# Metastore reload period in seconds 
+spark.tispark.meta.reload_period_in_sec: 60
+
+# If allow aggregation pushdown (in case of busy TiKV nodes) 
+# spark.tispark.plan.allow_agg_pushdown: true
+
+# If allow index double read (which might cause heavy pressure on TiKV) 
+# spark.tispark.plan.allow_index_double_read: false
+
+# How many row key in batch for concurrent index scan
+# spark.tispark.index.scan_batch_size: 2000000
+
+# Maximal threads for index scan retrieving row keys (shared among tasks inside each JVM) 
+# spark.tispark.index.scan_concurrency: 2 
+
+# Maximal threads for table scan (shared among tasks inside each JVM)
+spark.tispark.table.scan_concurrency: 256 
+
+# Can be "Low", "Normal", "High" ,which impacts resource to get in TiKV. Low is recommended for not disturbing OLTP workload 
+spark.tispark.request.command.priority: "Low" 
+
+# Whether to use streaming for response fetching 
+# spark.tispark.coprocess.streaming: false
+
+# A comma separated list of expressions. In case you have very old version of TiKV, you might disable some of the expression push-down if not supported 
+# spark.tispark.plan.unsupported_pushdown_exprs: ""
+
+# If index scan handles for one region exceeds this limit in original request, downgrade the request to a full table scan rather than original planned index scan 
+# spark.tispark.plan.downgrade.index_threshold: 100000 
+
+# An integer, represents timezone offset to UTC time(like 28800, GMT+8), this value will be added to requests issued to TiKV 
+# spark.tispark.request.timezone.offset: 28800
