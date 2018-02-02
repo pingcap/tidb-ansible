@@ -1,14 +1,4 @@
 groups:
 - name: alert.rules
   rules:
-  - alert: tidb_alive_check_down_and_restart
-    expr: tools_tidb_check_alive{status="fail"} > 0
-    for: 1m
-    labels:
-      env: ENV_LABELS_ENV
-      level: 1
-      expr: tools_tidb_check_alive{status="fail"} > 0
-    annotations:
-      description: 'alert: {{ $labels.expr }} instance: {{ $labels.instance }}   values:{{ $value }}'
-      value: '{{ $value }}'
-      summary: tidb_alive_check_down_and_restart
+
