@@ -21,17 +21,28 @@
   vars:
     hosts: "{{ groups['all'] | list }}"
 
-- name: copy alert rules file if not exist
-  copy: src=alert.rules.yml dest="{{ deploy_dir }}/conf/alert.rules.yml" mode=0644
-  when: not st_alert_conf.stat.exists
-  register: alert_rules_result
+- name: copy alert rules file
+  copy: src={{ item }} dest="{{ deploy_dir }}/conf/{{ item }}" mode=0644
+  with_items:
+    - node.rules.yml
+    - bypass.rules.yml
+    - pd.rules.yml
+    - tidb.rules.yml
+    - tikv.rules.yml
 
-- name: set alert rules label if alert.rules.yml changes
+- name: set alert rules label changes
   replace: >
-    dest={{ deploy_dir }}/conf/alert.rules.yml
+    dest={{ deploy_dir }}/conf/{{ item }}
     regexp="ENV_LABELS_ENV"
     replace="{{ cluster_name }}"
-  when: alert_rules_result.changed
+  with_items:
+    - node.rules.yml
+    - bypass.rules.yml
+    - pd.rules.yml
+    - tidb.rules.yml
+    - tikv.rules.yml
+
+
 
 - name: create deploy data directory
   file: path={{ item }} state=directory mode=0755
