@@ -168,22 +168,6 @@
     - tidb
 
   pre_tasks:
-    - name: stop tidb_alive by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./stop_tidb_alive.sh
-      when: enable_check_tidb and process_supervision == 'supervise'
-
-    - name: stop tidb_alive by systemd
-      systemd: name=tidb-alive.service state=stopped
-      become: true
-      when: enable_check_tidb and process_supervision == 'systemd' and ansible_user != "root"
-
-    - name: stop tidb_alive by systemd
-      systemd: name=tidb-alive.service state=stopped
-      when: enable_check_tidb and process_supervision == 'systemd' and ansible_user == "root"
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
-
     - name: stop TiDB by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_tidb.sh
       when: process_supervision == 'supervise'
@@ -228,7 +212,6 @@
 
   roles:
     - { role: pump, when: enable_binlog }
-    - { role: tidb_alive, when: enable_check_tidb }
     - { role: tidb }
 
   post_tasks:
@@ -275,19 +258,3 @@
       wait_for: |
         host={{ ansible_host }} port={{ tidb_status_port }} state=present
         send='GET /status HTTP/1.0\r\n\r\n' search_regex='TiDB'
-
-    - name: start tidb_alive by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_tidb_alive.sh
-      when: enable_check_tidb and process_supervision == 'supervise'
-
-    - name: start tidb_alive by systemd
-      systemd: name=tidb-alive.service state=started
-      become: true
-      when: enable_check_tidb and process_supervision == 'systemd' and ansible_user != "root"
-
-    - name: start tidb_alive by systemd
-      systemd: name=tidb-alive.service state=started
-      when: enable_check_tidb and process_supervision == 'systemd' and ansible_user == "root"
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
