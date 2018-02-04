@@ -30,68 +30,6 @@
   roles:
     - check_config_dynamic
 
-- name: rolling update NodeExporter
-  hosts: monitored_servers
-  any_errors_fatal: true
-  tags:
-    - node_exporter
-  roles:
-    - { role: node_exporter, tags: ["deploy"] }
-  post_tasks:
-    - name: stop NodeExporter
-      tags:
-        - restart
-      shell: cd {{ deploy_dir }}/scripts && ./stop_node_exporter.sh
-      when: not use_systemd
-
-    - name: stop NodeExporter by systemd
-      tags:
-        - restart
-      systemd: name=node_exporter.service state=stopped
-      become: true
-      when: use_systemd and ansible_user != "root"
-
-    - name: stop NodeExporter by systemd
-      tags:
-        - restart
-      systemd: name=node_exporter.service state=stopped
-      when: use_systemd and ansible_user == "root"
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
-
-    - name: wait NodeExporter down
-      tags:
-        - restart
-      wait_for: host={{ ansible_host }} port={{ node_exporter_port }} state=stopped
-
-    - name: start NodeExporter
-      tags:
-        - restart
-      shell: cd {{ deploy_dir }}/scripts && ./start_node_exporter.sh
-      when: not use_systemd
-
-    - name: start NodeExporter by systemd
-      tags:
-        - restart
-      systemd: name=node_exporter.service state=started
-      become: true
-      when: use_systemd and ansible_user != "root"
-
-    - name: start NodeExporter by systemd
-      tags:
-        - restart
-      systemd: name=node_exporter.service state=started
-      when: use_systemd and ansible_user == "root"
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
-
-    - name: wait NodeExporter up
-      wait_for: |
-        host={{ ansible_host }} port={{ node_exporter_port }} state=present
-        send='GET /metrics HTTP/1.0\r\n\r\n' search_regex='200 OK'
-
 
 - name: rolling update PD cluster
   hosts: pd_servers
@@ -99,25 +37,18 @@
   serial: 1
   tags:
     - pd
-  roles:
-    - { role: pd, tags: ["deploy"] }
-  post_tasks:
-    - name: stop PD
-      tags:
-        - restart
+
+  pre_tasks:
+    - name: stop PD by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_pd.sh
       when: not use_systemd
 
     - name: stop PD by systemd
-      tags:
-        - restart
       systemd: name=pd.service state=stopped
       become: true
       when: use_systemd and ansible_user != "root"
 
     - name: stop PD by systemd
-      tags:
-        - restart
       systemd: name=pd.service state=stopped
       when: use_systemd and ansible_user == "root"
       vars:
@@ -125,26 +56,22 @@
         - ansible_become_user: root
 
     - name: wait PD down
-      tags:
-        - restart
       wait_for: host={{ ansible_host }} port={{ pd_client_port }} state=stopped
 
-    - name: start PD
-      tags:
-        - restart
+  roles:
+    - pd
+
+  post_tasks:
+    - name: start PD by supervise
       shell: cd {{ deploy_dir }}/scripts && ./start_pd.sh
       when: not use_systemd
 
     - name: start PD by systemd
-      tags:
-        - restart
       systemd: name=pd.service state=started
       become: true
       when: use_systemd and ansible_user != "root"
 
     - name: start PD by systemd
-      tags:
-        - restart
       systemd: name=pd.service state=started
       when: use_systemd and ansible_user == "root"
       vars:
@@ -163,25 +90,18 @@
   serial: 1
   tags:
     - tikv
-  roles:
-    - { role: tikv, tags: ["deploy"] }
-  post_tasks:
-    - name: stop TiKV
-      tags:
-        - restart
+
+  pre_tasks:
+    - name: stop TiKV by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_tikv.sh
       when: not use_systemd
 
     - name: stop TiKV by systemd
-      tags:
-        - restart
       systemd: name=tikv@{{ tikv_port }}.service state=stopped
       become: true
       when: use_systemd and ansible_user != "root"
 
     - name: stop TiKV by systemd
-      tags:
-        - restart
       systemd: name=tikv@{{ tikv_port }}.service state=stopped
       when: use_systemd and ansible_user == "root"
       vars:
@@ -189,31 +109,25 @@
         - ansible_become_user: root
 
     - name: wait TiKV down (via Port)
-      tags:
-        - restart
       wait_for: host={{ ansible_host }} port={{ tikv_port }} state=stopped
 
     - name: wait TiKV down (via PID)
-      tags:
-        - restart
       wait_for_pid: pid_file={{ deploy_dir }}/status/tikv.pid timeout=300 state=absent
 
-    - name: start TiKV
-      tags:
-        - restart
+  roles:
+    - tikv
+
+  post_tasks:
+    - name: start TiKV by supervise
       shell: cd {{ deploy_dir }}/scripts && ./start_tikv.sh
       when: not use_systemd
 
     - name: start TiKV by systemd
-      tags:
-        - restart
       systemd: name=tikv@{{ tikv_port }}.service state=started
       become: true
       when: use_systemd and ansible_user != "root"
 
     - name: start TiKV by systemd
-      tags:
-        - restart
       systemd: name=tikv@{{ tikv_port }}.service state=started
       when: use_systemd and ansible_user == "root"
       vars:
@@ -221,8 +135,6 @@
         - ansible_become_user: root
 
     - name: wait TiKV up
-      tags:
-        - restart
       wait_for_pid: |
         pid_file={{ deploy_dir }}/status/tikv.pid timeout=300
         thread_name_regex='endpoint' state=present
@@ -234,26 +146,18 @@
   serial: 1
   tags:
     - tidb
-  roles:
-    - { role: pump, when: enable_binlog, tags: ["deploy"] }
-    - { role: tidb, tags: ["deploy"] }
-  post_tasks:
-    - name: stop TiDB
-      tags:
-        - restart
+
+  pre_tasks:
+    - name: stop TiDB by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_tidb.sh
       when: not use_systemd
 
     - name: stop TiDB by systemd
-      tags:
-        - restart
       systemd: name=tidb@{{ tidb_port }}.service state=stopped
       become: true
       when: use_systemd and ansible_user != "root"
 
     - name: stop TiDB by systemd
-      tags:
-        - restart
       systemd: name=tidb@{{ tidb_port }}.service state=stopped
       when: use_systemd and ansible_user == "root"
       vars:
@@ -261,28 +165,20 @@
         - ansible_become_user: root
 
     - name: wait TiDB down
-      tags:
-        - restart
       wait_for: host={{ ansible_host }} port={{ tidb_port }} state=stopped
 
-    - name: stop pump
-      tags:
-        - restart
+    - name: stop pump by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
       with_items:
         - pump
       when: enable_binlog and not use_systemd
 
     - name: stop pump by systemd
-      tags:
-        - restart
       systemd: name=pump.service state=stopped
       become: true
       when: enable_binlog and use_systemd and ansible_user != "root"
 
     - name: stop pump by systemd
-      tags:
-        - restart
       systemd: name=pump.service state=stopped
       when: enable_binlog and use_systemd and ansible_user == "root"
       vars:
@@ -294,24 +190,23 @@
         host={{ ansible_host }} port={{ pump_port }} state=stopped
       when: enable_binlog
 
-    - name: start pump
-      tags:
-        - restart
+  roles:
+    - { role: pump, when: enable_binlog }
+    - { role: tidb }
+
+  post_tasks:
+    - name: start pump by supervise
       shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
       when: enable_binlog and not use_systemd
       with_items:
         - pump
 
     - name: start pump by systemd
-      tags:
-        - restart
       systemd: name=pump.service state=started enabled=yes
       become: true
       when: enable_binlog and use_systemd and ansible_user != 'root'
 
     - name: start pump by systemd
-      tags:
-        - restart
       systemd: name=pump.service state=started enabled=yes
       when: enable_binlog and use_systemd and ansible_user == 'root'
       vars:
@@ -323,22 +218,16 @@
         host={{ ansible_host }} port={{ pump_port }} state=present
       when: enable_binlog
 
-    - name: start TiDB
-      tags:
-        - restart
+    - name: start TiDB by supervise
       shell: cd {{ deploy_dir }}/scripts && ./start_tidb.sh
       when: not use_systemd
 
     - name: start TiDB by systemd
-      tags:
-        - restart
       systemd: name=tidb@{{ tidb_port }}.service state=started
       become: true
       when: use_systemd and ansible_user != "root"
 
     - name: start TiDB by systemd
-      tags:
-        - restart
       systemd: name=tidb@{{ tidb_port }}.service state=started
       when: use_systemd and ansible_user == "root"
       vars:
@@ -346,8 +235,6 @@
         - ansible_become_user: root
 
     - name: wait TiDB up
-      tags:
-        - restart
       wait_for: |
         host={{ ansible_host }} port={{ tidb_port }} state=present
         search_regex='TiDB'
