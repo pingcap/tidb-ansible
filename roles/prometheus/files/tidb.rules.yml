@@ -26,10 +26,10 @@ groups:
       summary: TiDB load schema latency is over 5s
   - alert: memery_abnormal
     expr: go_memstats_heap_inuse_bytes{job="tidb"} > 1e+09
-    for: 10m
+    for: 1m
     labels:
       env: ENV_LABELS_ENV
-      level: 10
+      level: 1
       expr: go_memstats_heap_inuse_bytes{job="tidb"} > 1e+09
     annotations:
       description: 'alert: {{ $labels.expr }}  values: {{ $value }}'
@@ -37,17 +37,17 @@ groups:
       summary: TiDB mem heap is over 1GiB
   - alert: tidb_query_duration
     expr: histogram_quantile(0.99, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m]))
-      BY (le, instance)) > 1
+      BY (le, instance)) > 10
     for: 5s
     labels:
       env: ENV_LABELS_ENV
       level: 1
       expr:  histogram_quantile(0.99, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m]))
-        BY (le, instance)) > 1
+        BY (le, instance)) > 10
     annotations:
       description: 'instance: {{ $labels.instance }} values: {{ $value }} alert: {{ $labels.expr }}'
       value: '{{ $value }}'
-      summary: TiDB query duration 99th percentile is above 1s
+      summary: TiDB query duration 99th percentile is above 10s
   - alert: tidb_tikvclient_region_err
     expr: sum(rate(tidb_tikvclient_region_err_total{type="server_is_busy"}[1m])) > 0
     for: 1m
