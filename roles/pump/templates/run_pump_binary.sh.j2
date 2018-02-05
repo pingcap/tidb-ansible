@@ -3,7 +3,12 @@ set -e
 ulimit -n 1000000
 
 DEPLOY_DIR={{ deploy_dir }}
+PUMP_SOCKET={{ pump_socket }}
+
 cd "${DEPLOY_DIR}" || exit 1
+if [ -S "${PUMP_SOCKET}" ];then
+  rm -f ${PUMP_SOCKET}
+fi
 
 # WARNING: This file was auto-generated. Do not edit!
 #          All your edit might be overwritten!
