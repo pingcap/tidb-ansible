@@ -1,0 +1,62 @@
+groups:
+- name: alert.rules
+  rules:
+  - alert: load_schema_fail
+    expr: rate(tidb_domain_load_schema_total{type="failed"}[1m]) > 0
+    for: 1s
+    labels:
+      env: ENV_LABELS_ENV
+      level: 1
+      expr: rate(tidb_domain_load_schema_total{type="failed"}[1m]) > 0
+    annotations:
+      description: 'alert:{{ $labels.expr }} instance:
+        {{ $labels.instance }} values: {{ $value }}'
+      value: '{{ $value }}'
+      summary: TiDB load schema fails
+  - alert: local_shema_latency
+    expr: histogram_quantile(1, rate(tidb_domain_load_schema_duration_bucket[5m])) > 5
+    for: 1m
+    labels:
+      env: ENV_LABELS_ENV
+      level: 1
+      expr: histogram_quantile(1, rate(tidb_domain_load_schema_duration_bucket[5m])) > 5
+    annotations:
+      description: 'alert: {{ $labels.expr }} instance: {{ $labels.instance }}  values: {{ $value }}'
+      value: '{{ $value }}'
+      summary: TiDB load schema latency is over 5s
+  - alert: memery_abnormal
+    expr: go_memstats_heap_inuse_bytes{job="tidb"} > 1e+09
+    for: 1m
+    labels:
+      env: ENV_LABELS_ENV
+      level: 1
+      expr: go_memstats_heap_inuse_bytes{job="tidb"} > 1e+09
+    annotations:
+      description: 'alert: {{ $labels.expr }}  values: {{ $value }}'
+      value: '{{ $value }}'
+      summary: TiDB mem heap is over 1GiB
+  - alert: tidb_query_duration
+    expr: histogram_quantile(0.99, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m]))
+      BY (le, instance)) > 10
+    for: 5s
+    labels:
+      env: ENV_LABELS_ENV
+      level: 1
+      expr:  histogram_quantile(0.99, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m]))
+        BY (le, instance)) > 10
+    annotations:
+      description: 'instance: {{ $labels.instance }} values: {{ $value }} alert: {{ $labels.expr }}'
+      value: '{{ $value }}'
+      summary: TiDB query duration 99th percentile is above 10s
+  - alert: tidb_tikvclient_region_err
+    expr: sum(rate(tidb_tikvclient_region_err_total{type="server_is_busy"}[1m])) > 0
+    for: 1m
+    labels:
+      env: ENV_LABELS_ENV
+      level: 1
+      expr:  sum(rate(tidb_tikvclient_region_err_total{type="server_is_busy"}[1m])) > 0
+    annotations:
+      description: 'alert: {{ $labels.expr }}
+        instance: {{ $labels.instance }} values: {{ $value }}'
+      value: '{{ $value }}'
+      summary: TiDB server is busy

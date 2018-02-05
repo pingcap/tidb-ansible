@@ -9,6 +9,12 @@ global:
     {{ item.label }}: "{{ item.value }}"
 {% endfor %}
 
+#alerting:
+#  alertmanagers:
+#  - static_configs:
+#    - targets:
+#      - '127.0.0.1:39093'
+
 {% set pushgateway_host = hostvars[groups.monitoring_servers[0]].ansible_host | default(hostvars[groups.monitoring_servers[0]].inventory_hostname)
     if groups.get('monitoring_servers', []) else '' -%}
 {% set pushgateway_port = hostvars[groups.monitoring_servers[0]].pushgateway_port if pushgateway_host else '' -%}
@@ -94,4 +100,8 @@ scrape_configs:
 
 # Load and evaluate rules in this file every 'evaluation_interval' seconds.
 rule_files:
-  - 'alert.rules.yml'
+  - 'node.rules.yml'
+  - 'bypass.rules.yml'
+  - 'pd.rules.yml'
+  - 'tidb.rules.yml'
+  - 'tikv.rules.yml'
