@@ -97,12 +97,12 @@
       when: not use_systemd
 
     - name: stop TiKV by systemd
-      systemd: name=tikv@{{ tikv_port }}.service state=stopped
+      systemd: name=tikv-{{ tikv_port }}.service state=stopped
       become: true
       when: use_systemd and ansible_user != "root"
 
     - name: stop TiKV by systemd
-      systemd: name=tikv@{{ tikv_port }}.service state=stopped
+      systemd: name=tikv-{{ tikv_port }}.service state=stopped
       when: use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false
@@ -123,12 +123,12 @@
       when: not use_systemd
 
     - name: start TiKV by systemd
-      systemd: name=tikv@{{ tikv_port }}.service state=started
+      systemd: name=tikv-{{ tikv_port }}.service state=started
       become: true
       when: use_systemd and ansible_user != "root"
 
     - name: start TiKV by systemd
-      systemd: name=tikv@{{ tikv_port }}.service state=started
+      systemd: name=tikv-{{ tikv_port }}.service state=started
       when: use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false
@@ -153,12 +153,12 @@
       when: not use_systemd
 
     - name: stop TiDB by systemd
-      systemd: name=tidb@{{ tidb_port }}.service state=stopped
+      systemd: name=tidb-{{ tidb_port }}.service state=stopped
       become: true
       when: use_systemd and ansible_user != "root"
 
     - name: stop TiDB by systemd
-      systemd: name=tidb@{{ tidb_port }}.service state=stopped
+      systemd: name=tidb-{{ tidb_port }}.service state=stopped
       when: use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false
@@ -223,12 +223,12 @@
       when: not use_systemd
 
     - name: start TiDB by systemd
-      systemd: name=tidb@{{ tidb_port }}.service state=started
+      systemd: name=tidb-{{ tidb_port }}.service state=started
       become: true
       when: use_systemd and ansible_user != "root"
 
     - name: start TiDB by systemd
-      systemd: name=tidb@{{ tidb_port }}.service state=started
+      systemd: name=tidb-{{ tidb_port }}.service state=started
       when: use_systemd and ansible_user == "root"
       vars:
         - ansible_become: false

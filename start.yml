@@ -135,12 +135,12 @@
         - tikv
 
     - name: start TiKV by systemd
-      systemd: name=tikv@{{ tikv_port }}.service state=started enabled=no
+      systemd: name=tikv-{{ tikv_port }}.service state=started enabled=no
       become: true
       when: use_systemd and ansible_user != 'root'
 
     - name: start TiKV by systemd
-      systemd: name=tikv@{{ tikv_port }}.service state=started enabled=no
+      systemd: name=tikv-{{ tikv_port }}.service state=started enabled=no
       when: use_systemd and ansible_user == 'root'
       vars:
         - ansible_become: false
@@ -189,12 +189,12 @@
         - tidb
 
     - name: start TiDB by systemd
-      systemd: name=tidb@{{ tidb_port }}.service state=started enabled=no
+      systemd: name=tidb-{{ tidb_port }}.service state=started enabled=no
       become: true
       when: use_systemd and ansible_user != 'root'
 
     - name: start TiDB by systemd
-      systemd: name=tidb@{{ tidb_port }}.service state=started enabled=no
+      systemd: name=tidb-{{ tidb_port }}.service state=started enabled=no
       when: use_systemd and ansible_user == 'root'
       vars:
         - ansible_become: false
