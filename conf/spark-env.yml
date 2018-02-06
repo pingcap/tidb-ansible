@@ -65,8 +65,12 @@
 # - SPARK_NICENESS      The scheduling priority for daemons. (Default: 0)
 # - SPARK_NO_DAEMONIZE  Run the proposed command in the foreground. It will not output a PID file.
 
-#export JAVA_HOME, to set jdk home
+# export JAVA_HOME, to set jdk home
+# Maybe you can get cores and memory through the following configuration 
+# ansible spark_master,spark_slaves -m shell -a 'cat /proc/cpuinfo| grep "processor"| wc -l'
+# ansible spark_master,spark_slaves -m shell -a "free" | grep 'Mem' | awk '{print int($2/1024/1024/1.25)}'
+
 SPARK_EXECUTOR_CORES: 5
-SPARK_EXECUTOR_MEMORY: 5g
+SPARK_EXECUTOR_MEMORY: 10g
 SPARK_WORKER_CORES: 5
-SPARK_WORKER_MEMORY: 5g
+SPARK_WORKER_MEMORY: 10g
