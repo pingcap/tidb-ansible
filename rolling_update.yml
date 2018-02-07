@@ -92,6 +92,73 @@
     - tikv
 
   pre_tasks:
+    - set_fact:
+        pd_host: "{{ hostvars[groups.pd_servers[0]].ansible_host | default(hostvars[groups.pd_servers[0]].inventory_hostname) }}"
+        pd_client_port: "{{ hostvars[groups.pd_servers[0]].pd_client_port }}"
+
+    - set_fact:
+        pd_addr: "{{ pd_host }}:{{ pd_client_port }}"
+        tikv_addr: "{{ ansible_host }}:{{ tikv_port }}"
+
+    - debug:
+        var: pd_addr
+
+    - debug:
+        var: tikv_addr
+
+    - name: get store info from PD
+      uri:
+        url: "http://{{ pd_addr }}/pd/api/v1/stores"
+        method: GET
+        return_content: yes
+        status_code: 200
+      register: stores_info
+
+    - set_fact:
+        store_id: "{{ item }}"
+      with_items: "{{ stores_info.json|json_query(store_id_query) }}"
+      vars:
+        store_id_query: "stores[?store.address==`{{ tikv_addr }}`].store.id"
+
+    - debug:
+        var: store_id
+
+    - name: remove evict-leader-scheduler
+      uri:
+        url: "http://{{ pd_addr }}/pd/api/v1/schedulers/evict-leader-scheduler-{{ store_id }}"
+        method: DELETE
+        status_code: 200,500
+        return_content: yes
+      register: scheduler_info
+      until: "'scheduler not found' in scheduler_info.content"
+      retries: 3
+      delay: 5
+
+    - name: add evict-leader-scheduler
+      uri:
+        url: "http://{{ pd_addr }}/pd/api/v1/schedulers"
+        method: POST
+        status_code: 200
+        body_format: json
+        body:
+          name: "evict-leader-scheduler"
+          store_id: "{{ store_id }}"
+
+    - name: check tikv's leader count
+      uri:
+        url: "http://{{ pd_addr }}/pd/api/v1/store/{{ store_id }}"
+        method: GET
+        return_content: yes
+        body_format: json
+        status_code: 200
+      register: store_info
+      until: (store_info.json.status.leader_count is defined and store_info.json.status.leader_count|int < 10) or store_info.json.status.leader_count is not defined
+      retries: 12
+      delay: 10
+
+    - debug:
+        var: store_info.json.status.leader_count
+
     - name: stop TiKV by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_tikv.sh
       when: process_supervision == 'supervise'
@@ -158,6 +225,12 @@
     - name: display new tikv pid
       debug:
         msg: "tikv binary or docker pid: {{ new_tikv_pid.stdout }}"
+
+    - name: remove evict-leader-scheduler
+      uri:
+        url: "http://{{ pd_addr }}/pd/api/v1/schedulers/evict-leader-scheduler-{{ store_id }}"
+        method: DELETE
+        status_code: 200
 
 
 - name: rolling update TiDB cluster

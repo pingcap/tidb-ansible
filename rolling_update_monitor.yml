@@ -30,14 +30,14 @@
   roles:
     - check_config_dynamic
 
+
 - name: rolling update NodeExporter
   hosts: monitored_servers
   any_errors_fatal: true
   tags:
     - node_exporter
-  roles:
-    - node_exporter
-  post_tasks:
+
+  pre_tasks:
     - name: stop NodeExporter by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_node_exporter.sh
       when: process_supervision == 'supervise'
@@ -57,6 +57,10 @@
     - name: wait NodeExporter down
       wait_for: host={{ ansible_host }} port={{ node_exporter_port }} state=stopped
 
+  roles:
+    - node_exporter
+
+  post_tasks:
     - name: start NodeExporter by supervise
       shell: cd {{ deploy_dir }}/scripts && ./start_node_exporter.sh
       when: process_supervision == 'supervise'
@@ -85,14 +89,13 @@
   any_errors_fatal: true
   tags:
     - blackbox_exporter
+
   pre_tasks:
     - name: check blackbox_exporter existed
       stat:
         path: "{{ deploy_dir }}/conf/blackbox.yml"
       register:  blackbox_exporter_configure_file
-  roles:
-    - blackbox_exporter
-  post_tasks:
+
     - name: stop BlackBox Exporter by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_blackbox_exporter.sh
       when: process_supervision == 'supervise' and  blackbox_exporter_configure_file.stat.exists == True
@@ -112,6 +115,10 @@
     - name: wait BlackBox Exporter down
       wait_for: host={{ ansible_host }} port={{ blackbox_exporter_port }} state=stopped
 
+  roles:
+    - blackbox_exporter
+
+  post_tasks:
     - name: start BlackBox Exporter by supervise
       shell: cd {{ deploy_dir }}/scripts && ./start_blackbox_exporter.sh
       when: process_supervision == 'supervise'
@@ -139,9 +146,8 @@
   any_errors_fatal: true
   tags:
     - pushgateway
-  roles:
-    - pushgateway
-  post_tasks:
+
+  pre_tasks:
     - name: stop pushgateway by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
       with_items:
@@ -167,8 +173,12 @@
     - name: wait pushgateway down
       wait_for: host={{ ansible_host }} port={{ pushgateway_port }} state=stopped
 
+  roles:
+    - pushgateway
+
+  post_tasks:
     - name: start pushgateway by supervise
-      shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
+      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
       when: process_supervision == 'supervise'
       with_items:
         - pushgateway
@@ -200,9 +210,8 @@
   any_errors_fatal: true
   tags:
     - prometheus
-  roles:
-    - prometheus
-  post_tasks:
+
+  pre_tasks:
     - name: stop prometheus by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
       with_items:
@@ -228,8 +237,12 @@
     - name: wait prometheus down
       wait_for: host={{ ansible_host }} port={{ prometheus_port }} state=stopped
 
+  roles:
+    - prometheus
+
+  post_tasks:
     - name: start monitoring modules by supervise
-      shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
+      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
       when: process_supervision == 'supervise'
       with_items:
         - prometheus
@@ -261,9 +274,8 @@
   any_errors_fatal: true
   tags:
     - grafana
-  roles:
-    - { role: grafana, grafana_exec_vars_only: true }
-  post_tasks:
+
+  pre_tasks:
     - name: stop monitoring modules by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
       when: process_supervision == 'supervise'
@@ -285,8 +297,12 @@
     - name: wait grafana down
       wait_for: host={{ ansible_host }} port={{ grafana_port }} state=stopped
 
+  roles:
+    - { role: grafana, grafana_exec_vars_only: true }
+
+  post_tasks:
     - name: start grafana by supervise
-      shell: cd {{ deploy_dir }}/scripts && (./stop_{{ item }}.sh; ./start_{{ item }}.sh)
+      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
       when: process_supervision == 'supervise'
       with_items:
         - grafana
@@ -338,7 +354,7 @@
               overview: "{{ cluster_name | title }}-Overview"
               disk_performance: "{{ cluster_name | title }}-Disk Performance"
               blackbox_exporter: "{{ cluster_name | title }}-Blackbox_Exporter"
-              
+
     - name: import grafana dashboards - run import script
       delegate_to: localhost
       shell: >-

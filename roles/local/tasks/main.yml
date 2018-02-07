@@ -28,6 +28,10 @@
 - name: set outbound network fact
   set_fact: has_outbound_network={{ outbound_network_st.stdout.strip() == '0' }}
 
+- fail:
+    msg: "The Control Machine must have access to the Internet in order to download TiDB and related packages."
+  when: not has_outbound_network
+
 - name: detect GFW
   shell: >
     warn=no
