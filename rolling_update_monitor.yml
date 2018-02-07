@@ -30,14 +30,14 @@
   roles:
     - check_config_dynamic
 
+
 - name: rolling update NodeExporter
   hosts: monitored_servers
   any_errors_fatal: true
   tags:
     - node_exporter
-  roles:
-    - node_exporter
-  post_tasks:
+
+  pre_tasks:
     - name: stop node_exporter by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
       with_items:
@@ -59,6 +59,10 @@
     - name: wait node_exporter down
       wait_for: host={{ ansible_host }} port={{ node_exporter_port }} state=stopped
 
+  roles:
+    - node_exporter
+
+  post_tasks:
     - name: start node_exporter by supervise
       shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
       when: not use_systemd
@@ -67,11 +71,11 @@
 
     - name: start node_exporter by systemd
       become: true
-      systemd: name=node_exporter.service state=started enabled=yes
+      systemd: name=node_exporter.service state=started enabled=no
       when: use_systemd and ansible_user != 'root'
 
     - name: start node_exporter by systemd
-      systemd: name=node_exporter.service state=started enabled=yes
+      systemd: name=node_exporter.service state=started enabled=no
       when: use_systemd and ansible_user == 'root'
       vars:
         - ansible_become: false
@@ -88,9 +92,8 @@
   any_errors_fatal: true
   tags:
     - pushgateway
-  roles:
-    - pushgateway
-  post_tasks:
+
+  pre_tasks:
     - name: stop pushgateway by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
       with_items:
@@ -116,6 +119,10 @@
     - name: wait pushgateway down
       wait_for: host={{ ansible_host }} port={{ pushgateway_port }} state=stopped
 
+  roles:
+    - pushgateway
+
+  post_tasks:
     - name: start pushgateway by supervise
       shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
       when: not use_systemd
@@ -123,14 +130,14 @@
         - pushgateway
 
     - name: start pushgateway by systemd
-      systemd: name={{ item }} state=started enabled=yes
+      systemd: name={{ item }} state=started enabled=no
       when: use_systemd and ansible_user != 'root'
       become: true
       with_items:
         - pushgateway.service
 
     - name: start pushgateway by systemd
-      systemd: name={{ item }} state=started enabled=yes
+      systemd: name={{ item }} state=started enabled=no
       when: use_systemd and ansible_user == 'root'
       with_items:
         - pushgateway.service
@@ -149,9 +156,8 @@
   any_errors_fatal: true
   tags:
     - prometheus
-  roles:
-    - prometheus
-  post_tasks:
+
+  pre_tasks:
     - name: stop prometheus by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
       with_items:
@@ -177,6 +183,10 @@
     - name: wait prometheus down
       wait_for: host={{ ansible_host }} port={{ prometheus_port }} state=stopped
 
+  roles:
+    - prometheus
+
+  post_tasks:
     - name: start prometheus by supervise
       shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
       when: not use_systemd
@@ -184,14 +194,14 @@
         - prometheus
 
     - name: start prometheus by systemd
-      systemd: name={{ item }} state=started enabled=yes
+      systemd: name={{ item }} state=started enabled=no
       when: use_systemd and ansible_user != 'root'
       become: true
       with_items:
         - prometheus.service
 
     - name: start prometheus by systemd
-      systemd: name={{ item }} state=started enabled=yes
+      systemd: name={{ item }} state=started enabled=no
       when: use_systemd and ansible_user == 'root'
       with_items:
         - prometheus.service
@@ -210,9 +220,8 @@
   any_errors_fatal: true
   tags:
     - grafana
-  roles:
-    - { role: grafana, grafana_exec_vars_only: true }
-  post_tasks:
+
+  pre_tasks:
     - name: stop grafana by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
       when: not use_systemd
@@ -231,6 +240,10 @@
         - ansible_become: false
         - ansible_become_user: root
 
+  roles:
+    - { role: grafana, grafana_exec_vars_only: true }
+
+  post_tasks:
     - name: start grafana by supervise
       shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
       when: not use_systemd
@@ -238,12 +251,12 @@
         - grafana
 
     - name: start grafana by systemd
-      systemd: name=grafana.service state=started enabled=yes
+      systemd: name=grafana.service state=started enabled=no
       when: use_systemd and ansible_user != 'root'
       become: true
 
     - name: start grafana by systemd
-      systemd: name=grafana.service state=started enabled=yes
+      systemd: name=grafana.service state=started enabled=no
       when: use_systemd and ansible_user == 'root'
       vars:
         - ansible_become: false
