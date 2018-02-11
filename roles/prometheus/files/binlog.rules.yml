@@ -45,4 +45,14 @@ groups:
       description: 'alert: {{ $labels.expr }} instance: {{ $labels.instance }}   values:{{ $value }}'
       value: '{{ $value }}'
       summary: BINLOG binlog drainer event error
-
+  - alert: BINLOG_drainer_txn_duration_time_more_than_10s
+    expr: sum(rate(binlog_drainer_txn_duration_time_bucket[1m])) BY (le, instance) > 10
+    for: 1m
+    labels:
+      env: ENV_LABELS_ENV
+      level: 1
+      expr: sum(rate(binlog_drainer_txn_duration_time_bucket[1m])) BY (le, instance) > 10
+    annotations:
+      description: 'alert: {{ $labels.expr }} instance: {{ $labels.instance }}   values:{{ $value }}'
+      value: '{{ $value }}'
+      summary: BINLOG binlog drainer txn_duration_time_more_than_10s
