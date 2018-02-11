@@ -68,12 +68,12 @@ groups:
       value: '{{ $value }}'
       summary: PD_tidb_handle_requests_duration
   - alert: PD_down_peer_region_nums
-    expr: sum(rate(pd_regions_status{type="down_peer_region_count"}1m])) > 0
+    expr: sum(rate(pd_regions_status{type="down_peer_region_count"}[1m])) > 0
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: 1
-      expr:  sum(rate(pd_regions_status{type="down_peer_region_count"}1m])) > 0
+      expr:  sum(rate(pd_regions_status{type="down_peer_region_count"}[1m])) > 0
     annotations:
       description: 'alert: {{ $labels.expr }} instance: {{ $labels.instance }}   values:{{ $value }}'
       value: '{{ $value }}'
