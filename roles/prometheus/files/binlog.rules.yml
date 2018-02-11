@@ -1,0 +1,48 @@
+groups:
+- name: alert.rules
+  rules:
+  - alert: BINLOG_pump_binlog_count
+    expr: rate(binlog_pump_binlog_count[1m]) > 0
+    for: 1m
+    labels:
+      env: ENV_LABELS_ENV
+      level: 1
+      expr: rate(binlog_pump_binlog_count[1m]) > 0
+    annotations:
+      description: 'alert: {{ $labels.expr }} instance: {{ $labels.instance }}   values:{{ $value }}'
+      value: '{{ $value }}'
+      summary: BINLOG pump binlog count error
+  - alert: BINLOG_drainer_window_more_than_3600s
+    expr: binlog_drainer_window{mark="upper"} - binlog_drainer_window{mark="lower"} > 3600
+    for: 1m
+    labels:
+      env: ENV_LABELS_ENV
+      level: 1
+      expr: binlog_drainer_window{mark="upper"} - binlog_drainer_window{mark="lower"} > 3600
+    annotations:
+      description: 'alert: {{ $labels.expr }} instance: {{ $labels.instance }}   values:{{ $value }}'
+      value: '{{ $value }}'
+      summary: BINLOG drainer window more than 3600s
+  - alert: BINLOG_drainer_error_binlog_count
+    expr: rate(binlog_drainer_error_binlog_count[1m]) > 0
+    for: 1m
+    labels:
+      env: ENV_LABELS_ENV
+      level: 1
+      expr: rate(binlog_drainer_error_binlog_count[1m]) > 0
+    annotations:
+      description: 'alert: {{ $labels.expr }} instance: {{ $labels.instance }}   values:{{ $value }}'
+      value: '{{ $value }}'
+      summary: BINLOG drainer error_binlog count
+  - alert: BINLOG_drainer_error_binlog_count
+    expr: sum(rate(binlog_drainer_event[10m])) < 1
+    for: 10m
+    labels:
+      env: ENV_LABELS_ENV
+      level: 1
+      expr: sum(rate(binlog_drainer_event[10m])) < 1
+    annotations:
+      description: 'alert: {{ $labels.expr }} instance: {{ $labels.instance }}   values:{{ $value }}'
+      value: '{{ $value }}'
+      summary: BINLOG binlog drainer event error
+
