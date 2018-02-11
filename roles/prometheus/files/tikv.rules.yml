@@ -116,12 +116,12 @@ groups:
       value: '{{ $value }}'
       summary: TiKV scheduler context total
   - alert: TiKV_scheduler_command_duration_seconds
-    expr: sum(rate(tikv_scheduler_command_duration_seconds_bucket[1m])) by (le, instance, job,type) > 1
+    expr: sum(rate(tikv_scheduler_command_duration_seconds_bucket[1m])) by (le, instance, job,type)  / 1000 > 1.5
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: 1
-      expr:  sum(rate(tikv_scheduler_command_duration_seconds_bucket[1m])) by (le, instance, job,type) > 1
+      expr:  sum(rate(tikv_scheduler_command_duration_seconds_bucket[1m])) by (le, instance, job,type)  / 1000 > 1.5
     annotations:
       description: 'alert: {{ $labels.expr }} instance: {{ $labels.instance }}  values: {{ $value }}'
       value: '{{ $value }}'
