@@ -34,7 +34,7 @@ groups:
       description: 'alert: {{ $labels.expr }} instance: {{ $labels.instance }}   values:{{ $value }}'
       value: '{{ $value }}'
       summary: BINLOG drainer error_binlog count
-  - alert: BINLOG_drainer_error_binlog_count
+  - alert: BINLOG_drainer_event_error
     expr: sum(rate(binlog_drainer_event[10m])) < 1
     for: 10m
     labels:
