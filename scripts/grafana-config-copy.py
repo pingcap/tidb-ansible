@@ -24,6 +24,7 @@ src = dict(
                 "pd"  : 'pd.json',
                 "tidb": 'tidb.json',
                 "tikv": 'tikv.json',
+                "tikv_instances": "tikv_instances.json",
                 "overview": 'overview.json',
                 "disk_performance": 'DiskPerformance.json',
                 "blackbox_exporter": "blackbox_exporter.json"})
