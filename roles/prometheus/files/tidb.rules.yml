@@ -26,12 +26,12 @@ groups:
       summary: TiDB query duration 99th percentile is above 1s
 
   - alert: TiDB_schema_error
-    expr: sum(tidb_session_schema_lease_error_total{type="outdated"}[15m]) > 0
+    expr: increase(tidb_session_schema_lease_error_total{type="outdated"}[15m]) > 0
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: 1
-      expr:  sum(tidb_session_schema_lease_error_total{type="outdated"}[15m]) > 0
+      expr:  increase(tidb_session_schema_lease_error_total{type="outdated"}[15m]) > 0
     annotations:
       description: 'instance: {{ $labels.instance }} values: {{ $value }} alert: {{ $labels.expr }}'
       value: '{{ $value }}'
