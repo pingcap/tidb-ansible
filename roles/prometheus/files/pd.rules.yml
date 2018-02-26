@@ -79,12 +79,12 @@ groups:
       value: '{{ $value }}'
       summary: PD_down_peer_region_nums
   - alert: PD_incorrect_namespace_region_count
-    expr: changes ( pd_regions_status{type="incorrect_namespace_region_count"} ) > 0
+    expr: sum ( pd_regions_status{type="incorrect_namespace_region_count"} ) > 0
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: 1
-      expr: changes ( pd_regions_status{type="incorrect_namespace_region_count"} ) > 0
+      expr: sum ( pd_regions_status{type="incorrect_namespace_region_count"} ) > 0
     annotations:
       description: 'alert: {{ $labels.expr }} instance: {{ $labels.instance }}   values:{{ $value }}'
       value: '{{ $value }}'
