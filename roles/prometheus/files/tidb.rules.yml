@@ -62,48 +62,36 @@ groups:
       summary: TiDB tikvclient_backoff_count error
 
   - alert: TiDB_tikvclient_region_err_total
-    expr: increase( tidb_tikvclient_region_err_total[10m] )  > 1
+    expr: increase( tidb_tikvclient_region_err_total[10m] )  > 6000
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: 1
-      expr:  increase( tidb_tikvclient_region_err_total[10m] )  > 1
+      expr:  increase( tidb_tikvclient_region_err_total[10m] )  > 6000
     annotations:
       description: 'instance: {{ $labels.instance }} values: {{ $value }} alert: {{ $labels.expr }}'
       value: '{{ $value }}'
       summary: TiDB tikvclient_backoff_count error
 
   - alert: TiDB_domain_load_schema_total
-    expr: increase( tidb_domain_load_schema_total{type="failed"}[10m] )  > 1
+    expr: increase( tidb_domain_load_schema_total{type="failed"}[10m] )  > 10
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: 1
-      expr:  increase( tidb_domain_load_schema_total{type="failed"}[10m] )  > 1
-    annotations:
-      description: 'instance: {{ $labels.instance }} values: {{ $value }} alert: {{ $labels.expr }}'
-      value: '{{ $value }}'
-      summary: TiDB domain_load_schema_total error
-
-  - alert: TiDB_domain_load_schema_total
-    expr: increase( tidb_domain_load_schema_total{type="failed"}[10m] )  > 1
-    for: 1m
-    labels:
-      env: ENV_LABELS_ENV
-      level: 1
-      expr:  increase( tidb_domain_load_schema_total{type="failed"}[10m] )  > 1
+      expr:  increase( tidb_domain_load_schema_total{type="failed"}[10m] )  > 10
     annotations:
       description: 'instance: {{ $labels.instance }} values: {{ $value }} alert: {{ $labels.expr }}'
       value: '{{ $value }}'
       summary: TiDB domain_load_schema_total error
 
   - alert: TiDB_monitor_keep_alive
-    expr: increase(tidb_monitor_keep_alive_total[1m]) < 5
+    expr: increase(tidb_monitor_keep_alive_total[10m]) < 100
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: 1
-      expr:  increase(tidb_monitor_keep_alive_total[1m]) < 5
+      expr:  increase(tidb_monitor_keep_alive_total[10m]) < 100
     annotations:
       description: 'instance: {{ $labels.instance }} values: {{ $value }} alert: {{ $labels.expr }}'
       value: '{{ $value }}'
@@ -120,55 +108,15 @@ groups:
       description: 'instance: {{ $labels.instance }} values: {{ $value }} alert: {{ $labels.expr }}'
       value: '{{ $value }}'
       summary: TiDB monitor time_jump_back error
-      
+
   - alert: TiDB_ddl_waiting_jobs
     expr: tidb_ddl_waiting_jobs > 5
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: 1
-      expr:  tidb_ddl_waiting_jobs > 5
+      expr:  sum(tidb_ddl_waiting_jobs) > 5
     annotations:
       description: 'instance: {{ $labels.instance }} values: {{ $value }} alert: {{ $labels.expr }}'
       value: '{{ $value }}'
       summary: TiDB ddl waiting_jobs too much
-
-
-
-
-  - alert: load_schema_fail
-    expr: rate(tidb_domain_load_schema_total{type="failed"}[1m]) > 0
-    for: 1s
-    labels:
-      env: ENV_LABELS_ENV
-      level: 1
-      expr: rate(tidb_domain_load_schema_total{type="failed"}[1m]) > 0
-    annotations:
-      description: 'alert:{{ $labels.expr }} instance:
-        {{ $labels.instance }} values: {{ $value }}'
-      value: '{{ $value }}'
-      summary: TiDB load schema fails
-  - alert: local_shema_latency
-    expr: histogram_quantile(1, rate(tidb_domain_load_schema_duration_bucket[5m])) > 5
-    for: 1m
-    labels:
-      env: ENV_LABELS_ENV
-      level: 1
-      expr: histogram_quantile(1, rate(tidb_domain_load_schema_duration_bucket[5m])) > 5
-    annotations:
-      description: 'alert: {{ $labels.expr }} instance: {{ $labels.instance }}  values: {{ $value }}'
-      value: '{{ $value }}'
-      summary: TiDB load schema latency is over 5s
-
-  - alert: tidb_tikvclient_region_err
-    expr: sum(rate(tidb_tikvclient_region_err_total{type="server_is_busy"}[1m])) > 0
-    for: 1m
-    labels:
-      env: ENV_LABELS_ENV
-      level: 1
-      expr:  sum(rate(tidb_tikvclient_region_err_total{type="server_is_busy"}[1m])) > 0
-    annotations:
-      description: 'alert: {{ $labels.expr }}
-        instance: {{ $labels.instance }} values: {{ $value }}'
-      value: '{{ $value }}'
-      summary: TiDB server is busy
