@@ -110,7 +110,7 @@ groups:
       summary: TiDB monitor time_jump_back error
 
   - alert: TiDB_ddl_waiting_jobs
-    expr: tidb_ddl_waiting_jobs > 5
+    expr: sum(tidb_ddl_waiting_jobs) > 5
     for: 1m
     labels:
       env: ENV_LABELS_ENV
