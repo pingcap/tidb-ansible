@@ -2,12 +2,12 @@ groups:
 - name: alert.rules
   rules:
   - alert: memery_abnormal
-    expr: go_memstats_heap_inuse_bytes{job="tidb"} > 1e+09
+    expr: go_memstats_heap_inuse_bytes{job="tidb"} > 1e+10
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: 1
-      expr: go_memstats_heap_inuse_bytes{job="tidb"} > 1e+09
+      expr: go_memstats_heap_inuse_bytes{job="tidb"} > 1e+10
     annotations:
       description: 'alert: {{ $labels.expr }}  values: {{ $value }}'
       value: '{{ $value }}'
