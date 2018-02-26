@@ -122,12 +122,12 @@ groups:
       summary: TiDB monitor time_jump_back error
       
   - alert: TiDB_ddl_waiting_jobs
-    expr: increase(tidb_ddl_waiting_jobs[10m])  > 5
+    expr: tidb_ddl_waiting_jobs > 5
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: 1
-      expr:  increase(tidb_ddl_waiting_jobs[10m])  > 5
+      expr:  tidb_ddl_waiting_jobs > 5
     annotations:
       description: 'instance: {{ $labels.instance }} values: {{ $value }} alert: {{ $labels.expr }}'
       value: '{{ $value }}'
