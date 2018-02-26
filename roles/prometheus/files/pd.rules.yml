@@ -2,34 +2,34 @@ groups:
 - name: alert.rules
   rules:
   - alert: PD_cluster_lost_connect_tikv_nums
-    expr: sum(rate(pd_cluster_status{type="store_disconnected_count"}[1m])) > 0
+    expr: sum ( pd_cluster_status{type="store_disconnected_count"} )   > 0
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: 1
-      expr:  sum(rate(pd_cluster_status{type="store_disconnected_count"}[1m])) > 0
+      expr:  sum ( pd_cluster_status{type="store_disconnected_count"} )   > 0
     annotations:
       description: 'alert: {{ $labels.expr }} instance: {{ $labels.instance }}   values:{{ $value }}'
       value: '{{ $value }}'
       summary: PD_cluster_lost_connect_tikv_nums
   - alert: PD_cluster_low_space
-    expr: sum(rate(pd_cluster_status{type="store_low_space_count"}[1m])) > 0
+    expr: sum ( pd_cluster_status{type="store_low_space_count"} )  > 0
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: 1
-      expr:  sum(rate(pd_cluster_status{type="store_low_space_count"}[1m])) > 0
+      expr:  sum ( pd_cluster_status{type="store_low_space_count"} )  > 0
     annotations:
       description: 'alert: {{ $labels.expr }} instance: {{ $labels.instance }}   values:{{ $value }}'
       value: '{{ $value }}'
       summary: PD_cluster_low_space
   - alert: PD_cluster_offline_tikv_nums
-    expr: sum(rate(pd_cluster_status{type="store_down_count"}[1m])) > 0
+    expr: sum ( pd_cluster_status{type="store_down_count"} ) > 0
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: 1
-      expr:  sum(rate(pd_cluster_status{type="store_down_count"}[1m])) > 0
+      expr:  sum ( pd_cluster_status{type="store_down_count"} ) > 0
     annotations:
       description: 'alert: {{ $labels.expr }} instance: {{ $labels.instance }}   values:{{ $value }}'
       value: '{{ $value }}'
@@ -68,45 +68,45 @@ groups:
       value: '{{ $value }}'
       summary: PD_tidb_handle_requests_duration
   - alert: PD_down_peer_region_nums
-    expr: sum(rate(pd_regions_status{type="down_peer_region_count"}[1m])) > 0
+    expr: sum ( pd_regions_status{type="down_peer_region_count"} ) > 0
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: 1
-      expr:  sum(rate(pd_regions_status{type="down_peer_region_count"}[1m])) > 0
+      expr:  sum ( pd_regions_status{type="down_peer_region_count"} ) > 0
     annotations:
       description: 'alert: {{ $labels.expr }} instance: {{ $labels.instance }}   values:{{ $value }}'
       value: '{{ $value }}'
       summary: PD_down_peer_region_nums
   - alert: PD_incorrect_namespace_region_count
-    expr: sum(rate(pd_regions_status{type="incorrect_namespace_region_count"}[1m])) > 0
+    expr: sum ( pd_regions_status{type="incorrect_namespace_region_count"} ) > 0
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: 1
-      expr:  sum(rate(pd_regions_status{type="incorrect_namespace_region_count"}[1m])) > 0
+      expr: sum ( pd_regions_status{type="incorrect_namespace_region_count"} ) > 0
     annotations:
       description: 'alert: {{ $labels.expr }} instance: {{ $labels.instance }}   values:{{ $value }}'
       value: '{{ $value }}'
       summary: PD_incorrect_namespace_region_count
   - alert: PD_miss_peer_region_count
-    expr: sum(rate(pd_regions_status{type="miss_peer_region_count"}[1m])) > 0
+    expr: sum( pd_regions_status{type="miss_peer_region_count"} )  > 0
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: 1
-      expr:  sum(rate(pd_regions_status{type="miss_peer_region_count"}[1m])) > 0
+      expr:  sum( pd_regions_status{type="miss_peer_region_count"} )  > 0
     annotations:
       description: 'alert: {{ $labels.expr }} instance: {{ $labels.instance }}   values:{{ $value }}'
       value: '{{ $value }}'
       summary: PD_miss_peer_region_count
   - alert: PD_pending_peer_region_count
-    expr: sum(rate(pd_regions_status{type="pending_peer_region_count"}[1m])) > 100
+    expr: sum( pd_regions_status{type="pending_peer_region_count"} )  > 100
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: 1
-      expr:  sum(rate(pd_regions_status{type="pending_peer_region_count"}[1m])) > 100
+      expr:  sum( pd_regions_status{type="pending_peer_region_count"} )  > 100
     annotations:
       description: 'alert: {{ $labels.expr }} instance: {{ $labels.instance }}   values:{{ $value }}'
       value: '{{ $value }}'

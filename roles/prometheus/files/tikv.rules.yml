@@ -76,12 +76,12 @@ groups:
       summary: TiKV raftstore write log druation seconds more than 1s
 
   - alert: TiKV_channel_full_total
-    expr: sum(rate(tikv_channel_full_total[1m])) BY (type, instance) > 0
+    expr: sum(rate(tikv_channel_full_total[10m])) BY (type, instance) > 0
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: 1
-      expr:  sum(rate(tikv_channel_full_total[1m])) BY (type, instance) > 0
+      expr:  sum(rate(tikv_channel_full_total[10m])) BY (type, instance) > 0
     annotations:
       description: 'alert: {{ $labels.expr }}  instance: {{ $labels.instance }}  values: {{ $value }}'
       value: '{{ $value }}'
