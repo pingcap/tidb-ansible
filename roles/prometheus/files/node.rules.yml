@@ -115,7 +115,7 @@ groups:
     labels:
       env: ENV_LABELS_ENV
       level: 1
-      expr: rate(node_disk_write_time_ms[5m])/1000 or irate(node_disk_write_time_ms[5m])/1000  > 1
+      expr: rate(node_disk_write_time_ms[5m])/1000 or irate(node_disk_write_time_ms[5m])/1000  > 5
     annotations:
       description: 'alert:{{ $labels.expr }} instance:
         {{ $labels.instance }} values: {{ $value }}'
