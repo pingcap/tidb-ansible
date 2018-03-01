@@ -71,6 +71,32 @@
   with_items: "{{ common_packages }}"
   when: has_outbound_network
 
+- name: download cfssl binary
+  get_url:
+    url: https://pkg.cfssl.org/R1.2/cfssl_linux-amd64
+    dest: "{{ resources_dir }}/bin/cfssl"
+    mode: 0755
+    force: yes
+    validate_certs: no
+  register: get_url_result
+  until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
+  retries: 4
+  delay: "{{ retry_stagger | random + 3 }}"
+  when: has_outbound_network and enable_tls
+
+- name: download cfssljson binary
+  get_url:
+    url: https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
+    dest: "{{ resources_dir }}/bin/cfssljson"
+    mode: 0755
+    force: yes
+    validate_certs: no
+  register: get_url_result
+  until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
+  retries: 4
+  delay: "{{ retry_stagger | random + 3 }}"
+  when: has_outbound_network and enable_tls
+
 - include: "{{ deployment_method }}_deployment.yml"
 
 - name: unarchive tidb binary
