@@ -1,17 +1,13 @@
 ---
 
 - name: Debian/Ubuntu - install python
-  apt:
-    name: python
-    state: present
+  raw: sudo apt-get -y install python
   when:
     - "'Ubuntu' in distro or 'Debian' in distro"
     - "not has_python"
 
 - name: Redhat/CentOS - install python
-  yum:
-    name: python
-    state: present
+  raw: sudo yum -y install python
   when:
     - "'CentOS' in distro"
     - "not has_python"

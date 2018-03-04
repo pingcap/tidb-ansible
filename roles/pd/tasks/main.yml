@@ -8,6 +8,19 @@
   - "{{ pd_conf_dir }}"
   - "{{ pd_data_dir }}"
 
+- include: check_certs.yml
+  when: enable_tls
+
+- include: gen_certs.yml
+  when: enable_tls
+
+- name: Make sure the certificate directory exits
+  file:
+    path: "{{ pd_cert_dir }}"
+    state: directory
+    mode: o-rwx
+  when: enable_tls
+
 - name: load customized config
   include_vars: file={{ playbook_dir }}/conf/pd.yml name=pd_conf_custom
 

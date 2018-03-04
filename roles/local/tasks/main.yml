@@ -7,6 +7,10 @@
   - "{{ resources_dir }}"
   - "{{ resources_dir }}/bin"
 
+- name: create cert directory
+  file: path="{{ cert_dir }}" state=directory mode=0755
+  when: enable_tls
+
 - name: create packages.yml
   template: src=common_packages.yml.j2 dest={{ playbook_dir }}/conf/common_packages.yml
 
