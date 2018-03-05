@@ -34,6 +34,15 @@
       replication:
         location-labels: "{{ location_labels }}"
 
+- name: generate tls config
+  set_fact:
+    pd_conf_generated:
+      security:
+        cacert-path: "{{ pd_cert_dir }}/ca.pem"
+        cert-path: "{{ pd_cert_dir }}/pd-server-{{ pd_host }}.pem"
+        key-path: "{{ pd_cert_dir }}/pd-server-{{ pd_host }}-key.pem"
+  when: enable_tls
+
 - name: generate final config
   set_fact:
     pd_conf: "{{ pd_conf_custom | with_default_dicts(pd_conf_generated, pd_conf_default) }}"
