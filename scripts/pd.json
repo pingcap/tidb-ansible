@@ -918,9 +918,9 @@
           "targets": [
             {
               "intervalFactor": 2, 
-              "expr": "histogram_quantile(0.99, sum(rate(pd_regions_label_level[5m])) by (le)) ", 
+              "expr": "histogram_quantile(0.99, sum(rate(pd_regions_label_level_bucket{instance=\"$instance\"}[5m])) by (job, le)) ", 
               "refId": "A", 
-              "legendFormat": "{{type}}", 
+              "legendFormat": "{{job}}", 
               "format": "time_series"
             }
           ], 
