@@ -14,11 +14,7 @@
 - include: gen_certs.yml
   when: enable_tls
 
-- name: Make sure the certificate directory exits
-  file:
-    path: "{{ pd_cert_dir }}"
-    state: directory
-    mode: o-rwx
+- include: install_certs.yml
   when: enable_tls
 
 - name: load customized config
