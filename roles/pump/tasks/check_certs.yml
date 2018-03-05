@@ -18,19 +18,19 @@
     gen_certs: false
 
 - set_fact:
-    pd_host: "{{ hostvars[inventory_hostname].ansible_host | default(inventory_hostname) }}"
+    pump_host: "{{ hostvars[inventory_hostname].ansible_host | default(inventory_hostname) }}"
 
 - name: "Check certs | check if a cert already exists on node"
   stat:
-    path: "{{ pd_cert_dir }}/{{ item }}"
-  register: cert_pd_node
+    path: "{{ pump_cert_dir }}/{{ item }}"
+  register: cert_pump_node
   with_items:
     - ca.pem
-    - pd-server-{{ pd_host }}-key.pem
-    - pd-server-{{ pd_host }}.pem
+    - pump-server-{{ pump_host }}-key.pem
+    - pump-server-{{ pump_host }}.pem
 
 - debug:
-    var: cert_pd_node
+    var: cert_pump_node
 
 - name: "Check_certs | Set 'gen_certs' to true"
   set_fact:
@@ -40,10 +40,10 @@
   run_once: true
   with_items: >-
        ['{{cert_dir}}/ca.pem',
-       {% set all_pd_hosts = groups['pd_servers']|unique|sort %}
-       {% for host in all_pd_hosts %}
-         {% set pd_ip = hostvars[host].pd_host -%}
-         '{{cert_dir}}/pd-server-{{ pd_ip }}-key.pem'
+       {% set all_pump_hosts = groups['pump_servers']|unique|sort %}
+       {% for host in all_pump_hosts %}
+         {% set pump_ip = hostvars[host].pump_host -%}
+         '{{cert_dir}}/pump-server-{{ pump_ip }}-key.pem'
        {% if not loop.last %}{{','}}{% endif %}
        {% endfor %}]
 
@@ -54,11 +54,11 @@
   set_fact:
     gen_node_certs: |-
       {
-      {% set all_pd_hosts = groups['pd_servers']|unique|sort -%}
+      {% set all_pump_hosts = groups['pump_servers']|unique|sort -%}
       {% set existing_certs = cert_control_node.files|map(attribute='path')|list|sort %}
-      {% for host in all_pd_hosts -%}
-        {% set pd_ip = hostvars[host].pd_host -%}
-        {% set host_cert = "%s/pd-server-%s-key.pem"|format(cert_dir, pd_ip) %}
+      {% for host in all_pump_hosts -%}
+        {% set pump_ip = hostvars[host].pump_host -%}
+        {% set host_cert = "%s/pump-server-%s-key.pem"|format(cert_dir, pump_ip) %}
         {% if host_cert in existing_certs -%}
         "{{ host }}": False,
         {% else -%}
@@ -71,21 +71,21 @@
 - debug:
     var: gen_node_certs
 
-- name: "Check_certs | Set pd_cert_key"
+- name: "Check_certs | Set pump_cert_key"
   set_fact:
-    pd_cert_key_path:
-      "{{ cert_dir }}/pd-server-{{ hostvars[inventory_hostname].pd_host }}-key.pem"
+    pump_cert_key_path:
+      "{{ cert_dir }}/pump-server-{{ hostvars[inventory_hostname].pump_host }}-key.pem"
 
 - debug:
-    var: pd_cert_key_path
+    var: pump_cert_key_path
 
 - name: "Check_certs | Set 'sync_certs' to true"
   set_fact:
     sync_certs: true
   when: gen_node_certs[inventory_hostname] or
-        (not cert_pd_node.results[0].stat.exists|default(False)) or
-          (not cert_pd_node.results[1].stat.exists|default(False)) or
-            (cert_pd_node.results[1].stat.checksum|default('') != cert_control_node.files|selectattr("path","equalto",pd_cert_key_path)|map(attribute="checksum")|first|default(''))
+        (not cert_pump_node.results[0].stat.exists|default(False)) or
+          (not cert_pump_node.results[1].stat.exists|default(False)) or
+            (cert_pump_node.results[1].stat.checksum|default('') != cert_control_node.files|selectattr("path","equalto",pump_cert_key_path)|map(attribute="checksum")|first|default(''))
 
 - debug:
     var: sync_certs

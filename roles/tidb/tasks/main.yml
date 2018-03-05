@@ -7,6 +7,15 @@
   - "{{ tidb_log_dir }}"
   - "{{ tidb_conf_dir }}"
 
+- include: check_certs.yml
+  when: enable_tls
+
+- include: gen_certs.yml
+  when: enable_tls
+
+- include: install_certs.yml
+  when: enable_tls
+
 # config part
 - name: load customized config
   include_vars: file={{ playbook_dir }}/conf/tidb.yml name=tidb_conf_custom

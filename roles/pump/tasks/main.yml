@@ -8,6 +8,15 @@
   - "{{ pump_log_dir }}"
   - "{{ status_dir }}"
 
+- include: check_certs.yml
+  when: enable_tls
+
+- include: gen_certs.yml
+  when: enable_tls
+
+- include: install_certs.yml
+  when: enable_tls
+
 - include: "{{ deployment_method }}_deployment.yml"
 
 - name: prepare firewalld white list

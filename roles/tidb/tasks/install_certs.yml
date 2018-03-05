@@ -1,0 +1,19 @@
+---
+
+- name: "Deploy_certs | Make sure the certificate directory exits"
+  file:
+    path: "{{ tidb_cert_dir }}"
+    state: directory
+    mode: 0700
+
+- name: "Deploy_certs | Deploy certificates"
+  copy:
+    src: "{{ cert_dir }}/{{ item }}"
+    dest: "{{ tidb_cert_dir }}/{{ item }}"
+    mode: 0600
+    backup: yes
+  with_items:
+    - ca.pem
+    - tidb-server-{{ tidb_host }}-key.pem
+    - tidb-server-{{ tidb_host }}.pem
+  when: sync_certs|default(false)
