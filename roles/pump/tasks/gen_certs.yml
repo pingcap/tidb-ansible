@@ -2,23 +2,19 @@
 
 - name: Gen_certs | copy certs generation script
   copy:
-    src: "make-ssl.sh"
-    dest: "{{ script_dir }}/make-ssl.sh"
+    src: "make-ssl-pump.sh"
+    dest: "{{ script_dir }}/make-ssl-pump.sh"
     mode: 0700
   run_once: yes
   delegate_to: localhost
   when: gen_certs|default(false)
 
 - name: Gen_certs | run cert generation script
-  command: "{{ script_dir }}/make-ssl.sh -d {{ cert_dir }}"
+  command: "{{ script_dir }}/make-ssl-pump.sh -d {{ cert_dir }}"
   environment:
-    - HOSTS: "{% for h in groups['pump_servers'] %}
-                {% if gen_node_certs[h]|default(true) %}
-                    {{ hostvars[h].pump_host }}
-                {% endif %}
-              {% endfor %}"
     - PATH: "{{ ansible_env.PATH }}:{{ binary_dir }}"
     - CN: "pump-server"
-  run_once: yes
+    - PUMP_HOST: "{{ pump_host }}"
+    - PUMP_SOCKET: "{{ pump_socket }}"
   delegate_to: localhost
   when: gen_certs|default(false)

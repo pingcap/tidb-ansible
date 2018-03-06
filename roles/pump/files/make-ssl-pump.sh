@@ -86,11 +86,9 @@ gen_key_and_cert() {
     echo '{"CN":"${cn}","hosts":[""],"key":{"algo":"rsa","size":2048}}' | cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=server -hostname="${host},127.0.0.1" - | cfssljson -bare ${name} > /dev/null 2>&1
 }
 
-# Nodes
-if [ -n "$HOSTS" ]; then
-    for host in $HOSTS; do
-        gen_key_and_cert "${host}" "${CN}" "${CN}-${host}"
-    done
+# Node
+if [ -n "$PUMP_HOST" ] && [ -n $"PUMP_SOCKET" ]; then
+    gen_key_and_cert "${PUMP_HOST},${PUMP_SOCKET}" "${CN}" "${CN}-${PUMP_HOST}"
 fi
 
 # Install certs
