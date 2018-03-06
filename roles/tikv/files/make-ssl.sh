@@ -26,11 +26,8 @@ Usage : $(basename $0) [-d <ssldir>]
       -h | --help         : Show this message
       -d | --ssldir       : Directory where the certificates will be located
 
-      Environmental variable HOSTS should be set to generate keys
+      Environmental variables HOSTS and CN should be set to generate keys
       for each host.
-
-           ex :
-           HOSTS="172.16.10.50 172.16.10.51" $(basename $0) -d /home/tidb/tidb-ansible/conf/ssl
 EOF
 }
 
@@ -83,7 +80,7 @@ gen_key_and_cert() {
     local host=$1
     local cn=$2
     local name=$3
-    echo '{"CN":"${cn}","hosts":[""],"key":{"algo":"rsa","size":2048}}' | cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=server -hostname="${host},127.0.0.1" - | cfssljson -bare ${name} > /dev/null 2>&1
+    echo "{\"CN\":\"${cn}\",\"hosts\":[\"\"],\"key\":{\"algo\":\"rsa\",\"size\":2048}}" | cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=server -hostname="${host},127.0.0.1" - | cfssljson -bare ${name} > /dev/null 2>&1
 }
 
 # Nodes

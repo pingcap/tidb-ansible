@@ -55,7 +55,7 @@
         - ansible_become: false
         - ansible_become_user: root
 
-    - name: wait PD down
+    - name: wait for PD down
       wait_for: host={{ ansible_host }} port={{ pd_client_port }} state=stopped
 
   roles:
@@ -78,10 +78,23 @@
         - ansible_become: false
         - ansible_become_user: root
 
-    - name: wait PD up
+    - name: wait for PD up
       wait_for: |
         host={{ ansible_host }} port={{ pd_client_port }} state=present
         send='GET /pd/api/v1/members HTTP/1.0\r\n\r\n' search_regex='200 OK'
+      when: not enable_tls
+
+    - name: wait for PD up
+      uri:
+        url: "https://{{ ansible_host }}:{{ pd_client_port }}/pd/api/v1/members"
+        validate_certs: no
+        client_cert: "{{ pd_cert_dir }}/pd-server-{{ ansible_host }}.pem"
+        client_key: "{{ pd_cert_dir }}/pd-server-{{ ansible_host }}-key.pem"
+      register: result
+      until: result.status is defined and result.status == 200
+      retries: 10
+      delay: 5
+      when: enable_tls
 
 
 - name: rolling update TiKV cluster
@@ -257,7 +270,7 @@
         - ansible_become: false
         - ansible_become_user: root
 
-    - name: wait TiDB down
+    - name: wait for TiDB down
       wait_for: host={{ ansible_host }} port={{ tidb_port }} state=stopped
 
     - name: stop pump by supervise
@@ -278,7 +291,7 @@
         - ansible_become: false
         - ansible_become_user: root
 
-    - name: wait pump down
+    - name: wait for pump down
       wait_for: |
         host={{ ansible_host }} port={{ pump_port }} state=stopped
       when: enable_binlog
@@ -306,7 +319,7 @@
         - ansible_become: false
         - ansible_become_user: root
 
-    - name: wait pump up
+    - name: wait for pump up
       wait_for: |
         host={{ ansible_host }} port={{ pump_port }} state=present
       when: enable_binlog
@@ -327,7 +340,20 @@
         - ansible_become: false
         - ansible_become_user: root
 
-    - name: wait up
+    - name: wait for TiDB up
       wait_for: |
         host={{ ansible_host }} port={{ tidb_status_port }} state=present
         send='GET /status HTTP/1.0\r\n\r\n' search_regex='TiDB'
+      when: not enable_tls
+
+    - name: wait for TiDB up
+      uri:
+        url: "https://{{ ansible_host }}:{{ tidb_status_port }}/status"
+        validate_certs: no
+        client_cert: "{{ tidb_cert_dir }}/tidb-server-{{ ansible_host }}.pem"
+        client_key: "{{ tidb_cert_dir }}/tidb-server-{{ ansible_host }}-key.pem"
+      register: result
+      until: result.status is defined and result.status == 200
+      retries: 10
+      delay: 5
+      when: enable_tls
