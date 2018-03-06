@@ -42,7 +42,7 @@
        ['{{cert_dir}}/ca.pem',
        {% set all_tidb_hosts = groups['tidb_servers']|unique|sort %}
        {% for host in all_tidb_hosts %}
-         {% set tidb_ip = hostvars[host].tidb_host -%}
+         {% set tidb_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
          '{{cert_dir}}/tidb-server-{{ tidb_ip }}-key.pem'
        {% if not loop.last %}{{','}}{% endif %}
        {% endfor %}]
@@ -57,7 +57,7 @@
       {% set all_tidb_hosts = groups['tidb_servers']|unique|sort -%}
       {% set existing_certs = cert_control_node.files|map(attribute='path')|list|sort %}
       {% for host in all_tidb_hosts -%}
-        {% set tidb_ip = hostvars[host].tidb_host -%}
+        {% set tidb_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
         {% set host_cert = "%s/tidb-server-%s-key.pem"|format(cert_dir, tidb_ip) %}
         {% if host_cert in existing_certs -%}
         "{{ host }}": False,

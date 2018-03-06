@@ -42,7 +42,7 @@
        ['{{cert_dir}}/ca.pem',
        {% set all_pump_hosts = groups['pump_servers']|unique|sort %}
        {% for host in all_pump_hosts %}
-         {% set pump_ip = hostvars[host].pump_host -%}
+         {% set pump_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
          '{{cert_dir}}/pump-server-{{ pump_ip }}-key.pem'
        {% if not loop.last %}{{','}}{% endif %}
        {% endfor %}]
@@ -57,7 +57,7 @@
       {% set all_pump_hosts = groups['pump_servers']|unique|sort -%}
       {% set existing_certs = cert_control_node.files|map(attribute='path')|list|sort %}
       {% for host in all_pump_hosts -%}
-        {% set pump_ip = hostvars[host].pump_host -%}
+        {% set pump_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
         {% set host_cert = "%s/pump-server-%s-key.pem"|format(cert_dir, pump_ip) %}
         {% if host_cert in existing_certs -%}
         "{{ host }}": False,
