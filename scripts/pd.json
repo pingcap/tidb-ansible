@@ -4583,175 +4583,13 @@
           "datasource": "${DS_TEST-CLUSTER}",
           "editable": true,
           "error": false,
-          "fill": 1,
-          "grid": {},
-          "id": 31,
-          "legend": {
-            "alignAsTable": false,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": false,
-            "show": false,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "span": 12,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "sum(rate(tikv_pd_msg_send_duration_seconds_count[1m]))",
-              "intervalFactor": 2,
-              "legendFormat": "",
-              "refId": "A",
-              "step": 2
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "send_message_count",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "grid": {},
-          "id": 32,
-          "legend": {
-            "alignAsTable": false,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": false,
-            "show": false,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "histogram_quantile(0.95, sum(rate(tikv_pd_msg_send_duration_seconds_bucket[30s])) by (le))",
-              "intervalFactor": 2,
-              "legendFormat": "",
-              "refId": "A",
-              "step": 4
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "95% send_message_duration_seconds",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "s",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
-          "editable": true,
-          "error": false,
           "fill": 0,
           "grid": {},
-          "id": 33,
+          "id": 54,
           "legend": {
             "alignAsTable": true,
-            "avg": false,
-            "current": false,
+            "avg": true,
+            "current": true,
             "hideEmpty": true,
             "hideZero": true,
             "max": true,
@@ -4776,25 +4614,19 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.98, sum(rate(tikv_pd_msg_send_duration_seconds_bucket[60s])) by (type, le))",
-              "hide": true,
+              "expr": "sum(delta(pd_scheduler_region_heartbeat{instance=\"$instance\", type=\"report\", status=\"ok\"}[1m])) by (store)",
+              "format": "time_series",
+              "hide": false,
               "intervalFactor": 2,
-              "legendFormat": "98th percentile",
+              "legendFormat": "store{{store}}",
               "refId": "A",
-              "step": 4
-            },
-            {
-              "expr": "rate(tikv_pd_msg_send_duration_seconds_sum[30s]) / rate(tikv_pd_msg_send_duration_seconds_count[30s])",
-              "intervalFactor": 2,
-              "legendFormat": "{{job}}",
-              "refId": "B",
               "step": 4
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "send_message_duration_seconds",
+          "title": "Region heartbeat report",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -4811,7 +4643,7 @@
           },
           "yaxes": [
             {
-              "format": "s",
+              "format": "opm",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -4838,10 +4670,10 @@
           "error": false,
           "fill": 0,
           "grid": {},
-          "id": 54,
+          "id": 77,
           "legend": {
             "alignAsTable": true,
-            "avg": false,
+            "avg": true,
             "current": true,
             "hideEmpty": true,
             "hideZero": true,
@@ -4867,10 +4699,11 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(pd_scheduler_region_heartbeat{instance=\"$instance\", type=\"report\"}[5m]) * 60) by (store, status)",
+              "expr": "sum(delta(pd_scheduler_region_heartbeat{instance=\"$instance\", type=\"report\", status=\"err\"}[1m])) by (store)",
+              "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
-              "legendFormat": "store{{store}}-{{status}}",
+              "legendFormat": "store{{store}}",
               "refId": "A",
               "step": 4
             }
@@ -4878,7 +4711,92 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Region heartbeat recv",
+          "title": "Region heartbeat report error",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "opm",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "s",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {},
+          "id": 78,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "hideEmpty": true,
+            "hideZero": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null as zero",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(delta(pd_scheduler_region_heartbeat{instance=\"$instance\", type=\"report\", status=\"bind\"}[1m])) by (store)",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 2,
+              "legendFormat": "store{{store}}",
+              "refId": "A",
+              "step": 4
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Region heartbeat report active",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -4925,7 +4843,7 @@
           "id": 64,
           "legend": {
             "alignAsTable": true,
-            "avg": false,
+            "avg": true,
             "current": true,
             "hideEmpty": true,
             "hideZero": true,
@@ -4952,6 +4870,7 @@
           "targets": [
             {
               "expr": "sum(rate(pd_scheduler_region_heartbeat{type=\"push\",instance=\"$instance\"}[5m])*60) by (store, status)",
+              "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
               "legendFormat": "store{{store}}-{{status}}",
@@ -4997,181 +4916,181 @@
           ]
         },
         {
+          "aliasColors": {},
           "bars": false,
-          "timeFrom": null,
-          "links": [],
-          "thresholds": [],
-          "spaceLength": 10,
-          "nullPointMode": "null as zero",
-          "renderer": "flot",
-          "linewidth": 1,
-          "steppedLine": false,
-          "id": 73,
-          "fill": 0,
-          "span": 6,
-          "title": "average region heartbeat latency",
-          "tooltip": {
-            "sort": 0,
-            "shared": true,
-            "value_type": "individual",
-            "msResolution": false
-          },
-          "stack": false,
-          "targets": [
-            {
-              "hide": false,
-              "format": "time_series",
-              "expr": "rate(pd_scheduler_region_heartbeat_latency_seconds_sum[30s])/rate(pd_scheduler_region_heartbeat_latency_seconds_count[30s])",
-              "step": 4,
-              "legendFormat": "store{{store}}",
-              "intervalFactor": 2,
-              "refId": "A"
-            }
-          ],
-          "yaxes": [
-            {
-              "logBase": 1,
-              "show": true,
-              "max": null,
-              "format": "dtdurationms",
-              "min": "0",
-              "label": null
-            },
-            {
-              "logBase": 1,
-              "show": true,
-              "max": null,
-              "format": "dtdurationms",
-              "min": null,
-              "label": null
-            }
-          ],
-          "xaxis": {
-            "buckets": null,
-            "show": true,
-            "values": [],
-            "mode": "time",
-            "name": null
-          },
-          "seriesOverrides": [],
-          "percentage": false,
-          "type": "graph",
-          "dashes": false,
-          "error": false,
-          "editable": true,
-          "grid": {},
           "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {},
+          "id": 73,
           "legend": {
-            "rightSide": true,
-            "total": false,
-            "min": false,
-            "max": true,
-            "show": true,
-            "current": true,
-            "hideEmpty": true,
-            "values": true,
             "alignAsTable": true,
             "avg": false,
-            "hideZero": true
+            "current": true,
+            "hideEmpty": true,
+            "hideZero": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": true
           },
-          "timeShift": null,
-          "aliasColors": {},
           "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null as zero",
+          "percentage": false,
+          "pointradius": 5,
           "points": false,
-          "datasource": "${DS_TEST-CLUSTER}",
-          "pointradius": 5
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.5, sum(rate(pd_scheduler_region_heartbeat_latency_seconds_bucket[5m])) by (store, le))",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 2,
+              "legendFormat": "store{{store}}",
+              "refId": "A",
+              "step": 4
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "50% region heartbeat latency",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "dtdurationms",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "dtdurationms",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
         },
         {
+          "aliasColors": {},
           "bars": false,
-          "timeFrom": null,
-          "links": [],
-          "thresholds": [],
-          "spaceLength": 10,
-          "nullPointMode": "null as zero",
-          "renderer": "flot",
-          "linewidth": 1,
-          "steppedLine": false,
-          "id": 74,
-          "fill": 0,
-          "span": 6,
-          "title": "99% region heartbeat latency",
-          "tooltip": {
-            "sort": 0,
-            "shared": true,
-            "value_type": "individual",
-            "msResolution": false
-          },
-          "stack": false,
-          "targets": [
-            {
-              "hide": false,
-              "format": "time_series",
-              "expr": "histogram_quantile(0.99, sum(rate(pd_scheduler_region_heartbeat_latency_seconds_bucket[5m])) by (store, le))",
-              "step": 4,
-              "legendFormat": "store{{store}}",
-              "intervalFactor": 2,
-              "refId": "A"
-            }
-          ],
-          "yaxes": [
-            {
-              "logBase": 1,
-              "show": true,
-              "max": null,
-              "format": "dtdurationms",
-              "min": "0",
-              "label": null
-            },
-            {
-              "logBase": 1,
-              "show": true,
-              "max": null,
-              "format": "dtdurationms",
-              "min": null,
-              "label": null
-            }
-          ],
-          "xaxis": {
-            "buckets": null,
-            "show": true,
-            "values": [],
-            "mode": "time",
-            "name": null
-          },
-          "seriesOverrides": [],
-          "percentage": false,
-          "type": "graph",
-          "dashes": false,
-          "error": false,
-          "editable": true,
-          "grid": {},
           "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {},
+          "id": 74,
           "legend": {
-            "rightSide": true,
-            "total": false,
-            "min": false,
-            "max": true,
-            "show": true,
-            "current": true,
-            "hideEmpty": true,
-            "values": true,
             "alignAsTable": true,
             "avg": false,
-            "hideZero": true
+            "current": true,
+            "hideEmpty": true,
+            "hideZero": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": true
           },
-          "timeShift": null,
-          "aliasColors": {},
           "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null as zero",
+          "percentage": false,
+          "pointradius": 5,
           "points": false,
-          "datasource": "${DS_TEST-CLUSTER}",
-          "pointradius": 5
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.99, sum(rate(pd_scheduler_region_heartbeat_latency_seconds_bucket[5m])) by (store, le))",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 2,
+              "legendFormat": "store{{store}}",
+              "refId": "A",
+              "step": 4
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "99% region heartbeat latency",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "dtdurationms",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "dtdurationms",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
         }
       ],
       "repeat": null,
       "repeatIteration": null,
       "repeatRowId": null,
       "showTitle": true,
-      "title": "TiKV",
+      "title": "Heartbeat",
       "titleSize": "h4"
     }
   ],
