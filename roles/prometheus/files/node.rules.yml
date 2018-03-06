@@ -106,12 +106,12 @@ groups:
       summary: tcp_estab_num_more_than_50000
 
   - alert: NODE_disk_read_latency_more_than_32ms
-    expr: (rate(node_disk_read_time_ms{device=~".+"}[5m]) / rate(node_disk_reads_completed{device=~".+"}[5m])) or (irate(node_disk_read_time_ms{device=~".+"}[5m]) / irate(node_disk_reads_completed{device=~".+"}[5m]))  > 32
+    expr: ( (rate(node_disk_read_time_ms{device=~".+"}[5m]) / rate(node_disk_reads_completed{device=~".+"}[5m])) or (irate(node_disk_read_time_ms{device=~".+"}[5m]) / irate(node_disk_reads_completed{device=~".+"}[5m])) ) > 32
     for: 5m
     labels:
       env: ENV_LABELS_ENV
       level: warning
-      expr: (rate(node_disk_read_time_ms{device=~".+"}[5m]) / rate(node_disk_reads_completed{device=~".+"}[5m])) or (irate(node_disk_read_time_ms{device=~".+"}[5m]) / irate(node_disk_reads_completed{device=~".+"}[5m]))  > 32
+      expr: ( (rate(node_disk_read_time_ms{device=~".+"}[5m]) / rate(node_disk_reads_completed{device=~".+"}[5m])) or (irate(node_disk_read_time_ms{device=~".+"}[5m]) / irate(node_disk_reads_completed{device=~".+"}[5m])) ) > 32
     annotations:
       description: 'alert:{{ $labels.expr }} instance:
         {{ $labels.instance }} values: {{ $value }}'
@@ -119,12 +119,12 @@ groups:
       summary: disk_read_latency_more_than_32ms
 
   - alert: NODE_disk_write_latency_more_than_16ms
-    expr: (rate(node_disk_write_time_ms{device=~".+"}[5m]) / rate(node_disk_writes_completed{device=~".+"}[5m])) or (irate(node_disk_write_time_ms{device=~".+"}[5m]) / irate(node_disk_writes_completed{device=~".+"}[5m])) > 16
+    expr: ( (rate(node_disk_write_time_ms{device=~".+"}[5m]) / rate(node_disk_writes_completed{device=~".+"}[5m])) or (irate(node_disk_write_time_ms{device=~".+"}[5m]) / irate(node_disk_writes_completed{device=~".+"}[5m])) ) > 16
     for: 5m
     labels:
       env: ENV_LABELS_ENV
       level: warning
-      expr: (rate(node_disk_write_time_ms{device=~".+"}[5m]) / rate(node_disk_writes_completed{device=~".+"}[5m])) or (irate(node_disk_write_time_ms{device=~".+"}[5m]) / irate(node_disk_writes_completed{device=~".+"}[5m])) > 16
+      expr: ( (rate(node_disk_write_time_ms{device=~".+"}[5m]) / rate(node_disk_writes_completed{device=~".+"}[5m])) or (irate(node_disk_write_time_ms{device=~".+"}[5m]) / irate(node_disk_writes_completed{device=~".+"}[5m])) ) > 16
     annotations:
       description: 'alert:{{ $labels.expr }} instance:
         {{ $labels.instance }} values: {{ $value }}'
