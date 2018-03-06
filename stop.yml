@@ -30,6 +30,7 @@
   roles:
     - check_config_dynamic
 
+
 - hosts: monitored_servers
   tags:
     - node_exporter
@@ -66,6 +67,7 @@
     - name: wait for blackbox_exporter down
       wait_for: host={{ ansible_host }} port={{ blackbox_exporter_port }} state=stopped
 
+
 - hosts: monitoring_servers
   tags:
     - pushgateway
@@ -101,6 +103,7 @@
 
     - name: wait for prometheus down
       wait_for: host={{ ansible_host }} port={{ prometheus_port }} state=stopped
+
 
 - hosts: tidb_servers
   tags:
@@ -150,6 +153,7 @@
         host={{ ansible_host }} port={{ pump_port }} state=stopped
       when: enable_binlog
 
+
 - hosts: tikv_servers
   tags:
     - tikv
@@ -186,6 +190,7 @@
       debug:
         msg: "tikv binary or docker pid: {{ old_tikv_pid.stdout }}"
 
+
 - hosts: pd_servers
   tags:
     - pd
@@ -210,6 +215,7 @@
 
     - name: wait for PD down
       wait_for: host={{ ansible_host }} port={{ pd_client_port }} state=stopped
+
 
 - hosts: grafana_servers
   tags:

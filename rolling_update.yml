@@ -216,7 +216,7 @@
 
     - name: check tikv's leader count when enable_tls
       uri:
-        url: "http://{{ pd_addr }}/pd/api/v1/store/{{ store_id }}"
+        url: "https://{{ pd_addr }}/pd/api/v1/store/{{ store_id }}"
         validate_certs: no
         client_cert: "{{ tikv_cert_dir }}/tikv-server-{{ ansible_host }}.pem"
         client_key: "{{ tikv_cert_dir }}/tikv-server-{{ ansible_host }}-key.pem"
@@ -309,7 +309,7 @@
 
     - name: remove evict-leader-scheduler when enable_tls
       uri:
-        url: "http://{{ pd_addr }}/pd/api/v1/schedulers/evict-leader-scheduler-{{ store_id }}"
+        url: "https://{{ pd_addr }}/pd/api/v1/schedulers/evict-leader-scheduler-{{ store_id }}"
         validate_certs: no
         client_cert: "{{ tikv_cert_dir }}/tikv-server-{{ ansible_host }}.pem"
         client_key: "{{ tikv_cert_dir }}/tikv-server-{{ ansible_host }}-key.pem"
