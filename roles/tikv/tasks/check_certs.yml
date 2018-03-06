@@ -42,7 +42,7 @@
        ['{{cert_dir}}/ca.pem',
        {% set all_tikv_hosts = groups['tikv_servers']|unique|sort %}
        {% for host in all_tikv_hosts %}
-         {% set tikv_ip = hostvars[host].tikv_host -%}
+         {% set tikv_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
          '{{cert_dir}}/tikv-server-{{ tikv_ip }}-key.pem'
        {% if not loop.last %}{{','}}{% endif %}
        {% endfor %}]
@@ -57,7 +57,7 @@
       {% set all_tikv_hosts = groups['tikv_servers']|unique|sort -%}
       {% set existing_certs = cert_control_node.files|map(attribute='path')|list|sort %}
       {% for host in all_tikv_hosts -%}
-        {% set tikv_ip = hostvars[host].tikv_host -%}
+        {% set tikv_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
         {% set host_cert = "%s/tikv-server-%s-key.pem"|format(cert_dir, tikv_ip) %}
         {% if host_cert in existing_certs -%}
         "{{ host }}": False,
