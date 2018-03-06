@@ -134,12 +134,12 @@ groups:
       summary: PD_leader_change
 
   - alert: TiKV_space_used_more_than_80%
-    expr: sum(pd_cluster_status{type=“storage_size”}) / sum(pd_cluster_status{type=“storage_capacity”}) * 100  > 80
+    expr: sum(pd_cluster_status{type="storage_size"}) / sum(pd_cluster_status{type="storage_capacity"}) * 100  > 80
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: warning
-      expr:  sum(pd_cluster_status{type=“storage_size”}) / sum(pd_cluster_status{type=“storage_capacity”}) * 100  > 80
+      expr:  sum(pd_cluster_status{type="storage_size"}) / sum(pd_cluster_status{type="storage_capacity"}) * 100  > 80
     annotations:
       description: 'alert: {{ $labels.expr }} type: {{ $labels.type }} instance: {{ $labels.instance }}  values: {{ $value }}'
       value: '{{ $value }}'
