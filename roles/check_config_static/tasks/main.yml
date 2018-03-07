@@ -28,9 +28,9 @@
   when: "groups.get('tikv_servers', [])|length < 1"
 
 - name: Ensure enable_tls is disabled when deployment_method is docker
-  fail: msg="TLS is not supported yet when deployment_method is docker."
+  fail: msg="TLS is not supported yet when deployment_method is docker in tidb-ansible."
   when:
-    - deployment_method == docker
+    - deployment_method == 'docker'
     - enable_tls is defined
     - enable_tls
 
