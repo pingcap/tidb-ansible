@@ -9,13 +9,13 @@
   - "{{ tikv_conf_dir }}"
 
 - include: check_certs.yml
-  when: enable_tls
+  when: enable_tls|default(false)
 
 - include: gen_certs.yml
-  when: enable_tls
+  when: enable_tls|default(false)
 
 - include: install_certs.yml
-  when: enable_tls
+  when: enable_tls|default(false)
 
 - name: load customized config
   include_vars: file={{ playbook_dir }}/conf/tikv.yml name=tikv_conf_custom
@@ -39,11 +39,11 @@
         raftdb-path: "{{ raftdb_path }}"
       security:
         ca-path: >-
-          {%- if enable_tls -%}{{ tikv_cert_dir }}/ca.pem{%- else -%}{%- endif -%}
+          {%- if enable_tls|default(false) -%}{{ tikv_cert_dir }}/ca.pem{%- else -%}{%- endif -%}
         cert-path: >-
-          {%- if enable_tls -%}{{ tikv_cert_dir }}/tikv-server-{{ tikv_host }}.pem{%- else -%}{%- endif -%}
+          {%- if enable_tls|default(false) -%}{{ tikv_cert_dir }}/tikv-server-{{ tikv_host }}.pem{%- else -%}{%- endif -%}
         key-path: >-
-          {%- if enable_tls -%}{{ tikv_cert_dir }}/tikv-server-{{ tikv_host }}-key.pem{%- else -%}{%- endif -%}
+          {%- if enable_tls|default(false) -%}{{ tikv_cert_dir }}/tikv-server-{{ tikv_host }}-key.pem{%- else -%}{%- endif -%}
 
 - name: generate final config
   set_fact:

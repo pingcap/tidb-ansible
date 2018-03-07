@@ -154,7 +154,7 @@
       wait_for: |
         host={{ ansible_host }} port={{ pd_client_port }} state=present
         send='GET /pd/api/v1/members HTTP/1.0\r\n\r\n' search_regex='200 OK'
-      when: not enable_tls
+      when: not enable_tls|default(false)
 
     - name: wait for PD up
       uri:
@@ -166,7 +166,7 @@
       until: result.status is defined and result.status == 200
       retries: 10
       delay: 5
-      when: enable_tls
+      when: enable_tls|default(false) 
 
 
 - hosts: tikv_servers
@@ -203,6 +203,7 @@
 
     - command: cat {{ deploy_dir }}/status/tikv.pid
       register: new_tikv_pid
+      changed_when: false
 
     - name: display new tikv pid
       debug:
@@ -262,7 +263,7 @@
       wait_for: |
         host={{ ansible_host }} port={{ tidb_status_port }} state=present
         send='GET /status HTTP/1.0\r\n\r\n' search_regex='TiDB'
-      when: not enable_tls
+      when: not enable_tls|default(false)
 
     - name: wait for TiDB up
       uri:
@@ -274,7 +275,7 @@
       until: result.status is defined and result.status == 200
       retries: 10
       delay: 5
-      when: enable_tls
+      when: enable_tls|default(false)
 
 
 - hosts: grafana_servers

@@ -8,13 +8,13 @@
   - "{{ tidb_conf_dir }}"
 
 - include: check_certs.yml
-  when: enable_tls
+  when: enable_tls|default(false)
 
 - include: gen_certs.yml
-  when: enable_tls
+  when: enable_tls|default(false)
 
 - include: install_certs.yml
-  when: enable_tls
+  when: enable_tls|default(false)
 
 # config part
 - name: load customized config
@@ -33,11 +33,11 @@
            default('') }}
       security:
         cluster-ssl-ca: >-
-          {%- if enable_tls -%}{{ tidb_cert_dir }}/ca.pem{%- else -%}{%- endif -%}
+          {%- if enable_tls|default(false) -%}{{ tidb_cert_dir }}/ca.pem{%- else -%}{%- endif -%}
         cluster-ssl-cert: >-
-          {%- if enable_tls -%}{{ tidb_cert_dir }}/tidb-server-{{ tidb_host }}.pem{%- else -%}{%- endif -%}
+          {%- if enable_tls|default(false) -%}{{ tidb_cert_dir }}/tidb-server-{{ tidb_host }}.pem{%- else -%}{%- endif -%}
         cluster-ssl-key: >-
-          {%- if enable_tls -%}{{ tidb_cert_dir }}/tidb-server-{{ tidb_host }}-key.pem{%- else -%}{%- endif -%}     
+          {%- if enable_tls|default(false) -%}{{ tidb_cert_dir }}/tidb-server-{{ tidb_host }}-key.pem{%- else -%}{%- endif -%}     
 
 - name: combine final config
   set_fact:

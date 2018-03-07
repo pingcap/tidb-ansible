@@ -9,13 +9,13 @@
   - "{{ status_dir }}"
 
 - include: check_certs.yml
-  when: enable_tls
+  when: enable_tls|default(false)
 
 - include: gen_certs.yml
-  when: enable_tls
+  when: enable_tls|default(false)
 
 - include: install_certs.yml
-  when: enable_tls
+  when: enable_tls|default(false)
 
 - name: load customized config
   include_vars: file={{ playbook_dir }}/conf/pump.yml name=pump_conf_custom
@@ -28,11 +28,11 @@
     pump_conf_generated:
       security:
         ssl-ca: >-
-          {%- if enable_tls -%}{{ pump_cert_dir }}/ca.pem{%- else -%}{%- endif -%}
+          {%- if enable_tls|default(false) -%}{{ pump_cert_dir }}/ca.pem{%- else -%}{%- endif -%}
         ssl-cert: >-
-          {%- if enable_tls -%}{{ pump_cert_dir }}/pump-server-{{ pump_host }}.pem{%- else -%}{%- endif -%}
+          {%- if enable_tls|default(false) -%}{{ pump_cert_dir }}/pump-server-{{ pump_host }}.pem{%- else -%}{%- endif -%}
         ssl-key: >-
-          {%- if enable_tls -%}{{ pump_cert_dir }}/pump-server-{{ pump_host }}-key.pem{%- else -%}{%- endif -%}
+          {%- if enable_tls|default(false) -%}{{ pump_cert_dir }}/pump-server-{{ pump_host }}-key.pem{%- else -%}{%- endif -%}
 
 - name: generate final config
   set_fact:

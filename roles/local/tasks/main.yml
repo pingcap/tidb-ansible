@@ -9,7 +9,7 @@
 
 - name: create cert directory
   file: path="{{ cert_dir }}" state=directory mode=0755
-  when: enable_tls
+  when: enable_tls|default(false)
 
 - name: create packages.yml
   template: src=common_packages.yml.j2 dest={{ playbook_dir }}/conf/common_packages.yml
@@ -86,7 +86,7 @@
   until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
   retries: 4
   delay: "{{ retry_stagger | random + 3 }}"
-  when: has_outbound_network and enable_tls
+  when: has_outbound_network and enable_tls|default(false)
 
 - name: download cfssljson binary
   get_url:
@@ -99,7 +99,7 @@
   until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
   retries: 4
   delay: "{{ retry_stagger | random + 3 }}"
-  when: has_outbound_network and enable_tls
+  when: has_outbound_network and enable_tls|default(false)
 
 - include: "{{ deployment_method }}_deployment.yml"
 

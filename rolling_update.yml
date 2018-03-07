@@ -82,9 +82,9 @@
       wait_for: |
         host={{ ansible_host }} port={{ pd_client_port }} state=present
         send='GET /pd/api/v1/members HTTP/1.0\r\n\r\n' search_regex='200 OK'
-      when: not enable_tls
+      when: not enable_tls|default(false)
 
-    - name: wait for PD up when enable_tls
+    - name: wait for PD up when enable_tls|default(false)
       uri:
         url: "https://{{ ansible_host }}:{{ pd_client_port }}/pd/api/v1/members"
         validate_certs: no
@@ -94,7 +94,7 @@
       until: result.status is defined and result.status == 200
       retries: 10
       delay: 5
-      when: enable_tls
+      when: enable_tls|default(false)
 
 
 - name: rolling update TiKV cluster
@@ -126,9 +126,9 @@
         return_content: yes
         status_code: 200
       register: stores_info
-      when: not enable_tls
+      when: not enable_tls|default(false)
 
-    - name: get store info from PD when enable_tls
+    - name: get store info from PD when enable_tls|default(false)
       uri:
         url: "https://{{ pd_addr }}/pd/api/v1/stores"
         validate_certs: no
@@ -138,7 +138,7 @@
         return_content: yes
         status_code: 200
       register: stores_info
-      when: enable_tls
+      when: enable_tls|default(false)
 
     - set_fact:
         store_id: "{{ item }}"
@@ -159,9 +159,9 @@
       until: "'scheduler not found' in scheduler_info.content"
       retries: 3
       delay: 5
-      when: not enable_tls
+      when: not enable_tls|default(false)
 
-    - name: remove evict-leader-scheduler when enable_tls
+    - name: remove evict-leader-scheduler when enable_tls|default(false)
       uri:
         url: "https://{{ pd_addr }}/pd/api/v1/schedulers/evict-leader-scheduler-{{ store_id }}"
         validate_certs: no
@@ -174,7 +174,7 @@
       until: "'scheduler not found' in scheduler_info.content"
       retries: 3
       delay: 5
-      when: enable_tls
+      when: enable_tls|default(false)
 
     - name: add evict-leader-scheduler
       uri:
@@ -185,9 +185,9 @@
         body:
           name: "evict-leader-scheduler"
           store_id: "{{ store_id }}"
-      when: not enable_tls
+      when: not enable_tls|default(false)
 
-    - name: add evict-leader-scheduler when enable_tls
+    - name: add evict-leader-scheduler when enable_tls|default(false)
       uri:
         url: "https://{{ pd_addr }}/pd/api/v1/schedulers"
         validate_certs: no
@@ -199,7 +199,7 @@
         body:
           name: "evict-leader-scheduler"
           store_id: "{{ store_id }}"
-      when: enable_tls
+      when: enable_tls|default(false)
 
     - name: check tikv's leader count
       uri:
@@ -213,9 +213,9 @@
       retries: 12
       delay: 10
       failed_when: false
-      when: not enable_tls
+      when: not enable_tls|default(false)
 
-    - name: check tikv's leader count when enable_tls
+    - name: check tikv's leader count when enable_tls|default(false)
       uri:
         url: "https://{{ pd_addr }}/pd/api/v1/store/{{ store_id }}"
         validate_certs: no
@@ -230,7 +230,7 @@
       retries: 12
       delay: 10
       failed_when: false
-      when: enable_tls
+      when: enable_tls|default(false)
 
     - debug:
         var: store_info.json.status.leader_count
@@ -260,6 +260,7 @@
     - command: cat {{ deploy_dir }}/status/tikv.pid
       register: old_tikv_pid
       ignore_errors: yes
+      changed_when: false
 
     - name: display old tikv pid
       debug:
@@ -297,6 +298,7 @@
 
     - command: cat {{ deploy_dir }}/status/tikv.pid
       register: new_tikv_pid
+      changed_when: false
 
     - name: display new tikv pid
       debug:
@@ -307,9 +309,9 @@
         url: "http://{{ pd_addr }}/pd/api/v1/schedulers/evict-leader-scheduler-{{ store_id }}"
         method: DELETE
         status_code: 200
-      when: not enable_tls
+      when: not enable_tls|default(false)
 
-    - name: remove evict-leader-scheduler when enable_tls
+    - name: remove evict-leader-scheduler when enable_tls|default(false)
       uri:
         url: "https://{{ pd_addr }}/pd/api/v1/schedulers/evict-leader-scheduler-{{ store_id }}"
         validate_certs: no
@@ -317,7 +319,7 @@
         client_key: "{{ tikv_cert_dir }}/tikv-server-{{ ansible_host }}-key.pem"
         method: DELETE
         status_code: 200
-      when: enable_tls
+      when: enable_tls|default(false)
 
 
 - name: rolling update TiDB cluster
@@ -418,7 +420,7 @@
       wait_for: |
         host={{ ansible_host }} port={{ tidb_status_port }} state=present
         send='GET /status HTTP/1.0\r\n\r\n' search_regex='TiDB'
-      when: not enable_tls
+      when: not enable_tls|default(false)
 
     - name: wait for TiDB up
       uri:
@@ -430,4 +432,4 @@
       until: result.status is defined and result.status == 200
       retries: 10
       delay: 5
-      when: enable_tls
+      when: enable_tls|default(false)

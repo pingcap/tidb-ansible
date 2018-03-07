@@ -11,7 +11,7 @@ cd "${DEPLOY_DIR}" || exit 1
 {% set my_ip = hostvars[inventory_hostname].ansible_host | default(hostvars[inventory_hostname].inventory_hostname) -%}
 {% set my_peer_id = groups.pd_servers.index(inventory_hostname) + 1 -%}
 
-{% if enable_tls %}
+{% if enable_tls|default(false) %}
   {% set pd_scheme = 'https' -%}
 {% endif %}
 

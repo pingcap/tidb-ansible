@@ -20,7 +20,7 @@ fi
 {% set metric_addr = metric_host ~ ":" ~ metric_port if metric_host else "" -%}
 {% set metric_interval = pump_metric_interval if metric_host else "0" -%}
 
-{% if enable_tls %}
+{% if enable_tls|default(false) %}
   {% set pd_scheme = 'https' -%}
 {% endif %}
 
