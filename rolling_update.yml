@@ -212,7 +212,7 @@
       until: (store_info.json.status.leader_count is defined and store_info.json.status.leader_count|int < 10) or store_info.json.status.leader_count is not defined
       retries: 12
       delay: 10
-      ignore_errors: yes
+      failed_when: false
       when: not enable_tls
 
     - name: check tikv's leader count when enable_tls
@@ -229,7 +229,7 @@
       until: (store_info.json.status.leader_count is defined and store_info.json.status.leader_count|int < 10) or store_info.json.status.leader_count is not defined
       retries: 12
       delay: 10
-      ignore_errors: yes
+      failed_when: false
       when: enable_tls
 
     - debug:
