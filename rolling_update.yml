@@ -251,10 +251,10 @@
         - ansible_become: false
         - ansible_become_user: root
 
-    - name: wait TiKV down (via Port)
+    - name: wait for TiKV down (via Port)
       wait_for: host={{ ansible_host }} port={{ tikv_port }} state=stopped
 
-    - name: wait TiKV down (via PID)
+    - name: wait for TiKV down (via PID)
       wait_for_pid: pid_file={{ deploy_dir }}/status/tikv.pid timeout=300 state=absent
 
     - command: cat {{ deploy_dir }}/status/tikv.pid
@@ -285,13 +285,13 @@
         - ansible_become: false
         - ansible_become_user: root
 
-    - name: wait TiKV up
+    - name: wait for TiKV up
       wait_for_pid: |
         pid_file={{ deploy_dir }}/status/tikv.pid timeout=300
         thread_name_regex='endpoint' state=present
       when: deployment_method == 'binary'
 
-    - name: wait up
+    - name: wait for TiKV up
       wait_for: host={{ ansible_host }} port={{ tikv_port }} state=present
       when: deployment_method == 'docker'
 
