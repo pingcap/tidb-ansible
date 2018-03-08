@@ -41,12 +41,12 @@ groups:
       summary: disk readonly
 
   - alert: NODE_disk_inode_more_than_80%
-    expr: node_filesystem_files_free{fstype=~"(ext.|xfs)"} / node_filesystem_files{fstype=~"(ext.|xfs)"}  * 100 <= 80
+    expr: node_filesystem_files_free{fstype=~"(ext.|xfs)"} / node_filesystem_files{fstype=~"(ext.|xfs)"}  * 100 < 20
     for: 3m
     labels:
       env: ENV_LABELS_ENV
       level: critical
-      expr: node_filesystem_files_free{fstype=~"(ext.|xfs)"} / node_filesystem_files{fstype=~"(ext.|xfs)"}  * 100 <= 80
+      expr: node_filesystem_files_free{fstype=~"(ext.|xfs)"} / node_filesystem_files{fstype=~"(ext.|xfs)"}  * 100 < 20
     annotations:
       description: 'alert:{{ $labels.expr }} instance:
         {{ $labels.instance }} values: {{ $value }}'
