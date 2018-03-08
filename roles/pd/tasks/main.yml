@@ -8,13 +8,22 @@
   - "{{ pd_conf_dir }}"
   - "{{ pd_data_dir }}"
 
+- include: check_certs.yml
+  when: enable_tls|default(false)
+
+- include: gen_certs.yml
+  when: enable_tls|default(false)
+
+- include: install_certs.yml
+  when: enable_tls|default(false)
+
 - name: load customized config
   include_vars: file={{ playbook_dir }}/conf/pd.yml name=pd_conf_custom
 
 - name: load default config
   include_vars: file=default.yml name=pd_conf_default
 
-- name: generate metrics config
+- name: generate dynamic config
   set_fact:
     pd_conf_generated:
       metric:
@@ -24,6 +33,13 @@
             default('') }}
       replication:
         location-labels: "{{ location_labels }}"
+      security:
+        cacert-path: >-
+          {%- if enable_tls|default(false) -%}{{ pd_cert_dir }}/ca.pem{%- else -%}{%- endif -%}
+        cert-path: >-
+          {%- if enable_tls|default(false) -%}{{ pd_cert_dir }}/pd-server-{{ pd_host }}.pem{%- else -%}{%- endif -%}
+        key-path: >-
+          {%- if enable_tls|default(false) -%}{{ pd_cert_dir }}/pd-server-{{ pd_host }}-key.pem{%- else -%}{%- endif -%}
 
 - name: generate final config
   set_fact:

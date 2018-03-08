@@ -20,12 +20,16 @@ fi
 {% set metric_addr = metric_host ~ ":" ~ metric_port if metric_host else "" -%}
 {% set metric_interval = pump_metric_interval if metric_host else "0" -%}
 
+{% if enable_tls|default(false) %}
+  {% set pd_scheme = 'https' -%}
+{% endif %}
+
 {% set all_pd = [] -%}
 {% set pd_hosts = groups.pd_servers %}
 {% for host in pd_hosts -%}
   {% set pd_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
   {% set pd_port = hostvars[host].pd_client_port -%}
-  {% set _ = all_pd.append("http://%s:%s" % (pd_ip, pd_port)) -%}
+  {% set _ = all_pd.append("%s://%s:%s" % (pd_scheme, pd_ip, pd_port)) -%}
 {% endfor -%}
 
 exec bin/pump \
@@ -38,4 +42,5 @@ exec bin/pump \
     --socket="{{ pump_socket }}" \
     --log-file="{{ pump_log_dir }}/{{ pump_log_filename }}" \
     --metrics-addr="{{ metric_addr }}" \
-    --metrics-interval="{{ metric_interval }}"
+    --metrics-interval="{{ metric_interval }}" \
+    --config=conf/pump.toml

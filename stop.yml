@@ -30,6 +30,7 @@
   roles:
     - check_config_dynamic
 
+
 - hosts: monitored_servers
   tags:
     - node_exporter
@@ -60,11 +61,12 @@
         - ansible_become: false
         - ansible_become_user: root
 
-    - name: wait node_exporter down
+    - name: wait for node_exporter down
       wait_for: host={{ ansible_host }} port={{ node_exporter_port }} state=stopped
 
-    - name: wait blackbox_exporter down
+    - name: wait for blackbox_exporter down
       wait_for: host={{ ansible_host }} port={{ blackbox_exporter_port }} state=stopped
+
 
 - hosts: monitoring_servers
   tags:
@@ -96,11 +98,12 @@
         - ansible_become: false
         - ansible_become_user: root
 
-    - name: wait pushgateway down
+    - name: wait for pushgateway down
       wait_for: host={{ ansible_host }} port={{ pushgateway_port }} state=stopped
 
-    - name: wait prometheus down
+    - name: wait for prometheus down
       wait_for: host={{ ansible_host }} port={{ prometheus_port }} state=stopped
+
 
 - hosts: tidb_servers
   tags:
@@ -124,7 +127,7 @@
         - ansible_become: false
         - ansible_become_user: root
 
-    - name: wait TiDB down
+    - name: wait for TiDB down
       wait_for: host={{ ansible_host }} port={{ tidb_port }} state=stopped
 
     - name: stop pump by supervise
@@ -145,10 +148,11 @@
         - ansible_become: false
         - ansible_become_user: root
 
-    - name: wait pump down
+    - name: wait for pump down
       wait_for: |
         host={{ ansible_host }} port={{ pump_port }} state=stopped
       when: enable_binlog
+
 
 - hosts: tikv_servers
   tags:
@@ -172,19 +176,21 @@
         - ansible_become: false
         - ansible_become_user: root
 
-    - name: wait TiKV down (via Port)
+    - name: wait for TiKV down (via Port)
       wait_for: host={{ ansible_host }} port={{ tikv_port }} state=stopped
 
-    - name: wait TiKV down (via PID)
+    - name: wait for TiKV down (via PID)
       wait_for_pid: pid_file={{ deploy_dir }}/status/tikv.pid timeout=300 state=absent
 
     - command: cat {{ deploy_dir }}/status/tikv.pid
       register: old_tikv_pid
       ignore_errors: yes
+      changed_when: false
 
     - name: display old tikv pid
       debug:
         msg: "tikv binary or docker pid: {{ old_tikv_pid.stdout }}"
+
 
 - hosts: pd_servers
   tags:
@@ -208,8 +214,9 @@
         - ansible_become: false
         - ansible_become_user: root
 
-    - name: wait PD down
+    - name: wait for PD down
       wait_for: host={{ ansible_host }} port={{ pd_client_port }} state=stopped
+
 
 - hosts: grafana_servers
   tags:
@@ -233,5 +240,5 @@
         - ansible_become: false
         - ansible_become_user: root
 
-    - name: wait grafana down
+    - name: wait for grafana down
       wait_for: host={{ ansible_host }} port={{ grafana_port }} state=stopped

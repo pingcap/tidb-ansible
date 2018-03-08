@@ -8,13 +8,22 @@
   - "{{ tikv_data_dir }}"
   - "{{ tikv_conf_dir }}"
 
+- include: check_certs.yml
+  when: enable_tls|default(false)
+
+- include: gen_certs.yml
+  when: enable_tls|default(false)
+
+- include: install_certs.yml
+  when: enable_tls|default(false)
+
 - name: load customized config
   include_vars: file={{ playbook_dir }}/conf/tikv.yml name=tikv_conf_custom
 
 - name: load default config
   include_vars: file=default.yml name=tikv_conf_default
 
-- name: generate metrics config
+- name: generate dynamic config
   set_fact:
     tikv_conf_generated:
       metric:
@@ -28,6 +37,13 @@
         wal-dir: "{{ wal_dir }}"
       raftstore:
         raftdb-path: "{{ raftdb_path }}"
+      security:
+        ca-path: >-
+          {%- if enable_tls|default(false) -%}{{ tikv_cert_dir }}/ca.pem{%- else -%}{%- endif -%}
+        cert-path: >-
+          {%- if enable_tls|default(false) -%}{{ tikv_cert_dir }}/tikv-server-{{ tikv_host }}.pem{%- else -%}{%- endif -%}
+        key-path: >-
+          {%- if enable_tls|default(false) -%}{{ tikv_cert_dir }}/tikv-server-{{ tikv_host }}-key.pem{%- else -%}{%- endif -%}
 
 - name: generate final config
   set_fact:
