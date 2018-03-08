@@ -119,10 +119,10 @@
     - debug:
         var: tikv_addr
 
-    - include: get_store_id.yml
+    - include_tasks: get_store_id.yml
       when: not enable_tls|default(false)
 
-    - include: get_store_id_tls.yml
+    - include_tasks: get_store_id_tls.yml
       when: enable_tls|default(false)
 
     - name: remove evict-leader-scheduler
