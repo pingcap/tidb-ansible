@@ -46,8 +46,6 @@
     - binlog.rules.yml
     - blacker.rules.yml
 
-
-
 - name: create deploy data directory
   file: path={{ item }} state=directory mode=0755
   with_items:
@@ -58,4 +56,3 @@
 - name: prepare firewalld white list
   set_fact:
     firewalld_ports: "{{ [prometheus_port ~ '/tcp'] + firewalld_ports }}"
-
