@@ -16,5 +16,6 @@ exec docker run -p {{ prometheus_port }}:9090 \
   --name="prometheus" \
   prom/prometheus:{{ prometheus_tag }} \
   --config.file=/etc/prometheus/prometheus.yml \
+  --web.enable-admin-api \
   --storage.tsdb.path=/prometheus \
   --storage.tsdb.retention="{{ prometheus_storage_retention }}"
