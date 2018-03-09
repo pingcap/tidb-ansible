@@ -1,0 +1,18 @@
+---
+
+- name: get store info from PD
+  uri:
+    url: "http://{{ pd_addr }}/pd/api/v1/stores"
+    method: GET
+    return_content: yes
+    status_code: 200
+  register: stores_info
+
+- set_fact:
+    store_id: "{{ item }}"
+  with_items: "{{ stores_info.json|json_query(store_id_query) }}"
+  vars:
+    store_id_query: "stores[?store.address==`{{ tikv_addr }}`].store.id"
+
+- debug:
+    var: store_id
