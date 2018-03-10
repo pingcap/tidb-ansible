@@ -7,7 +7,7 @@ global:
   # TiDB server host.
   # host: "0.0.0.0"
 
-  # Registered store name, [memory, goleveldb, boltdb, tikv, mocktikv]
+  # Registered store name, [tikv, mocktikv]
   # store: "tikv"
 
   # TiDB storage path.
@@ -32,8 +32,15 @@ global:
   # Enable chunk executors.
   # enable-chunk: true
 
+  # Only print a log when out of memory quota.
+  # Valid options: ["log", "cancel"]
+  # oom-action: "log"
+
+  # Enable coprocessor streaming.
+  # enable-streaming: false
+
 log:
-  # Log level: info, debug, warn, error, fatal.
+  # Log level: debug, info, warn, error, fatal.
   # level: "info"
 
   # Log format, one of json, text, console.
@@ -45,19 +52,22 @@ log:
   # Queries with execution time greater than this value will be logged. (Milliseconds)
   # slow-threshold: 300
 
+  # Queries with internal result greater than this value will be logged.
+  # expensive-threshold: 10000
+
   # Maximum query length recorded in log.
   # query-log-max-len: 2048
 
   # File logging.
   file:
-    # Max log file size in MB.
+    # Max log file size in MB. (upper limit to 4096MB).
     # max-size: 300
 
-    # Max log file keep days.
-    # max-days: 28
+    # Max log file keep days. No clean up by default.
+    # max-days: 0
 
-    # Maximum number of old log files to retain.
-    # max-backups: 7
+    # Maximum number of old log files to retain. No clean up by default.
+    # max-backups: 0
 
     # Rotate log by day
     # log-rotate: true
@@ -97,6 +107,8 @@ status:
 performance:
   # Max CPUs to use, 0 use number of CPUs in the machine.
   # max-procs: 0
+  # StmtCountLimit limits the max count of statement inside a transaction.
+  # stmt-count-limit: 5000
 
   # Set keep alive option for tcp connection.
   # tcp-keep-alive: true
@@ -110,24 +122,11 @@ performance:
   # Whether support cartesian product.
   # cross-join: true
 
-  # Stats lease duration, which inflences the time of analyze and stats load.
+  # Stats lease duration, which influences the time of analyze and stats load.
   # stats-lease: "3s"
 
   # Run auto analyze worker on this tidb-server.
   # run-auto-analyze: true
-
-xprotocol:
-  # Start TiDB x server.
-  # xserver: false
-
-  # TiDB x protocol server host.
-  # xhost: "0.0.0.0"
-
-  # TiDB x protocol server port.
-  # xport: 14000
-
-  # The socket file to use for x protocol connection.
-  # xsocket: ""
 
 proxy_protocol:
   # PROXY protocol acceptable client networks.
@@ -200,3 +199,6 @@ opentracing:
 tikv_client:
   # Max gRPC connections that will be established with each tikv-server.
   # grpc-connection-count: 16
+
+  # max time for commit command, must be twice bigger than raft election timeout.
+  # commit-timeout: "41s"

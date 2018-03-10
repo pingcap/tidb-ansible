@@ -51,9 +51,12 @@ server:
   # max recursion level allowed when decoding dag expression
   # end-point-recursion-limit: 1000
 
+  # max time to handle coprocessor request before timeout
+  # end-point-request-max-handle-duration: "60s"
+
   # the max bytes that snapshot can be written to disk in one second,
   # should be set based on your disk performance
-  # snap_max_write_bytes_per_sec: "30MB"
+  # snap-max-write-bytes-per-sec: "100MB"
 
   # set attributes about this server, e.g. { zone = "us-west-1", disk = "ssd" }.
   labels: {}
@@ -432,3 +435,9 @@ security:
   # ca-path: ""
   # cert-path: ""
   # key-path: ""
+
+import:
+  # number of threads to handle RPC requests.
+  # num-threads: 8
+  # stream channel window size, stream will be blocked on channel full.
+  # stream-channel-window: 128
