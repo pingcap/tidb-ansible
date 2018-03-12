@@ -3134,7 +3134,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.9999, sum(rate(tidb_tikvclient_request_seconds_bucket[1m])) by (le, store))",
+              "expr": "histogram_quantile(0.9999, sum(rate(tidb_tikvclient_request_seconds_bucket{type!="GC"}[1m])) by (le, store))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "store-{{store}}",
