@@ -3785,233 +3785,13 @@
               "show": true
             }
           ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
-          "editable": true,
-          "error": false,
-          "fill": 0,
-          "grid": {},
-          "id": 23,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": true,
-            "hideEmpty": true,
-            "hideZero": true,
-            "max": true,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "sideWidth": 300,
-            "sortDesc": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null as zero",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "span": 6,
-          "stack": false,
-          "steppedLine": true,
-          "targets": [
-            {
-              "expr": "histogram_quantile(0.9999, sum(rate(grpc_server_handling_seconds_sum{instance=\"$instance\"}[5m])) by (grpc_method, le))",
-              "hide": true,
-              "intervalFactor": 2,
-              "legendFormat": "{{grpc_method}}",
-              "refId": "A",
-              "step": 4
-            },
-            {
-              "expr": "rate(grpc_server_handling_seconds_sum{instance=\"$instance\"}[30s]) / rate(grpc_server_handling_seconds_count{instance=\"$instance\"}[30s])",
-              "intervalFactor": 2,
-              "legendFormat": "{{grpc_method}}",
-              "refId": "B",
-              "step": 4
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "average completed_cmds_duration_seconds",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "sort": 0,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "s",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": "0",
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        },
-        {
-          "alert": {
-            "conditions": [
-              {
-                "evaluator": {
-                  "params": [
-                    0.1
-                  ],
-                  "type": "lt"
-                },
-                "operator": {
-                  "type": "and"
-                },
-                "query": {
-                  "datasourceId": 1,
-                  "model": {
-                    "expr": "delta(etcd_disk_wal_fsync_duration_seconds_count[1m])",
-                    "intervalFactor": 2,
-                    "legendFormat": "{{instance}} etch disk wal fsync rate",
-                    "refId": "A",
-                    "step": 4
-                  },
-                  "params": [
-                    "A",
-                    "1m",
-                    "now"
-                  ]
-                },
-                "reducer": {
-                  "params": [],
-                  "type": "avg"
-                },
-                "type": "query"
-              }
-            ],
-            "executionErrorState": "alerting",
-            "frequency": "60s",
-            "handler": 1,
-            "message": "PD etcd disk fsync maybe is down.",
-            "name": "etcd disk fsync",
-            "noDataState": "ok",
-            "notifications": []
-          },
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
-          "decimals": 1,
-          "fill": 1,
-          "id": 44,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "delta(etcd_disk_wal_fsync_duration_seconds_count[1m])",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "{{instance}} etch disk wal fsync rate",
-              "refId": "A",
-              "step": 4
-            }
-          ],
-          "thresholds": [
-            {
-              "colorMode": "critical",
-              "fill": true,
-              "line": true,
-              "op": "lt",
-              "value": 0.1
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "etcd disk wal fsync rate",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "opm",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
         }
       ],
       "repeat": null,
       "repeatIteration": null,
       "repeatRowId": null,
       "showTitle": true,
-      "title": "PD",
+      "title": "Grpc",
       "titleSize": "h4"
     },
     {
@@ -4192,100 +3972,6 @@
           "error": false,
           "fill": 1,
           "grid": {},
-          "id": 24,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": true,
-            "hideEmpty": true,
-            "hideZero": true,
-            "max": true,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "sideWidth": 300,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "histogram_quantile(0.9999, sum(rate(pd_txn_handle_txns_duration_seconds_bucket[1m])) by (instance, result, le))",
-              "hide": true,
-              "intervalFactor": 2,
-              "legendFormat": "{{instance}} : {{result}}",
-              "refId": "A",
-              "step": 4
-            },
-            {
-              "expr": "rate(pd_txn_handle_txns_duration_seconds_sum[30s]) / rate(pd_txn_handle_txns_duration_seconds_count[30s])",
-              "hide": false,
-              "interval": "",
-              "intervalFactor": 2,
-              "legendFormat": "{{instance}} average",
-              "refId": "B",
-              "step": 4
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "average handle_txns_duration_seconds",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "sort": 0,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "s",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "grid": {},
           "id": 7,
           "legend": {
             "alignAsTable": true,
@@ -4328,100 +4014,6 @@
           "timeFrom": null,
           "timeShift": null,
           "title": "99% wal_fsync_duration_seconds",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "sort": 0,
-            "value_type": "cumulative"
-          },
-          "transparent": false,
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "s",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "grid": {},
-          "id": 25,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": true,
-            "hideEmpty": true,
-            "hideZero": true,
-            "max": true,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "sideWidth": 300,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "histogram_quantile(0.9999, sum(rate(etcd_disk_wal_fsync_duration_seconds_bucket[1m])) by (instance, le))",
-              "hide": true,
-              "intervalFactor": 2,
-              "legendFormat": "{{instance}}",
-              "metric": "",
-              "refId": "A",
-              "step": 4
-            },
-            {
-              "expr": "rate(etcd_disk_wal_fsync_duration_seconds_sum[30s]) / rate(etcd_disk_wal_fsync_duration_seconds_count[30s])",
-              "intervalFactor": 2,
-              "legendFormat": "{{instance}} average",
-              "refId": "B",
-              "step": 4
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "average wal_fsync_duration_seconds",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -4541,30 +4133,67 @@
           ]
         },
         {
+          "alert": {
+            "conditions": [
+              {
+                "evaluator": {
+                  "params": [
+                    0.1
+                  ],
+                  "type": "lt"
+                },
+                "operator": {
+                  "type": "and"
+                },
+                "query": {
+                  "datasourceId": 1,
+                  "model": {
+                    "expr": "delta(etcd_disk_wal_fsync_duration_seconds_count[1m])",
+                    "intervalFactor": 2,
+                    "legendFormat": "{{instance}} etch disk wal fsync rate",
+                    "refId": "A",
+                    "step": 4
+                  },
+                  "params": [
+                    "A",
+                    "1m",
+                    "now"
+                  ]
+                },
+                "reducer": {
+                  "params": [],
+                  "type": "avg"
+                },
+                "type": "query"
+              }
+            ],
+            "executionErrorState": "alerting",
+            "frequency": "60s",
+            "handler": 1,
+            "message": "PD etcd disk fsync maybe is down.",
+            "name": "etcd disk fsync",
+            "noDataState": "ok",
+            "notifications": []
+          },
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
-          "editable": true,
-          "error": false,
+          "decimals": 1,
           "fill": 1,
-          "grid": {},
-          "id": 35,
+          "id": 44,
           "legend": {
-            "alignAsTable": true,
             "avg": false,
-            "current": true,
-            "max": true,
+            "current": false,
+            "max": false,
             "min": false,
-            "rightSide": true,
             "show": true,
-            "sideWidth": 300,
             "total": false,
-            "values": true
+            "values": false
           },
           "lines": true,
-          "linewidth": 2,
+          "linewidth": 1,
           "links": [],
           "nullPointMode": "null",
           "percentage": false,
@@ -4578,25 +4207,31 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.9999, sum(rate(etcd_network_peer_round_trip_time_seconds_bucket[5m])) by (instance, le))",
+              "expr": "delta(etcd_disk_wal_fsync_duration_seconds_count[1m])",
+              "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{instance}}",
-              "metric": "",
+              "legendFormat": "{{instance}} etch disk wal fsync rate",
               "refId": "A",
               "step": 4
             }
           ],
-          "thresholds": [],
+          "thresholds": [
+            {
+              "colorMode": "critical",
+              "fill": true,
+              "line": true,
+              "op": "lt",
+              "value": 0.1
+            }
+          ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "99.99% peer_round_trip_time_seconds",
+          "title": "etcd disk wal fsync rate",
           "tooltip": {
-            "msResolution": false,
             "shared": true,
             "sort": 0,
-            "value_type": "cumulative"
+            "value_type": "individual"
           },
-          "transparent": false,
           "type": "graph",
           "xaxis": {
             "buckets": null,
@@ -4607,7 +4242,7 @@
           },
           "yaxes": [
             {
-              "format": "short",
+              "format": "opm",
               "label": null,
               "logBase": 1,
               "max": null,
