@@ -14270,6 +14270,39 @@
           ]
         },
         {
+          "alert": {
+            "conditions": [
+              {
+                "evaluator": {
+                  "params": [
+                    0.5
+                  ],
+                  "type": "lt"
+                },
+                "operator": {
+                  "type": "and"
+                },
+                "query": {
+                  "params": [
+                    "B",
+                    "5m",
+                    "now"
+                  ]
+                },
+                "reducer": {
+                  "params": [],
+                  "type": "min"
+                },
+                "type": "query"
+              }
+            ],
+            "executionErrorState": "alerting",
+            "frequency": "60s",
+            "handler": 1,
+            "name": "PD heartbeats keep alive alert",
+            "noDataState": "no_data",
+            "notifications": []
+          },
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
@@ -14298,7 +14331,12 @@
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "seriesOverrides": [],
+          "seriesOverrides": [
+            {
+              "alias": "/keepalive.*/i",
+              "yaxis": 2
+            }
+          ],
           "spaceLength": 10,
           "span": 6,
           "stack": false,
@@ -14306,13 +14344,32 @@
           "targets": [
             {
               "expr": "sum(rate(tikv_pd_heartbeat_message_total[1m])) by (type)",
+              "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{ type }}",
               "refId": "A",
               "step": 4
+            },
+            {
+              "expr": "sum(delta(tikv_pd_heartbeat_message_total{type=\"noop\"}[1m])) by (job)",
+              "format": "time_series",
+              "hide": false,
+              "instant": false,
+              "interval": "1m",
+              "intervalFactor": 1,
+              "legendFormat": "keepalive-{{ job }}",
+              "refId": "B"
             }
           ],
-          "thresholds": [],
+          "thresholds": [
+            {
+              "colorMode": "critical",
+              "fill": true,
+              "line": true,
+              "op": "lt",
+              "value": 0.5
+            }
+          ],
           "timeFrom": null,
           "timeShift": null,
           "title": "PD heartbeats",
@@ -14339,7 +14396,7 @@
               "show": true
             },
             {
-              "format": "short",
+              "format": "opm",
               "label": null,
               "logBase": 1,
               "max": null,
