@@ -451,7 +451,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "",
+              "expr": "avg(process_resident_memory_bytes) by (job)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{job}}",
@@ -479,7 +479,7 @@
           },
           "yaxes": [
             {
-              "format": "percentunit",
+              "format": "bytes",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -782,8 +782,8 @@
             "alignAsTable": true,
             "avg": false,
             "current": true,
-            "hideEmpty": false,
-            "hideZero": false,
+            "hideEmpty": true,
+            "hideZero": true,
             "max": true,
             "min": false,
             "rightSide": true,
@@ -813,9 +813,16 @@
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
-              "legendFormat": "{{job}}",
+              "legendFormat": "{{job}}-grpc-msg-fail",
               "refId": "A",
               "step": 10
+            },
+            {
+              "expr": "sum(delta(tikv_pd_heartbeat_message_total{type=\"noop\"}[1m])) by (job) < 1",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "{{job}}-pd-heartbeat",
+              "refId": "B"
             }
           ],
           "thresholds": [],
@@ -1699,7 +1706,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "delta(tikv_pd_heartbeat_tick_total{type=\"leader\"}[1m]) by (job)",
+              "expr": "sum(delta(tikv_pd_heartbeat_tick_total{type=\"leader\"}[1m])) by (job)",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
