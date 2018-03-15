@@ -1,0 +1,14 @@
+#!/bin/bash
+set -e
+ulimit -n 1000000
+
+# WARNING: This file was auto-generated. Do not edit!
+#          All your edit might be overwritten!
+DEPLOY_DIR={{ deploy_dir }}
+cd "${DEPLOY_DIR}" || exit 1
+
+exec docker run -p {{ alertmanager_port }}:9093 \
+  -v /etc/localtime:/etc/localtime:ro \
+  -u `id -u {{ deploy_user }}` \
+  --name="alertmanager-{{ alertmanager_port }}" \
+  prom/alertmanager:{{ alertmanager_tag }}
