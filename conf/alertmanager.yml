@@ -14,6 +14,9 @@ route:
   group_interval:  3m
   repeat_interval: 3m
   routes:
+  - match:
+    receiver: webhook-pulgin-kafka-and-sms
+    continue: true
  # - match:
  #     env: test-cluster
  #   receiver: db-alert-slack
@@ -22,7 +25,10 @@ route:
     receiver: db-alert-email
 
 receivers:
-
+- name: 'webhook-pulgin-kafka-and-sms'
+  webhook_configs:
+  - send_resolved: true
+    url: 'http://10.0.3.6:28082/v1/alertmanager'
 #- name: 'db-alert-slack'
 #  slack_configs:
 #  - channel: '#alerts'
@@ -33,5 +39,5 @@ receivers:
 
 - name: 'db-alert-email'
   email_configs:
-  - send_resolved: false
+  - send_resolved: true
     to: 'xxx@xxx.com'
