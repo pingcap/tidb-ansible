@@ -46,7 +46,6 @@ scrape_configs:
       - targets: ['{{ pushgateway_host }}:{{ pushgateway_port }}']
 {% endif %}
 
-
   - job_name: "overwritten-nodes"
     honor_labels: true # don't overwrite job & instance labels
     static_configs:
@@ -111,9 +110,7 @@ scrape_configs:
       - target_label: __address__
         replacement: {{ ip }}:{{ blackbox_exporter_port }}
 {% endif %}
-
 {% endfor %}
-
 
 # Load and evaluate rules in this file every 'evaluation_interval' seconds.
 rule_files:
