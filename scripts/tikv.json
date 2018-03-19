@@ -12854,7 +12854,7 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "spaceLength": 10,
-          "span": 3,
+          "span": 6,
           "stack": false,
           "steppedLine": false,
           "targets": [
@@ -12935,7 +12935,7 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "spaceLength": 10,
-          "span": 3,
+          "span": 6,
           "stack": false,
           "steppedLine": false,
           "targets": [
@@ -13016,7 +13016,7 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "spaceLength": 10,
-          "span": 3,
+          "span": 6,
           "stack": false,
           "steppedLine": false,
           "targets": [
@@ -13096,7 +13096,7 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "spaceLength": 10,
-          "span": 3,
+          "span": 6,
           "stack": false,
           "steppedLine": false,
           "targets": [
@@ -13104,7 +13104,7 @@
               "expr": "sum(rate(tikv_grpc_msg_duration_seconds_count{type=\"kv_gc\"}[1m])) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{type}}-message-cnt",
+              "legendFormat": "gc message cnt",
               "metric": "tikv_grpc_msg_duration_seconds_bucket",
               "refId": "A",
               "step": 10
@@ -13113,14 +13113,14 @@
               "expr": "sum(rate(tikv_grpc_msg_fail_total{type=\"kv_gc\"}[1m])) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{type}}-failed-cnt",
+              "legendFormat": "gc failed cnt",
               "refId": "B"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "grpc gc message count",
+          "title": "grpc  gc message count",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -13161,7 +13161,7 @@
           "datasource": "${DS_TIDB-CLUSTER}",
           "decimals": 1,
           "fill": 1,
-          "id": 1846,
+          "id": 1845,
           "legend": {
             "alignAsTable": true,
             "avg": false,
@@ -13184,7 +13184,7 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "spaceLength": 10,
-          "span": 3,
+          "span": 6,
           "stack": false,
           "steppedLine": false,
           "targets": [
@@ -13192,22 +13192,15 @@
               "expr": "histogram_quantile(0.99, sum(rate(tikv_grpc_msg_duration_seconds_bucket{type=\"kv_gc\"}[1m])) by (le, type))",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{type}}-99%",
+              "legendFormat": "{{type}}",
               "refId": "A",
               "step": 10
-            },
-            {
-              "expr": "histogram_quantile(0.90, sum(rate(tikv_grpc_msg_duration_seconds_bucket{type=\"kv_gc\"}[1m])) by (le, type))",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "{{type}}-90%",
-              "refId": "B"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "gc grpc messge duration",
+          "title": "99% grpc kv_gc messge duration",
           "tooltip": {
             "shared": true,
             "sort": 0,
