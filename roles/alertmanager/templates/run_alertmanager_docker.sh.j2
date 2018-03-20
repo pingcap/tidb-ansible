@@ -10,7 +10,7 @@ cd "${DEPLOY_DIR}" || exit 1
 exec docker run -p {{ alertmanager_port }}:9093 \
   -v /etc/localtime:/etc/localtime:ro \
   -v "{{ alertmanager_data_dir }}:/alertmanager" \
-  -v "{{ deploy_dir }}/conf/prometheus.yml:/etc/alertmanager/alertmanager.yml" \
+  -v "{{ deploy_dir }}/conf/alertmanager.yml:/etc/alertmanager/alertmanager.yml" \
   -u `id -u {{ deploy_user }}` \
   --name="alertmanager-{{ alertmanager_port }}" \
   prom/alertmanager:{{ alertmanager_tag }}
