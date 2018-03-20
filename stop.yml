@@ -68,6 +68,30 @@
       wait_for: host={{ ansible_host }} port={{ blackbox_exporter_port }} state=stopped
 
 
+- hosts: alertmanager_servers
+  tags:
+    - alertmanager
+  tasks:
+    - name: stop alertmanager by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./stop_alertmanager.sh
+      when: process_supervision == 'supervise'
+
+    - name: stop alertmanager by systemd
+      systemd: name=alertmanager-{{ alertmanager_port }}.service state=stopped
+      become: true
+      when: process_supervision == 'systemd' and ansible_user != "root"
+
+    - name: stop alertmanager by systemd
+      systemd: name=alertmanager-{{ alertmanager_port }}.service state=stopped
+      when: process_supervision == 'systemd' and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
+
+    - name: wait for alertmanager down
+      wait_for: host={{ ansible_host }} port={{ alertmanager_port }} state=stopped
+
+
 - hosts: monitoring_servers
   tags:
     - pushgateway

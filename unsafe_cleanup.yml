@@ -27,6 +27,7 @@
         - pushgateway.service
         - node_exporter.service
         - blackbox_exporter.service
+        - alertmanager*.service
         - pd*.service
         - pump.service
         - tidb*.service
@@ -45,6 +46,7 @@
         - pushgateway.service
         - node_exporter.service
         - blackbox_exporter.service
+        - alertmanager*.service
         - pd*.service
         - tidb*.service
         - pump.service
@@ -53,7 +55,7 @@
     - name: killing all process
       shell: >
         killall -9 supervise;
-        killall -9 node_exporter blackbox_exporter prometheus pushgateway grafana-server;
+        killall -9 node_exporter blackbox_exporter alertmanager prometheus pushgateway grafana-server;
         killall -9 tikv-server tidb-server pd-server;
         killall -9 pump drainer;
         true

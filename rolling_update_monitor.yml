@@ -122,7 +122,7 @@
       shell: cd {{ deploy_dir }}/scripts && ./start_blackbox_exporter.sh
       when: process_supervision == 'supervise'
 
-    - name: blackbox_exporter by systemd
+    - name: start blackbox_exporter by systemd
       systemd: name=blackbox_exporter.service state=started
       become: true
       when: process_supervision == 'systemd' and ansible_user != "root"
@@ -138,6 +138,62 @@
       wait_for: |
         host={{ ansible_host }} port={{ blackbox_exporter_port }} state=present
         send='GET / HTTP/1.0\r\n\r\n' search_regex='200 OK'
+
+
+- name: rolling update alertmanager
+  hosts: alertmanager_servers
+  any_errors_fatal: true
+  tags:
+    - alertmanager
+
+  pre_tasks:
+    - name: check alertmanager existed
+      stat:
+        path: "{{ deploy_dir }}/conf/alertmanager.yml"
+      register:  alertmanager_configure_file
+
+    - name: stop alertmanager by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./stop_alertmanager.sh
+      when: process_supervision == 'supervise' and  alertmanager_configure_file.stat.exists == True
+
+    - name: stop alertmanager by systemd
+      systemd: name=alertmanager-{{ alertmanager_port }}.service state=stopped
+      become: true
+      when: process_supervision == 'systemd' and ansible_user != "root" and alertmanager_configure_file.stat.exists == True
+
+    - name: stop alertmanager by systemd
+      systemd: name=alertmanager-{{ alertmanager_port }}.service state=stopped
+      when: process_supervision == 'systemd' and ansible_user == "root" and alertmanager_configure_file.stat.exists == True
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
+
+    - name: wait for alertmanager down
+      wait_for: host={{ ansible_host }} port={{ alertmanager_port }} state=stopped
+
+  roles:
+    - alertmanager
+
+  post_tasks:
+    - name: start alertmanager by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./start_alertmanager.sh
+      when: process_supervision == 'supervise'
+
+    - name: start alertmanager by systemd
+      systemd: name=alertmanager-{{ alertmanager_port }}.service state=started
+      become: true
+      when: process_supervision == 'systemd' and ansible_user != "root"
+
+    - name: start alertmanager by systemd
+      systemd: name=alertmanager-{{ alertmanager_port }}.service state=started
+      when: process_supervision == 'systemd' and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
+
+    - name: wait for alertmanager up
+      wait_for: |
+        host={{ ansible_host }} port={{ alertmanager_port }} state=present
 
 
 - name: rolling update pushgateway
