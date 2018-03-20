@@ -1,10 +1,5 @@
 ---
 
-- name: create deploy log directory
-  file: path={{ item }} state=directory mode=0755
-  with_items:
-  - "{{ prometheus_log_dir }}"
-
 - name: deploy prometheus binary
   copy: src="{{ resources_dir }}/bin/prometheus" dest="{{ deploy_dir }}/bin/" mode=0755
 
@@ -20,4 +15,3 @@
     role_status_dir: status/{{ role_name }}
 
 - include: "{{ process_supervision }}_deployment.yml"
-
