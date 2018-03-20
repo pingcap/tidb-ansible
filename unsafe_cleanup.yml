@@ -16,6 +16,9 @@
 
 - include: stop.yml
 
+- include: unsafe_cleanup_container.yml
+  when: deployment_method == 'docker'
+
 - hosts: all
   tasks:
     - name: clean systemd config
@@ -73,6 +76,3 @@
 
     - name: cleaning up deploy dir
       file: path={{ deploy_dir }} state=absent
-
-- include: unsafe_cleanup_container.yml
-  when: deployment_method == 'docker'
