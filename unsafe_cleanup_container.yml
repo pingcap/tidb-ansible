@@ -34,6 +34,13 @@
         - pushgateway
         - prometheus
 
+- hosts: alertmanager_servers
+  tasks:
+    - name: remove alertmanager container
+      docker_container:
+          name: alertmanager-{{ alertmanager_port }}
+          state: absent
+
 - hosts: pd_servers
   tasks:
     - name: remove pd container

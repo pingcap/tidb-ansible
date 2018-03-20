@@ -1,0 +1,20 @@
+#!/bin/bash
+set -e
+ulimit -n 1000000
+
+# WARNING: This file was auto-generated. Do not edit!
+#          All your edit might be overwritten!
+DEPLOY_DIR={{ deploy_dir }}
+cd "${DEPLOY_DIR}" || exit 1
+
+exec docker run -p {{ alertmanager_port }}:9093 \
+  -v /etc/localtime:/etc/localtime:ro \
+  -v "{{ alertmanager_data_dir }}:/alertmanager" \
+  -v "{{ deploy_dir }}/conf/alertmanager.yml:/etc/alertmanager/config.yml" \
+  -u `id -u {{ deploy_user }}` \
+  --name="alertmanager-{{ alertmanager_port }}" \
+  prom/alertmanager:{{ alertmanager_tag }}
+  --config.file="/etc/alertmanager/config.yml" \
+  --storage.path="/alertmanager" \
+  --data.retention=120h \
+  --log.level="{{ alertmanager_log_level }}"

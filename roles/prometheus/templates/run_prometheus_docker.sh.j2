@@ -10,8 +10,7 @@ cd "${DEPLOY_DIR}" || exit 1
 exec docker run -p {{ prometheus_port }}:9090 \
   -v /etc/localtime:/etc/localtime:ro \
   -v "{{ prometheus_data_dir }}:/prometheus" \
-  -v "{{ deploy_dir }}/conf/prometheus.yml:/etc/prometheus/prometheus.yml" \
-  -v "{{ deploy_dir }}/conf/alert.rules.yml:/etc/prometheus/alert.rules.yml" \
+  -v "{{ deploy_dir }}/conf:/etc/prometheus" \
   -u `id -u {{ deploy_user }}` \
   --name="prometheus" \
   prom/prometheus:{{ prometheus_tag }} \

@@ -9,11 +9,29 @@ global:
     {{ item.label }}: "{{ item.value }}"
 {% endfor %}
 
-#alerting:
+{% set alertmanager_host = hostvars[groups.alertmanager_servers[0]].ansible_host | default(hostvars[groups.alertmanager_servers[0]].inventory_hostname)
+    if groups.get('alertmanager_servers', []) else '' -%}
+{% set alertmanager_port = hostvars[groups.alertmanager_servers[0]].alertmanager_port if alertmanager_host else '' -%}
+
+{% if alertmanager_target|default("") %}
+alerting:
+ alertmanagers:
+ - static_configs:
+   - targets:
+     - '{{ alertmanager_target }}'
+{% elif alertmanager_host %}
+alerting:
+ alertmanagers:
+ - static_configs:
+   - targets:
+     - '{{ alertmanager_host }}:{{ alertmanager_port }}'
+{% else %}
+# alerting:
 #  alertmanagers:
 #  - static_configs:
 #    - targets:
-#      - '127.0.0.1:39093'
+#      - 'alertmanager_host:9093'
+{% endif %}
 
 {% set pushgateway_host = hostvars[groups.monitoring_servers[0]].ansible_host | default(hostvars[groups.monitoring_servers[0]].inventory_hostname)
     if groups.get('monitoring_servers', []) else '' -%}
@@ -27,7 +45,6 @@ scrape_configs:
     static_configs:
       - targets: ['{{ pushgateway_host }}:{{ pushgateway_port }}']
 {% endif %}
-
 
   - job_name: "overwritten-nodes"
     honor_labels: true # don't overwrite job & instance labels
@@ -93,10 +110,7 @@ scrape_configs:
       - target_label: __address__
         replacement: {{ ip }}:{{ blackbox_exporter_port }}
 {% endif %}
-
 {% endfor %}
-
-
 
 # Load and evaluate rules in this file every 'evaluation_interval' seconds.
 rule_files:
