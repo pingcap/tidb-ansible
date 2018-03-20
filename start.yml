@@ -87,6 +87,31 @@
         send='GET / HTTP/1.0\r\n\r\n' search_regex='200 OK'
 
 
+- hosts: alertmanager_servers
+  tags:
+    - alertmanager
+  tasks:
+    - name: start alertmanager by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./start_alertmanager.sh
+      when: process_supervision == 'supervise'
+
+    - name: start alertmanager by systemd
+      systemd: name=alertmanager-{{ alertmanager_port }}.service state=started
+      become: true
+      when: process_supervision == 'systemd' and ansible_user != "root"
+
+    - name: start alertmanager by systemd
+      systemd: name=alertmanager-{{ alertmanager_port }}.service state=started
+      when: process_supervision == 'systemd' and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
+
+    - name: wait for alertmanager up
+      wait_for: |
+        host={{ ansible_host }} port={{ alertmanager_port }} state=present
+
+
 - hosts: monitoring_servers
   tags:
     - pushgateway
