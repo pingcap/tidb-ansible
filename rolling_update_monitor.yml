@@ -196,6 +196,55 @@
         host={{ ansible_host }} port={{ alertmanager_port }} state=present
 
 
+- name: rolling update tidb_exporter
+  hosts: tidb_exporter_servers
+  any_errors_fatal: true
+  tags:
+    - tidb_exporter
+
+  pre_tasks:
+    - name: check tidb_exporter existed
+      stat:
+        path: "{{ deploy_dir }}/bin/tidb_exporter"
+      register:  tidb_exporter_file
+
+    - name: stop tidb_exporter by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./stop_tidb_exporter.sh
+      when: process_supervision == 'supervise' and  tidb_exporter_file.stat.exists == True
+
+    - name: stop tidb_exporter by systemd
+      systemd: name=tidb_exporter.service state=stopped
+      become: true
+      when: process_supervision == 'systemd' and ansible_user != "root" and tidb_exporter_file.stat.exists == True
+
+    - name: stop tidb_exporter by systemd
+      systemd: name=tidb_exporter.service state=stopped
+      when: process_supervision == 'systemd' and ansible_user == "root" and tidb_exporter_file.stat.exists == True
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
+
+  roles:
+    - tidb_exporter
+
+  post_tasks:
+    - name: start tidb_exporter by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./start_tidb_exporter.sh
+      when: process_supervision == 'supervise'
+
+    - name: start tidb_exporter by systemd
+      systemd: name=tidb_exporter.service state=started
+      become: true
+      when: process_supervision == 'systemd' and ansible_user != "root"
+
+    - name: start tidb_exporter by systemd
+      systemd: name=tidb_exporter.service state=started
+      when: process_supervision == 'systemd' and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
+
+
 - name: rolling update pushgateway
   hosts: monitoring_servers
   any_errors_fatal: true
