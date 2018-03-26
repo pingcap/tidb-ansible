@@ -7,22 +7,18 @@
   - "{{ prometheus_data_dir }}"
   - "{{ deploy_dir }}/status/{{ role_name }}"
 
-# FIXME: how to handle customized alert.rules & config file
-- name: get config file stat
-  stat: path={{ deploy_dir }}/conf/prometheus.yml
-  register: st_conf
-
-- name: get alert conf stat
-  stat: path={{ deploy_dir }}/conf/alert.rules.yml
-  register: st_alert_conf
-
-- name: create configuration file if not exist
-  template: src=prometheus.yml.j2 dest={{ deploy_dir }}/conf/prometheus.yml mode=0644
+- name: create configuration file
+  template: src=prometheus.yml.j2 dest={{ deploy_dir }}/conf/prometheus.yml mode=0644 backup=yes
+  register: prometheus_conf_st
   vars:
     hosts: "{{ groups['all'] | list }}"
 
+- name: backup configuration file
+  command: mv "{{ prometheus_conf_st.backup_file }}" "{{ backup_dir }}"
+  when: prometheus_conf_st.changed and prometheus_conf_st.backup_file is defined
+
 - name: copy alert rules file
-  copy: src={{ item }} dest="{{ deploy_dir }}/conf/{{ item }}" mode=0644
+  copy: src={{ item }} dest="{{ deploy_dir }}/conf/{{ item }}" mode=0644     backup=yes
   with_items:
     - node.rules.yml
     - bypass.rules.yml
@@ -31,7 +27,15 @@
     - tikv.rules.yml
     - binlog.rules.yml
     - blacker.rules.yml
-    
+  register: alert_rules_st
+
+- name: backup alert rules file
+  command: mv "{{ item.backup_file }}" "{{ backup_dir }}"
+  when:
+    - item.changed
+    - item.backup_file is defined
+  with_items: "{{ alert_rules_st.results }}"
+
 - name: set alert rules label changes
   replace: >
     dest={{ deploy_dir }}/conf/{{ item }}
@@ -45,11 +49,6 @@
     - tikv.rules.yml
     - binlog.rules.yml
     - blacker.rules.yml
-
-- name: create deploy data directory
-  file: path={{ item }} state=directory mode=0755
-  with_items:
-  - "{{ prometheus_data_dir }}"
 
 - include: "{{ deployment_method }}_deployment.yml"
 

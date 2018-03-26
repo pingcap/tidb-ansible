@@ -1,7 +1,13 @@
 ---
 
-- name: deploy prometheus binary
-  copy: src="{{ resources_dir }}/bin/prometheus" dest="{{ deploy_dir }}/bin/" mode=0755
+- name: create deploy directories
+  file: path="{{ item }}" state=directory mode=0755
+  with_items:
+  - "{{ alertmanager_log_dir }}"
+  - "{{ alertmanager_data_dir }}"
+
+- name: deploy alertmanager binary
+  copy: src="{{ resources_dir }}/bin/alertmanager" dest="{{ deploy_dir }}/bin/" mode=0755
 
 - name: create run script
   template:
