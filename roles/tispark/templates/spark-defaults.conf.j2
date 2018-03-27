@@ -36,7 +36,7 @@
 {% set all_pd = [] -%}
 {% for host in groups.pd_servers -%}
   {% set other_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
-  {% set other_port = hostvars[host]['pd_peer_port'] -%}
+  {% set other_port = hostvars[host]['pd_client_port'] -%}
   {% set _ = all_pd.append("%s:%s" % (other_ip, other_port)) -%}
 {% endfor -%}
 
