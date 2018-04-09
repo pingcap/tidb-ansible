@@ -1,8 +1,8 @@
 {
   "__inputs": [
     {
-      "name": "DS_TIDB-MASTER",
-      "label": "tidb-master",
+      "name": "DS_MASTER_CLUSTER",
+      "label": "master_cluster",
       "description": "",
       "type": "datasource",
       "pluginId": "prometheus",
@@ -38,7 +38,16 @@
   "annotations": {
     "list": [
       {
-        "datasource": "${DS_TIDB-MASTER}",
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      },
+      {
+        "datasource": "${DS_MASTER_CLUSTER}",
         "enable": true,
         "expr": "ALERTS{instance=\"$host\", alertstate=\"firing\"}",
         "iconColor": "rgb(252, 5, 0)",
@@ -48,7 +57,7 @@
         "titleFormat": "{{ alertname }}"
       },
       {
-        "datasource": "${DS_TIDB-MASTER}",
+        "datasource": "${DS_MASTER_CLUSTER}",
         "enable": true,
         "expr": "ALERTS{instance=\"$host\",alertstate=\"pending\"}",
         "iconColor": "rgb(228, 242, 9)",
@@ -88,7 +97,7 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(50, 172, 45, 0.97)"
           ],
-          "datasource": "${DS_TIDB-MASTER}",
+          "datasource": "${DS_MASTER_CLUSTER}",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -169,7 +178,7 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(50, 172, 45, 0.97)"
           ],
-          "datasource": "${DS_TIDB-MASTER}",
+          "datasource": "${DS_MASTER_CLUSTER}",
           "editable": true,
           "error": false,
           "format": "none",
@@ -248,7 +257,7 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(50, 172, 45, 0.97)"
           ],
-          "datasource": "${DS_TIDB-MASTER}",
+          "datasource": "${DS_MASTER_CLUSTER}",
           "decimals": 2,
           "editable": true,
           "error": false,
@@ -330,7 +339,7 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(245, 54, 54, 0.9)"
           ],
-          "datasource": "${DS_TIDB-MASTER}",
+          "datasource": "${DS_MASTER_CLUSTER}",
           "decimals": 0,
           "editable": true,
           "error": false,
@@ -407,7 +416,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TIDB-MASTER}",
+          "datasource": "${DS_MASTER_CLUSTER}",
           "decimals": 2,
           "editable": true,
           "error": false,
@@ -497,7 +506,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TIDB-MASTER}",
+          "datasource": "${DS_MASTER_CLUSTER}",
           "decimals": 2,
           "editable": true,
           "error": false,
@@ -621,6 +630,125 @@
               "show": true
             }
           ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_MASTER_CLUSTER}",
+          "decimals": 2,
+          "editable": true,
+          "error": false,
+          "fill": 2,
+          "grid": {},
+          "id": 40,
+          "instanceColors": {},
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": false,
+            "hideEmpty": false,
+            "max": true,
+            "min": true,
+            "rightSide": true,
+            "show": true,
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "color": "#E24D42",
+              "instance": "Load 1m"
+            },
+            {
+              "color": "#E0752D",
+              "instance": "Load 5m"
+            },
+            {
+              "color": "#E5AC0E",
+              "instance": "Load 15m"
+            }
+          ],
+          "spaceLength": 10,
+          "span": 12,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "calculatedInterval": "10s",
+              "datasourceErrors": {},
+              "errors": {},
+              "expr": "rate(node_vmstat_pgpgin{instance=\"$host\"}[$interval]) * 1024 or irate(node_vmstat_pgpgin{instance=\"$host\"}[5m]) * 1024",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "Page In",
+              "metric": "",
+              "prometheusLink": "/api/datasources/proxy/1/graph#%5B%7B%22expr%22%3A%22node_load1%7Binstance%3D%5C%22%24host%5C%22%7D%22%2C%22range_input%22%3A%223601s%22%2C%22end_input%22%3A%222015-10-22%2015%3A27%22%2C%22step_input%22%3A%22%22%2C%22stacked%22%3Afalse%2C%22tab%22%3A0%7D%5D",
+              "refId": "A",
+              "step": 2,
+              "target": ""
+            },
+            {
+              "calculatedInterval": "10s",
+              "datasourceErrors": {},
+              "errors": {},
+              "expr": "rate(node_vmstat_pgpgout{instance=\"$host\"}[$interval]) * 1024 or irate(node_vmstat_pgpgout{instance=\"$host\"}[5m]) * 1024",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "Page Out",
+              "metric": "",
+              "prometheusLink": "/api/datasources/proxy/1/graph#%5B%7B%22expr%22%3A%22node_load5%7Binstance%3D%5C%22%24host%5C%22%7D%22%2C%22range_input%22%3A%223600s%22%2C%22end_input%22%3A%222015-10-22%2015%3A27%22%2C%22step_input%22%3A%22%22%2C%22stacked%22%3Afalse%2C%22tab%22%3A0%7D%5D",
+              "refId": "B",
+              "step": 2,
+              "target": ""
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Page In/Page Out",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "transparent": false,
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "Bps",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": 0,
+              "show": true
+            },
+            {
+              "format": "decbytes",
+              "logBase": 1,
+              "max": null,
+              "min": 0,
+              "show": true
+            }
+          ]
         }
       ],
       "repeat": null,
@@ -639,7 +767,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TIDB-MASTER}",
+          "datasource": "${DS_MASTER_CLUSTER}",
           "decimals": 2,
           "editable": true,
           "error": false,
@@ -771,7 +899,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TIDB-MASTER}",
+          "datasource": "${DS_MASTER_CLUSTER}",
           "decimals": 2,
           "editable": true,
           "error": false,
@@ -901,7 +1029,7 @@
           "bars": true,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TIDB-MASTER}",
+          "datasource": "${DS_MASTER_CLUSTER}",
           "decimals": 2,
           "editable": true,
           "error": false,
@@ -996,7 +1124,7 @@
           "bars": true,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TIDB-MASTER}",
+          "datasource": "${DS_MASTER_CLUSTER}",
           "decimals": 2,
           "editable": true,
           "error": false,
@@ -1108,7 +1236,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TIDB-MASTER}",
+          "datasource": "${DS_MASTER_CLUSTER}",
           "decimals": 2,
           "editable": true,
           "error": false,
@@ -1198,7 +1326,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TIDB-MASTER}",
+          "datasource": "${DS_MASTER_CLUSTER}",
           "decimals": 2,
           "editable": true,
           "error": false,
@@ -1293,7 +1421,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TIDB-MASTER}",
+          "datasource": "${DS_MASTER_CLUSTER}",
           "decimals": 2,
           "editable": true,
           "error": false,
@@ -1398,7 +1526,7 @@
           "bars": true,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TIDB-MASTER}",
+          "datasource": "${DS_MASTER_CLUSTER}",
           "decimals": 2,
           "editable": true,
           "error": false,
@@ -1505,7 +1633,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TIDB-MASTER}",
+          "datasource": "${DS_MASTER_CLUSTER}",
           "decimals": 2,
           "editable": true,
           "error": false,
@@ -1617,7 +1745,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TIDB-MASTER}",
+          "datasource": "${DS_MASTER_CLUSTER}",
           "decimals": 2,
           "editable": true,
           "error": false,
@@ -1720,7 +1848,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TIDB-MASTER}",
+          "datasource": "${DS_MASTER_CLUSTER}",
           "description": "Number of TCP sockets in state inuse.",
           "fill": 1,
           "id": 32,
@@ -1797,7 +1925,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TIDB-MASTER}",
+          "datasource": "${DS_MASTER_CLUSTER}",
           "fill": 1,
           "id": 39,
           "legend": {
@@ -1901,110 +2029,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TIDB-MASTER}",
-          "decimals": 2,
-          "editable": true,
-          "error": false,
-          "fill": 2,
-          "grid": {},
-          "id": 31,
-          "instanceColors": {},
-          "legend": {
-            "alignAsTable": true,
-            "avg": true,
-            "current": false,
-            "hideEmpty": false,
-            "max": true,
-            "min": true,
-            "rightSide": false,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "span": 12,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "calculatedInterval": "2s",
-              "datasourceErrors": {},
-              "errors": {},
-              "expr": "rate(node_vmstat_pgpgin{instance=\"$host\"}[$interval]) * 1024 or irate(node_vmstat_pgpgin{instance=\"$host\"}[5m]) * 1024",
-              "intervalFactor": 1,
-              "legendFormat": "Read",
-              "metric": "",
-              "prometheusLink": "/api/datasources/proxy/1/graph#%5B%7B%22expr%22%3A%22node_memory_MemTotal%7Binstance%3D%5C%22%24host%5C%22%7D%20-%20(node_memory_MemFree%7Binstance%3D%5C%22%24host%5C%22%7D%20%2B%20node_memory_Buffers%7Binstance%3D%5C%22%24host%5C%22%7D%20%2B%20node_memory_Cached%7Binstance%3D%5C%22%24host%5C%22%7D)%22%2C%22range_input%22%3A%22900s%22%2C%22end_input%22%3A%222015-10-22%2015%3A25%22%2C%22step_input%22%3A%22%22%2C%22stacked%22%3Atrue%2C%22tab%22%3A0%7D%5D",
-              "refId": "A",
-              "step": 2,
-              "target": ""
-            },
-            {
-              "calculatedInterval": "2s",
-              "datasourceErrors": {},
-              "errors": {},
-              "expr": "rate(node_vmstat_pgpgout{instance=\"$host\"}[$interval]) * 1024 or irate(node_vmstat_pgpgout{instance=\"$host\"}[5m]) * 1024",
-              "intervalFactor": 1,
-              "legendFormat": "Write",
-              "metric": "",
-              "prometheusLink": "/api/datasources/proxy/1/graph#%5B%7B%22expr%22%3A%22node_memory_MemFree%7Binstance%3D%5C%22%24host%5C%22%7D%20%2B%20node_memory_Buffers%7Binstance%3D%5C%22%24host%5C%22%7D%20%2B%20node_memory_Cached%7Binstance%3D%5C%22%24host%5C%22%7D%22%2C%22range_input%22%3A%22900s%22%2C%22end_input%22%3A%222015-10-22%2015%3A25%22%2C%22step_input%22%3A%22%22%2C%22stacked%22%3Atrue%2C%22tab%22%3A0%7D%5D",
-              "refId": "B",
-              "step": 2,
-              "target": ""
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "I/O Throughput",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "transparent": false,
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "Bps",
-              "label": "",
-              "logBase": 1,
-              "max": null,
-              "min": 0,
-              "show": true
-            },
-            {
-              "format": "bytes",
-              "logBase": 1,
-              "max": null,
-              "min": 0,
-              "show": true
-            }
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_TIDB-MASTER}",
+          "datasource": "${DS_MASTER_CLUSTER}",
           "decimals": 2,
           "editable": true,
           "error": false,
@@ -2095,7 +2120,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TIDB-MASTER}",
+          "datasource": "${DS_MASTER_CLUSTER}",
           "decimals": 2,
           "editable": true,
           "error": false,
@@ -2186,7 +2211,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TIDB-MASTER}",
+          "datasource": "${DS_MASTER_CLUSTER}",
           "decimals": 2,
           "editable": true,
           "error": false,
@@ -2277,7 +2302,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TIDB-MASTER}",
+          "datasource": "${DS_MASTER_CLUSTER}",
           "decimals": 2,
           "editable": true,
           "error": false,
@@ -2380,7 +2405,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TIDB-MASTER}",
+          "datasource": "${DS_MASTER_CLUSTER}",
           "fill": 1,
           "id": 33,
           "legend": {
@@ -2456,7 +2481,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TIDB-MASTER}",
+          "datasource": "${DS_MASTER_CLUSTER}",
           "fill": 1,
           "id": 34,
           "legend": {
@@ -2607,7 +2632,7 @@
         "allFormat": "glob",
         "allValue": null,
         "current": {},
-        "datasource": "${DS_TIDB-MASTER}",
+        "datasource": "${DS_MASTER_CLUSTER}",
         "hide": 0,
         "includeAll": false,
         "label": "Host",
@@ -2665,5 +2690,5 @@
   },
   "timezone": "browser",
   "title": "TiDB Cluster - node",
-  "version": 2
+  "version": 7
 }
