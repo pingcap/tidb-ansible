@@ -43,7 +43,7 @@
       when: process_supervision == 'supervise'
 
     - name: stop node_exporter by systemd
-      systemd: name=node_exporter.service state=stopped
+      systemd: name=node_exporter.service state=stopped enabled=no
       become: true
       when: process_supervision == 'systemd'
 
@@ -86,7 +86,7 @@
       when: process_supervision == 'supervise' and  blackbox_exporter_configure_file.stat.exists == True
 
     - name: stop blackbox_exporter by systemd
-      systemd: name=blackbox_exporter.service state=stopped
+      systemd: name=blackbox_exporter.service state=stopped enabled=no
       become: true
       when: process_supervision == 'systemd' and blackbox_exporter_configure_file.stat.exists == True
 
@@ -129,7 +129,7 @@
       when: process_supervision == 'supervise' and  alertmanager_configure_file.stat.exists == True
 
     - name: stop alertmanager by systemd
-      systemd: name=alertmanager-{{ alertmanager_port }}.service state=stopped
+      systemd: name=alertmanager-{{ alertmanager_port }}.service state=stopped enabled=no
       become: true
       when: process_supervision == 'systemd' and alertmanager_configure_file.stat.exists == True
 
@@ -168,7 +168,7 @@
       when: process_supervision == 'supervise'
 
     - name: stop pushgateway by systemd
-      systemd: name={{ item }} state=stopped
+      systemd: name={{ item }} state=stopped enabled=no
       when: process_supervision == 'systemd'
       become: true
       with_items:
@@ -214,7 +214,7 @@
       when: process_supervision == 'supervise'
 
     - name: stop prometheus by systemd
-      systemd: name={{ item }} state=stopped
+      systemd: name={{ item }} state=stopped enabled=no
       when: process_supervision == 'systemd'
       become: true
       with_items:
@@ -260,7 +260,7 @@
         - grafana
 
     - name: stop grafana by systemd
-      systemd: name=grafana.service state=stopped
+      systemd: name=grafana.service state=stopped enabled=no
       become: true
       when: process_supervision == 'systemd'
 
