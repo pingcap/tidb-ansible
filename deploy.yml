@@ -80,5 +80,6 @@
 
 - name: finalizing deployment target
   hosts: all
+  become: true
   roles:
-    - role: firewalld
+    - { role: firewalld, when: enable_firewalld is defined and enable_firewalld }
