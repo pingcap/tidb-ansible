@@ -39,5 +39,7 @@
   when: "'command not found' in py_st.stdout"
 
 - include_tasks: coreos.yml
+  when: "'CoreOS' in distro and not has_python"
 
 - include_tasks: root_tasks.yml
+  when: "'CoreOS' not in distro"
