@@ -33,18 +33,4 @@
   set_fact: deploy_dir="/home/{{ deploy_user }}/deploy"
   when: deploy_dir is not defined
 
-- include: root_tasks.yml
-  static: no
-  become: false
-  become_user: root
-  when:
-    - ansible_user == 'root'
-  vars:
-    - ansible_become: false
-    - ansible_become_user: root
-
-- include: root_tasks.yml
-  static: no
-  become: true
-  when:
-    - ansible_user != 'root'
+- include_tasks: root_tasks.yml

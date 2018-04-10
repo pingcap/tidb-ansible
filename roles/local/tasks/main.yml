@@ -106,7 +106,7 @@
   delay: "{{ retry_stagger | random + 3 }}"
   when: has_outbound_network and enable_tls|default(false)
 
-- include: "{{ deployment_method }}_deployment.yml"
+- include_tasks: "{{ deployment_method }}_deployment.yml"
 
 - name: unarchive tidb binary
   shell: ls -1 {{ item.name }}-{{ item.version }}.tar.gz | xargs -n1 tar xzf
