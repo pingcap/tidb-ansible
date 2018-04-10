@@ -22,7 +22,7 @@
 - hosts: monitored_servers
   tasks:
     - name: clean systemd config
-      shell: "rm -f /etc/systemd/system/{{ item }}"
+      file: path="/etc/systemd/system/{{ item }}" state=absent
       become: true
       when: process_supervision == 'systemd'
       with_items:
@@ -32,7 +32,7 @@
 - hosts: alertmanager_servers
   tasks:
     - name: clean systemd config
-      shell: "rm -f /etc/systemd/system/{{ item }}"
+      file: path="/etc/systemd/system/{{ item }}" state=absent
       become: true
       when: process_supervision == 'systemd'
       with_items:
@@ -41,7 +41,7 @@
 - hosts: monitoring_servers
   tasks:
     - name: clean systemd config
-      shell: "rm -f /etc/systemd/system/{{ item }}"
+      file: path="/etc/systemd/system/{{ item }}" state=absent
       become: true
       when: process_supervision == 'systemd'
       with_items:
@@ -51,14 +51,14 @@
 - hosts: tidb_servers
   tasks:
     - name: clean systemd config
-      shell: "rm -f /etc/systemd/system/{{ item }}"
+      file: path="/etc/systemd/system/{{ item }}" state=absent
       become: true
       when: process_supervision == 'systemd'
       with_items:
         - tidb-{{ tidb_port }}.service
 
     - name: clean systemd config
-      shell: "rm -f /etc/systemd/system/{{ item }}"
+      file: path="/etc/systemd/system/{{ item }}" state=absent
       become: true
       when: enable_binlog and process_supervision == 'systemd'
       with_items:
@@ -67,7 +67,7 @@
 - hosts: tikv_servers
   tasks:
     - name: clean systemd config
-      shell: "rm -f /etc/systemd/system/{{ item }}"
+      file: path="/etc/systemd/system/{{ item }}" state=absent
       become: true
       when: process_supervision == 'systemd'
       with_items:
@@ -75,16 +75,16 @@
 
     - name: cleaning up wal dir
       file: path={{ wal_dir }} state=absent
-      when: wal_dir is defined"
+      when: "wal_dir is defined"
 
     - name: cleaning up raftdb dir
       file: path={{ raftdb_path }} state=absent
-      when: raftdb_path is defined"
+      when: "raftdb_path is defined"
 
 - hosts: pd_servers
   tasks:
     - name: clean systemd config
-      shell: "rm -f /etc/systemd/system/{{ item }}"
+      file: path="/etc/systemd/system/{{ item }}" state=absent
       become: true
       when: process_supervision == 'systemd'
       with_items:
@@ -93,7 +93,7 @@
 - hosts: grafana_servers
   tasks:
     - name: clean systemd config
-      shell: "rm -f /etc/systemd/system/{{ item }}"
+      file: path="/etc/systemd/system/{{ item }}" state=absent
       become: true
       when: process_supervision == 'systemd'
       with_items:
