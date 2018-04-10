@@ -38,32 +38,6 @@
     has_python: false
   when: "'command not found' in py_st.stdout"
 
-- include: coreos.yml
-  static: no
-  when:
-    - "'CoreOS' in distro and not has_python"
-    - ansible_user == 'root'
-  vars:
-    - ansible_become: false
+- include_tasks: coreos.yml
 
-- include: coreos.yml
-  static: no
-  become: true
-  when:
-    - "'CoreOS' in distro and not has_python"
-    - ansible_user != 'root'
-
-- include: root_tasks.yml
-  static: no
-  when:
-    - "'CoreOS' not in distro"
-    - ansible_user == 'root'
-  vars:
-    - ansible_become: false
-
-- include: root_tasks.yml
-  static: no
-  become: true
-  when:
-    - "'CoreOS' not in distro"
-    - ansible_user != 'root'
+- include_tasks: root_tasks.yml
