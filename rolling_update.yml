@@ -46,14 +46,7 @@
     - name: stop PD by systemd
       systemd: name=pd.service state=stopped
       become: true
-      when: process_supervision == 'systemd' and ansible_user != "root"
-
-    - name: stop PD by systemd
-      systemd: name=pd.service state=stopped
-      when: process_supervision == 'systemd' and ansible_user == "root"
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
+      when: process_supervision == 'systemd'
 
     - name: wait for PD down
       wait_for: host={{ ansible_host }} port={{ pd_client_port }} state=stopped
@@ -69,14 +62,7 @@
     - name: start PD by systemd
       systemd: name=pd.service state=started
       become: true
-      when: process_supervision == 'systemd' and ansible_user != "root"
-
-    - name: start PD by systemd
-      systemd: name=pd.service state=started
-      when: process_supervision == 'systemd' and ansible_user == "root"
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
+      when: process_supervision == 'systemd'
 
     - name: wait for PD up
       wait_for: |
@@ -223,14 +209,7 @@
     - name: stop TiKV by systemd
       systemd: name=tikv-{{ tikv_port }}.service state=stopped
       become: true
-      when: process_supervision == 'systemd' and ansible_user != "root"
-
-    - name: stop TiKV by systemd
-      systemd: name=tikv-{{ tikv_port }}.service state=stopped
-      when: process_supervision == 'systemd' and ansible_user == "root"
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
+      when: process_supervision == 'systemd'
 
     - name: wait for TiKV down (via Port)
       wait_for: host={{ ansible_host }} port={{ tikv_port }} state=stopped
@@ -258,14 +237,7 @@
     - name: start TiKV by systemd
       systemd: name=tikv-{{ tikv_port }}.service state=started
       become: true
-      when: process_supervision == 'systemd' and ansible_user != "root"
-
-    - name: start TiKV by systemd
-      systemd: name=tikv-{{ tikv_port }}.service state=started
-      when: process_supervision == 'systemd' and ansible_user == "root"
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
+      when: process_supervision == 'systemd'
 
     - name: wait for TiKV up
       wait_for_pid: |
@@ -319,14 +291,7 @@
     - name: stop TiDB by systemd
       systemd: name=tidb-{{ tidb_port }}.service state=stopped
       become: true
-      when: process_supervision == 'systemd' and ansible_user != "root"
-
-    - name: stop TiDB by systemd
-      systemd: name=tidb-{{ tidb_port }}.service state=stopped
-      when: process_supervision == 'systemd' and ansible_user == "root"
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
+      when: process_supervision == 'systemd'
 
     - name: wait for TiDB down
       wait_for: host={{ ansible_host }} port={{ tidb_port }} state=stopped
@@ -340,14 +305,7 @@
     - name: stop pump by systemd
       systemd: name=pump.service state=stopped
       become: true
-      when: enable_binlog and process_supervision == 'systemd' and ansible_user != "root"
-
-    - name: stop pump by systemd
-      systemd: name=pump.service state=stopped
-      when: enable_binlog and process_supervision == 'systemd' and ansible_user == "root"
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
+      when: enable_binlog and process_supervision == 'systemd'
 
     - name: wait for pump down
       wait_for: |
@@ -368,14 +326,7 @@
     - name: start pump by systemd
       systemd: name=pump.service state=started
       become: true
-      when: enable_binlog and process_supervision == 'systemd' and ansible_user != 'root'
-
-    - name: start pump by systemd
-      systemd: name=pump.service state=started
-      when: enable_binlog and process_supervision == 'systemd' and ansible_user == 'root'
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
+      when: enable_binlog and process_supervision == 'systemd'
 
     - name: wait for pump up
       wait_for: |
@@ -389,14 +340,7 @@
     - name: start TiDB by systemd
       systemd: name=tidb-{{ tidb_port }}.service state=started
       become: true
-      when: process_supervision == 'systemd' and ansible_user != "root"
-
-    - name: start TiDB by systemd
-      systemd: name=tidb-{{ tidb_port }}.service state=started
-      when: process_supervision == 'systemd' and ansible_user == "root"
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
+      when: process_supervision == 'systemd'
 
     - name: wait for TiDB up
       wait_for: |

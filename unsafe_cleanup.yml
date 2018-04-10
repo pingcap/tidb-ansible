@@ -14,63 +14,93 @@
 
 # The playbook of TiDB
 
-- include: stop.yml
+- include_tasks: stop.yml
 
-- include: unsafe_cleanup_container.yml
+- include_tasks: unsafe_cleanup_container.yml
   when: deployment_method == 'docker'
 
-- hosts: all
+- hosts: monitored_servers
   tasks:
     - name: clean systemd config
       shell: "rm -f /etc/systemd/system/{{ item }}"
-      when: process_supervision == 'systemd' and ansible_user == "root"
+      become: true
+      when: process_supervision == 'systemd'
       with_items:
-        - grafana.service
-        - prometheus.service
-        - pushgateway.service
-        - node_exporter.service
-        - blackbox_exporter.service
-        - alertmanager*.service
-        - pd*.service
-        - pump.service
-        - tidb*.service
-        - tikv*.service
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
+        - node_exporter-{{ node_exporter_port }}.service
+        - blackbox_exporter-{{ blackbox_exporter_port }}.service
+
+- hosts: alertmanager_servers
+  tasks:
+    - name: clean systemd config
+      shell: "rm -f /etc/systemd/system/{{ item }}"
+      become: true
+      when: process_supervision == 'systemd'
+      with_items:
+        - alertmanager-{{ alertmanager_port }}.service
+
+- hosts: monitoring_servers
+  tasks:
+    - name: clean systemd config
+      shell: "rm -f /etc/systemd/system/{{ item }}"
+      become: true
+      when: process_supervision == 'systemd'
+      with_items:
+        - pushgateway-{{ pushgateway_port }}.service
+        - prometheus-{{ prometheus_port }}.service
+
+- hosts: tidb_servers
+  tasks:
+    - name: clean systemd config
+      shell: "rm -f /etc/systemd/system/{{ item }}"
+      become: true
+      when: process_supervision == 'systemd'
+      with_items:
+        - tidb-{{ tidb_port }}.service
 
     - name: clean systemd config
       shell: "rm -f /etc/systemd/system/{{ item }}"
       become: true
-      when: process_supervision == 'systemd' and ansible_user != "root"
+      when: enable_binlog and process_supervision == 'systemd'
       with_items:
-        - grafana.service
-        - prometheus.service
-        - pushgateway.service
-        - node_exporter.service
-        - blackbox_exporter.service
-        - alertmanager*.service
-        - pd*.service
-        - tidb*.service
         - pump.service
-        - tikv*.service
 
-    - name: killing all process
-      shell: >
-        killall -9 supervise;
-        killall -9 node_exporter blackbox_exporter alertmanager prometheus pushgateway grafana-server;
-        killall -9 tikv-server tidb-server pd-server;
-        killall -9 pump drainer;
-        true
+- hosts: tikv_servers
+  tasks:
+    - name: clean systemd config
+      shell: "rm -f /etc/systemd/system/{{ item }}"
+      become: true
+      when: process_supervision == 'systemd'
+      with_items:
+        - tikv-{{ tikv_port }}.service
 
     - name: cleaning up wal dir
       file: path={{ wal_dir }} state=absent
-      when: "'tikv_servers' in group_names and wal_dir is defined"
+      when: wal_dir is defined"
 
     - name: cleaning up raftdb dir
       file: path={{ raftdb_path }} state=absent
-      when: "'tikv_servers' in group_names and raftdb_path is defined"
+      when: raftdb_path is defined"
 
+- hosts: pd_servers
+  tasks:
+    - name: clean systemd config
+      shell: "rm -f /etc/systemd/system/{{ item }}"
+      become: true
+      when: process_supervision == 'systemd'
+      with_items:
+        - pd.service
+
+- hosts: grafana_servers
+  tasks:
+    - name: clean systemd config
+      shell: "rm -f /etc/systemd/system/{{ item }}"
+      become: true
+      when: process_supervision == 'systemd'
+      with_items:
+        - grafana-{{ grafana_port }}.service
+
+- hosts: all
+  tasks:
     - name: using rm command to clean up deploy_dir
       shell: "rm -rf {{ deploy_dir }}"
 

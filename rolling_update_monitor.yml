@@ -43,16 +43,9 @@
       when: process_supervision == 'supervise'
 
     - name: stop node_exporter by systemd
-      systemd: name=node_exporter.service state=stopped
+      systemd: name=node_exporter-{{ node_exporter_port }}.service state=stopped
       become: true
-      when: process_supervision == 'systemd' and ansible_user != "root"
-
-    - name: stop node_exporter by systemd
-      systemd: name=node_exporter.service state=stopped
-      when: process_supervision == 'systemd' and ansible_user == "root"
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
+      when: process_supervision == 'systemd'
 
     - name: wait for node_exporter down
       wait_for: host={{ ansible_host }} port={{ node_exporter_port }} state=stopped
@@ -66,16 +59,9 @@
       when: process_supervision == 'supervise'
 
     - name: start node_exporter by systemd
-      systemd: name=node_exporter.service state=started
+      systemd: name=node_exporter-{{ node_exporter_port }}.service state=started
       become: true
-      when: process_supervision == 'systemd' and ansible_user != "root"
-
-    - name: start node_exporter by systemd
-      systemd: name=node_exporter.service state=started
-      when: process_supervision == 'systemd' and ansible_user == "root"
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
+      when: process_supervision == 'systemd'
 
     - name: wait for node_exporter up
       wait_for: |
@@ -100,16 +86,9 @@
       when: process_supervision == 'supervise' and  blackbox_exporter_configure_file.stat.exists == True
 
     - name: stop blackbox_exporter by systemd
-      systemd: name=blackbox_exporter.service state=stopped
+      systemd: name=blackbox_exporter-{{ blackbox_exporter_port }}.service state=stopped
       become: true
-      when: process_supervision == 'systemd' and ansible_user != "root" and blackbox_exporter_configure_file.stat.exists == True
-
-    - name: stop blackbox_exporter by systemd
-      systemd: name=blackbox_exporter.service state=stopped
-      when: process_supervision == 'systemd' and ansible_user == "root" and blackbox_exporter_configure_file.stat.exists == True
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
+      when: process_supervision == 'systemd' and blackbox_exporter_configure_file.stat.exists == True
 
     - name: wait for blackbox_exporter down
       wait_for: host={{ ansible_host }} port={{ blackbox_exporter_port }} state=stopped
@@ -123,16 +102,9 @@
       when: process_supervision == 'supervise'
 
     - name: start blackbox_exporter by systemd
-      systemd: name=blackbox_exporter.service state=started
+      systemd: name=blackbox_exporter-{{ blackbox_exporter_port }}.service state=started
       become: true
-      when: process_supervision == 'systemd' and ansible_user != "root"
-
-    - name: start blackbox_exporter by systemd
-      systemd: name=blackbox_exporter.service state=started
-      when: process_supervision == 'systemd' and ansible_user == "root"
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
+      when: process_supervision == 'systemd'
 
     - name: wait for blackbox_exporter up
       wait_for: |
@@ -159,14 +131,7 @@
     - name: stop alertmanager by systemd
       systemd: name=alertmanager-{{ alertmanager_port }}.service state=stopped
       become: true
-      when: process_supervision == 'systemd' and ansible_user != "root" and alertmanager_configure_file.stat.exists == True
-
-    - name: stop alertmanager by systemd
-      systemd: name=alertmanager-{{ alertmanager_port }}.service state=stopped
-      when: process_supervision == 'systemd' and ansible_user == "root" and alertmanager_configure_file.stat.exists == True
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
+      when: process_supervision == 'systemd' and alertmanager_configure_file.stat.exists == True
 
     - name: wait for alertmanager down
       wait_for: host={{ ansible_host }} port={{ alertmanager_port }} state=stopped
@@ -182,14 +147,7 @@
     - name: start alertmanager by systemd
       systemd: name=alertmanager-{{ alertmanager_port }}.service state=started
       become: true
-      when: process_supervision == 'systemd' and ansible_user != "root"
-
-    - name: start alertmanager by systemd
-      systemd: name=alertmanager-{{ alertmanager_port }}.service state=started
-      when: process_supervision == 'systemd' and ansible_user == "root"
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
+      when: process_supervision == 'systemd'
 
     - name: wait for alertmanager up
       wait_for: |
@@ -211,19 +169,10 @@
 
     - name: stop pushgateway by systemd
       systemd: name={{ item }} state=stopped
-      when: process_supervision == 'systemd' and ansible_user != "root"
+      when: process_supervision == 'systemd'
       become: true
       with_items:
-        - pushgateway.service
-
-    - name: stop pushgateway by systemd
-      systemd: name={{ item }} state=stopped
-      when: process_supervision == 'systemd' and ansible_user == "root"
-      with_items:
-        - pushgateway.service
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
+        - pushgateway-{{ pushgateway_port }}.service
 
     - name: wait for pushgateway down
       wait_for: host={{ ansible_host }} port={{ pushgateway_port }} state=stopped
@@ -240,19 +189,10 @@
 
     - name: start pushgateway by systemd
       systemd: name={{ item }} state=started enabled=no
-      when: process_supervision == 'systemd' and ansible_user != 'root'
+      when: process_supervision == 'systemd'
       become: true
       with_items:
-        - pushgateway.service
-
-    - name: start pushgateway by systemd
-      systemd: name={{ item }} state=started enabled=no
-      when: process_supervision == 'systemd' and ansible_user == 'root'
-      with_items:
-        - pushgateway.service
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
+        - pushgateway-{{ pushgateway_port }}.service
 
     - name: wait for pushgateway up
       wait_for: |
@@ -275,19 +215,10 @@
 
     - name: stop prometheus by systemd
       systemd: name={{ item }} state=stopped
-      when: process_supervision == 'systemd' and ansible_user != "root"
+      when: process_supervision == 'systemd'
       become: true
       with_items:
-        - prometheus.service
-
-    - name: stop prometheus by systemd
-      systemd: name={{ item }} state=stopped
-      when: process_supervision == 'systemd' and ansible_user == "root"
-      with_items:
-        - prometheus.service
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
+        - prometheus-{{ prometheus_port }}.service
 
     - name: wait for prometheus down
       wait_for: host={{ ansible_host }} port={{ prometheus_port }} state=stopped
@@ -304,19 +235,10 @@
 
     - name: start prometheus by systemd
       systemd: name={{ item }} state=started enabled=no
-      when: process_supervision == 'systemd' and ansible_user != 'root'
+      when: process_supervision == 'systemd'
       become: true
       with_items:
-        - prometheus.service
-
-    - name: start prometheus by systemd
-      systemd: name={{ item }} state=started enabled=no
-      when: process_supervision == 'systemd' and ansible_user == 'root'
-      with_items:
-        - prometheus.service
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
+        - prometheus-{{ prometheus_port }}.service
 
     - name: wait for prometheus up
       wait_for: |
@@ -338,16 +260,9 @@
         - grafana
 
     - name: stop grafana by systemd
-      systemd: name=grafana.service state=stopped
+      systemd: name=grafana-{{ grafana_port }}.service state=stopped
       become: true
-      when: process_supervision == 'systemd' and ansible_user != "root"
-
-    - name: stop grafana by systemd
-      systemd: name=grafana.service state=stopped
-      when: process_supervision == 'systemd' and ansible_user == "root"
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
+      when: process_supervision == 'systemd'
 
     - name: wait for grafana down
       wait_for: host={{ ansible_host }} port={{ grafana_port }} state=stopped
@@ -363,16 +278,9 @@
         - grafana
 
     - name: start grafana by systemd
-      systemd: name=grafana.service state=started enabled=no
-      when: process_supervision == 'systemd' and ansible_user != 'root'
+      systemd: name=grafana-{{ grafana_port }}.service state=started enabled=no
+      when: process_supervision == 'systemd'
       become: true
-
-    - name: start grafana by systemd
-      systemd: name=grafana.service state=started enabled=no
-      when: process_supervision == 'systemd' and ansible_user == 'root'
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
 
     - name: wait for grafana up
       wait_for: |

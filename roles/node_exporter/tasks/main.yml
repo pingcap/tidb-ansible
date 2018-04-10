@@ -1,8 +1,7 @@
 ---
 
-- include: "{{ deployment_method }}_deployment.yml"
+- include_tasks: "{{ deployment_method }}_deployment.yml"
 
 - name: prepare firewalld white list
   set_fact:
     firewalld_ports: "{{ [node_exporter_port ~ '/tcp'] + firewalld_ports }}"
-

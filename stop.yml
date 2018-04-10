@@ -46,20 +46,10 @@
     - name: stop node_exporter/blackbox_exporter by systemd
       systemd: name={{ item }} state=stopped
       become: true
-      when: process_supervision == 'systemd' and ansible_user != "root"
+      when: process_supervision == 'systemd'
       with_items:
-        - node_exporter.service
-        - blackbox_exporter.service
-
-    - name: stop node_exporter/blackbox_exporter by systemd
-      systemd: name={{ item }} state=stopped
-      when: process_supervision == 'systemd' and ansible_user == "root"
-      with_items:
-        - node_exporter.service
-        - blackbox_exporter.service
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
+        - node_exporter-{{ node_exporter_port }}.service
+        - blackbox_exporter-{{ blackbox_exporter_port }}.service
 
     - name: wait for node_exporter down
       wait_for: host={{ ansible_host }} port={{ node_exporter_port }} state=stopped
@@ -79,14 +69,7 @@
     - name: stop alertmanager by systemd
       systemd: name=alertmanager-{{ alertmanager_port }}.service state=stopped
       become: true
-      when: process_supervision == 'systemd' and ansible_user != "root"
-
-    - name: stop alertmanager by systemd
-      systemd: name=alertmanager-{{ alertmanager_port }}.service state=stopped
-      when: process_supervision == 'systemd' and ansible_user == "root"
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
+      when: process_supervision == 'systemd'
 
     - name: wait for alertmanager down
       wait_for: host={{ ansible_host }} port={{ alertmanager_port }} state=stopped
@@ -106,21 +89,11 @@
 
     - name: stop monitoring modules by systemd
       systemd: name={{ item }} state=stopped
-      when: process_supervision == 'systemd' and ansible_user != "root"
+      when: process_supervision == 'systemd'
       become: true
       with_items:
-        - pushgateway.service
-        - prometheus.service
-
-    - name: stop monitoring modules by systemd
-      systemd: name={{ item }} state=stopped
-      when: process_supervision == 'systemd' and ansible_user == "root"
-      with_items:
-        - pushgateway.service
-        - prometheus.service
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
+        - pushgateway-{{ pushgateway_port }}.service
+        - prometheus-{{ prometheus_port }}.service
 
     - name: wait for pushgateway down
       wait_for: host={{ ansible_host }} port={{ pushgateway_port }} state=stopped
@@ -142,14 +115,7 @@
     - name: stop TiDB by systemd
       systemd: name=tidb-{{ tidb_port }}.service state=stopped
       become: true
-      when: process_supervision == 'systemd' and ansible_user != "root"
-
-    - name: stop TiDB by systemd
-      systemd: name=tidb-{{ tidb_port }}.service state=stopped
-      when: process_supervision == 'systemd' and ansible_user == "root"
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
+      when: process_supervision == 'systemd'
 
     - name: wait for TiDB down
       wait_for: host={{ ansible_host }} port={{ tidb_port }} state=stopped
@@ -163,14 +129,7 @@
     - name: stop pump by systemd
       systemd: name=pump.service state=stopped
       become: true
-      when: enable_binlog and process_supervision == 'systemd' and ansible_user != "root"
-
-    - name: stop pump by systemd
-      systemd: name=pump.service state=stopped
-      when: enable_binlog and process_supervision == 'systemd' and ansible_user == "root"
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
+      when: enable_binlog and process_supervision == 'systemd'
 
     - name: wait for pump down
       wait_for: |
@@ -191,14 +150,7 @@
     - name: stop TiKV by systemd
       systemd: name=tikv-{{ tikv_port }}.service state=stopped
       become: true
-      when: process_supervision == 'systemd' and ansible_user != "root"
-
-    - name: stop TiKV by systemd
-      systemd: name=tikv-{{ tikv_port }}.service state=stopped
-      when: process_supervision == 'systemd' and ansible_user == "root"
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
+      when: process_supervision == 'systemd'
 
     - name: wait for TiKV down (via Port)
       wait_for: host={{ ansible_host }} port={{ tikv_port }} state=stopped
@@ -229,14 +181,7 @@
     - name: stop PD by systemd
       systemd: name=pd.service state=stopped
       become: true
-      when: process_supervision == 'systemd' and ansible_user != "root"
-
-    - name: stop PD by systemd
-      systemd: name=pd.service state=stopped
-      when: process_supervision == 'systemd' and ansible_user == "root"
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
+      when: process_supervision == 'systemd'
 
     - name: wait for PD down
       wait_for: host={{ ansible_host }} port={{ pd_client_port }} state=stopped
@@ -253,16 +198,9 @@
         - grafana
 
     - name: stop monitoring modules by systemd
-      systemd: name=grafana.service state=stopped
+      systemd: name=grafana-{{ grafana_port }}.service state=stopped
       become: true
-      when: process_supervision == 'systemd' and ansible_user != "root"
-
-    - name: stop monitoring modules by systemd
-      systemd: name=grafana.service state=stopped
-      when: process_supervision == 'systemd' and ansible_user == "root"
-      vars:
-        - ansible_become: false
-        - ansible_become_user: root
+      when: process_supervision == 'systemd'
 
     - name: wait for grafana down
       wait_for: host={{ ansible_host }} port={{ grafana_port }} state=stopped

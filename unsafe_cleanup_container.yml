@@ -21,8 +21,8 @@
           name: "{{ item }}"
           state: absent
       with_items:
-        - node_exporter
-        - blackbox_exporter
+        - node_exporter-{{ node_exporter_port }}
+        - blackbox_exporter-{{ blackbox_exporter_port }}
 
 - hosts: monitoring_servers
   tasks:
@@ -31,8 +31,8 @@
           name: "{{ item }}"
           state: absent
       with_items:
-        - pushgateway
-        - prometheus
+        - pushgateway-{{ pushgateway_port }}
+        - prometheus-{{ prometheus_port }}
 
 - hosts: alertmanager_servers
   tasks:
@@ -74,5 +74,5 @@
   tasks:
     - name: remove grafana container
       docker_container:
-          name: grafana
+          name: grafana-{{ grafana_port }}
           state: absent

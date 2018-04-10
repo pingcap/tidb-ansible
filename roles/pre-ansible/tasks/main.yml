@@ -5,8 +5,6 @@
   register: disk_space_st
   failed_when: " '100%' in disk_space_st.stdout "
   changed_when: false
-  vars:
-    ansible_become: false
 
 # Debian GNU/Linux, Ubuntu, Fedora, CentOS, CoreOS
 - name: Get distro name from /etc/os-release
@@ -14,8 +12,6 @@
   register: distro_st
   failed_when: false
   changed_when: false
-  vars:
-    ansible_become: false
 
 - name: set distro facts
   set_fact:
@@ -26,8 +22,6 @@
   register: py_st
   failed_when: false
   changed_when: false
-  vars:
-    ansible_become: false
 
 - name: set has_python facts
   set_fact:
