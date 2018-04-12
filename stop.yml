@@ -191,16 +191,30 @@
   tags:
     - grafana
   tasks:
-    - name: stop monitoring modules by supervise
+    - name: stop grafana by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
       when: process_supervision == 'supervise'
       with_items:
         - grafana
 
-    - name: stop monitoring modules by systemd
+    - name: stop grafana by systemd
       systemd: name=grafana-{{ grafana_port }}.service state=stopped
       become: true
       when: process_supervision == 'systemd'
 
     - name: wait for grafana down
       wait_for: host={{ ansible_host }} port={{ grafana_port }} state=stopped
+
+    - name: stop grafana_collector by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      when: process_supervision == 'supervise'
+      with_items:
+        - grafana_collector
+
+    - name: stop grafana_collector by systemd
+      systemd: name=grafana_collector-{{ grafana_collector_port }}.service state=stopped
+      become: true
+      when: process_supervision == 'systemd'
+
+    - name: wait for grafana_collector down
+      wait_for: host={{ ansible_host }} port={{ grafana_collector_port }} state=stopped
