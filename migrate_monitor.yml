@@ -50,6 +50,13 @@
     - name: wait for node_exporter down
       wait_for: host={{ ansible_host }} port={{ node_exporter_port }} state=stopped
 
+    - name: clean systemd config
+      file: path="/etc/systemd/system/{{ item }}" state=absent
+      become: true
+      when: process_supervision == 'systemd'
+      with_items:
+        - node_exporter.service
+
   roles:
     - node_exporter
 
@@ -93,6 +100,13 @@
     - name: wait for blackbox_exporter down
       wait_for: host={{ ansible_host }} port={{ blackbox_exporter_port }} state=stopped
 
+    - name: clean systemd config
+      file: path="/etc/systemd/system/{{ item }}" state=absent
+      become: true
+      when: process_supervision == 'systemd' and blackbox_exporter_configure_file.stat.exists == True
+      with_items:
+        - blackbox_exporter.service
+
   roles:
     - blackbox_exporter
 
@@ -110,48 +124,6 @@
       wait_for: |
         host={{ ansible_host }} port={{ blackbox_exporter_port }} state=present
         send='GET / HTTP/1.0\r\n\r\n' search_regex='200 OK'
-
-
-- name: rolling update alertmanager
-  hosts: alertmanager_servers
-  any_errors_fatal: true
-  tags:
-    - alertmanager
-
-  pre_tasks:
-    - name: check alertmanager existed
-      stat:
-        path: "{{ deploy_dir }}/conf/alertmanager.yml"
-      register:  alertmanager_configure_file
-
-    - name: stop alertmanager by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./stop_alertmanager.sh
-      when: process_supervision == 'supervise' and  alertmanager_configure_file.stat.exists == True
-
-    - name: stop alertmanager by systemd
-      systemd: name=alertmanager-{{ alertmanager_port }}.service state=stopped enabled=no
-      become: true
-      when: process_supervision == 'systemd' and alertmanager_configure_file.stat.exists == True
-
-    - name: wait for alertmanager down
-      wait_for: host={{ ansible_host }} port={{ alertmanager_port }} state=stopped
-
-  roles:
-    - alertmanager
-
-  post_tasks:
-    - name: start alertmanager by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_alertmanager.sh
-      when: process_supervision == 'supervise'
-
-    - name: start alertmanager by systemd
-      systemd: name=alertmanager-{{ alertmanager_port }}.service state=started
-      become: true
-      when: process_supervision == 'systemd'
-
-    - name: wait for alertmanager up
-      wait_for: |
-        host={{ ansible_host }} port={{ alertmanager_port }} state=present
 
 
 - name: rolling update pushgateway
@@ -176,6 +148,13 @@
 
     - name: wait for pushgateway down
       wait_for: host={{ ansible_host }} port={{ pushgateway_port }} state=stopped
+
+    - name: clean systemd config
+      file: path="/etc/systemd/system/{{ item }}" state=absent
+      become: true
+      when: process_supervision == 'systemd'
+      with_items:
+        - pushgateway.service
 
   roles:
     - pushgateway
@@ -223,6 +202,13 @@
     - name: wait for prometheus down
       wait_for: host={{ ansible_host }} port={{ prometheus_port }} state=stopped
 
+    - name: clean systemd config
+      file: path="/etc/systemd/system/{{ item }}" state=absent
+      become: true
+      when: process_supervision == 'systemd'
+      with_items:
+        - prometheus.service
+
   roles:
     - prometheus
 
@@ -267,8 +253,16 @@
     - name: wait for grafana down
       wait_for: host={{ ansible_host }} port={{ grafana_port }} state=stopped
 
+    - name: clean systemd config
+      file: path="/etc/systemd/system/{{ item }}" state=absent
+      become: true
+      when: process_supervision == 'systemd'
+      with_items:
+        - grafana.service
+
   roles:
     - grafana
+    - grafana_collector
 
   post_tasks:
     - name: start grafana by supervise
@@ -286,6 +280,21 @@
       wait_for: |
         host={{ ansible_host }} port={{ grafana_port }} state=present
         send='GET /login HTTP/1.0\r\n\r\n' search_regex='200 OK'
+
+    - name: start grafana_collector by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
+      when: process_supervision == 'supervise'
+      with_items:
+        - grafana_collector
+
+    - name: start grafana_collector by systemd
+      systemd: name=grafana_collector-{{ grafana_collector_port }}.service state=started enabled=no
+      when: process_supervision == 'systemd'
+      become: true
+
+    - name: wait for grafana_collector up
+      wait_for: |
+        host={{ ansible_host }} port={{ grafana_collector_port }} state=present
 
     - set_fact:
         grafana_host: "{{ ansible_host }}"
