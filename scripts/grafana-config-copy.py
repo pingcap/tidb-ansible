@@ -79,7 +79,7 @@ def fill_dashboard_with_dest_config(dashboard, dest, type_='node'):
                 link['targetBlank'] = True
                 link['tooltip'] = "Open a pdf report for the current dashboard"
                 link['type'] = "link"
-                link['url'] = dest['url'] + "api/report/" + dest['titles'][type_].lower() + "?apitoken=" + dest['apikey']
+                link['url'] = dest['reprot_url'] + "api/report/" + dest['titles'][type_].lower() + "?apitoken=" + dest['apikey']
 
     return dashboard
 
