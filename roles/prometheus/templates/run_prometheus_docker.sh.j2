@@ -12,7 +12,7 @@ exec docker run -p {{ prometheus_port }}:9090 \
   -v "{{ prometheus_data_dir }}:/prometheus" \
   -v "{{ deploy_dir }}/conf:/etc/prometheus" \
   -u `id -u {{ deploy_user }}` \
-  --name="prometheus" \
+  --name="prometheus-{{ prometheus_port }}" \
   prom/prometheus:{{ prometheus_tag }} \
   --config.file=/etc/prometheus/prometheus.yml \
   --web.enable-admin-api \

@@ -51,6 +51,7 @@
   hosts: grafana_servers
   roles:
     - grafana
+    - grafana_collector
 
 # deploying TiDB cluster
 
@@ -80,5 +81,6 @@
 
 - name: finalizing deployment target
   hosts: all
+  become: true
   roles:
-    - role: firewalld
+    - { role: firewalld, when: enable_firewalld is defined and enable_firewalld }

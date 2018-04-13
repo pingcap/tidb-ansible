@@ -4,6 +4,7 @@
   assert:
     that:
       - ansible_version.full|version_compare('2.4.2', '>=')
+      # - ansible_version.full is version('2.5.0', '>=')
 
 - name: create downloads and resources directories
   file: path="{{ item }}" state=directory mode=0755
@@ -106,7 +107,7 @@
   delay: "{{ retry_stagger | random + 3 }}"
   when: has_outbound_network and enable_tls|default(false)
 
-- include: "{{ deployment_method }}_deployment.yml"
+- include_tasks: "{{ deployment_method }}_deployment.yml"
 
 - name: unarchive tidb binary
   shell: ls -1 {{ item.name }}-{{ item.version }}.tar.gz | xargs -n1 tar xzf
@@ -132,6 +133,10 @@
     cp -v {{ downloads_dir }}/fio-*/{{ item }} "{{ resources_dir }}/bin/"
   with_items:
     - fio
+
+- name: cp grafana_collector binary and fonts
+  shell: >
+    cp -rv {{ downloads_dir }}/grafana_collector-latest-linux-amd64/* "{{ resources_dir }}/bin/"
 
 - name: cp daemontools binary
   shell: >

@@ -8,13 +8,13 @@
   - "{{ pd_conf_dir }}"
   - "{{ pd_data_dir }}"
 
-- include: check_certs.yml
+- include_tasks: check_certs.yml
   when: enable_tls|default(false)
 
-- include: gen_certs.yml
+- include_tasks: gen_certs.yml
   when: enable_tls|default(false)
 
-- include: install_certs.yml
+- include_tasks: install_certs.yml
   when: enable_tls|default(false)
 
 - name: load customized config
@@ -55,7 +55,7 @@
   command: mv "{{ pd_conf_st.backup_file }}" "{{ backup_dir }}"
   when: pd_conf_st.changed and pd_conf_st.backup_file is defined
 
-- include: "{{ deployment_method }}_deployment.yml"
+- include_tasks: "{{ deployment_method }}_deployment.yml"
 
 - name: prepare firewalld white list
   set_fact:

@@ -10,17 +10,7 @@
 
 - name: blackbox_exporter binary add CAP_NET_RAW capability
   command: setcap cap_net_raw+ep "{{ deploy_dir }}/bin/blackbox_exporter"
-  when:
-    - ansible_user == 'root'
-  vars:
-    - ansible_become: false
-    - ansible_become_user: root
-
-- name: blackbox_exporter binary add CAP_NET_RAW capability
-  command: setcap cap_net_raw+ep "{{ deploy_dir }}/bin/blackbox_exporter"
   become: true
-  when:
-    - ansible_user != 'root'
 
 - name: create run script
   template:
@@ -33,5 +23,4 @@
   vars:
     role_status_dir: status/{{ role_name }}
 
-- include: "{{ process_supervision }}_deployment.yml"
-
+- include_tasks: "{{ process_supervision }}_deployment.yml"

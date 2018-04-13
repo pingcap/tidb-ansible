@@ -1,0 +1,26 @@
+---
+
+- name: create deploy directories
+  file: path="{{ item }}" state=directory mode=0755
+  with_items:
+  - "{{ grafana_collector_log_dir }}"
+  - "{{ grafana_collector_fonts_dir }}"
+
+- name: deploy grafana_collector binary
+  copy: src="{{ resources_dir }}/bin/grafana_collector" dest="{{ deploy_dir }}/bin/" mode=0755
+
+- name: deploy ttf font
+  copy: src="{{ resources_dir }}/bin/ttf/OpenSans-Regular.ttf" dest="{{ grafana_collector_fonts_dir }}/" mode=0644
+
+- name: create run script
+  template:
+    src: "{{ item }}_{{ role_name }}_binary.sh.j2"
+    dest: "{{ deploy_dir }}/scripts/{{ item }}_{{ role_name }}.sh"
+    mode: "0755"
+    backup: yes
+  with_items:
+    - run
+  vars:
+    role_status_dir: status/{{ role_name }}
+
+- include_tasks: "{{ process_supervision }}_deployment.yml"

@@ -23,6 +23,7 @@
 - name: check node config
   hosts: all
   gather_facts: false
+  become: true
   roles:
     - pre-ansible
     - bootstrap
@@ -43,9 +44,6 @@
 - name: create ops scripts
   hosts: localhost
   connection: local
-  become: false # useless
   gather_facts: false
   roles:
     - ops
-  vars:
-    - ansible_become: false

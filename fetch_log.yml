@@ -26,6 +26,7 @@
         - "{{ fetch_log_dir }}"
 
 - name: fetch pd log
+  become: true
   hosts: pd_servers
   tags:
     - pd
@@ -33,6 +34,7 @@
     - fetch_log
 
 - name: fetch tikv log
+  become: true
   hosts: tikv_servers
   tags:
     - tikv
@@ -40,6 +42,7 @@
     - fetch_log
 
 - name: fetch tidb log
+  become: true
   hosts: tidb_servers
   tags:
     - tidb

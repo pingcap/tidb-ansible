@@ -9,7 +9,7 @@
 - name: push data source file
   template: src=data_source.json.j2 dest={{ grafana_data_dir }}/data_source.json mode=0644
 
-- include: "{{ deployment_method }}_deployment.yml"
+- include_tasks: "{{ deployment_method }}_deployment.yml"
 
 - name: prepare firewalld white list
   set_fact:

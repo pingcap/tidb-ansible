@@ -8,13 +8,13 @@
   - "{{ pump_log_dir }}"
   - "{{ status_dir }}"
 
-- include: check_certs.yml
+- include_tasks: check_certs.yml
   when: enable_tls|default(false)
 
-- include: gen_certs.yml
+- include_tasks: gen_certs.yml
   when: enable_tls|default(false)
 
-- include: install_certs.yml
+- include_tasks: install_certs.yml
   when: enable_tls|default(false)
 
 - name: load customized config
@@ -48,7 +48,7 @@
   command: mv "{{ pump_conf_st.backup_file }}" "{{ backup_dir }}"
   when: pump_conf_st.changed and pump_conf_st.backup_file is defined
 
-- include: "{{ deployment_method }}_deployment.yml"
+- include_tasks: "{{ deployment_method }}_deployment.yml"
 
 - name: prepare firewalld white list
   set_fact:
