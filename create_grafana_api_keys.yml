@@ -11,7 +11,6 @@
     password: "{{ grafana_admin_password }}"
     force_basic_auth: yes
     return_content: yes
-  no_log: True
   register: existing_api_keys
 
 - name: Check grafana API Key file existed
@@ -55,7 +54,6 @@
     body_format: json
     body: "{{ item | to_json }}"
   with_items: "{{ grafana_api_keys }}"
-  no_log: True
   when: (((existing_api_keys['json'] | selectattr("name", "equalto", item['name'])) | list) | length == 0) or (((existing_api_keys['json'] | selectattr("name", "equalto", "grafana_apikey")) | list) | length == 1 and grafana_apikey_file.stat.exists == False)
   register: new_api_keys
 
