@@ -1,9 +1,10 @@
 ---
 
-- name: Stop if ansible version is too low, make sure that the Ansible version is Ansible 2.5.0 or later, otherwise a compatibility issue occurs.
+- name: Stop if ansible version is too low, make sure that the Ansible version is Ansible 2.4.2 or later, otherwise a compatibility issue occurs.
   assert:
     that:
-      - ansible_version.full is version('2.5.0', '>=')
+      - ansible_version.full|version_compare('2.4.2', '>=')
+      # - ansible_version.full is version('2.5.0', '>=')
 
 - name: create downloads and resources directories
   file: path="{{ item }}" state=directory mode=0755

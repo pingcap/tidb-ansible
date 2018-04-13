@@ -1,10 +1,10 @@
-- name: Ensure grafana key directory exists
+- name: Ensure grafana API Key directory exists
   file:
     path: "{{ grafana_api_keys_dir }}"
     state: directory
   delegate_to: localhost
 
-- name: Check api key list
+- name: Check grafana API Key list
   uri:
     url: "http://{{ grafana_host }}:{{ grafana_port }}/api/auth/keys"
     user: "{{ grafana_admin_user }}"
@@ -14,7 +14,38 @@
   no_log: True
   register: existing_api_keys
 
-- name: Create grafana api key
+- name: Check grafana API Key file existed
+  stat:
+    path: "{{ grafana_api_keys_dir }}/grafana_apikey.key"
+  register:  grafana_apikey_file
+
+- set_fact:
+    apikey_id: "{{ item }}"
+  with_items: "{{ existing_api_keys.json|json_query(apikey_id_query) }}"
+  vars:
+    apikey_id_query: "[?name=='grafana_apikey'].id"
+  when:
+    - ((existing_api_keys['json'] | selectattr("name", "equalto", "grafana_apikey")) | list) | length == 1
+    - grafana_apikey_file.stat.exists == False
+
+- debug:
+    var: apikey_id
+  when:
+    - ((existing_api_keys['json'] | selectattr("name", "equalto", "grafana_apikey")) | list) | length == 1
+    - grafana_apikey_file.stat.exists == False
+
+- name: Delete grafana API Key when grafana API Key file is missing
+  uri:
+    url: "http://{{ grafana_host }}:{{ grafana_port }}/api/auth/keys/{{ apikey_id }}"
+    user: "{{ grafana_admin_user }}"
+    password: "{{ grafana_admin_password }}"
+    force_basic_auth: yes
+    method: DELETE
+  when:
+    - ((existing_api_keys['json'] | selectattr("name", "equalto", "grafana_apikey")) | list) | length == 1
+    - grafana_apikey_file.stat.exists == False
+
+- name: Create grafana API Key
   uri:
     url: "http://{{ grafana_host }}:{{ grafana_port }}/api/auth/keys"
     user: "{{ grafana_admin_user }}"
@@ -25,10 +56,10 @@
     body: "{{ item | to_json }}"
   with_items: "{{ grafana_api_keys }}"
   no_log: True
-  when: ((existing_api_keys['json'] | selectattr("name", "equalto", item['name'])) | list) | length == 0
+  when: (((existing_api_keys['json'] | selectattr("name", "equalto", item['name'])) | list) | length == 0) or (((existing_api_keys['json'] | selectattr("name", "equalto", "grafana_apikey")) | list) | length == 1 and grafana_apikey_file.stat.exists == False)
   register: new_api_keys
 
-- name: Create grafana api keys file
+- name: Create grafana API key file
   become: no
   copy:
     dest: "{{ grafana_api_keys_dir }}/{{ item['item']['name'] }}.key"
