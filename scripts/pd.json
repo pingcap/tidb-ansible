@@ -61,9 +61,12 @@
   "id": null,
   "links": [
     {
-      "icon": "external link",
+      "icon": "doc",
       "tags": [],
-      "type": "dashboards"
+      "title": "Report",
+      "tooltip": "Open a pdf report for the current dashboard",
+      "type": "link",
+      "url": "http://172.16.10.49:8686/api/report/test-cluster-pd?apitoken=eyJrIjoiQkU2bmFQdjZMeTRmWVJ3UFo0bmV3Ym5zRG04Y2hmMHYiLCJuIjoiZ3JhZmFuYV9hcGlrZXkiLCJpZCI6MX0="
     }
   ],
   "refresh": "30s",
@@ -2347,12 +2350,12 @@
           "targets": [
             {
               "expr": "pd_scheduler_status{type=\"allow\",instance=\"$instance\"}",
+              "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{kind}}",
               "metric": "pd_scheduler_status",
               "refId": "A",
-              "step": 2,
-              "format": "time_series"
+              "step": 2
             }
           ],
           "thresholds": [],
@@ -2403,16 +2406,16 @@
             "alignAsTable": true,
             "avg": false,
             "current": true,
+            "hideEmpty": true,
+            "hideZero": true,
             "max": true,
             "min": false,
             "rightSide": true,
             "show": true,
-            "total": false,
-            "values": true,
-            "sortDesc": true,
             "sort": "current",
-            "hideEmpty": true,
-            "hideZero": true
+            "sortDesc": true,
+            "total": false,
+            "values": true
           },
           "lines": true,
           "linewidth": 1,
@@ -2430,12 +2433,12 @@
           "targets": [
             {
               "expr": "sum(delta(pd_scheduler_event_count{instance=\"$instance\", type=\"balance-leader-scheduler\"}[5m])) by (name)",
+              "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{name}}",
               "metric": "pd_scheduler_event_count",
               "refId": "A",
-              "step": 4,
-              "format": "time_series"
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -2486,16 +2489,16 @@
             "alignAsTable": true,
             "avg": false,
             "current": true,
+            "hideEmpty": true,
+            "hideZero": true,
             "max": true,
             "min": false,
             "rightSide": true,
             "show": true,
-            "total": false,
-            "values": true,
-            "hideEmpty": true,
-            "hideZero": true,
+            "sort": "current",
             "sortDesc": true,
-            "sort": "current"
+            "total": false,
+            "values": true
           },
           "lines": true,
           "linewidth": 1,
@@ -2513,12 +2516,12 @@
           "targets": [
             {
               "expr": "sum(delta(pd_scheduler_event_count{instance=\"$instance\", type=\"balance-region-scheduler\"}[5m])) by (name)",
+              "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{name}}",
               "metric": "pd_scheduler_event_count",
               "refId": "A",
-              "step": 4,
-              "format": "time_series"
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -4963,5 +4966,5 @@
   },
   "timezone": "browser",
   "title": "Test-Cluster-PD",
-  "version": 1
+  "version": 3
 }

@@ -49,9 +49,15 @@
   "id": null,
   "links": [
     {
-      "icon": "external link",
+      "icon": "doc",
+      "includeVars": true,
+      "keepTime": true,
       "tags": [],
-      "type": "dashboards"
+      "targetBlank": true,
+      "title": "Report",
+      "tooltip": "Open a pdf report for the current dashboard",
+      "type": "link",
+      "url": "http://172.16.10.49:8686/api/report/test-cluster-tidb?apitoken=eyJrIjoiQkU2bmFQdjZMeTRmWVJ3UFo0bmV3Ym5zRG04Y2hmMHYiLCJuIjoiZ3JhZmFuYV9hcGlrZXkiLCJpZCI6MX0="
     }
   ],
   "refresh": "30s",
@@ -5816,6 +5822,158 @@
               "show": true
             }
           ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "fill": 1,
+          "id": 92,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 4,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(tidb_statistics_dump_feedback_total[1m])) by (type)",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "{{type}}",
+              "refId": "A",
+              "step": 30
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Dump Feedback Total",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "fill": 1,
+          "id": 93,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 4,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(tidb_statistics_update_stats_total[1m])) by (type)",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "{{type}}",
+              "refId": "A",
+              "step": 30
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Update Stats Total",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
         }
       ],
       "repeat": null,
@@ -6577,5 +6735,5 @@
   },
   "timezone": "browser",
   "title": "Test-Cluster-TiDB",
-  "version": 3
+  "version": 2
 }

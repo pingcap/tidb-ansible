@@ -1,8 +1,8 @@
 {
   "__inputs": [
     {
-      "name": "DS_USER-CREDITS",
-      "label": "user-credits",
+      "name": "DS_TEST-CLUSTER",
+      "label": "test-cluster",
       "description": "",
       "type": "datasource",
       "pluginId": "prometheus",
@@ -36,14 +36,36 @@
     }
   ],
   "annotations": {
-    "list": []
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
   },
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
   "hideControls": true,
   "id": null,
-  "links": [],
+  "links": [
+    {
+      "icon": "doc",
+      "includeVars": true,
+      "keepTime": true,
+      "tags": [],
+      "targetBlank": true,
+      "title": "Report",
+      "tooltip": "Open a pdf report for the current dashboard",
+      "type": "link",
+      "url": "http://172.16.10.49:8686/api/report/test-cluster-disk-performance?apitoken=eyJrIjoiQkU2bmFQdjZMeTRmWVJ3UFo0bmV3Ym5zRG04Y2hmMHYiLCJuIjoiZ3JhZmFuYV9hcGlrZXkiLCJpZCI6MX0="
+    }
+  ],
   "refresh": false,
   "rows": [
     {
@@ -52,7 +74,7 @@
       "panels": [
         {
           "content": "You can click on an individual disk device on the legend to filter on it or multiple ones by holding Alt button.",
-          "datasource": "${DS_USER-CREDITS}",
+          "datasource": "${DS_TEST-CLUSTER}",
           "editable": true,
           "error": false,
           "height": "50px",
@@ -68,7 +90,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_USER-CREDITS}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 2,
           "description": "Shows average latency for Reads and Writes IO Devices.  Higher than typical latency for highly loaded storage indicates saturation (overload) and is frequent cause of performance problems.  Higher than normal latency also can indicate internal storage problems.",
           "editable": true,
@@ -100,6 +124,7 @@
           "points": true,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 12,
           "stack": false,
           "steppedLine": false,
@@ -144,6 +169,7 @@
           "transparent": false,
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -171,7 +197,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_USER-CREDITS}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 2,
           "description": "Shows amount of physical IOs (reads and writes) different devices are serving. Spikes in number of IOs served often corresponds to performance problems due to IO subsystem overload.",
           "editable": true,
@@ -203,6 +231,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 12,
           "stack": false,
           "steppedLine": false,
@@ -247,6 +276,7 @@
           "transparent": false,
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -274,7 +304,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_USER-CREDITS}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 2,
           "description": "Shows volume of reads and writes the storage is handling. This can be better measure of IO capacity usage for network attached and SSD storage as it is often bandwidth limited.  Amount of data being written to the disk can be used to estimate Flash storage life time.",
           "editable": true,
@@ -306,6 +338,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 12,
           "stack": false,
           "steppedLine": false,
@@ -350,6 +383,7 @@
           "transparent": false,
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -377,7 +411,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_USER-CREDITS}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 2,
           "description": "Shows how much disk was loaded for reads or writes as average number of outstanding requests at different period of time.  High disk load is a good measure of actual storage utilization. Different storage types handle load differently - some will show latency increases on low loads others can handle higher load with no problems.",
           "editable": true,
@@ -407,6 +443,7 @@
           "points": true,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 12,
           "stack": false,
           "steppedLine": false,
@@ -451,6 +488,7 @@
           "transparent": false,
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -478,7 +516,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_USER-CREDITS}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 2,
           "description": "Shows disk Utilization as percent of the time when there was at least one IO request in flight. It is designed to match utilization available in iostat tool. It is not very good measure of true IO Capacity Utilization. Consider looking at IO latency and Disk Load Graphs instead.",
           "editable": true,
@@ -510,6 +550,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 12,
           "stack": false,
           "steppedLine": false,
@@ -541,6 +582,7 @@
           "transparent": false,
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -568,7 +610,9 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_USER-CREDITS}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 2,
           "description": "Shows how effectively Operating System is able to merge logical IO requests into physical requests.  This is a good measure of the IO locality which can be used for workload characterization.",
           "editable": true,
@@ -598,6 +642,7 @@
           "points": true,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 12,
           "stack": false,
           "steppedLine": false,
@@ -642,6 +687,7 @@
           "transparent": false,
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -672,7 +718,9 @@
             "Read: sdb": "#3F6833"
           },
           "bars": false,
-          "datasource": "${DS_USER-CREDITS}",
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 2,
           "description": "Shows average size of a single disk operation.",
           "editable": true,
@@ -702,6 +750,7 @@
           "points": true,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 12,
           "stack": false,
           "steppedLine": false,
@@ -746,6 +795,7 @@
           "transparent": false,
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -793,7 +843,7 @@
           "text": "auto",
           "value": "$__auto_interval"
         },
-        "datasource": "Prometheus",
+        "datasource": "test-cluster",
         "hide": 0,
         "includeAll": false,
         "label": "Interval",
@@ -850,7 +900,7 @@
         "allFormat": "glob",
         "allValue": null,
         "current": {},
-        "datasource": "${DS_USER-CREDITS}",
+        "datasource": "${DS_TEST-CLUSTER}",
         "hide": 0,
         "includeAll": false,
         "label": "Host",
@@ -873,7 +923,7 @@
         "allFormat": "glob",
         "allValue": null,
         "current": {},
-        "datasource": "${DS_USER-CREDITS}",
+        "datasource": "${DS_TEST-CLUSTER}",
         "hide": 0,
         "includeAll": true,
         "label": "Device",
@@ -930,6 +980,6 @@
     "type": "timepicker"
   },
   "timezone": "browser",
-  "title": "Disk Performance",
-  "version": 1
+  "title": "Test-Cluster-Disk-Performance",
+  "version": 2
 }
