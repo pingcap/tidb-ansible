@@ -26,11 +26,11 @@ if __name__ == '__main__':
         os.makedirs(download_dir)
 
     for dest in dests:
-        report_url = dest['reprot_url']
+        report_url = dest['report_url']
         apikey = dest['apikey']
 
         for dashboard in dest['titles']:
-            url = dest['reprot_url'] + "api/report/" + dest['titles'][dashboard].lower() + "?apitoken=" + dest['apikey']
+            url = report_url + "api/report/" + dest['titles'][dashboard].lower() + "?apitoken=" + apikey
             filename = dest['titles'][dashboard] + ".pdf"
 
             print("Downloading: ", filename)
