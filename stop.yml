@@ -74,6 +74,25 @@
     - name: wait for alertmanager down
       wait_for: host={{ ansible_host }} port={{ alertmanager_port }} state=stopped
 
+- hosts: tidb_exporter_servers
+  tags:
+    - tidb_exporter
+  tasks:
+    - name: stop tidb_exporter by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./stop_tidb_exporter.sh
+      when: process_supervision == 'supervise'
+
+    - name: stop tidb_exporter by systemd
+      systemd: name=tidb_exporter.service state=stopped
+      become: true
+      when: process_supervision == 'systemd' and ansible_user != "root"
+
+    - name: stop tidb_exporter by systemd
+      systemd: name=tidb_exporter.service state=stopped
+      when: process_supervision == 'systemd' and ansible_user == "root"
+      vars:
+        - ansible_become: false
+        - ansible_become_user: root
 
 - hosts: monitoring_servers
   tags:

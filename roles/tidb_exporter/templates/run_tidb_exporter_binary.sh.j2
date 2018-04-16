@@ -1,0 +1,57 @@
+#!/bin/bash
+set -e
+ulimit -n 1000000
+
+# WARNING: This file was auto-generated. Do not edit!
+#          All your edit might be overwritten!
+DEPLOY_DIR={{ deploy_dir }}
+cd "${DEPLOY_DIR}" || exit 1
+
+exec > >(tee -i -a "{{ tidb_exporter_log_dir }}/{{ tidb_exporter_log_filename }}")
+exec 2>&1
+
+{% set all_alertmanger = [] -%}
+{% set alertmanager_hosts = groups.alertmanager_servers %}
+{% for host in alertmanager_hosts -%}
+  {% set alertmanager_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
+  {% set alertmanager_port = hostvars[host].alertmanager_port -%}
+  {% set _ = all_alertmanger.append("%s:%s" % (alertmanager_ip, alertmanager_port)) -%}
+{% endfor -%}
+
+
+{% set all_pd = [] -%}
+{% set pd_hosts = groups.pd_servers %}
+{% for host in pd_hosts -%}
+  {% set pd_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
+  {% set pd_port = hostvars[host].pd_client_port -%}
+  {% set _ = all_pd.append("http://%s:%s" % (pd_ip, pd_port)) -%}
+{% endfor -%}
+
+{% set all_tidb = [] -%}
+{% set tidb_hosts = groups.tidb_servers %}
+{% for host in tidb_hosts -%}
+  {% set tidb_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
+  {% set tidb_port = hostvars[host].tidb_port -%}
+  {% set _ = all_tidb.append("%s:%s" % (tidb_ip, tidb_port)) -%}
+  {% set tidb_test_user = hostvars[host].tidb_test_user -%}
+  {% set tidb_test_password = hostvars[host].tidb_test_password -%}
+{% endfor -%}
+
+{% set metric_host = hostvars[groups.monitoring_servers[0]].ansible_host | default(hostvars[groups.monitoring_servers[0]].inventory_hostname)
+    if groups.get('monitoring_servers', []) else "" -%}
+{% set metric_port = hostvars[groups.monitoring_servers[0]].pushgateway_port if metric_host else "" -%}
+{% set metric_addr = metric_host ~ ":" ~ metric_port if metric_host else "" -%}
+
+
+exec bin/tidb_exporter \
+    -alertmanger-list "{{ all_alertmanger | join(',') }}"  \
+{% if metric_addr is not none %}
+    -metrics "{{ metric_addr }}" \
+{% endif %}
+    -pd-list  "{{ all_pd | join(',') }}"  \
+    -tidb-list "{{ all_tidb | join(',') }}"  \
+    -user "{{ tidb_test_user }}" \
+    -password "{{ tidb_test_password }}"  \
+    -log-file "{{ tidb_exporter_log_dir }}/{{ tidb_exporter_log_filename }}" \
+    -interval 180 \
+    -daemon
