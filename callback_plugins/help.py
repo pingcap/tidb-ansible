@@ -39,7 +39,7 @@ class CallbackModule(CallbackBase):
 
     def print_help_message(self):
         self._display.display("Ask for help:", color=C.COLOR_WARN)
-        self._display.display("Contact us: sre@pingcap.com", color=C.COLOR_HIGHLIGHT)
+        self._display.display("Contact us: support@pingcap.com", color=C.COLOR_HIGHLIGHT)
         self._display.display("It seems that you encounter some problems. You can send an email to the above email address, attached with the tidb-ansible/inventory.ini and tidb-ansible/log/ansible.log files and the error message, or new issue on https://github.com/pingcap/tidb-ansible/issues. We'll try our best to help you deploy a TiDB cluster. Thanks. :-)", color=C.COLOR_WARN)
 
     def v2_runner_on_failed(self, result, ignore_errors=False):
