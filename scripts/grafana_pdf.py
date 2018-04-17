@@ -39,9 +39,9 @@ if __name__ == '__main__':
             with open(os.path.join(download_dir, filename), "wb") as pdf:
                 pdf.write(data)
 
-        tar_filename = download_dir + ".tar.gz"
-        print("Compressing: ", filename)
-        make_tarfile(tar_filename, download_dir)
+    tar_filename = download_dir + ".tar.gz"
+    print("Compressing: ", tar_filename)
+    make_tarfile(tar_filename, download_dir)
 
-        print("Clean up download directory")
-        shutil.rmtree(download_dir)
+    print("Clean up download directory")
+    shutil.rmtree(download_dir)
