@@ -30,8 +30,8 @@ if __name__ == '__main__':
         apikey = dest['apikey']
 
         for dashboard in dest['titles']:
-            url = report_url + "api/report/" + dest['titles'][dashboard].lower() + "?apitoken=" + apikey
-            filename = dest['titles'][dashboard] + ".pdf"
+            url = "{0}api/report/{1}?apitoken={2}".format(report_url, dest['titles'][dashboard].lower(), apikey)
+            filename = "{0}.pdf".format(dest['titles'][dashboard])
 
             print("Downloading: ", filename)
             f = urllib2.urlopen(url)
@@ -39,7 +39,7 @@ if __name__ == '__main__':
             with open(os.path.join(download_dir, filename), "wb") as pdf:
                 pdf.write(data)
 
-    tar_filename = download_dir + ".tar.gz"
+    tar_filename = "{0}.tar.gz".format(download_dir)
     print("Compressing: ", tar_filename)
     make_tarfile(tar_filename, download_dir)
 
