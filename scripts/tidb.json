@@ -527,6 +527,140 @@
               "show": true
             }
           ]
+        },
+        {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "${DS_TEST-CLUSTER}",
+            "editable": true,
+            "error": false,
+            "fill": 0,
+            "grid": {},
+            "id": 92,
+            "legend": {
+                "alignAsTable": true,
+                "avg": false,
+                "current": true,
+                "hideEmpty": true,
+                "hideZero": true,
+                "max": true,
+                "min": false,
+                "rightSide": true,
+                "show": true,
+                "sideWidth": 250,
+                "sort": "max",
+                "sortDesc": true,
+                "total": false,
+                "values": true
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "minSpan": 12,
+            "nullPointMode": "null as zero",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+                {
+                "alias": "total",
+                "lines": false
+                }
+            ],
+            "spaceLength": 10,
+            "span": 6,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+                {
+                "expr": "sum(increase(tidb_server_execute_error_total[1m])) by (type)",
+                "format": "time_series",
+                "intervalFactor": 2,
+                "legendFormat": " {{type}}",
+                "refId": "A",
+                "step": 30
+                }
+            ],
+            "thresholds": [
+                {
+                "value": null,
+                "op": "gt",
+                "fill": true,
+                "line": true,
+                "colorMode": "critical"
+                }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Failed Query",
+            "tooltip": {
+                "msResolution": true,
+                "shared": true,
+                "sort": 2,
+                "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+                "buckets": null,
+                "mode": "time",
+                "name": null,
+                "show": true,
+                "values": []
+            },
+            "yaxes": [
+                {
+                "format": "short",
+                "label": null,
+                "logBase": 2,
+                "max": null,
+                "min": "0",
+                "show": true
+                },
+                {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+                }
+            ],
+            "alert": {
+                "conditions": [
+                {
+                    "type": "query",
+                    "query": {
+                    "params": [
+                        "A",
+                        "5m",
+                        "now"
+                    ]
+                    },
+                    "reducer": {
+                    "type": "avg",
+                    "params": []
+                    },
+                    "evaluator": {
+                    "type": "gt",
+                    "params": [
+                        null
+                    ]
+                    },
+                    "operator": {
+                    "type": "and"
+                    }
+                }
+                ],
+                "noDataState": "no_data",
+                "executionErrorState": "alerting",
+                "frequency": "60s",
+                "handler": 1,
+                "notifications": [],
+                "name": "Failed Query alert"
+            }
         }
       ],
       "repeat": null,
@@ -873,6 +1007,88 @@
               "show": true
             }
           ]
+        },
+        {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "${DS_TEST-CLUSTER}",
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {},
+            "id": 94,
+            "legend": {
+                "alignAsTable": true,
+                "avg": false,
+                "current": true,
+                "max": true,
+                "min": false,
+                "rightSide": true,
+                "show": true,
+                "total": false,
+                "values": true
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null as zero",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "span": 6,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+                {
+                "expr": "increase(tidb_server_execute_error_total[1m])",
+                "format": "time_series",
+                "intervalFactor": 2,
+                "legendFormat": "{{type}} @ {{instance}}",
+                "refId": "A",
+                "step": 60
+                }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Failed Query Detail",
+            "tooltip": {
+                "msResolution": true,
+                "shared": true,
+                "sort": 0,
+                "value_type": "cumulative"
+            },
+            "type": "graph",
+            "xaxis": {
+                "buckets": null,
+                "mode": "time",
+                "name": null,
+                "show": true,
+                "values": []
+            },
+            "yaxes": [
+                {
+                "format": "none",
+                "label": null,
+                "logBase": 2,
+                "max": null,
+                "min": "0.001",
+                "show": true
+                },
+                {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+                }
+            ]
         }
       ],
       "repeat": null,
