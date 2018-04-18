@@ -1115,10 +1115,10 @@
               "step": 4
             },
             {
-              "expr": "sum(rate(tikv_channel_full_total[1m])) by (job)",
+              "expr": "sum(rate(tikv_channel_full_total[1m])) by (job, type)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "channelfull-{{job}}",
+              "legendFormat": "{{job}} - {{type}}",
               "metric": "",
               "refId": "B",
               "step": 4
@@ -2783,107 +2783,6 @@
           "yaxes": [
             {
               "format": "bytes",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": "0",
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": false
-            }
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
-          "decimals": 1,
-          "editable": true,
-          "error": false,
-          "fill": 0,
-          "grid": {},
-          "id": 1716,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": true,
-            "hideEmpty": true,
-            "max": true,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "sideWidth": 250,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null as zero",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "span": 12,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "sum(rate(tikv_scheduler_too_busy_total[1m])) by (job)",
-              "intervalFactor": 2,
-              "legendFormat": "scheduler-{{job}}",
-              "metric": "",
-              "refId": "A",
-              "step": 4
-            },
-            {
-              "expr": "sum(rate(tikv_channel_full_total[1m])) by (job)",
-              "intervalFactor": 2,
-              "legendFormat": "channelfull-{{job}}",
-              "metric": "",
-              "refId": "B",
-              "step": 4
-            },
-            {
-              "expr": "sum(rate(tikv_coprocessor_request_error{type='full'}[1m])) by (job)",
-              "intervalFactor": 2,
-              "legendFormat": "coprocessor-{{job}}",
-              "metric": "",
-              "refId": "C",
-              "step": 4
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "server is busy",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "sort": 2,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "none",
               "label": null,
               "logBase": 1,
               "max": null,
