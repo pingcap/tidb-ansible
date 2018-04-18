@@ -6,6 +6,24 @@
       - ansible_version.full|version_compare('2.4.2', '>=')
       # - ansible_version.full is version('2.5.0', '>=')
 
+- name: Redhat/CentOS - Make sure curl have been installed
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - curl
+  become: true
+  when: ansible_distribution in ['RedHat', 'CentOS']
+
+- name: Debian/Ubuntu - Make sure curl have been installed
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - curl
+  become: true
+  when: ansible_distribution in ['Debian', 'Ubuntu']
+
 - name: create downloads and resources directories
   file: path="{{ item }}" state=directory mode=0755
   with_items:

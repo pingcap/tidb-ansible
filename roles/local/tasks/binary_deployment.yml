@@ -40,7 +40,7 @@
   retries: 4
   delay: "{{ retry_stagger | random + 3 }}"
   with_items: "{{ tispark_packages }}"
-  when: has_outbound_network
+  when: has_outbound_network and not deploy_without_tidb|default(false)
 
 - name: unarchive third party binary
   shell: ls -1 {{ item.name }}-{{ item.version }}.tar.gz | xargs -n1 tar xzf
@@ -54,6 +54,7 @@
   args:
     chdir: "{{ downloads_dir }}"
     warn: no
+  when: not deploy_without_tidb|default(false)
 
 - name: cp monitoring binary
   shell: >
@@ -68,3 +69,4 @@
 - name: cp tispark-sample-data
   shell: >
     cp -rfv {{ downloads_dir }}/tispark-sample-data "{{ resources_dir }}/bin/"
+  when: not deploy_without_tidb|default(false)
