@@ -12,7 +12,9 @@
   retries: 4
   delay: "{{ retry_stagger | random + 3 }}"
   with_items: "{{ third_party_packages }}"
-  when: has_outbound_network and not under_gfw
+  when:
+    - has_outbound_network
+    - not under_gfw
 
 - name: download other binary under gfw
   get_url:
@@ -26,7 +28,9 @@
   retries: 4
   delay: "{{ retry_stagger | random + 3 }}"
   with_items: "{{ third_party_packages_under_gfw }}"
-  when: has_outbound_network and under_gfw
+  when:
+    - has_outbound_network
+    - under_gfw
 
 - name: download TiSpark packages
   get_url:
@@ -40,7 +44,9 @@
   retries: 4
   delay: "{{ retry_stagger | random + 3 }}"
   with_items: "{{ tispark_packages }}"
-  when: has_outbound_network
+  when:
+    - has_outbound_network
+    - not deploy_without_tidb|default(false)
 
 - name: unarchive third party binary
   shell: ls -1 {{ item.name }}-{{ item.version }}.tar.gz | xargs -n1 tar xzf
@@ -54,6 +60,7 @@
   args:
     chdir: "{{ downloads_dir }}"
     warn: no
+  when: not deploy_without_tidb|default(false)
 
 - name: cp monitoring binary
   shell: >
@@ -68,3 +75,4 @@
 - name: cp tispark-sample-data
   shell: >
     cp -rfv {{ downloads_dir }}/tispark-sample-data "{{ resources_dir }}/bin/"
+  when: not deploy_without_tidb|default(false)

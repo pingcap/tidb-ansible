@@ -6,6 +6,14 @@
       - ansible_version.full|version_compare('2.4.2', '>=')
       # - ansible_version.full is version('2.5.0', '>=')
 
+- name: Make sure curl have been installed
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - curl
+  become: true
+
 - name: create downloads and resources directories
   file: path="{{ item }}" state=directory mode=0755
   with_items:
@@ -92,7 +100,9 @@
   until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
   retries: 4
   delay: "{{ retry_stagger | random + 3 }}"
-  when: has_outbound_network and enable_tls|default(false)
+  when:
+    - has_outbound_network
+    - enable_tls|default(false)
 
 - name: download cfssljson binary
   get_url:
@@ -105,7 +115,9 @@
   until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
   retries: 4
   delay: "{{ retry_stagger | random + 3 }}"
-  when: has_outbound_network and enable_tls|default(false)
+  when:
+    - has_outbound_network
+    - enable_tls|default(false)
 
 - include_tasks: "{{ deployment_method }}_deployment.yml"
 
