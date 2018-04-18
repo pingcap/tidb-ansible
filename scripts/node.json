@@ -14,7 +14,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "4.1.2"
+      "version": "4.6.3"
     },
     {
       "type": "panel",
@@ -38,24 +38,13 @@
   "annotations": {
     "list": [
       {
+        "builtIn": 1,
         "datasource": "${DS_TEST-CLUSTER}",
         "enable": true,
-        "expr": "ALERTS{instance=\"$host\", alertstate=\"firing\"}",
-        "iconColor": "rgb(252, 5, 0)",
-        "name": "Alert",
-        "tagKeys": "severity",
-        "textFormat": "{{ instance }} : {{alertstate}}",
-        "titleFormat": "{{ alertname }}"
-      },
-      {
-        "datasource": "${DS_TEST-CLUSTER}",
-        "enable": true,
-        "expr": "ALERTS{instance=\"$host\",alertstate=\"pending\"}",
-        "iconColor": "rgb(228, 242, 9)",
-        "name": "Warning",
-        "tagKeys": "severity",
-        "textFormat": "{{ instance }} : {{ alertstate }}",
-        "titleFormat": "{{ alertname }}"
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
       }
     ]
   },
@@ -68,9 +57,15 @@
   "links": [
     {
       "asDropdown": false,
-      "icon": "external link",
+      "icon": "doc",
+      "includeVars": true,
+      "keepTime": true,
       "tags": [],
-      "type": "dashboards"
+      "targetBlank": true,
+      "title": "Report",
+      "tooltip": "Open a pdf report for the current dashboard",
+      "type": "link",
+      "url": "http://172.16.10.49:8686/api/report/test-cluster-node_exporter?apitoken=eyJrIjoiZUZMNG9tc1ZwdE9SOFdmV0dPSXoxOU8wSFdCaDlmejQiLCJuIjoiZ3JhZmFuYV9hcGlrZXkiLCJpZCI6MX0="
     }
   ],
   "refresh": "30s",
@@ -136,6 +131,7 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": false
           },
+          "tableColumn": "",
           "targets": [
             {
               "calculatedInterval": "10m",
@@ -215,6 +211,7 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": false
           },
+          "tableColumn": "",
           "targets": [
             {
               "expr": "count(node_cpu{mode=\"user\", instance=\"$host\"})",
@@ -294,6 +291,7 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": false
           },
+          "tableColumn": "",
           "targets": [
             {
               "expr": "node_memory_MemAvailable{instance=\"$host\"}",
@@ -375,6 +373,7 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": true
           },
+          "tableColumn": "",
           "targets": [
             {
               "calculatedInterval": "10m",
@@ -401,6 +400,8 @@
         {
           "aliasColors": {},
           "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 2,
           "editable": true,
@@ -431,6 +432,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 12,
           "stack": true,
           "steppedLine": false,
@@ -439,9 +441,10 @@
               "calculatedInterval": "2s",
               "datasourceErrors": {},
               "errors": {},
-              "expr": "sum(rate(node_cpu{instance=\"$host\"}[$interval])) by (mode) * 100 / count_scalar(node_cpu{mode=\"user\", instance=\"$host\"}) or sum(irate(node_cpu{instance=\"$host\"}[5m])) by (mode) * 100 / count_scalar(node_cpu{mode=\"user\", instance=\"$host\"})",
+              "expr": "sum(rate(node_cpu{instance=\"$host\"}[$interval])) by (mode) * 100 / count(node_cpu{instance=\"$host\"}) by (mode) or sum(irate(node_cpu{instance=\"$host\"}[5m])) by (mode) * 100 / count(node_cpu{instance=\"$host\"}) by (mode)",
+              "format": "time_series",
               "intervalFactor": 1,
-              "legendFormat": "{{ mode }}",
+              "legendFormat": "{{mode}}",
               "metric": "",
               "prometheusLink": "/api/datasources/proxy/1/graph#%5B%7B%22expr%22%3A%22sum(rate(node_cpu%7Binstance%3D%5C%22%24host%5C%22%7D%5B%24interval%5D))%20by%20(mode)%20*%20100%22%2C%22range_input%22%3A%223600s%22%2C%22end_input%22%3A%222015-10-22%2015%3A27%22%2C%22step_input%22%3A%22%22%2C%22stacked%22%3Atrue%2C%22tab%22%3A0%7D%5D",
               "refId": "A",
@@ -460,6 +463,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -486,6 +490,8 @@
         {
           "aliasColors": {},
           "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 2,
           "editable": true,
@@ -529,6 +535,7 @@
               "instance": "Load 15m"
             }
           ],
+          "spaceLength": 10,
           "span": 12,
           "stack": false,
           "steppedLine": false,
@@ -586,6 +593,7 @@
           "transparent": false,
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -608,6 +616,125 @@
               "show": true
             }
           ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "decimals": 2,
+          "editable": true,
+          "error": false,
+          "fill": 2,
+          "grid": {},
+          "id": 40,
+          "instanceColors": {},
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": false,
+            "hideEmpty": false,
+            "max": true,
+            "min": true,
+            "rightSide": true,
+            "show": true,
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "color": "#E24D42",
+              "instance": "Load 1m"
+            },
+            {
+              "color": "#E0752D",
+              "instance": "Load 5m"
+            },
+            {
+              "color": "#E5AC0E",
+              "instance": "Load 15m"
+            }
+          ],
+          "spaceLength": 10,
+          "span": 12,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "calculatedInterval": "10s",
+              "datasourceErrors": {},
+              "errors": {},
+              "expr": "rate(node_vmstat_pgpgin{instance=\"$host\"}[$interval]) * 1024 or irate(node_vmstat_pgpgin{instance=\"$host\"}[5m]) * 1024",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "Page In",
+              "metric": "",
+              "prometheusLink": "/api/datasources/proxy/1/graph#%5B%7B%22expr%22%3A%22node_load1%7Binstance%3D%5C%22%24host%5C%22%7D%22%2C%22range_input%22%3A%223601s%22%2C%22end_input%22%3A%222015-10-22%2015%3A27%22%2C%22step_input%22%3A%22%22%2C%22stacked%22%3Afalse%2C%22tab%22%3A0%7D%5D",
+              "refId": "A",
+              "step": 2,
+              "target": ""
+            },
+            {
+              "calculatedInterval": "10s",
+              "datasourceErrors": {},
+              "errors": {},
+              "expr": "rate(node_vmstat_pgpgout{instance=\"$host\"}[$interval]) * 1024 or irate(node_vmstat_pgpgout{instance=\"$host\"}[5m]) * 1024",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "Page Out",
+              "metric": "",
+              "prometheusLink": "/api/datasources/proxy/1/graph#%5B%7B%22expr%22%3A%22node_load5%7Binstance%3D%5C%22%24host%5C%22%7D%22%2C%22range_input%22%3A%223600s%22%2C%22end_input%22%3A%222015-10-22%2015%3A27%22%2C%22step_input%22%3A%22%22%2C%22stacked%22%3Afalse%2C%22tab%22%3A0%7D%5D",
+              "refId": "B",
+              "step": 2,
+              "target": ""
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Page In/Page Out",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "transparent": false,
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "Bps",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": 0,
+              "show": true
+            },
+            {
+              "format": "decbytes",
+              "logBase": 1,
+              "max": null,
+              "min": 0,
+              "show": true
+            }
+          ]
         }
       ],
       "repeat": null,
@@ -624,6 +751,8 @@
         {
           "aliasColors": {},
           "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 2,
           "editable": true,
@@ -669,6 +798,7 @@
               "stack": false
             }
           ],
+          "spaceLength": 10,
           "span": 6,
           "stack": true,
           "steppedLine": false,
@@ -726,6 +856,7 @@
           "transparent": false,
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -752,6 +883,8 @@
         {
           "aliasColors": {},
           "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 2,
           "editable": true,
@@ -782,6 +915,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": true,
           "steppedLine": false,
@@ -852,6 +986,7 @@
           "transparent": false,
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -878,6 +1013,8 @@
         {
           "aliasColors": {},
           "bars": true,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 2,
           "editable": true,
@@ -912,6 +1049,7 @@
               "instance": "Forks"
             }
           ],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -943,6 +1081,7 @@
           "transparent": false,
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -969,6 +1108,8 @@
         {
           "aliasColors": {},
           "bars": true,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 2,
           "editable": true,
@@ -1007,6 +1148,7 @@
               "instance": "Processes in runnable state"
             }
           ],
+          "spaceLength": 10,
           "span": 6,
           "stack": true,
           "steppedLine": false,
@@ -1051,6 +1193,7 @@
           "transparent": false,
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -1077,6 +1220,8 @@
         {
           "aliasColors": {},
           "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 2,
           "editable": true,
@@ -1106,6 +1251,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -1137,6 +1283,7 @@
           "transparent": false,
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -1163,6 +1310,8 @@
         {
           "aliasColors": {},
           "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 2,
           "editable": true,
@@ -1197,6 +1346,7 @@
               "instance": "Interrupts"
             }
           ],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -1228,6 +1378,7 @@
           "transparent": false,
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -1254,6 +1405,8 @@
         {
           "aliasColors": {},
           "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 2,
           "editable": true,
@@ -1283,6 +1436,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": true,
           "steppedLine": false,
@@ -1291,7 +1445,8 @@
               "calculatedInterval": "2s",
               "datasourceErrors": {},
               "errors": {},
-              "expr": "rate(node_network_receive_bytes{instance=\"$host\", device!=\"lo\"}[$interval]) or irate(node_network_receive_bytes{instance=\"$host\", device!=\"lo\"}[5m])",
+              "expr": "rate(node_network_receive_bytes{instance=\"$host\", device!=\"lo\"}[$interval]) * 8 or irate(node_network_receive_bytes{instance=\"$host\", device!=\"lo\"}[5m]) * 8",
+              "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "Inbound: {{ device }}",
               "metric": "",
@@ -1304,7 +1459,8 @@
               "calculatedInterval": "2s",
               "datasourceErrors": {},
               "errors": {},
-              "expr": "rate(node_network_transmit_bytes{instance=\"$host\", device!=\"lo\"}[$interval]) or irate(node_network_transmit_bytes{instance=\"$host\", device!=\"lo\"}[5m])",
+              "expr": "rate(node_network_transmit_bytes{instance=\"$host\", device!=\"lo\"}[$interval]) * 8 or irate(node_network_transmit_bytes{instance=\"$host\", device!=\"lo\"}[5m]) * 8",
+              "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "Outbound: {{ device }}",
               "metric": "",
@@ -1327,6 +1483,7 @@
           "transparent": false,
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -1334,7 +1491,7 @@
           },
           "yaxes": [
             {
-              "format": "Bps",
+              "format": "bps",
               "label": "",
               "logBase": 1,
               "max": null,
@@ -1353,6 +1510,8 @@
         {
           "aliasColors": {},
           "bars": true,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 2,
           "editable": true,
@@ -1384,6 +1543,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": true,
           "steppedLine": false,
@@ -1430,6 +1590,7 @@
           "transparent": false,
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -1456,6 +1617,8 @@
         {
           "aliasColors": {},
           "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 2,
           "editable": true,
@@ -1494,6 +1657,7 @@
               "instance": "Free"
             }
           ],
+          "spaceLength": 10,
           "span": 6,
           "stack": true,
           "steppedLine": false,
@@ -1538,6 +1702,7 @@
           "transparent": false,
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -1564,6 +1729,8 @@
         {
           "aliasColors": {},
           "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 2,
           "editable": true,
@@ -1593,6 +1760,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -1637,6 +1805,7 @@
           "transparent": false,
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -1663,6 +1832,8 @@
         {
           "aliasColors": {},
           "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "description": "Number of TCP sockets in state inuse.",
           "fill": 1,
@@ -1685,6 +1856,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -1709,6 +1881,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -1736,6 +1909,8 @@
         {
           "aliasColors": {},
           "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "fill": 1,
           "id": 39,
@@ -1759,6 +1934,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -1797,6 +1973,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -1836,105 +2013,8 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_TEST-CLUSTER}",
-          "decimals": 2,
-          "editable": true,
-          "error": false,
-          "fill": 2,
-          "grid": {},
-          "id": 31,
-          "instanceColors": {},
-          "legend": {
-            "alignAsTable": true,
-            "avg": true,
-            "current": false,
-            "hideEmpty": false,
-            "max": true,
-            "min": true,
-            "rightSide": false,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 12,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "calculatedInterval": "2s",
-              "datasourceErrors": {},
-              "errors": {},
-              "expr": "rate(node_vmstat_pgpgin{instance=\"$host\"}[$interval]) * 1024 or irate(node_vmstat_pgpgin{instance=\"$host\"}[5m]) * 1024",
-              "intervalFactor": 1,
-              "legendFormat": "Read",
-              "metric": "",
-              "prometheusLink": "/api/datasources/proxy/1/graph#%5B%7B%22expr%22%3A%22node_memory_MemTotal%7Binstance%3D%5C%22%24host%5C%22%7D%20-%20(node_memory_MemFree%7Binstance%3D%5C%22%24host%5C%22%7D%20%2B%20node_memory_Buffers%7Binstance%3D%5C%22%24host%5C%22%7D%20%2B%20node_memory_Cached%7Binstance%3D%5C%22%24host%5C%22%7D)%22%2C%22range_input%22%3A%22900s%22%2C%22end_input%22%3A%222015-10-22%2015%3A25%22%2C%22step_input%22%3A%22%22%2C%22stacked%22%3Atrue%2C%22tab%22%3A0%7D%5D",
-              "refId": "A",
-              "step": 2,
-              "target": ""
-            },
-            {
-              "calculatedInterval": "2s",
-              "datasourceErrors": {},
-              "errors": {},
-              "expr": "rate(node_vmstat_pgpgout{instance=\"$host\"}[$interval]) * 1024 or irate(node_vmstat_pgpgout{instance=\"$host\"}[5m]) * 1024",
-              "intervalFactor": 1,
-              "legendFormat": "Write",
-              "metric": "",
-              "prometheusLink": "/api/datasources/proxy/1/graph#%5B%7B%22expr%22%3A%22node_memory_MemFree%7Binstance%3D%5C%22%24host%5C%22%7D%20%2B%20node_memory_Buffers%7Binstance%3D%5C%22%24host%5C%22%7D%20%2B%20node_memory_Cached%7Binstance%3D%5C%22%24host%5C%22%7D%22%2C%22range_input%22%3A%22900s%22%2C%22end_input%22%3A%222015-10-22%2015%3A25%22%2C%22step_input%22%3A%22%22%2C%22stacked%22%3Atrue%2C%22tab%22%3A0%7D%5D",
-              "refId": "B",
-              "step": 2,
-              "target": ""
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "I/O Throughput",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "transparent": false,
-          "type": "graph",
-          "xaxis": {
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "Bps",
-              "label": "",
-              "logBase": 1,
-              "max": null,
-              "min": 0,
-              "show": true
-            },
-            {
-              "format": "bytes",
-              "logBase": 1,
-              "max": null,
-              "min": 0,
-              "show": true
-            }
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 2,
           "editable": true,
@@ -1965,6 +2045,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -1996,6 +2077,7 @@
           "transparent": false,
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -2022,6 +2104,8 @@
         {
           "aliasColors": {},
           "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 2,
           "editable": true,
@@ -2052,6 +2136,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -2083,6 +2168,7 @@
           "transparent": false,
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -2109,6 +2195,8 @@
         {
           "aliasColors": {},
           "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 2,
           "editable": true,
@@ -2139,6 +2227,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -2170,6 +2259,7 @@
           "transparent": false,
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -2196,6 +2286,8 @@
         {
           "aliasColors": {},
           "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 2,
           "editable": true,
@@ -2226,6 +2318,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -2257,6 +2350,7 @@
           "transparent": false,
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -2295,6 +2389,8 @@
         {
           "aliasColors": {},
           "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "fill": 1,
           "id": 33,
@@ -2316,6 +2412,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -2340,6 +2437,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -2367,6 +2465,8 @@
         {
           "aliasColors": {},
           "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "fill": 1,
           "id": 34,
@@ -2388,6 +2488,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -2412,6 +2513,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -2573,6 +2675,6 @@
     "type": "timepicker"
   },
   "timezone": "browser",
-  "title": "TiDB Cluster - node",
-  "version": 6
+  "title": "Test-Cluster-Node_exporter",
+  "version": 3
 }
