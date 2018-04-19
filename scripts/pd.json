@@ -1160,7 +1160,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"storage_capacity\"}",
+              "expr": "sum(pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"store_available\"}) by (store) + sum(pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"store_used\"}) by (store)",
               "format": "time_series",
               "hide": false,
               "instant": false,
@@ -1241,7 +1241,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "{instance=\"$instance\", namespace=~\"$namespace\", type=\"storage_available\"}",
+              "expr": "{instance=\"$instance\", namespace=~\"$namespace\", type=\"store_available\"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "store-{{store}}",
@@ -1320,7 +1320,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"storage_used\"}",
+              "expr": "pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"store_used\"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "store-{{store}}",
@@ -1397,7 +1397,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"score_amplify\"}",
+              "expr": "sum(pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"region_size\"}) by (store) / sum(pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"store_used\"}) by (store) * 2^20",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "store-{{store}}",
@@ -1475,7 +1475,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"storage_available\"}) by (store) / sum(pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"storage_capacity\"}) by (store)",
+              "expr": "sum(pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"store_available\"}) by (store) / sum(pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"store_capacity\"}) by (store)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "store-{{store}}",
@@ -1572,7 +1572,7 @@
               "fill": true,
               "line": true,
               "op": "gt",
-              "value": 0.2
+              "value": 1073741824
             }
           ],
           "timeFrom": null,
@@ -1668,7 +1668,7 @@
               "fill": true,
               "line": true,
               "op": "gt",
-              "value": 0.2
+              "value": 1073741824
             }
           ],
           "timeFrom": null,
