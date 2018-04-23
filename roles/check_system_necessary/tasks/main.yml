@@ -27,10 +27,6 @@
     - enable_ntpd
     - ntp_st.stdout|int != 1
 
-- name: Check ansible_user variable
-  fail: msg="ansible_user == 'root' is not supported, please ssh via normal user"
-  when: ansible_user == 'root'
-
 - name: Set deploy_user - set ansible_user as default
   set_fact:
     deploy_user: "{{ ansible_user }}"
