@@ -33,6 +33,10 @@
     - deployment_method == 'docker'
     - enable_tls|default(false)
 
+- name: Check ansible_user variable
+  fail: msg="ansible_user == 'root' is not supported, please ssh via normal user"
+  when: ansible_user == 'root'
+
 - name: Close old control master
   raw: ps aux | grep ansible-ssh | grep -v grep | awk '{print $2}' | xargs kill -9 ; true
   ignore_errors: true

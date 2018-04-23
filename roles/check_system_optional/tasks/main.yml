@@ -56,24 +56,14 @@
     - "'monitoring_servers' in group_names"
     - ansible_memtotal_mb < monitor_min_ram|int
 
-- name: Guess deploy_user - set ansible_user as default
+- name: Set deploy_user - set ansible_user as default
   set_fact:
     deploy_user: "{{ ansible_user }}"
   when: deploy_user is not defined
 
-- name: Guess deploy_user - use become_user under root
-  set_fact:
-    deploy_user: "{{ ansible_become_user }}"
-  when: deploy_user == 'root' and ansible_become_user is defined and ansible_become_user
-
-- name: Set deploy dir if not presented
+- name: Set deploy_dir if not presented
   set_fact: deploy_dir="/home/{{ deploy_user }}/deploy"
   when: deploy_dir is not defined
-
-- name: Preflight check - Deploy user
-  fail:
-    msg: Never deploy under root user
-  when: deploy_user=='root'
 
 - name: Determine which mountpoint deploy dir exists on
   shell: "df {{ deploy_dir }} | tail -n1 | awk '{print $NF}'"
