@@ -14,6 +14,11 @@
 {{ item }} = {{ value | to_json }}
 {% endfor %}
 
+[readpool.coprocessor]
+{% for item, value in tikv_conf.readpool.coprocessor | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+
 [server]
 {% for item, value in tikv_conf.server | dictsort -%}
 {% if item == "labels" %}
