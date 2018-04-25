@@ -996,7 +996,8 @@
             "show": true,
             "sideWidth": 300,
             "total": false,
-            "values": true
+            "values": true,
+            "sortDesc": true
           },
           "lines": true,
           "linewidth": 1,
@@ -1013,11 +1014,25 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{job=\"$store\",name=~\"cop_.*\"}[1m])) by (name)",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{job=\"$store\",name=~\"cop_high.*\"}[1m]))",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{ name }}",
+              "legendFormat": "cop-high",
               "refId": "A"
+            },
+            {
+              "refId": "B",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{job=\"$store\",name=~\"cop_normal.*\"}[1m]))",
+              "intervalFactor": 2,
+              "format": "time_series",
+              "legendFormat": "cop-normal"
+            },
+            {
+              "refId": "C",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{job=\"$store\",name=~\"cop_low.*\"}[1m]))",
+              "intervalFactor": 2,
+              "format": "time_series",
+              "legendFormat": "cop-low"
             }
           ],
           "thresholds": [],
@@ -2284,12 +2299,13 @@
           "fill": 1,
           "id": 26,
           "legend": {
-            "alignAsTable": false,
+            "alignAsTable": true,
             "avg": false,
             "current": false,
             "max": false,
             "min": false,
-            "show": false,
+            "rightSide": true,
+            "show": true,
             "total": false,
             "values": false
           },
@@ -2308,11 +2324,39 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{job=\"$store\",name=~\"storage_.*\"}[1m]))",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{job=\"$store\",name=~\"storage_sched.*\"}[1m]))",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "",
+              "legendFormat": "scheduler",
               "refId": "A"
+            },
+            {
+              "refId": "E",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{job=\"$store\",name=~\"sched_worker.*\"}[1m]))",
+              "intervalFactor": 2,
+              "format": "time_series",
+              "legendFormat": "scheduler_worker"
+            },
+            {
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{job=\"$store\",name=~\"store_read_hi.*\"}[1m]))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "readpool_high",
+              "refId": "B"
+            },
+            {
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{job=\"$store\",name=~\"store_read_no.*\"}[1m]))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "readpool_normal",
+              "refId": "C"
+            },
+            {
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{job=\"$store\",name=~\"store_read_lo.*\"}[1m]))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "readpool_low",
+              "refId": "D"
             }
           ],
           "thresholds": [],
