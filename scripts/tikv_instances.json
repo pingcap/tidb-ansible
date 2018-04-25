@@ -2332,10 +2332,17 @@
             },
             {
               "refId": "E",
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{job=\"$store\",name=~\"sched_worker.*\"}[1m]))",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{job=\"$store\",name=~\"sched_worker_.*\"}[1m]))",
               "intervalFactor": 2,
               "format": "time_series",
-              "legendFormat": "scheduler_worker"
+              "legendFormat": "scheduler_worker_normal"
+            },
+            {
+              "refId": "E",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{job=\"$store\",name=~\"sched_high_.*\"}[1m]))",
+              "intervalFactor": 2,
+              "format": "time_series",
+              "legendFormat": "scheduler_worker_high"
             },
             {
               "expr": "sum(rate(tikv_thread_cpu_seconds_total{job=\"$store\",name=~\"store_read_hi.*\"}[1m]))",
