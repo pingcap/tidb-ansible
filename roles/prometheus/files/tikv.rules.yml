@@ -205,7 +205,7 @@ groups:
     annotations:
       description: 'alert: {{ $labels.expr }} type: {{ $labels.type }} instance: {{ $labels.instance }}  values: {{ $value }}'
       value: '{{ $value }}'
-      summary: TiKV coprocessor_request_error 
+      summary: TiKV coprocessor_request_error
 
 
   - alert: TiKV_coprocessor_pending_request
@@ -221,12 +221,12 @@ groups:
       summary: TiKV pending {{ $labels.type }} request is high
 
   - alert: TiKV_batch_request_snapshot_nums
-    expr: sum(rate(tikv_thread_cpu_seconds_total{name=~"endpoint.*"}[1m])) by (job) / ( count(tikv_thread_cpu_seconds_total{name=~"endpoint.*"}) *  0.9 ) / count(count(tikv_thread_cpu_seconds_total) by (instance)) > 0
+    expr: sum(rate(tikv_thread_cpu_seconds_total{name=~"cop_.*"}[1m])) by (job) / ( count(tikv_thread_cpu_seconds_total{name=~"cop_.*"}) *  0.9 ) / count(count(tikv_thread_cpu_seconds_total) by (instance)) > 0
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: warning
-      expr:  sum(rate(tikv_thread_cpu_seconds_total{name=~"endpoint.*"}[1m])) by (job) / ( count(tikv_thread_cpu_seconds_total{name=~"endpoint.*"}) *  0.9 ) / count(count(tikv_thread_cpu_seconds_total) by (instance)) > 0
+      expr:  sum(rate(tikv_thread_cpu_seconds_total{name=~"cop_.*"}[1m])) by (job) / ( count(tikv_thread_cpu_seconds_total{name=~"cop_.*"}) *  0.9 ) / count(count(tikv_thread_cpu_seconds_total) by (instance)) > 0
     annotations:
       description: 'alert: {{ $labels.expr }} type: {{ $labels.type }} instance: {{ $labels.instance }}  values: {{ $value }}'
       value: '{{ $value }}'
