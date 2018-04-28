@@ -9657,7 +9657,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"sched_worker.*\"}[1m])) by (job)",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"sched_.*\"}[1m])) by (job)",
               "intervalFactor": 2,
               "legendFormat": "{{job}}",
               "metric": "tikv_thread_cpu_seconds_total",
@@ -9668,7 +9668,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "scheduler worker CPU",
+          "title": "Scheduler Worker CPU",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -9746,31 +9746,10 @@
               "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"store_read.*\"}[1m])) by (job)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{job}}-all",
+              "legendFormat": "{{job}}",
               "metric": "tikv_thread_cpu_seconds_total",
               "refId": "A",
               "step": 4
-            },
-            {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"store_read_hi.*\"}[1m])) by (job)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "{{job}}-high",
-              "refId": "B"
-            },
-            {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"store_read_no.*\"}[1m])) by (job)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "{{job}}-normal",
-              "refId": "C"
-            },
-            {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"store_read_lo.*\"}[1m])) by (job)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "{{job}}-low",
-              "refId": "D"
             }
           ],
           "thresholds": [],
@@ -9850,7 +9829,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"endpoint.*\"}[1m])) by (job)",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"cop_.*\"}[1m])) by (job)",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 2,
@@ -9862,7 +9841,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "coprocessor CPU",
+          "title": "Coprocessor CPU",
           "tooltip": {
             "msResolution": false,
             "shared": true,
