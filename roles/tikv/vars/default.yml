@@ -163,6 +163,9 @@ raftstore:
   # Use delete range to drop a large number of continuous keys.
   # use-delete-range: false
 
+  # delay time before deleting a stale peer
+  # clean-stale-peer-delay: "10m"
+
   # Interval to cleanup import sst files.
   # cleanup-import-sst-interval: "10m"
 
@@ -414,6 +417,8 @@ raftdb:
   # use-direct-io-for-flush-and-compaction: false
   # enable-pipelined-write: true
   # allow-concurrent-memtable-write: false
+  # bytes-per-sync: "0MB"
+  # wal-bytes-per-sync: "0KB"
 
   defaultcf:
     # compression-per-level: ["no", "no", "lz4", "lz4", "lz4", "zstd", "zstd"]
@@ -433,7 +438,6 @@ raftdb:
     # pin-l0-filter-and-index-blocks: true
     # compaction-pri: 0
     # read-amp-bytes-per-bit: 0
-    # wal-bytes-per-sync: 0
     # dynamic-level-bytes: false
 
 security:
