@@ -9,8 +9,7 @@ groups:
       level: emergency
       expr: max_over_time(probe_duration_seconds{job=~"blackbox_exporter.*_icmp"}[1m]) > 1
     annotations:
-      description: 'alert:{{ $labels.expr }} instance:
-        {{ $labels.instance }} values: {{ $value }}'
+      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
       value: '{{ $value }}'
       summary: blackbox_exporter ping latency more than 1s
   - alert: BLACKER_probe_failed
@@ -21,7 +20,6 @@ groups:
       level: emergency
       expr: probe_success != 1
     annotations:
-      description: 'alert:{{ $labels.expr }} instance:
-        {{ $labels.instance }} values: {{ $value }}'
+      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
       value: '{{ $value }}'
       summary: blackbox_exporter probe failed

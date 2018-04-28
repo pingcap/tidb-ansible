@@ -9,7 +9,7 @@ groups:
       level: emergency
       expr: rate(binlog_pump_binlog_count[1m]) > 0
     annotations:
-      description: 'alert: {{ $labels.expr }} instance: {{ $labels.instance }}   values:{{ $value }}'
+      description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
       value: '{{ $value }}'
       summary: BINLOG pump binlog count error
       
@@ -21,7 +21,7 @@ groups:
       level: critical
       expr: binlog_drainer_window{mark="upper"} - binlog_drainer_window{mark="lower"} > 3600
     annotations:
-      description: 'alert: {{ $labels.expr }} instance: {{ $labels.instance }}   values:{{ $value }}'
+      description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
       value: '{{ $value }}'
       summary: BINLOG drainer window more than 3600s
 
@@ -33,7 +33,7 @@ groups:
       level: warning
       expr: rate(binlog_drainer_error_binlog_count[1m]) > 0
     annotations:
-      description: 'alert: {{ $labels.expr }} instance: {{ $labels.instance }}   values:{{ $value }}'
+      description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
       value: '{{ $value }}'
       summary: BINLOG drainer error_binlog count
 
@@ -45,7 +45,7 @@ groups:
       level: critical
       expr: sum(rate(binlog_drainer_event[10m])) < 1
     annotations:
-      description: 'alert: {{ $labels.expr }} instance: {{ $labels.instance }}   values:{{ $value }}'
+      description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
       value: '{{ $value }}'
       summary: BINLOG binlog drainer event error
 
@@ -57,6 +57,6 @@ groups:
       level: warning
       expr: sum(rate(binlog_drainer_txn_duration_time_bucket[1m])) BY (le, instance) > 10
     annotations:
-      description: 'alert: {{ $labels.expr }} instance: {{ $labels.instance }}   values:{{ $value }}'
+      description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
       value: '{{ $value }}'
       summary: BINLOG binlog drainer txn_duration_time_more_than_10s
