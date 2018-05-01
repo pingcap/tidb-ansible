@@ -9,8 +9,7 @@ groups:
       level: critical
       expr: node_filesystem_avail{fstype=~"(ext.|xfs)", mountpoint=~".+"} / node_filesystem_size{fstype=~"(ext.|xfs)", mountpoint=~".+"} * 100 <= 10
     annotations:
-      description: 'alert:{{ $labels.expr }} instance:
-        {{ $labels.instance }} values: {{ $value }}'
+      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
       value: '{{ $value }}'
       summary: disk used more than 90%
 
@@ -22,8 +21,7 @@ groups:
       level: emergency
       expr: node_filesystem_avail{fstype=~"(ext.|xfs)", mountpoint=~".+"} / node_filesystem_size{fstype=~"(ext.|xfs)", mountpoint=~".+"} * 100 <= 1
     annotations:
-      description: 'alert:{{ $labels.expr }} instance:
-        {{ $labels.instance }} values: {{ $value }}'
+      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
       value: '{{ $value }}'
       summary: disk used more than 99%
 
@@ -35,8 +33,7 @@ groups:
       level: emergency
       expr: node_filesystem_readonly{fstype=~"(ext.|xfs)"}  > 1
     annotations:
-      description: 'alert:{{ $labels.expr }} instance:
-        {{ $labels.instance }} values: {{ $value }}'
+      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
       value: '{{ $value }}'
       summary: disk readonly
 
@@ -48,8 +45,7 @@ groups:
       level: critical
       expr: node_filesystem_files_free{fstype=~"(ext.|xfs)"} / node_filesystem_files{fstype=~"(ext.|xfs)"}  * 100 < 20
     annotations:
-      description: 'alert:{{ $labels.expr }} instance:
-        {{ $labels.instance }} values: {{ $value }}'
+      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
       value: '{{ $value }}'
       summary: disk inode more than 80%
 
@@ -61,8 +57,7 @@ groups:
       level: warning
       expr: (node_load5 / count without (cpu, mode) (node_cpu{mode="system"}))  > 1
     annotations:
-      description: 'alert:{{ $labels.expr }} instance:
-        {{ $labels.instance }} values: {{ $value }}'
+      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
       value: '{{ $value }}'
       summary: node overload
 
@@ -74,8 +69,7 @@ groups:
       level: warning
       expr: avg(irate(node_cpu{mode="idle"}[5m])) by(instance) * 100 <= 20
     annotations:
-      description: 'alert:{{ $labels.expr }} instance:
-        {{ $labels.instance }} values: {{ $value }}'
+      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
       value: '{{ $value }}'
       summary: cpu used more than 80%
 
@@ -87,8 +81,7 @@ groups:
       level: critical
       expr: (((node_memory_MemTotal-node_memory_MemFree-node_memory_Cached)/(node_memory_MemTotal)*100)) >= 80
     annotations:
-      description: 'alert:{{ $labels.expr }} instance:
-        {{ $labels.instance }} values: {{ $value }}'
+      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
       value: '{{ $value }}'
       summary: memory used more than 80%
 
@@ -100,8 +93,7 @@ groups:
       level: warning
       expr: node_netstat_Tcp_CurrEstab > 50000
     annotations:
-      description: 'alert:{{ $labels.expr }} instance:
-        {{ $labels.instance }} values: {{ $value }}'
+      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
       value: '{{ $value }}'
       summary: tcp_estab_num_more_than_50000
 
@@ -113,8 +105,7 @@ groups:
       level: warning
       expr: ( (rate(node_disk_read_time_ms{device=~".+"}[5m]) / rate(node_disk_reads_completed{device=~".+"}[5m])) or (irate(node_disk_read_time_ms{device=~".+"}[5m]) / irate(node_disk_reads_completed{device=~".+"}[5m])) ) > 32
     annotations:
-      description: 'alert:{{ $labels.expr }} instance:
-        {{ $labels.instance }} values: {{ $value }}'
+      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
       value: '{{ $value }}'
       summary: disk_read_latency_more_than_32ms
 
@@ -126,7 +117,6 @@ groups:
       level: warning
       expr: ( (rate(node_disk_write_time_ms{device=~".+"}[5m]) / rate(node_disk_writes_completed{device=~".+"}[5m])) or (irate(node_disk_write_time_ms{device=~".+"}[5m]) / irate(node_disk_writes_completed{device=~".+"}[5m]))  )> 16
     annotations:
-      description: 'alert:{{ $labels.expr }} instance:
-        {{ $labels.instance }} values: {{ $value }}'
+      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
       value: '{{ $value }}'
       summary: disk_write_latency_more_than_16ms
