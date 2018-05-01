@@ -15,7 +15,7 @@ route:
   # The labels by which incoming alerts are grouped together. For example,
   # multiple alerts coming in for cluster=A and alertname=LatencyHigh would
   # be batched into a single group.
-  group_by: ['env','instance','type','group','job']
+  group_by: ['env','instance','alertname','type','group','job']
 
   # The labels by which incoming alerts are grouped together. For example,
   # multiple alerts coming in for cluster=A and alertname=LatencyHigh would
@@ -53,7 +53,7 @@ receivers:
 #    username: 'db-alert'
 #    icon_emoji: ':bell:'
 #    title:   '{{ .CommonLabels.alertname }}'
-#    text:    'in {{ .CommonLabels.env}}:   {{ .GroupLabels.alertname }}  {{ .CommonAnnotations.description }}      http://172.0.0.1:9093/alerts'
+#    text:    'in {{ .CommonLabels.env }}:  {{ .CommonAnnotations.summary }}  {{ .CommonAnnotations.description }}  expr: {{ .CommonLabels.expr }}  http://172.0.0.1:9093/#/alerts'
 
 - name: 'db-alert-email'
   email_configs:

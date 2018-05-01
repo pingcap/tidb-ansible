@@ -9,6 +9,16 @@ global:
     {{ item.label }}: "{{ item.value }}"
 {% endfor %}
 
+# Load and evaluate rules in this file every 'evaluation_interval' seconds.
+rule_files:
+  - 'node.rules.yml'
+  - 'blacker.rules.yml'
+  - 'bypass.rules.yml'
+  - 'pd.rules.yml'
+  - 'tidb.rules.yml'
+  - 'tikv.rules.yml'
+  - 'binlog.rules.yml'
+
 {% set alertmanager_host = hostvars[groups.alertmanager_servers[0]].ansible_host | default(hostvars[groups.alertmanager_servers[0]].inventory_hostname)
     if groups.get('alertmanager_servers', []) else '' -%}
 {% set alertmanager_port = hostvars[groups.alertmanager_servers[0]].alertmanager_port if alertmanager_host else '' -%}
@@ -111,13 +121,3 @@ scrape_configs:
         replacement: {{ ip }}:{{ blackbox_exporter_port }}
 {% endif %}
 {% endfor %}
-
-# Load and evaluate rules in this file every 'evaluation_interval' seconds.
-rule_files:
-  - 'node.rules.yml'
-  - 'blacker.rules.yml'
-  - 'bypass.rules.yml'
-  - 'pd.rules.yml'
-  - 'tidb.rules.yml'
-  - 'tikv.rules.yml'
-  - 'binlog.rules.yml'
