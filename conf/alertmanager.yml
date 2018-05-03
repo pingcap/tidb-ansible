@@ -17,9 +17,11 @@ route:
   # be batched into a single group.
   group_by: ['env','instance','alertname','type','group','job']
 
-  # The labels by which incoming alerts are grouped together. For example,
-  # multiple alerts coming in for cluster=A and alertname=LatencyHigh would
-  # be batched into a single group.
+  # When a new group of alerts is created by an incoming alert, wait at
+  # least 'group_wait' to send the initial notification.
+  # This way ensures that you get multiple alerts for the same group that start
+  # firing shortly after another are batched together on the first 
+  # notification.
   group_wait:      30s
 
   # When the first notification was sent, wait 'group_interval' to send a batch
