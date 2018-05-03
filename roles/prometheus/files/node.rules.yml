@@ -26,14 +26,14 @@ groups:
       summary: disk used more than 99%
 
   - alert: NODE_disk_readonly
-    expr: node_filesystem_readonly{fstype=~"(ext.|xfs)"}  > 1
+    expr: node_filesystem_readonly{fstype=~"(ext.|xfs)"} == 1
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: emergency
-      expr: node_filesystem_readonly{fstype=~"(ext.|xfs)"}  > 1
+      expr: node_filesystem_readonly{fstype=~"(ext.|xfs)"} == 1
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
+      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }} device: {{ $labels.device }} mountpoint: {{ $labels.mountpoint }}'
       value: '{{ $value }}'
       summary: disk readonly
 
