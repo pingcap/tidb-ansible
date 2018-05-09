@@ -79,7 +79,7 @@
   tags:
     - tidb
   roles:
-    - { role: pump, when: enable_binlog }
+    - { role: pump, when: enable_binlog|default(false) }
     - tidb
     - { role: tispark, when: "(groups.get('spark_master', []) | length == 0 or groups.get('spark_slaves', []) | length == 0) and (deployment_method == 'binary')" }
 

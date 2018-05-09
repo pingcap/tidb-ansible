@@ -52,20 +52,25 @@
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
       with_items:
         - pump
-      when: enable_binlog and process_supervision == 'supervise'
+      when:
+        - enable_binlog|default(false)
+        - process_supervision == 'supervise'
 
     - name: stop pump by systemd
       systemd: name=pump.service state=stopped
       become: true
-      when: enable_binlog and process_supervision == 'systemd'
+      when:
+        - enable_binlog|default(false)
+        - process_supervision == 'systemd'
 
     - name: wait pump down
       wait_for: |
         host={{ ansible_host }} port={{ pump_port }} state=stopped
-      when: enable_binlog
+      when: enable_binlog|default(false)
 
     - name: clean pump data
       file: path={{ pump_data_dir }} state=absent
+      when: enable_binlog|default(false)
 
 
 - name: TiKV cluster

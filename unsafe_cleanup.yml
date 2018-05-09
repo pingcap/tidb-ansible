@@ -69,7 +69,7 @@
     - name: clean systemd config
       file: path="/etc/systemd/system/{{ item }}" state=absent
       become: true
-      when: enable_binlog and process_supervision == 'systemd'
+      when: enable_binlog|default(false) and process_supervision == 'systemd'
       with_items:
         - pump.service
 

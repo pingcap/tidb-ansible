@@ -109,20 +109,20 @@
     - name: stop kafka_exporter by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_kafka_exporter.sh
       when:
-        - enable_binlog
+        - enable_binlog|default(false)
         - process_supervision == 'supervise'
 
     - name: stop kafka_exporter by systemd
       become: true
       systemd: name=kafka_exporter-{{ kafka_exporter_port }}.service state=stopped enabled=no
       when:
-        - enable_binlog
+        - enable_binlog|default(false)
         - process_supervision == 'systemd'
 
     - name: wait for kafka_exporter down
       wait_for: |
         host={{ ansible_host }} port={{ kafka_exporter_port }} state=stopped
-      when: enable_binlog
+      when: enable_binlog|default(false)
 
 
 - hosts: tidb_servers
@@ -145,19 +145,23 @@
 
     - name: stop pump by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      when: enable_binlog and process_supervision == 'supervise'
+      when:
+        - enable_binlog|default(false)
+        - process_supervision == 'supervise'
       with_items:
         - pump
 
     - name: stop pump by systemd
       systemd: name=pump.service state=stopped
       become: true
-      when: enable_binlog and process_supervision == 'systemd'
+      when:
+        - enable_binlog|default(false)
+        - process_supervision == 'systemd'
 
     - name: wait for pump down
       wait_for: |
         host={{ ansible_host }} port={{ pump_port }} state=stopped
-      when: enable_binlog
+      when: enable_binlog|default(false)
 
 
 - hosts: tikv_servers

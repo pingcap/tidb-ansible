@@ -24,7 +24,7 @@ exec docker run \
   -v /etc/localtime:/etc/localtime:ro \
   -v "{{ tidb_conf_dir }}/tidb.toml:/etc/tidb.toml:ro" \
   -v "{{ tidb_docker_log_dir }}:/var/log" \
-{% if enable_binlog %}
+{% if enable_binlog|default(false) %}
   -v "{{ status_dir }}:/status" \
 {% endif %}
   -u `id -u {{ deploy_user }}` \
@@ -34,7 +34,7 @@ exec docker run \
   pingcap/tidb:{{ tidb_version }} \
   --log-file="/var/log/{{ tidb_log_filename }}" \
   --path="{{ all_pd | join(',') }}" \
-{% if enable_binlog %}
+{% if enable_binlog|default(false) %}
   --binlog-socket="/status/pump.sock" \
 {% endif %}
   --config=/etc/tidb.toml
