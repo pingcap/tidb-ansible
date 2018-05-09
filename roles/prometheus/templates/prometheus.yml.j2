@@ -100,6 +100,9 @@ scrape_configs:
 {% set _ = target_hosts.append(ip) -%}
 {% endif -%}
 {% endfor -%}
+{% endif -%}
+
+{% if enable_binlog|default(false) %}
 
   - job_name: "port_probe"
     scrape_interval: 30s
