@@ -7,7 +7,7 @@ groups:
     labels:
       env: ENV_LABELS_ENV
       level: warning
-      expr: histogram_quantile(0.98, rate(binlog_pump_rpc_duration_seconds_bucket[5m])) > 0.02
+      expr: histogram_quantile(0.98, rate(binlog_pump_rpc_duration_seconds_bucket[5m])) > 1
     annotations:
       description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
       value: '{{ $value }}'
