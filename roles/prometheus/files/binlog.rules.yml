@@ -134,12 +134,12 @@ groups:
       summary: BINLOG binlog drainer event error
 
   - alert: BINLOG_drainer_txn_duration_time_more_than_10s
-    expr: histogram_quantile(0.99, rate(binlog_drainer_txn_duration_time_bucket[1m])) > 10
+    expr: histogram_quantile(0.95, rate(binlog_drainer_txn_duration_time_bucket[1m])) > 10
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: warning
-      expr: histogram_quantile(0.99, rate(binlog_drainer_txn_duration_time_bucket[1m])) > 10
+      expr: histogram_quantile(0.95, rate(binlog_drainer_txn_duration_time_bucket[1m])) > 10
     annotations:
       description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
       value: '{{ $value }}'
@@ -163,7 +163,7 @@ groups:
     labels:
       env: ENV_LABELS_ENV
       level: warning
-      expr: irate(binlog_drainer_publish_binlog_count[5m]) < 1
+      expr: rate(binlog_drainer_publish_binlog_count[5m]) < 1
     annotations:
       description: 'alert: instance: {{ $labels.instance }} pump: {{ $labels.nodeID }} values:{{ $value }}'
       value: '{{ $value }}'
