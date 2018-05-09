@@ -53,6 +53,11 @@
     - grafana
     - grafana_collector
 
+- name: deploying kafka_exporter
+  hosts: kafka_exporter_servers
+  roles:
+    - { role: kafka_exporter, when: "enable_binlog|default(false) and kafka_addrs|default("") != """ }
+
 # deploying TiDB cluster
 
 - name: deploying PD cluster
