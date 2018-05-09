@@ -17,7 +17,10 @@ rule_files:
   - 'pd.rules.yml'
   - 'tidb.rules.yml'
   - 'tikv.rules.yml'
+{% if enable_binlog|default(false) %}
   - 'binlog.rules.yml'
+  - 'kafka.rules.yml'
+{% endif %}
 
 {% set alertmanager_host = hostvars[groups.alertmanager_servers[0]].ansible_host | default(hostvars[groups.alertmanager_servers[0]].inventory_hostname)
     if groups.get('alertmanager_servers', []) else '' -%}
