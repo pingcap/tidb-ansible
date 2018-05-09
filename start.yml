@@ -118,6 +118,29 @@
         send='GET /metrics HTTP/1.0\r\n\r\n' search_regex='200 OK'
 
 
+- hosts: kafka_exporter_servers
+  tags:
+    - kafka_exporter
+  tasks:
+    - name: start kafka_exporter by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./start_kafka_exporter.sh
+      when:
+        - enable_binlog
+        - process_supervision == 'supervise'
+
+    - name: start kafka_exporter by systemd
+      become: true
+      systemd: name=kafka_exporter-{{ kafka_exporter_port }}.service state=started enabled=no
+      when:
+        - enable_binlog
+        - process_supervision == 'systemd'
+
+    - name: wait for kafka_exporter up
+      wait_for: |
+        host={{ ansible_host }} port={{ kafka_exporter_port }} state=present
+      when: enable_binlog
+
+
 - hosts: pd_servers
   tags:
     - pd

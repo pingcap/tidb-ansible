@@ -102,6 +102,29 @@
       wait_for: host={{ ansible_host }} port={{ prometheus_port }} state=stopped
 
 
+- hosts: kafka_exporter_servers
+  tags:
+    - kafka_exporter
+  tasks:
+    - name: stop kafka_exporter by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./stop_kafka_exporter.sh
+      when:
+        - enable_binlog
+        - process_supervision == 'supervise'
+
+    - name: stop kafka_exporter by systemd
+      become: true
+      systemd: name=kafka_exporter-{{ kafka_exporter_port }}.service state=stopped enabled=no
+      when:
+        - enable_binlog
+        - process_supervision == 'systemd'
+
+    - name: wait for kafka_exporter down
+      wait_for: |
+        host={{ ansible_host }} port={{ kafka_exporter_port }} state=stopped
+      when: enable_binlog
+
+
 - hosts: tidb_servers
   tags:
     - tidb

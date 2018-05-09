@@ -48,6 +48,15 @@
         - pushgateway-{{ pushgateway_port }}.service
         - prometheus-{{ prometheus_port }}.service
 
+- hosts: kafka_exporter_servers
+  tasks:
+    - name: clean systemd config
+      file: path="/etc/systemd/system/{{ item }}" state=absent
+      become: true
+      when: process_supervision == 'systemd'
+      with_items:
+        - kafka_exporter-{{ kafka_exporter_port }}.service
+
 - hosts: tidb_servers
   tasks:
     - name: clean systemd config

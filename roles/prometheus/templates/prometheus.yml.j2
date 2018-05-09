@@ -50,8 +50,11 @@ alerting:
     if groups.get('monitoring_servers', []) else '' -%}
 {% set pushgateway_port = hostvars[groups.monitoring_servers[0]].pushgateway_port if pushgateway_host else '' -%}
 
-{% set blackbox_host = hostvars[groups.monitored_servers[0]].ansible_host | default(hostvars[groups.monitored_servers[0]].inventory_hostname) -%}
-{% set blackbox_port = hostvars[groups.monitoring_servers[0]].blackbox_exporter_port -%}
+{% set blackbox_host = hostvars[groups.monitored_servers[0]].ansible_host | default(hostvars[groups.monitored_servers[0]].inventory_hostname) if groups.get('monitored_servers', []) else '' -%}
+{% set blackbox_port = hostvars[groups.monitored_servers[0]].blackbox_exporter_port if blackbox_host else '' -%}
+
+{% set kafka_exporter_host = hostvars[groups.kafka_exporter_servers[0]].ansible_host | default(hostvars[groups.kafka_exporter_servers[0]].inventory_hostname) if groups.get('kafka_exporter_servers', []) else '' -%}
+{% set kafka_exporter_port = hostvars[groups.kafka_exporter_servers[0]].kafka_exporter_port if kafka_exporter_host else '' -%}
 
 scrape_configs:
 {% if pushgateway_host %}
@@ -92,17 +95,28 @@ scrape_configs:
 {% endif -%}
 {% endfor -%}
 
+  - job_name: 'kafka_exporter'
+    static_configs:
+    - targets:
+      - '{{ kafka_exporter_host }}:{{ kafka_exporter_port }}'
+
   - job_name: "port_probe"
     scrape_interval: 30s
     metrics_path: /probe
     params:
       module: [tcp_connect]
     static_configs:
-    - targets: {{ zookeeper_addrs.split(',') }}
+    - targets:
+{% for zoo_addr in zookeeper_addrs.split(',') | unique %}
+      - {{ zoo_addr }}
+{% endfor %}
       labels:
         group: 'zookeeper'
-    - targets: 
-      labels: {{ kafka_addrs.split(',') }}
+    - targets:
+{% for kafka_addr in kafka_addrs.split(',') | unique %}
+      - {{ kafka_addr }}
+{% endfor %}
+      labels:
         group: 'kafka'
     relabel_configs:
       - source_labels: [__address__]
