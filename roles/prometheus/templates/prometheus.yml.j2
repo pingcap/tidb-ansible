@@ -50,6 +50,9 @@ alerting:
     if groups.get('monitoring_servers', []) else '' -%}
 {% set pushgateway_port = hostvars[groups.monitoring_servers[0]].pushgateway_port if pushgateway_host else '' -%}
 
+{% set blackbox_host = hostvars[groups.monitored_servers[0]].ansible_host | default(hostvars[groups.monitored_servers[0]].inventory_hostname) -%}
+{% set blackbox_port = hostvars[groups.monitoring_servers[0]].blackbox_exporter_port -%}
+
 scrape_configs:
 {% if pushgateway_host %}
   - job_name: 'overwritten-cluster'
@@ -73,8 +76,8 @@ scrape_configs:
 {% endif -%}
 {% endfor -%}
 
-
 {% if enable_binlog|default(false) %}
+
   - job_name: 'pump'
     honor_labels: true # don't overwrite job & instance labels
     static_configs:
@@ -88,6 +91,26 @@ scrape_configs:
 {% set _ = target_hosts.append(ip) -%}
 {% endif -%}
 {% endfor -%}
+
+  - job_name: "port_probe"
+    scrape_interval: 30s
+    metrics_path: /probe
+    params:
+      module: [tcp_connect]
+    static_configs:
+    - targets: {{ zookeeper_addrs.split(',') }}
+      labels:
+        group: 'zookeeper'
+    - targets: 
+      labels: {{ kafka_addrs.split(',') }}
+        group: 'kafka'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: {{ blackbox_host }}:{{ blackbox_port }}
 {% endif -%}
 
 {% set target_hosts = [] -%}
