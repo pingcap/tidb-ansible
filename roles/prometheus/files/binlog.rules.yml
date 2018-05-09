@@ -121,7 +121,7 @@ groups:
       value: '{{ $value }}'
       summary: BINLOG drainer loss binlog count
 
-  - alert: BINLOG_drainer_event_error
+  - alert: BINLOG_drainer_event
     expr: sum(rate(binlog_drainer_event[10m])) < 1
     for: 10m
     labels:
@@ -131,7 +131,7 @@ groups:
     annotations:
       description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
       value: '{{ $value }}'
-      summary: BINLOG binlog drainer event error
+      summary: BINLOG binlog drainer event
 
   - alert: BINLOG_drainer_txn_duration_time_more_than_10s
     expr: histogram_quantile(0.95, rate(binlog_drainer_txn_duration_time_bucket[1m])) > 10
