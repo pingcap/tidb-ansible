@@ -14,12 +14,6 @@ fi
 #          All your edit might be overwritten!
 {% set my_ip = hostvars[inventory_hostname].ansible_host | default(hostvars[inventory_hostname].inventory_hostname) -%}
 
-{% set metric_host = hostvars[groups.monitoring_servers[0]].ansible_host | default(hostvars[groups.monitoring_servers[0]].inventory_hostname)
-    if groups.get('monitoring_servers', []) else "" -%}
-{% set metric_port = hostvars[groups.monitoring_servers[0]].pushgateway_port if metric_host else "" -%}
-{% set metric_addr = metric_host ~ ":" ~ metric_port if metric_host else "" -%}
-{% set metric_interval = pump_metric_interval if metric_host else "0" -%}
-
 {% set all_pd = [] -%}
 {% set pd_hosts = groups.pd_servers %}
 {% for host in pd_hosts -%}
@@ -47,6 +41,4 @@ exec docker run \
   --zookeeper-addrs="{{ zookeeper_addrs }}" \
   --data-dir=/data \
   --socket="/status/pump.sock" \
-  --log-file="/var/log/{{ pump_log_filename }}" \
-  --metrics-addr="{{ metric_addr }}" \
-  --metrics-interval="{{ metric_interval }}"
+  --log-file="/var/log/{{ pump_log_filename }}"

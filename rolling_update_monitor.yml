@@ -358,6 +358,7 @@
               overview: "{{ cluster_name | title }}-Overview"
               disk_performance: "{{ cluster_name | title }}-Disk-Performance"
               blackbox_exporter: "{{ cluster_name | title }}-Blackbox_exporter"
+              kafka_overview: "{{ cluster_name | title }}-Kafka-Overview"
 
     - name: import grafana dashboards - run import script
       delegate_to: localhost
@@ -367,3 +368,59 @@
       vars:
         - ansible_become: false
         - ansible_connection: local
+
+
+- name: rolling update kafka_exporter
+  hosts: kafka_exporter_servers
+  any_errors_fatal: true
+  tags:
+    - kafka_exporter
+
+  pre_tasks:
+    - name: check kafka_exporter existed
+      stat:
+        path: "{{ deploy_dir }}/bin/kafka_exporter"
+      register:  kafka_exporter_binary_file
+      when: enable_binlog|default(false)
+
+    - name: stop kafka_exporter by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./stop_kafka_exporter.sh
+      when:
+        - enable_binlog|default(false)
+        - process_supervision == 'supervise'
+        - kafka_exporter_binary_file.stat.exists == True
+
+    - name: stop kafka_exporter by systemd
+      become: true
+      systemd: name=kafka_exporter-{{ kafka_exporter_port }}.service state=stopped enabled=no
+      when:
+        - enable_binlog|default(false)
+        - process_supervision == 'systemd'
+        - kafka_exporter_binary_file.stat.exists == True
+
+    - name: wait for kafka_exporter down
+      wait_for: |
+        host={{ ansible_host }} port={{ kafka_exporter_port }} state=stopped
+      when: enable_binlog|default(false)
+
+  roles:
+    - { role: kafka_exporter, when: 'enable_binlog|default(false) and kafka_addrs|default("") != ""' }
+
+  post_tasks:
+    - name: start kafka_exporter by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./start_kafka_exporter.sh
+      when:
+        - enable_binlog|default(false)
+        - process_supervision == 'supervise'
+
+    - name: start kafka_exporter by systemd
+      become: true
+      systemd: name=kafka_exporter-{{ kafka_exporter_port }}.service state=started enabled=no
+      when:
+        - enable_binlog|default(false)
+        - process_supervision == 'systemd'
+
+    - name: wait for kafka_exporter up
+      wait_for: |
+        host={{ ansible_host }} port={{ kafka_exporter_port }} state=present
+      when: enable_binlog|default(false)
