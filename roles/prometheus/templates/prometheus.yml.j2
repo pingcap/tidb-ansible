@@ -111,13 +111,13 @@ scrape_configs:
       module: [tcp_connect]
     static_configs:
     - targets:
-{% for zoo_addr in zookeeper_addrs.split(',') | unique %}
+{% for zoo_addr in (zookeeper_addrs | default("")).split(',') | unique %}
       - '{{ zoo_addr }}'
 {% endfor %}
       labels:
         group: 'zookeeper'
     - targets:
-{% for kafka_addr in kafka_addrs.split(',') | unique %}
+{% for kafka_addr in (kafka_addrs | default("")).split(',') | unique %}
       - '{{ kafka_addr }}'
 {% endfor %}
       labels:
