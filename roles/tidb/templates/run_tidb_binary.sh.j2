@@ -22,7 +22,7 @@ exec bin/tidb-server \
     --status="{{ tidb_status_port }}" \
     --path="{{ all_pd | join(',') }}" \
     --config=conf/tidb.toml \
-{% if enable_binlog %}
+{% if enable_binlog|default(false) %}
     --binlog-socket="{{ pump_socket }}" \
 {% endif %}
 {% if enable_slow_query_log %}

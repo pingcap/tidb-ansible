@@ -15,7 +15,7 @@
 - name: Ensure zookeeper address of kafka cluster is set when enable_binlog
   fail: msg="Please set zookeeper_addrs variable in inventory.ini when enable_binlog."
   when:
-    - enable_binlog
+    - enable_binlog|default(false)
     - zookeeper_addrs is defined
     - zookeeper_addrs == ""
 

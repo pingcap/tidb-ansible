@@ -118,6 +118,29 @@
         send='GET /metrics HTTP/1.0\r\n\r\n' search_regex='200 OK'
 
 
+- hosts: kafka_exporter_servers
+  tags:
+    - kafka_exporter
+  tasks:
+    - name: start kafka_exporter by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./start_kafka_exporter.sh
+      when:
+        - enable_binlog|default(false)
+        - process_supervision == 'supervise'
+
+    - name: start kafka_exporter by systemd
+      become: true
+      systemd: name=kafka_exporter-{{ kafka_exporter_port }}.service state=started enabled=no
+      when:
+        - enable_binlog|default(false)
+        - process_supervision == 'systemd'
+
+    - name: wait for kafka_exporter up
+      wait_for: |
+        host={{ ansible_host }} port={{ kafka_exporter_port }} state=present
+      when: enable_binlog|default(false)
+
+
 - hosts: pd_servers
   tags:
     - pd
@@ -193,23 +216,27 @@
   tasks:
     - name: clean pump .node file
       file: path={{ pump_data_dir }}/.node state=absent
-      when: enable_binlog
+      when: enable_binlog|default(false)
 
     - name: start pump by supervise
       shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
-      when: enable_binlog and process_supervision == 'supervise'
+      when:
+        - enable_binlog|default(false)
+        - process_supervision == 'supervise'
       with_items:
         - pump
 
     - name: start pump by systemd
       systemd: name=pump.service state=started enabled=no
       become: true
-      when: enable_binlog and process_supervision == 'systemd'
+      when:
+        - enable_binlog|default(false)
+        - process_supervision == 'systemd'
 
     - name: wait for pump up
       wait_for: |
         host={{ ansible_host }} port={{ pump_port }} state=present
-      when: enable_binlog
+      when: enable_binlog|default(false)
 
     - name: start TiDB by supervise
       shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
@@ -314,6 +341,7 @@
               overview: "{{ cluster_name | title }}-Overview"
               disk_performance: "{{ cluster_name | title }}-Disk-Performance"
               blackbox_exporter: "{{ cluster_name | title }}-Blackbox_exporter"
+              kafka_overview: "{{ cluster_name | title }}-Kafka-Overview"
 
     - name: import grafana dashboards - run import script
       delegate_to: localhost
