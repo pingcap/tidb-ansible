@@ -6,24 +6,24 @@ groups:
     for: 3m
     labels:
       env: ENV_LABELS_ENV
-      level: critical
+      level: emergency
       expr: node_filesystem_avail{fstype=~"(ext.|xfs)", mountpoint=~".+"} / node_filesystem_size{fstype=~"(ext.|xfs)", mountpoint=~".+"} * 100 <= 10
     annotations:
       description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
       value: '{{ $value }}'
       summary: disk used more than 90%
 
-  - alert: NODE_disk_used_more_than_99%
-    expr: node_filesystem_avail{fstype=~"(ext.|xfs)", mountpoint=~".+"} / node_filesystem_size{fstype=~"(ext.|xfs)", mountpoint=~".+"} * 100 <= 1
+  - alert: NODE_disk_used_more_than_80%
+    expr: node_filesystem_avail{fstype=~"(ext.|xfs)", mountpoint=~".+"} / node_filesystem_size{fstype=~"(ext.|xfs)", mountpoint=~".+"} * 100 <= 20
     for: 3m
     labels:
       env: ENV_LABELS_ENV
-      level: emergency
-      expr: node_filesystem_avail{fstype=~"(ext.|xfs)", mountpoint=~".+"} / node_filesystem_size{fstype=~"(ext.|xfs)", mountpoint=~".+"} * 100 <= 1
+      level: critical
+      expr: node_filesystem_avail{fstype=~"(ext.|xfs)", mountpoint=~".+"} / node_filesystem_size{fstype=~"(ext.|xfs)", mountpoint=~".+"} * 100 <= 20
     annotations:
       description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
       value: '{{ $value }}'
-      summary: disk used more than 99%
+      summary: disk used more than 80%
 
   - alert: NODE_disk_readonly
     expr: node_filesystem_readonly{fstype=~"(ext.|xfs)"} == 1
