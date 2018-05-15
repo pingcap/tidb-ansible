@@ -132,14 +132,14 @@ scrape_configs:
   {% set pump_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
   {% set pump_port = hostvars[host].pump_port -%}
   {% set _ = pump_addrs.append("%s:%s" % (pump_ip, pump_port)) -%}
-{% endfor -%}
+{% endfor %}
 
 {% set drainer_addrs = [] -%}
 {% for host in groups.drainer_servers -%}
   {% set drainer_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
   {% set drainer_port = hostvars[host].drainer_port -%}
   {% set _ = drainer_addrs.append("%s:%s" % (drainer_ip, drainer_port)) -%}
-{% endfor -%}
+{% endfor %}
 
   - job_name: 'kafka_exporter'
     honor_labels: true # don't overwrite job & instance labels
@@ -151,9 +151,9 @@ scrape_configs:
     honor_labels: true # don't overwrite job & instance labels
     static_configs:
     - targets:
-{% for pump_addr in pump_addrs %}
+    {% for pump_addr in pump_addrs %}
       - '{{ pump_addr }}'
-{% endfor %}
+    {% endfor %}
 
   - job_name: "port_probe"
     scrape_interval: 30s
