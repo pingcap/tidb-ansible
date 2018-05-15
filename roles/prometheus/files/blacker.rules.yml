@@ -132,3 +132,15 @@ groups:
       description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
       value: '{{ $value }}'
       summary: Kafka_exporter server is down
+
+  - alert: Pushgateway_metrics_interface
+    expr: probe_success{job="blackbox_exporter_http"} == 0
+    for: 1m
+    labels:
+      env: ENV_LABELS_ENV
+      level: emergency
+      expr: probe_success{job="blackbox_exporter_http"}  == 0
+    annotations:
+      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
+      value: '{{ $value }}'
+      summary: Pushgateway metrics interface is down
