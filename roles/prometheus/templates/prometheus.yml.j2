@@ -195,10 +195,10 @@ scrape_configs:
 {% endfor -%}
 
 {% set pd_addrs = [] -%}
-{% for host in groups.pd_addrs -%}
+{% for host in groups.pd_servers -%}
   {% set pd_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
-  {% set pd_port = hostvars[host].tikv_port -%}
-  {% set _ = pd_addrs.append("%s:%s" % (tikv_ip, tikv_port)) -%}
+  {% set pd_port = hostvars[host].pd_client_port -%}
+  {% set _ = pd_addrs.append("%s:%s" % (pd_ip, pd_port)) -%}
 {% endfor -%}
 
   - job_name: "tidb_port_probe"
