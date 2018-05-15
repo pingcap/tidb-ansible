@@ -50,6 +50,10 @@ alerting:
     if groups.get('monitoring_servers', []) else '' -%}
 {% set pushgateway_port = hostvars[groups.monitoring_servers[0]].pushgateway_port if pushgateway_host else '' -%}
 
+{% set grafana_host = hostvars[groups.grafana_servers[0]].ansible_host | default(hostvars[groups.grafana_servers[0]].inventory_hostname)
+    if groups.get('grafana_servers', []) else '' -%}
+{% set grafana_port = hostvars[groups.grafana_servers[0]].grafana_port if grafana_host else '' -%}
+
 {% set blackbox_host = hostvars[groups.monitored_servers[0]].ansible_host | default(hostvars[groups.monitored_servers[0]].inventory_hostname) if groups.get('monitored_servers', []) else '' -%}
 {% set blackbox_port = hostvars[groups.monitored_servers[0]].blackbox_exporter_port if blackbox_host else '' -%}
 
@@ -63,23 +67,58 @@ scrape_configs:
     honor_labels: true # don't overwrite job & instance labels
     static_configs:
       - targets: ['{{ pushgateway_host }}:{{ pushgateway_port }}']
+
+  - job_name: "blackbox_exporter_http"
+    scrape_interval: 30s
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+    - targets:
+      - 'http://{{ pushgateway_host }}:{{ pushgateway_port }}/metrics'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: {{ blackbox_host }}:{{ blackbox_host }}
 {% endif %}
+
+{% set node_exporter_addrs = [] -%}
+{% set blackbox_exporter_addrs = [] -%}
+{% set target_hosts = [] -%}
+{% for host in groups.monitored_servers -%}
+  {% set host_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
+  {% set node_exporter_port = hostvars[host].node_exporter_port -%}
+  {% set blackbox_exporter_port = hostvars[host].blackbox_exporter_port -%}
+  {% set _ = node_exporter_addrs.append("%s:%s" % (host_ip, node_exporter_port)) -%}
+  {% set _ = blackbox_exporter_addrs.append("%s:%s" % (host_ip, blackbox_exporter_port)) -%}
+  {% set _ = target_hosts.append(host_ip) -%}
+{% endfor -%}
 
   - job_name: "overwritten-nodes"
     honor_labels: true # don't overwrite job & instance labels
     static_configs:
     - targets:
-{% set target_hosts = [] -%}
-{% for host in hosts -%}
-{% set ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) or host -%}
-{% set node_port = hostvars[host]['node_exporter_port'] -%}
-{% if ip not in target_hosts %}
-      - '{{ ip }}:{{ node_port }}'
-{% set _ = target_hosts.append(ip) -%}
-{% endif -%}
-{% endfor -%}
+{% for node_exporter_addr in pump_addrs %}
+      - '{{ node_exporter_addr }}'
+{% endfor %}
 
 {% if enable_binlog|default(false) %}
+{% set pump_addrs = [] -%}
+{% for host in groups.tidb_servers -%}
+  {% set pump_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
+  {% set pump_port = hostvars[host].pump_port -%}
+  {% set _ = pump_addrs.append("%s:%s" % (pump_ip, pump_port)) -%}
+{% endfor -%}
+
+{% set drainer_addrs = [] -%}
+{% for host in groups.drainer_servers -%}
+  {% set drainer_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
+  {% set drainer_port = hostvars[host].drainer_port -%}
+  {% set _ = drainer_addrs.append("%s:%s" % (drainer_ip, drainer_port)) -%}
+{% endfor -%}
 
   - job_name: 'kafka_exporter'
     honor_labels: true # don't overwrite job & instance labels
@@ -91,14 +130,8 @@ scrape_configs:
     honor_labels: true # don't overwrite job & instance labels
     static_configs:
     - targets:
-{% set target_hosts = [] -%}
-{% for host in groups['tidb_servers'] | list -%}
-{% set ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
-{% set node_port = hostvars[host]['pump_port'] -%}
-{% if ip not in target_hosts %}
-      - '{{ ip }}:{{ node_port }}'
-{% set _ = target_hosts.append(ip) -%}
-{% endif -%}
+{% for host in pump_addrs -%}
+      - 'host'
 {% endfor -%}
 {% endif -%}
 
@@ -122,6 +155,22 @@ scrape_configs:
 {% endfor %}
       labels:
         group: 'kafka'
+    - targets:
+{% for pump_addr in pump_addrs %}
+      - '{{ pump_addr }}'
+{% endfor %}
+      labels:
+        group: 'pump'
+    - targets:
+{% for drainer_addr in drainer_addrs %}
+      - '{{ drainer_addr }}'
+{% endfor %}
+      labels:
+        group: 'drainer'
+    - targets:
+      - '{{ kafka_exporter_host }}:{{ kafka_exporter_port }}'
+      labels:
+        group: 'kafka_exporter'
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
@@ -131,22 +180,88 @@ scrape_configs:
         replacement: {{ blackbox_host }}:{{ blackbox_port }}
 {% endif -%}
 
-{% set target_hosts = [] -%}
-{% for host in hosts -%}
-{% set ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) or host -%}
-{% if ip not in target_hosts %}
-{% set _ = target_hosts.append(ip) -%}
-{% endif -%}
-{% endfor %}
+{% set tidb_addrs = [] -%}
+{% for host in groups.tidb_servers -%}
+  {% set tidb_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
+  {% set tidb_port = hostvars[host].tidb_port -%}
+  {% set _ = tidb_addrs.append("%s:%s" % (tidb_ip, tidb_port)) -%}
+{% endfor -%}
 
-{% for ip in target_hosts %}
-  - job_name: "blackbox_exporter_{{ ip }}_icmp"
+{% set tikv_addrs = [] -%}
+{% for host in groups.tikv_servers -%}
+  {% set tikv_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
+  {% set tikv_port = hostvars[host].tikv_port -%}
+  {% set _ = tikv_addrs.append("%s:%s" % (tikv_ip, tikv_port)) -%}
+{% endfor -%}
+
+{% set pd_addrs = [] -%}
+{% for host in groups.pd_addrs -%}
+  {% set pd_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
+  {% set pd_port = hostvars[host].tikv_port -%}
+  {% set _ = pd_addrs.append("%s:%s" % (tikv_ip, tikv_port)) -%}
+{% endfor -%}
+
+  - job_name: "tidb_port_probe"
+    scrape_interval: 30s
+    metrics_path: /probe
+    params:
+      module: [tcp_connect]
+    static_configs:
+    - targets:
+{% for tidb_addr in tidb_addrs %}
+      - '{{ tidb_addr }}'
+{% endfor %}
+      labels:
+        group: 'tidb'
+    - targets:
+{% for tikv_addr in tikv_addrs %}
+      - '{{ tikv_addr }}'
+{% endfor %}
+      labels:
+        group: 'tikv'
+    - targets:
+{% for pd_addr in pd_addrs %}
+      - '{{ pd_addr }}'
+{% endfor %}
+      labels:
+        group: 'pd'
+    - targets:
+      - '{{ pushgateway_host }}:{{ pushgateway_port }}'
+      labels:
+        group: 'pushgateway'
+    - targets:
+      - '{{ grafana_host }}:{{ grafana_port }}'
+      labels:
+        group: 'grafana'
+    - targets:
+{% for node_exporter_addr in node_exporter_addrs %}
+      - '{{ node_exporter_addr }}'
+{% endfor %}
+      labels:
+        group: 'node_exporter'
+    - targets:
+{% for blackbox_exporter_addr in blackbox_exporter_addrs %}
+      - '{{ blackbox_exporter_addr }}'
+{% endfor %}
+      labels:
+        group: 'blackbox_exporter'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: {{ blackbox_host }}:{{ blackbox_port }}
+
+{% for blackbox_exporter_addr in blackbox_exporter_addrs %}
+{% set blackbox_exporter_ip = blackbox_exporter_addr.split(':')[0] -%}
+  - job_name: "blackbox_exporter_{{ blackbox_exporter_ip }}_icmp"
     scrape_interval: 6s
     metrics_path: /probe
     params:
       module: [icmp]
     static_configs:
-    - targets: 
+    - targets:
 {% for target_host in target_hosts %}
       - '{{ target_host }}'
 {% endfor %}
@@ -162,23 +277,5 @@ scrape_configs:
       - source_labels: []
         regex: .*
         target_label: __address__
-        replacement: {{ ip }}:{{ blackbox_exporter_port }}
-
-{% if pushgateway_host %}
-  - job_name: "blackbox_exporter_{{ ip }}_http"
-    scrape_interval: 30s
-    metrics_path: /probe
-    params:
-      module: [http_2xx]
-    static_configs:
-    - targets: 
-      - 'http://{{ pushgateway_host }}:{{ pushgateway_port }}/metrics'
-    relabel_configs:
-      - source_labels: [__address__]
-        target_label: __param_target
-      - source_labels: [__param_target]
-        target_label: instance
-      - target_label: __address__
-        replacement: {{ ip }}:{{ blackbox_exporter_port }}
-{% endif %}
+        replacement: {{ blackbox_exporter_addr }}
 {% endfor %}
