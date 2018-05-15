@@ -135,7 +135,7 @@ scrape_configs:
 {% endfor -%}
 
 {% set drainer_addrs = [] -%}
-{% for host in groups.drainer_servers -%}
+{% for host in (groups.drainer_servers)|default([]) -%}
   {% set drainer_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
   {% set drainer_port = hostvars[host].drainer_port -%}
   {% set _ = drainer_addrs.append("%s:%s" % (drainer_ip, drainer_port)) -%}
