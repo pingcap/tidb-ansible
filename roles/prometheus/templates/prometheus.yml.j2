@@ -82,7 +82,7 @@ scrape_configs:
       - source_labels: [__param_target]
         target_label: instance
       - target_label: __address__
-        replacement: {{ blackbox_host }}:{{ blackbox_host }}
+        replacement: {{ blackbox_host }}:{{ blackbox_port }}
 {% endif %}
 
 {% set node_exporter_addrs = [] -%}
@@ -130,8 +130,8 @@ scrape_configs:
     honor_labels: true # don't overwrite job & instance labels
     static_configs:
     - targets:
-{% for host in pump_addrs -%}
-      - 'host'
+{% for pump_addr in pump_addrs -%}
+      - '{{ pump_addr }}'
 {% endfor -%}
 {% endif -%}
 
@@ -178,6 +178,7 @@ scrape_configs:
         target_label: instance
       - target_label: __address__
         replacement: {{ blackbox_host }}:{{ blackbox_port }}
+
 {% endif -%}
 
 {% set tidb_addrs = [] -%}
@@ -278,4 +279,5 @@ scrape_configs:
         regex: .*
         target_label: __address__
         replacement: {{ blackbox_exporter_addr }}
+
 {% endfor %}
