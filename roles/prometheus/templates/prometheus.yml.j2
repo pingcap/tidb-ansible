@@ -132,7 +132,7 @@ scrape_configs:
   {% set pump_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
   {% set pump_port = hostvars[host].pump_port -%}
   {% set _ = pump_addrs.append("%s:%s" % (pump_ip, pump_port)) -%}
-{% endfor %}
+{% endfor -%}
 
 {% set drainer_addrs = [] -%}
 {% for host in groups.drainer_servers -%}
