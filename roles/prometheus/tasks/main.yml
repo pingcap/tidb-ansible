@@ -10,8 +10,6 @@
 - name: create configuration file
   template: src=prometheus.yml.j2 dest={{ deploy_dir }}/conf/prometheus.yml mode=0644 backup=yes
   register: prometheus_conf_st
-  vars:
-    hosts: "{{ groups['all'] | list }}"
 
 - name: backup configuration file
   command: mv "{{ prometheus_conf_st.backup_file }}" "{{ backup_dir }}"
@@ -27,6 +25,7 @@
     - tikv.rules.yml
     - binlog.rules.yml
     - blacker.rules.yml
+    - kafka.rules.yml
   register: alert_rules_st
 
 - name: backup alert rules file
@@ -49,6 +48,7 @@
     - tikv.rules.yml
     - binlog.rules.yml
     - blacker.rules.yml
+    - kafka.rules.yml
 
 - include_tasks: "{{ deployment_method }}_deployment.yml"
 

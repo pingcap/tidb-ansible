@@ -6,7 +6,7 @@ groups:
     for: 1m
     labels:
       env: ENV_LABELS_ENV
-      level: critical
+      level: emergency
       expr: probe_success{group="zookeeper"} == 0
     annotations:
       description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
@@ -18,7 +18,7 @@ groups:
     for: 1m
     labels:
       env: ENV_LABELS_ENV
-      level: critical
+      level: emergency
       expr: probe_success{group="kafka"} == 0
     annotations:
       description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
@@ -60,3 +60,15 @@ groups:
       description: 'alert: topic: {{ $labels.topic }} partition: {{ $labels.partition }}  values:{{ $value }}'
       value: '{{ $value }}'
       summary: kafka topic partition leader change
+
+  - alert: kafka_topic_partition_in_sync_replica
+    expr: kafka_topic_partition_in_sync_replica != 3
+    for: 1m
+    labels:
+      env: ENV_LABELS_ENV
+      level: emergency
+      expr: kafka_topic_partition_in_sync_replica != 3
+    annotations:
+      description: 'alert: topic: {{ $labels.topic }} partition: {{ $labels.partition }}  values:{{ $value }}'
+      value: '{{ $value }}'
+      summary: kafka topic partition in sync replica is missing
