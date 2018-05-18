@@ -14,6 +14,7 @@ You can use the TiDB-Ansible configuration file to set up the cluster topology, 
 - Configuring monitoring modules
 
 ## Tutorial
+
 -[English](https://github.com/pingcap/docs/blob/master/op-guide/ansible-deployment.md)
 -[简体中文](https://github.com/pingcap/docs-cn/blob/master/op-guide/ansible-deployment.md)
 
