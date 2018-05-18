@@ -123,14 +123,14 @@ performance:
   # run-auto-analyze: true
 
   # Probability to use the query feedback to update stats, 0 or 1 for always false/true.
-  # feedback-probability: 0.0
+  # feedback-probability: 0.05
 
   # The max number of query feedback that cache in memory.
   # query-feedback-limit: 1024
 
   # Pseudo stats will be used if the ratio between the modify count and
   # row count in statistics of a table is greater than it.
-  # pseudo-estimate-ratio: 0.7
+  # pseudo-estimate-ratio: 0.8
 
 proxy_protocol:
   # PROXY protocol acceptable client networks.
@@ -206,6 +206,12 @@ tikv_client:
 
   # max time for commit command, must be twice bigger than raft election timeout.
   # commit-timeout: "41s"
+
+txn_local_latches:
+  # Enable local latches for transactions. Enable it when
+  # there are lots of conflicts between transactions.
+  # enabled: false
+  # capacity: 1024000
 
 binlog:
   # If IgnoreError is true, when writting binlog meets error, TiDB would stop writting binlog,
