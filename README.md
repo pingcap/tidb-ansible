@@ -6,16 +6,17 @@ Ansible is an IT automation tool. It can configure systems, deploy software, and
  
 You can use the TiDB-Ansible configuration file to set up the cluster topology, completing all operation tasks with one click, including:
 	
-- Initializing the system, including creating user for deployment, setting up hostname, etc.
+- Initializing the system, including creating the user for deployment, setting up the hostname, etc.
 - Deploying the components
-- Rolling upgrade, including module survival detection
+- Rolling update, including module survival detection
 - Cleaning data
-- Cleaning environment
+- Cleaning the environment
 - Configuring monitoring modules
 
 ## Tutorial
-[English](https://github.com/pingcap/docs/blob/master/op-guide/ansible-deployment.md)
-[简体中文](https://github.com/pingcap/docs-cn/blob/master/op-guide/ansible-deployment.md)
+
+- [English](https://github.com/pingcap/docs/blob/master/op-guide/ansible-deployment.md)
+- [简体中文](https://github.com/pingcap/docs-cn/blob/master/op-guide/ansible-deployment.md)
 
 ## License
 TiDB-Ansible is under the Apache 2.0 license. 
