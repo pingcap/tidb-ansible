@@ -1,18 +1,6 @@
 groups:
 - name: alert.rules
   rules:
-  - alert: BLACKER_ping_latency_more_than_1s
-    expr: max_over_time(probe_duration_seconds{job=~"blackbox_exporter.*_icmp"}[1m]) > 1
-    for: 1m
-    labels:
-      env: ENV_LABELS_ENV
-      level: warning
-      expr: max_over_time(probe_duration_seconds{job=~"blackbox_exporter.*_icmp"}[1m]) > 1
-    annotations:
-      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
-      value: '{{ $value }}'
-      summary: blackbox_exporter ping latency more than 1s
-
   - alert: TiDB_server_is_down
     expr: probe_success{group="tidb"} == 0
     for: 1m
@@ -144,3 +132,15 @@ groups:
       description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
       value: '{{ $value }}'
       summary: Pushgateway metrics interface is down
+
+  - alert: BLACKER_ping_latency_more_than_1s
+    expr: max_over_time(probe_duration_seconds{job=~"blackbox_exporter.*_icmp"}[1m]) > 1
+    for: 1m
+    labels:
+      env: ENV_LABELS_ENV
+      level: warning
+      expr: max_over_time(probe_duration_seconds{job=~"blackbox_exporter.*_icmp"}[1m]) > 1
+    annotations:
+      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
+      value: '{{ $value }}'
+      summary: blackbox_exporter ping latency more than 1s
