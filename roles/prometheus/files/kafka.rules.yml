@@ -1,18 +1,6 @@
 groups:
 - name: alert.rules
   rules:
-  - alert: Zookeeper_is_down
-    expr: probe_success{group="zookeeper"} == 0
-    for: 1m
-    labels:
-      env: ENV_LABELS_ENV
-      level: emergency
-      expr: probe_success{group="zookeeper"} == 0
-    annotations:
-      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
-      value: '{{ $value }}'
-      summary: Zookeeper is down
-
   - alert: Kafka_is_down
     expr: probe_success{group="kafka"} == 0
     for: 1m
@@ -30,24 +18,36 @@ groups:
     for: 1m
     labels:
       env: ENV_LABELS_ENV
-      level: critical
+      level: emergency
       expr:  kafka_brokers < 3
     annotations:
       description: 'alert: instance: {{ $labels.instance }}  values:{{ $value }}'
       value: '{{ $value }}'
       summary: One or more kafka brokers are down
 
-  - alert: kafka_topic_partitions
-    expr: kafka_topic_partitions != 1
+  - alert: Zookeeper_is_down
+    expr: probe_success{group="zookeeper"} == 0
+    for: 1m
+    labels:
+      env: ENV_LABELS_ENV
+      level: emergency
+      expr: probe_success{group="zookeeper"} == 0
+    annotations:
+      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
+      value: '{{ $value }}'
+      summary: Zookeeper is down
+
+  - alert: kafka_topic_partition_in_sync_replica
+    expr: kafka_topic_partition_in_sync_replica != 3
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: critical
-      expr: kafka_topic_partitions != 1
+      expr: kafka_topic_partition_in_sync_replica != 3
     annotations:
-      description: 'alert: topic: {{ $labels.topic }}  values:{{ $value }}'
+      description: 'alert: topic: {{ $labels.topic }} partition: {{ $labels.partition }}  values:{{ $value }}'
       value: '{{ $value }}'
-      summary: Topic partitions count must be 1
+      summary: kafka topic partition in sync replica is missing
 
   - alert: kafka_topic_partition_leader_change
     expr: changes(kafka_topic_partition_leader[10m]) >= 1
@@ -60,15 +60,3 @@ groups:
       description: 'alert: topic: {{ $labels.topic }} partition: {{ $labels.partition }}  values:{{ $value }}'
       value: '{{ $value }}'
       summary: kafka topic partition leader change
-
-  - alert: kafka_topic_partition_in_sync_replica
-    expr: kafka_topic_partition_in_sync_replica != 3
-    for: 1m
-    labels:
-      env: ENV_LABELS_ENV
-      level: emergency
-      expr: kafka_topic_partition_in_sync_replica != 3
-    annotations:
-      description: 'alert: topic: {{ $labels.topic }} partition: {{ $labels.partition }}  values:{{ $value }}'
-      value: '{{ $value }}'
-      summary: kafka topic partition in sync replica is missing
