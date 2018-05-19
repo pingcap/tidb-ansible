@@ -1,6 +1,54 @@
 groups:
 - name: alert.rules
   rules:
+  - alert: binlog_pump_loss_binlog_count
+    expr: changes(binlog_pump_loss_binlog_count[1m]) > 0
+    for: 1m
+    labels:
+      env: ENV_LABELS_ENV
+      level: emergency
+      expr: changes(binlog_pump_loss_binlog_count[1m]) > 0
+    annotations:
+      description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
+      value: '{{ $value }}'
+      summary: BINLOG pump loss binlog count
+
+  - alert: binlog_pump_corruption
+    expr: changes(binlog_pump_corruption_binlog_count[1m]) > 0
+    for: 1m
+    labels:
+      env: ENV_LABELS_ENV
+      level: emergency
+      expr: changes(binlog_pump_corruption_binlog_count[1m]) > 0
+    annotations:
+      description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
+      value: '{{ $value }}'
+      summary: BINLOG pump corruption binlog count
+
+  - alert: BINLOG_drainer_window_more_than_3600s
+    expr: (binlog_drainer_window{marker="upper"} - ignoring(marker)binlog_drainer_window{marker="lower"})/(2^18*10^3) > 3600
+    for: 1m
+    labels:
+      env: ENV_LABELS_ENV
+      level: critical
+      expr: (binlog_drainer_window{marker="upper"} - ignoring(marker)binlog_drainer_window{marker="lower"})/(2^18*10^3) > 3600
+    annotations:
+      description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
+      value: '{{ $value }}'
+      summary: BINLOG drainer window more than 3600s
+
+  - alert: BINLOG_drainer_error_binlog_count
+    expr: changes(binlog_drainer_error_binlog_count[1m]) > 0
+    for: 1m
+    labels:
+      env: ENV_LABELS_ENV
+      level: critical
+      expr: changes(binlog_drainer_error_binlog_count[1m]) > 0
+    annotations:
+      description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
+      value: '{{ $value }}'
+      summary: BINLOG drainer loss binlog count
+
   - alert: binlog_pump_rpc_duration_seconds_bucket
     expr: histogram_quantile(0.98, rate(binlog_pump_rpc_duration_seconds_bucket[5m])) > 1
     for: 5m
@@ -12,30 +60,6 @@ groups:
       description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
       value: '{{ $value }}'
       summary: BINLOG pump write binlog RPC latency
-
-  - alert: binlog_pump_loss_binlog_count
-    expr: changes(binlog_pump_loss_binlog_count[1m]) > 0
-    for: 1m
-    labels:
-      env: ENV_LABELS_ENV
-      level: critical
-      expr: changes(binlog_pump_loss_binlog_count[1m]) > 0
-    annotations:
-      description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
-      value: '{{ $value }}'
-      summary: BINLOG pump loss binlog count
-  
-  - alert: binlog_pump_corruption
-    expr: changes(binlog_pump_corruption_binlog_count[1m]) > 0
-    for: 1m
-    labels:
-      env: ENV_LABELS_ENV
-      level: critical
-      expr: changes(binlog_pump_corruption_binlog_count[1m]) > 0
-    annotations:
-      description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
-      value: '{{ $value }}'
-      summary: BINLOG pump corruption binlog count
 
   - alert: binlog_pump_write_error_count
     expr: changes(binlog_pump_write_error_count[5m]) > 0
@@ -96,30 +120,6 @@ groups:
       description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
       value: '{{ $value }}'
       summary: BINLOG pump checkpoint gap
-      
-  - alert: BINLOG_drainer_window_more_than_3600s
-    expr: (binlog_drainer_window{marker="upper"} - ignoring(marker)binlog_drainer_window{marker="lower"})/(2^18*10^3) > 3600
-    for: 1m
-    labels:
-      env: ENV_LABELS_ENV
-      level: critical
-      expr: (binlog_drainer_window{marker="upper"} - ignoring(marker)binlog_drainer_window{marker="lower"})/(2^18*10^3) > 3600
-    annotations:
-      description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
-      value: '{{ $value }}'
-      summary: BINLOG drainer window more than 3600s
-
-  - alert: BINLOG_drainer_error_binlog_count
-    expr: changes(binlog_drainer_error_binlog_count[1m]) > 0
-    for: 1m
-    labels:
-      env: ENV_LABELS_ENV
-      level: critical
-      expr: changes(binlog_drainer_error_binlog_count[1m]) > 0
-    annotations:
-      description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
-      value: '{{ $value }}'
-      summary: BINLOG drainer loss binlog count
 
   - alert: BINLOG_drainer_event
     expr: sum(rate(binlog_drainer_event[10m])) < 1

@@ -82,16 +82,19 @@
 
 - name: collect pd log
   shell: "cd {{ log_dir }}; tar czPf {{ inventory_hostname }}-pd.tar.gz pd.log pd_stderr.log system;"
+  ignore_errors: yes
   when:
     - "'pd_servers' in group_names"
 
 - name: collect tikv log
   shell: "cd {{ log_dir }}; tar czPf {{ inventory_hostname }}-tikv.tar.gz tikv.log tikv_stderr.log system;"
+  ignore_errors: yes
   when:
     - "'tikv_servers' in group_names"
 
 - name: collect tidb log
   shell: "cd {{ log_dir }}; tar czPf {{ inventory_hostname }}-tidb.tar.gz tidb.log tidb_stderr.log system;"
+  ignore_errors: yes
   when:
     - "'tidb_servers' in group_names"
 

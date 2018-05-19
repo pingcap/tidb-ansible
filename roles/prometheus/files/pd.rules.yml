@@ -1,6 +1,42 @@
 groups:
 - name: alert.rules
   rules:
+  - alert: PD_cluster_offline_tikv_nums
+    expr: sum ( pd_cluster_status{type="store_down_count"} ) > 0
+    for: 1m
+    labels:
+      env: ENV_LABELS_ENV
+      level: emergency
+      expr:  sum ( pd_cluster_status{type="store_down_count"} ) > 0
+    annotations:
+      description: 'alert: instance: {{ $labels.instance }}   values:{{ $value }}'
+      value: '{{ $value }}'
+      summary: PD_cluster_offline_tikv_nums
+
+  - alert: PD_etcd_write_disk_latency
+    expr: histogram_quantile(0.99, sum(rate(etcd_disk_wal_fsync_duration_seconds_bucket[1m])) by (instance,job,le) ) > 1
+    for: 1m
+    labels:
+      env: ENV_LABELS_ENV
+      level: critical
+      expr:  histogram_quantile(0.99, sum(rate(etcd_disk_wal_fsync_duration_seconds_bucket[1m])) by (instance,job,le) ) > 1
+    annotations:
+      description: 'alert: instance: {{ $labels.instance }}   values:{{ $value }}'
+      value: '{{ $value }}'
+      summary: PD_etcd_write_disk_latency
+
+  - alert: PD_miss_peer_region_count
+    expr: sum( pd_regions_status{type="miss_peer_region_count"} )  > 100
+    for: 1m
+    labels:
+      env: ENV_LABELS_ENV
+      level: critical
+      expr:  sum( pd_regions_status{type="miss_peer_region_count"} )  > 100
+    annotations:
+      description: 'alert: instance: {{ $labels.instance }}   values:{{ $value }}'
+      value: '{{ $value }}'
+      summary: PD_miss_peer_region_count
+
   - alert: PD_cluster_lost_connect_tikv_nums
     expr: sum ( pd_cluster_status{type="store_disconnected_count"} )   > 0
     for: 1m
@@ -24,30 +60,6 @@ groups:
       description: 'alert: instance: {{ $labels.instance }}   values:{{ $value }}'
       value: '{{ $value }}'
       summary: PD_cluster_low_space
-
-  - alert: PD_cluster_offline_tikv_nums
-    expr: sum ( pd_cluster_status{type="store_down_count"} ) > 0
-    for: 1m
-    labels:
-      env: ENV_LABELS_ENV
-      level: emergency
-      expr:  sum ( pd_cluster_status{type="store_down_count"} ) > 0
-    annotations:
-      description: 'alert: instance: {{ $labels.instance }}   values:{{ $value }}'
-      value: '{{ $value }}'
-      summary: PD_cluster_offline_tikv_nums
-
-  - alert: PD_etcd_write_disk_latency
-    expr: histogram_quantile(0.99, sum(rate(etcd_disk_wal_fsync_duration_seconds_bucket[1m])) by (instance,job,le) ) > 1
-    for: 1m
-    labels:
-      env: ENV_LABELS_ENV
-      level: emergency
-      expr:  histogram_quantile(0.99, sum(rate(etcd_disk_wal_fsync_duration_seconds_bucket[1m])) by (instance,job,le) ) > 1
-    annotations:
-      description: 'alert: instance: {{ $labels.instance }}   values:{{ $value }}'
-      value: '{{ $value }}'
-      summary: PD_etcd_write_disk_latency
 
   - alert: PD_etcd_network_peer_latency
     expr: histogram_quantile(0.99, sum(rate(etcd_network_peer_round_trip_time_seconds_bucket[1m])) by (To,instance,job,le) ) > 1
@@ -86,7 +98,7 @@ groups:
       summary: PD_down_peer_region_nums
 
   - alert: PD_incorrect_namespace_region_count
-    expr: sum ( pd_regions_status{type="incorrect_namespace_region_count"} ) > 0
+    expr: sum ( pd_regions_status{type="incorrect_namespace_region_count"} ) > 100
     for: 1m
     labels:
       env: ENV_LABELS_ENV
@@ -96,18 +108,6 @@ groups:
       description: 'alert: instance: {{ $labels.instance }}   values:{{ $value }}'
       value: '{{ $value }}'
       summary: PD_incorrect_namespace_region_count
-
-  - alert: PD_miss_peer_region_count
-    expr: sum( pd_regions_status{type="miss_peer_region_count"} )  > 0
-    for: 1m
-    labels:
-      env: ENV_LABELS_ENV
-      level: emergency
-      expr:  sum( pd_regions_status{type="miss_peer_region_count"} )  > 0
-    annotations:
-      description: 'alert: instance: {{ $labels.instance }}   values:{{ $value }}'
-      value: '{{ $value }}'
-      summary: PD_miss_peer_region_count
 
   - alert: PD_pending_peer_region_count
     expr: sum( pd_regions_status{type="pending_peer_region_count"} )  > 100
