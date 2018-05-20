@@ -171,12 +171,12 @@ groups:
       summary: TiKV thread apply worker cpu seconds is high
 
   - alert: TiDB_tikvclient_gc_action_fail
-    expr: sum(increase(tidb_tikvclient_gc_action_result{type=”fail”}[1m])) > 10
+    expr: sum(increase(tidb_tikvclient_gc_action_result{type="fail"}[1m])) > 10
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: critical
-      expr: sum(increase(tidb_tikvclient_gc_action_result{type=”fail”}[1m])) > 10
+      expr: sum(increase(tidb_tikvclient_gc_action_result{type="fail"}[1m])) > 10
     annotations:
       description: 'alert: type: {{ $labels.type }} instance: {{ $labels.instance }}  values: {{ $value }}'
       value: '{{ $value }}'
@@ -207,12 +207,12 @@ groups:
       summary: TiKV_raft_process_ready_duration_secs
 
   - alert: TiKV_raft_process_tick_duration_secs
-    expr: histogram_quantile(0.999, sum(rate(tikv_raftstore_raft_process_duration_secs_bucket{type=tick}[1m])) by (le, instance, job,type)) > 2
+    expr: histogram_quantile(0.999, sum(rate(tikv_raftstore_raft_process_duration_secs_bucket{type='tick'}[1m])) by (le, instance, job,type)) > 2
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: warning
-      expr: histogram_quantile(0.999, sum(rate(tikv_raftstore_raft_process_duration_secs_bucket{type=tick}[1m])) by (le, instance, job,type)) > 2
+      expr: histogram_quantile(0.999, sum(rate(tikv_raftstore_raft_process_duration_secs_bucket{type='tick'}[1m])) by (le, instance, job,type)) > 2
     annotations:
       description: 'alert: instance: {{ $labels.instance }}  values:{{ $value }}'
       value: '{{ $value }}'
