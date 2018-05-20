@@ -13,7 +13,7 @@ groups:
       value: '{{ $value }}'
       summary: TiKV memory used too fast
 
-  - alert: GC_can_not_work
+  - alert: TiKV_GC_can_not_work
     expr: sum(increase(tidb_tikvclient_gc_action_result{type="success"}[6h])) < 1
     for: 1m
     labels:
@@ -23,7 +23,7 @@ groups:
     annotations:
       description: 'alert: instance: {{ $labels.instance }}  values: {{ $value }}'
       value: '{{ $value }}'
-      summary: GC can not work
+      summary: TiKV GC can not work
 
   - alert: TiKV_server_report_failure_msg_total
     expr:  sum(rate(tikv_server_report_failure_msg_total{type="unreachable"}[10m])) BY (store_id) > 0
