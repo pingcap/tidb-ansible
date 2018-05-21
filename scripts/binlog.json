@@ -1501,7 +1501,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "rate(binlog_drainer_event[15s])",
+              "expr": "irate(binlog_drainer_event[1m])",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "",
@@ -1987,7 +1987,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.95, rate(binlog_drainer_read_binlog_size_bucket[1m]))/1024",
+              "expr": "histogram_quantile(0.95, rate(binlog_drainer_read_binlog_size_bucket[1m]))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "",
@@ -2463,7 +2463,7 @@
     "list": []
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {
@@ -2493,5 +2493,5 @@
   },
   "timezone": "browser",
   "title": "Test-Cluster-Binlog",
-  "version": 44
+  "version": 46
 }
