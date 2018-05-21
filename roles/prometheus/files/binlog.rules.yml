@@ -11,7 +11,7 @@ groups:
     annotations:
       description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
       value: '{{ $value }}'
-      summary: BINLOG pump loss binlog count
+      summary: BINLOG pump lose some binlogs
 
   - alert: binlog_pump_corruption
     expr: changes(binlog_pump_corruption_binlog_count[1m]) > 0
@@ -23,7 +23,7 @@ groups:
     annotations:
       description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
       value: '{{ $value }}'
-      summary: BINLOG pump corruption binlog count
+      summary: BINLOG pump has corruption binlogs
 
   - alert: BINLOG_drainer_window_more_than_3600s
     expr: (binlog_drainer_window{marker="upper"} - ignoring(marker)binlog_drainer_window{marker="lower"})/(2^18*10^3) > 3600
@@ -35,7 +35,7 @@ groups:
     annotations:
       description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
       value: '{{ $value }}'
-      summary: BINLOG drainer window more than 3600s
+      summary: BINLOG drainer window more than 1 hour
 
   - alert: BINLOG_drainer_error_binlog_count
     expr: changes(binlog_drainer_error_binlog_count[1m]) > 0
@@ -47,19 +47,31 @@ groups:
     annotations:
       description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
       value: '{{ $value }}'
-      summary: BINLOG drainer loss binlog count
+      summary: BINLOG drainer maybe lose some binlogs
+  
+  - alert: binlog_pump_checkpoint_gap
+    expr: binlog_pump_checkpoint{label="latest"} - ignoring(label)binlog_pump_checkpoint{label="current"} > 1000*1000*1000
+    for: 5m
+    labels:
+      env: ENV_LABELS_ENV
+      level: critical
+      expr: binlog_pump_checkpoint{label="latest"} - ignoring(label)binlog_pump_checkpoint{label="current"} > 1000*1000*1000
+    annotations:
+      description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
+      value: '{{ $value }}'
+      summary: BINLOG pump checkpoint gap is too large
 
   - alert: binlog_pump_rpc_duration_seconds_bucket
-    expr: histogram_quantile(0.98, rate(binlog_pump_rpc_duration_seconds_bucket[5m])) > 1
+    expr: histogram_quantile(0.9, rate(binlog_pump_rpc_duration_seconds_bucket[5m])) > 1
     for: 5m
     labels:
       env: ENV_LABELS_ENV
       level: warning
-      expr: histogram_quantile(0.98, rate(binlog_pump_rpc_duration_seconds_bucket[5m])) > 1
+      expr: histogram_quantile(0.9, rate(binlog_pump_rpc_duration_seconds_bucket[5m])) > 1
     annotations:
       description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
       value: '{{ $value }}'
-      summary: BINLOG pump write binlog RPC latency
+      summary: BINLOG pump write binlog RPC latency is too slow
 
   - alert: binlog_pump_write_error_count
     expr: changes(binlog_pump_write_error_count[5m]) > 0
@@ -71,7 +83,7 @@ groups:
     annotations:
       description: 'alert: instance: {{ $labels.instance }} storage: {{ $labels.label }} values:{{ $value }}'
       value: '{{ $value }}'
-      summary: BINLOG pump write binlog error count
+      summary: BINLOG pump fails to write binlog
 
   - alert: binlog_pump_read_error_count
     expr: changes(binlog_pump_read_error_count[5m]) > 0
@@ -83,43 +95,31 @@ groups:
     annotations:
       description: 'alert: instance: {{ $labels.instance }} storage: {{ $labels.label }} values:{{ $value }}'
       value: '{{ $value }}'
-      summary: BINLOG pump read binlog error count
+      summary: BINLOG pump fails to read binlog
 
   - alert: binlog_pump_write_binlog_duration_time_bucket
-    expr: histogram_quantile(0.95, rate(binlog_pump_write_binlog_duration_time_bucket[5m])) > 1
+    expr: histogram_quantile(0.9, rate(binlog_pump_write_binlog_duration_time_bucket[5m])) > 1
     for: 5m
     labels:
       env: ENV_LABELS_ENV
       level: warning
-      expr: histogram_quantile(0.95, rate(binlog_pump_write_binlog_duration_time_bucket[5m])) > 1
+      expr: histogram_quantile(0.9, rate(binlog_pump_write_binlog_duration_time_bucket[5m])) > 1
     annotations:
       description: 'alert: instance: {{ $labels.instance }} storage: {{ $labels.label }} values:{{ $value }}'
       value: '{{ $value }}'
-      summary: BINLOG pump write binlog latency
+      summary: BINLOG pump write binlog is too slow
 
   - alert: binlog_pump_read_binlog_duration_time_bucket
-    expr: histogram_quantile(0.95, rate(binlog_pump_read_binlog_duration_time_bucket[5m])) > 1
+    expr: histogram_quantile(0.9, rate(binlog_pump_read_binlog_duration_time_bucket[5m])) > 1
     for: 5m
     labels:
       env: ENV_LABELS_ENV
       level: warning
-      expr: histogram_quantile(0.95, rate(binlog_pump_read_binlog_duration_time_bucket[5m])) > 1
+      expr: histogram_quantile(0.9, rate(binlog_pump_read_binlog_duration_time_bucket[5m])) > 1
     annotations:
       description: 'alert: instance: {{ $labels.instance }} storage: {{ $labels.label }} values:{{ $value }}'
       value: '{{ $value }}'
-      summary: BINLOG pump read binlog latency
-
-  - alert: binlog_pump_checkpoint_gap
-    expr: binlog_pump_checkpoint{label="latest"} - ignoring(label)binlog_pump_checkpoint{label="current"} > 1000*1000*1000
-    for: 5m
-    labels:
-      env: ENV_LABELS_ENV
-      level: warning
-      expr: binlog_pump_checkpoint{label="latest"} - ignoring(label)binlog_pump_checkpoint{label="current"} > 1000*1000*1000
-    annotations:
-      description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
-      value: '{{ $value }}'
-      summary: BINLOG pump checkpoint gap
+      summary: BINLOG pump read binlog is too slow
 
   - alert: BINLOG_drainer_event
     expr: sum(rate(binlog_drainer_event[10m])) < 1
@@ -131,15 +131,15 @@ groups:
     annotations:
       description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
       value: '{{ $value }}'
-      summary: BINLOG binlog drainer event
+      summary: BINLOG binlog stop syncing drainer event
 
   - alert: BINLOG_drainer_txn_duration_time_more_than_10s
-    expr: histogram_quantile(0.95, rate(binlog_drainer_txn_duration_time_bucket[1m])) > 10
+    expr: histogram_quantile(0.9, rate(binlog_drainer_txn_duration_time_bucket[1m])) > 10
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: warning
-      expr: histogram_quantile(0.95, rate(binlog_drainer_txn_duration_time_bucket[1m])) > 10
+      expr: histogram_quantile(0.9, rate(binlog_drainer_txn_duration_time_bucket[1m])) > 10
     annotations:
       description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
       value: '{{ $value }}'
@@ -167,4 +167,4 @@ groups:
     annotations:
       description: 'alert: instance: {{ $labels.instance }} pump: {{ $labels.nodeID }} values:{{ $value }}'
       value: '{{ $value }}'
-      summary: BINLOG drainer publish binlog count
+      summary: BINLOG drainer stops to publish binlog
