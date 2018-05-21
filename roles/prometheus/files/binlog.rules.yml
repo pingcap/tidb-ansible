@@ -146,12 +146,12 @@ groups:
       summary: BINLOG binlog drainer txn_duration_time_more_than_10s
 
   - alert: binlog_drainer_read_binlog_duration_time_bucket
-    expr: histogram_quantile(0.95, rate(binlog_drainer_read_binlog_duration_time_bucket[1m])) > 1
+    expr: histogram_quantile(0.9, rate(binlog_drainer_read_binlog_duration_time_bucket[1m])) > 1
     for: 5m
     labels:
       env: ENV_LABELS_ENV
       level: warning
-      expr: histogram_quantile(0.95, rate(binlog_drainer_read_binlog_duration_time_bucket[1m])) > 1
+      expr: histogram_quantile(0.9, rate(binlog_drainer_read_binlog_duration_time_bucket[1m])) > 1
     annotations:
       description: 'alert: instance: {{ $labels.instance }} pump: {{ $labels.nodeID }} values:{{ $value }}'
       value: '{{ $value }}'
