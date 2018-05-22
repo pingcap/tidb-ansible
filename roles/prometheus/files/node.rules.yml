@@ -2,12 +2,12 @@ groups:
 - name: alert.rules
   rules:
   - alert: NODE_disk_used_more_than_80%
-    expr: node_filesystem_avail{fstype=~"(ext.|xfs)", mountpoint=~".+"} / node_filesystem_size{fstype=~"(ext.|xfs)", mountpoint=~".+"} * 100 <= 20
+    expr: node_filesystem_avail{fstype=~"(ext.|xfs)", mountpoint!~"/boot"} / node_filesystem_size{fstype=~"(ext.|xfs)", mountpoint!~"/boot"} * 100 <= 20
     for: 3m
     labels:
       env: ENV_LABELS_ENV
       level: emergency
-      expr: node_filesystem_avail{fstype=~"(ext.|xfs)", mountpoint=~".+"} / node_filesystem_size{fstype=~"(ext.|xfs)", mountpoint=~".+"} * 100 <= 20
+      expr: node_filesystem_avail{fstype=~"(ext.|xfs)", mountpoint!~"/boot"} / node_filesystem_size{fstype=~"(ext.|xfs)", mountpoint!~"/boot"} * 100 <= 20
     annotations:
       description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
       value: '{{ $value }}'
