@@ -26,12 +26,12 @@ groups:
       summary: TiKV GC can not work
 
   - alert: TiKV_server_report_failure_msg_total
-    expr:  sum(rate(tikv_server_report_failure_msg_total{type="unreachable"}[10m])) BY (store_id) > 0
+    expr:  sum(rate(tikv_server_report_failure_msg_total{type="unreachable"}[10m])) BY (store_id) > 10
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: critical
-      expr:  sum(rate(tikv_server_report_failure_msg_total{type="unreachable"}[10m])) BY (store_id) > 0
+      expr:  sum(rate(tikv_server_report_failure_msg_total{type="unreachable"}[10m])) BY (store_id) > 10
     annotations:
       description: 'alert: instance: {{ $labels.instance }}  values: {{ $value }}'
       value: '{{ $value }}'
