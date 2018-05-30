@@ -21,23 +21,23 @@
   when: log_dir_st.stat.isdir is not defined or log_dir_st.stat.isdir == False
 
 - name: collect pd log
-  shell: "cd {{ log_dir }}; "
+  shell: "python {{ deploy_dir }}/scripts/collect_logs.py --log-dir={{ log_dir }} --prefix=pd --retention={{ collect_log_recent_hours | default("2") }} --output={{ log_dir }}"
   when:
     - "'pd_servers' in group_names"
 
 - name: collect tikv log
-  shell: "cd {{ log_dir }}; "
+  shell: "python {{ deploy_dir }}/scripts/collect_logs.py --log-dir={{ log_dir }} --prefix=tikv --retention={{ collect_log_recent_hours | default("2") }} --output={{ log_dir }}"
   when:
     - "'tikv_servers' in group_names"
 
 - name: collect tidb log
-  shell: "cd {{ log_dir }}; "
+  shell: "python {{ deploy_dir }}/scripts/collect_logs.py --log-dir={{ log_dir }} --prefix=tidb --retention={{ collect_log_recent_hours | default("2") }} --output={{ log_dir }}"
   when:
     - "'tidb_servers' in group_names"
 
 - name: fetch pd log file
   fetch:
-    src: "{{ log_dir }}/{{ inventory_hostname }}-pd.tar.gz"
+    src: "{{ log_dir }}/pd_{{ inventory_hostname }}.tar.gz"
     dest: "{{ fetch_tmp_dir }}/{{ inventory_hostname }}/"
     flat: yes
     validate_checksum: no
@@ -45,7 +45,7 @@
 
 - name: fetch tikv log file
   fetch:
-    src: "{{ log_dir }}/{{ inventory_hostname }}-tikv.tar.gz"
+    src: "{{ log_dir }}/tikv_{{ inventory_hostname }}.tar.gz"
     dest: "{{ fetch_tmp_dir }}/{{ inventory_hostname }}/"
     flat: yes
     validate_checksum: no
@@ -53,7 +53,7 @@
 
 - name: fetch tidb log file
   fetch:
-    src: "{{ log_dir }}/{{ inventory_hostname }}-tidb.tar.gz"
+    src: "{{ log_dir }}/tidb_{{ inventory_hostname }}.tar.gz"
     dest: "{{ fetch_tmp_dir }}/{{ inventory_hostname }}/"
     flat: yes
     validate_checksum: no
