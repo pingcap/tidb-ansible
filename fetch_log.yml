@@ -23,31 +23,28 @@
       file: path={{ item }} state=directory mode=0755
       with_items:
         - "{{ fetch_tmp_dir }}"
-        - "{{ fetch_log_dir }}"
+        - "{{ fetch_dir }}"
 
-- name: fetch pd log
-  become: true
+- name: collect pd information
   hosts: pd_servers
   tags:
     - pd
   roles:
-    - fetch_log
+    - collector
 
-- name: fetch tikv log
-  become: true
+- name: collect tikv information
   hosts: tikv_servers
   tags:
     - tikv
   roles:
-    - fetch_log
+    - collector
 
-- name: fetch tidb log
-  become: true
+- name: collect tidb information
   hosts: tidb_servers
   tags:
     - tidb
   roles:
-    - fetch_log
+    - collector
 
 - hosts: localhost
   tags:
@@ -62,13 +59,13 @@
       changed_when: false
 
     - set_fact:
-        archive_name: "cluster_log_{{ datetime.stdout | trim }}.tar.gz"
+        archive_name: "tidb-insight_{{ datetime.stdout | trim }}.tar.gz"
 
-    - name: archive all log files
-      shell: "cd {{ fetch_tmp_dir }} && tar czvf {{ fetch_log_dir }}/{{ archive_name }} ."
+    - name: archive all collector files
+      shell: "cd {{ fetch_tmp_dir }} && tar czvf {{ fetch_dir }}/{{ archive_name }} ."
 
     - name: cleaning up fetch_tmp_dir
       file: path={{ fetch_tmp_dir }} state=absent
 
     - debug:
-        msg: "Logpath: {{ fetch_log_dir }}/{{ archive_name }}"
+        msg: "tidb-insight tarball: {{ fetch_dir }}/{{ archive_name }}"

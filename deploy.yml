@@ -36,6 +36,13 @@
     - { role: node_exporter, when: "groups.monitoring_servers | default(False)" }
     - { role: blackbox_exporter, when: "groups.monitoring_servers | default(False)" }
 
+- name: deploying tidb-insight
+  hosts: monitored_servers
+  tags:
+    - tidb-insight
+  roles:
+    - tidb-insight
+
 - name: deploying alertmanager
   hosts: alertmanager_servers
   roles:
