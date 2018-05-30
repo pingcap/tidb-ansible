@@ -21,17 +21,17 @@
   when: log_dir_st.stat.isdir is not defined or log_dir_st.stat.isdir == False
 
 - name: collect pd log
-  shell: "python {{ deploy_dir }}/scripts/collect_logs.py --log-dir={{ log_dir }} --prefix=pd --retention={{ collect_log_recent_hours | default("2") }} --output={{ log_dir }}"
+  shell: "python {{ deploy_dir }}/scripts/collect_logs.py --log-dir={{ log_dir }} --prefix=pd --retention={{ collect_log_recent_hours | default('2') }} --output={{ log_dir }}"
   when:
     - "'pd_servers' in group_names"
 
 - name: collect tikv log
-  shell: "python {{ deploy_dir }}/scripts/collect_logs.py --log-dir={{ log_dir }} --prefix=tikv --retention={{ collect_log_recent_hours | default("2") }} --output={{ log_dir }}"
+  shell: "python {{ deploy_dir }}/scripts/collect_logs.py --log-dir={{ log_dir }} --prefix=tikv --retention={{ collect_log_recent_hours | default('2') }} --output={{ log_dir }}"
   when:
     - "'tikv_servers' in group_names"
 
 - name: collect tidb log
-  shell: "python {{ deploy_dir }}/scripts/collect_logs.py --log-dir={{ log_dir }} --prefix=tidb --retention={{ collect_log_recent_hours | default("2") }} --output={{ log_dir }}"
+  shell: "python {{ deploy_dir }}/scripts/collect_logs.py --log-dir={{ log_dir }} --prefix=tidb --retention={{ collect_log_recent_hours | default('2') }} --output={{ log_dir }}"
   when:
     - "'tidb_servers' in group_names"
 
