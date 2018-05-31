@@ -1,0 +1,42 @@
+---
+
+- set_fact:
+    tidb_insight_dir: "{{ hostvars[groups.monitored_servers[0]].deploy_dir }}"
+    service_host: "{{ ansible_host }}"
+
+- name: create tidb fetch directory
+  delegate_to: localhost
+  file: path={{ item }} state=directory mode=0755
+  with_items:
+    - "{{ fetch_tmp_dir }}/{{ service_host }}"
+
+- name: check tidb log directory
+  stat: path={{ tidb_log_dir }} get_md5=false get_checksum=false
+  register: log_dir_st
+
+- fail:
+    msg: "{{ tidb_log_dir }} must exist and is a directory"
+  when: log_dir_st.stat.isdir is not defined or log_dir_st.stat.isdir == False
+
+- name: collect tidb log
+  shell: "python {{ tidb_insight_dir }}/scripts/collect-log.py --log-dir={{ tidb_log_dir }} --prefix=tidb --retention={{ collect_log_recent_hours | default('2') }} --output={{ tidb_log_dir }} --alias={{ inventory_hostname }}"
+
+- name: fetch tidb log tarball with bandwidth limit
+  delegate_to: localhost
+  shell: "scp -l {{ collect_bandwidth_limit|default('10000') }} {{ service_host }}:{{ tidb_log_dir }}/tidb_{{ inventory_hostname }}.tar.gz {{ fetch_tmp_dir }}/{{ service_host }}/"
+  when: enable_bandwidth_limit|default(true)
+
+- name: fetch tidb log tarball without bandwidth limit
+  fetch:
+    src: "{{ tidb_log_dir }}/tidb_{{ inventory_hostname }}.tar.gz"
+    dest: "{{ fetch_tmp_dir }}/{{ service_host }}/"
+    flat: yes
+    validate_checksum: no
+  when: not enable_bandwidth_limit|default(true)
+
+- name: remove tidb temporary log tarball
+  file:
+    path: "{{ tidb_log_dir }}/{{ item }}"
+    state: absent
+  with_items:
+    - "tidb_{{ inventory_hostname }}.tar.gz"
