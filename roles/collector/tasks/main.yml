@@ -16,6 +16,12 @@
     log_dir: "{{ tidb_log_dir }}"
   when: "'tidb_servers' in group_names"
 
+- name: create deploy directories
+  delegate_to: localhost
+  file: path={{ item }} state=directory mode=0755
+  with_items:
+    - "{{ fetch_tmp_dir }}/{{ service_host }}"
+
 - name: environment check (log directory)
   stat: path={{ log_dir }} get_md5=false get_checksum=false
   register: log_dir_st
@@ -25,23 +31,23 @@
   when: log_dir_st.stat.isdir is not defined or log_dir_st.stat.isdir == False
 
 - name: collect pd log
-  shell: "python {{ tidb_insight_dir }}/scripts/collect-log.py --log-dir={{ log_dir }} --prefix=pd --retention={{ collect_log_recent_hours | default('2') }} --output={{ log_dir }} --alias={{ inventory_hostname }}"
+  shell: "python {{ tidb_insight_dir }}/scripts/collect-log.py --log-dir={{ log_dir }} --prefix=pd --retention={{ collect_log_recent_hours | default('2') }} --output={{ log_dir }} --alias={{ service_host }}"
   when:
     - "'pd_servers' in group_names"
 
 - name: collect tikv log
-  shell: "python {{ tidb_insight_dir }}/scripts/collect-log.py --log-dir={{ log_dir }} --prefix=tikv --retention={{ collect_log_recent_hours | default('2') }} --output={{ log_dir }} --alias={{ inventory_hostname }}"
+  shell: "python {{ tidb_insight_dir }}/scripts/collect-log.py --log-dir={{ log_dir }} --prefix=tikv --retention={{ collect_log_recent_hours | default('2') }} --output={{ log_dir }} --alias={{ service_host }}"
   when:
     - "'tikv_servers' in group_names"
 
 - name: collect tidb log
-  shell: "python {{ tidb_insight_dir }}/scripts/collect-log.py --log-dir={{ log_dir }} --prefix=tidb --retention={{ collect_log_recent_hours | default('2') }} --output={{ log_dir }} --alias={{ inventory_hostname }}"
+  shell: "python {{ tidb_insight_dir }}/scripts/collect-log.py --log-dir={{ log_dir }} --prefix=tidb --retention={{ collect_log_recent_hours | default('2') }} --output={{ log_dir }} --alias={{ service_host }}"
   when:
     - "'tidb_servers' in group_names"
 
 - name: fetch pd log file
   delegate_to: localhost
-  shell: "scp -l 10000 {{ service_host }}:{{ log_dir }}/pd_{{ inventory_hostname }}.tar.gz {{ fetch_tmp_dir }}/{{ inventory_hostname }}/"
+  shell: "scp -l 10000 {{ service_host }}:{{ log_dir }}/pd_{{ inventory_hostname }}.tar.gz {{ fetch_tmp_dir }}/{{ service_host }}/"
   when: "'pd_servers' in group_names"
 
 # - name: fetch pd log file
