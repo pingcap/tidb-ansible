@@ -62,7 +62,7 @@
         archive_name: "tidb-insight_{{ datetime.stdout | trim }}.tar.gz"
 
     - name: archive all collector files
-      shell: "cd {{ playbook_dir }} && tar czvf {{ fetch_dir }}/{{ archive_name }} {{ fetch_tmp_dir }}"
+      shell: "cd {{ playbook_dir }} && tar czvf {{ fetch_dir }}/{{ archive_name }} {{ fetch_tmp_dir | basename }}"
 
     - name: cleaning up fetch_tmp_dir
       file: path={{ fetch_tmp_dir }} state=absent
