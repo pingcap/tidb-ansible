@@ -23,7 +23,7 @@
 
 - name: fetch tidb log tarball with bandwidth limit
   delegate_to: localhost
-  shell: "scp -l {{ collect_bandwidth_limit|default('10000') }} {{ service_host }}:{{ tidb_log_dir }}/tidb_{{ inventory_hostname }}.tar.gz {{ fetch_tmp_dir }}/{{ service_host }}/"
+  shell: "scp -l {{ collect_bandwidth_limit|default('10000') }} -o StrictHostKeyChecking=no {{ service_host }}:{{ tidb_log_dir }}/tidb_{{ inventory_hostname }}.tar.gz {{ fetch_tmp_dir }}/{{ service_host }}/"
   when: enable_bandwidth_limit|default(true)
 
 - name: fetch tidb log tarball without bandwidth limit
