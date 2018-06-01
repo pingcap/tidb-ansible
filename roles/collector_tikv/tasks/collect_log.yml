@@ -1,0 +1,31 @@
+---
+
+- name: check tikv log directory
+  stat: path={{ tikv_log_dir }} get_md5=false get_checksum=false
+  register: log_dir_st
+
+- fail:
+    msg: "{{ tikv_log_dir }} must exist and is a directory"
+  when: log_dir_st.stat.isdir is not defined or log_dir_st.stat.isdir == False
+
+- name: collect tikv log
+  shell: "python {{ collector_dir }}/scripts/collect-log.py --log-dir={{ tikv_log_dir }} --prefix=tikv --retention={{ collect_log_recent_hours | default('2') }} --output={{ tikv_log_dir }} --alias={{ inventory_hostname }}"
+
+- name: fetch tikv log tarball with bandwidth limit
+  delegate_to: localhost
+  shell: "scp -l {{ collect_bandwidth_limit|default('10000') }} -o StrictHostKeyChecking=no {{ service_host }}:{{ tikv_log_dir }}/tikv_{{ inventory_hostname }}.tar.gz {{ fetch_tmp_dir }}/{{ service_host }}/"
+  when: enable_bandwidth_limit|default(true)
+
+- name: fetch tikv log tarball without bandwidth limit
+  fetch:
+    src: "{{ tikv_log_dir }}/tikv_{{ inventory_hostname }}.tar.gz"
+    dest: "{{ fetch_tmp_dir }}/{{ service_host }}/"
+    flat: yes
+  when: not enable_bandwidth_limit|default(true)
+
+- name: remove tikv temporary log tarball
+  file:
+    path: "{{ tikv_log_dir }}/{{ item }}"
+    state: absent
+  with_items:
+    - "tikv_{{ inventory_hostname }}.tar.gz"

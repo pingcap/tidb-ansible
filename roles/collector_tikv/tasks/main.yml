@@ -1,0 +1,13 @@
+---
+
+- set_fact:
+    collector_dir: "{{ hostvars[groups.monitored_servers[0]].deploy_dir }}"
+    service_host: "{{ ansible_host }}"
+
+- name: create tikv fetch directory
+  delegate_to: localhost
+  file: path={{ item }} state=directory mode=0755
+  with_items:
+    - "{{ fetch_tmp_dir }}/{{ service_host }}"
+
+- include_tasks: collect_log.yml
