@@ -25,21 +25,21 @@
         - "{{ fetch_tmp_dir }}"
         - "{{ fetch_dir }}"
 
-- name: collect pd information
+- name: collect pd diagnosis information
   hosts: pd_servers
   tags:
     - pd
   roles:
     - collector_pd
 
-- name: collect tikv information
+- name: collect tikv diagnosis information
   hosts: tikv_servers
   tags:
     - tikv
   roles:
     - collector_tikv
 
-- name: collect tidb information
+- name: collect tidb diagnosis information
   hosts: tidb_servers
   tags:
     - tidb
@@ -64,7 +64,7 @@
     - name: archive all diagnosis files
       shell: "cd {{ playbook_dir }} && tar czvf {{ fetch_dir }}/{{ archive_name }} {{ fetch_tmp_dir | basename }}"
 
-    - name: cleaning up fetch_tmp_dir
+    - name: clean up fetch_tmp_dir
       file: path={{ fetch_tmp_dir }} state=absent
 
     - name: display the file path of collect_diagnosis tarball
