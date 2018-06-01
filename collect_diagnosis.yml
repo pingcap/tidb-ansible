@@ -16,7 +16,7 @@
   tags:
     - always
   tasks:
-    - name: cleaning up fetch_tmp_dir
+    - name: clean up fetch_tmp_dir
       file: path={{ fetch_tmp_dir }} state=absent
 
     - name: create fetch directories
@@ -50,7 +50,7 @@
   tags:
     - always
   tasks:
-    - name: cp inventory.ini
+    - name: collect inventory.ini
       shell: "cd {{ fetch_tmp_dir }} && cp {{ playbook_dir }}/inventory.ini ."
 
     - name: get datetime
@@ -61,7 +61,7 @@
     - set_fact:
         archive_name: "collect_diagnosis_{{ datetime.stdout | trim }}.tar.gz"
 
-    - name: archive all collector files
+    - name: archive all diagnosis files
       shell: "cd {{ playbook_dir }} && tar czvf {{ fetch_dir }}/{{ archive_name }} {{ fetch_tmp_dir | basename }}"
 
     - name: cleaning up fetch_tmp_dir
