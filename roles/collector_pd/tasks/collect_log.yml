@@ -9,7 +9,7 @@
   when: log_dir_st.stat.isdir is not defined or log_dir_st.stat.isdir == False
 
 - name: collect pd log
-  shell: "python {{ tidb_insight_dir }}/scripts/collect-log.py --log-dir={{ pd_log_dir }} --prefix=pd --retention={{ collect_log_recent_hours | default('2') }} --output={{ pd_log_dir }} --alias={{ inventory_hostname }}"
+  shell: "python {{ collector_dir }}/scripts/collect-log.py --log-dir={{ pd_log_dir }} --prefix=pd --retention={{ collect_log_recent_hours | default('2') }} --output={{ pd_log_dir }} --alias={{ inventory_hostname }}"
 
 - name: fetch pd log tarball with bandwidth limit
   delegate_to: localhost
@@ -21,7 +21,6 @@
     src: "{{ pd_log_dir }}/pd_{{ inventory_hostname }}.tar.gz"
     dest: "{{ fetch_tmp_dir }}/{{ service_host }}/"
     flat: yes
-    validate_checksum: no
   when: not enable_bandwidth_limit|default(true)
 
 - name: remove pd temporary log tarball
