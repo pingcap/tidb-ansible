@@ -54,12 +54,12 @@
       shell: "cd {{ fetch_tmp_dir }} && cp {{ playbook_dir }}/inventory.ini ."
 
     - name: get datetime
-      shell: date +%Y%m%d_%H%M
+      shell: date +%Y%m%d_%H%M%S
       register: datetime
       changed_when: false
 
     - set_fact:
-        archive_name: "tidb-insight_{{ datetime.stdout | trim }}.tar.gz"
+        archive_name: "collect_diagnosis_{{ datetime.stdout | trim }}.tar.gz"
 
     - name: archive all collector files
       shell: "cd {{ playbook_dir }} && tar czvf {{ fetch_dir }}/{{ archive_name }} {{ fetch_tmp_dir | basename }}"
@@ -67,5 +67,6 @@
     - name: cleaning up fetch_tmp_dir
       file: path={{ fetch_tmp_dir }} state=absent
 
-    - debug:
-        msg: "tidb-insight tarball: {{ fetch_dir }}/{{ archive_name }}"
+    - name: display the file path of collect_diagnosis tarball
+      debug:
+        msg: "collect_diagnosis tarball: {{ fetch_dir }}/{{ archive_name }}"
