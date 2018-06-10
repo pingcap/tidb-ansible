@@ -70,6 +70,7 @@
         method: POST
         status_code: 200
       when:
+        - groups['pd_servers'] | length >= 3
         - pd_leader_name == pd_name
         - not enable_tls|default(false)
 
@@ -82,6 +83,7 @@
         client_key: "{{ pd_cert_dir }}/pd-server-{{ ansible_host }}-key.pem"
         status_code: 200
       when:
+        - groups['pd_servers'] | length >= 3
         - pd_leader_name == pd_name
         - enable_tls|default(false)
 
@@ -89,6 +91,7 @@
       pause:
           seconds: 10
       when:
+        - groups['pd_servers'] | length >= 3
         - pd_leader_name == pd_name
 
     - name: check current PD leader
@@ -104,6 +107,7 @@
       delay: 10
       failed_when: false
       when:
+        - groups['pd_servers'] | length >= 3
         - pd_leader_name == pd_name
         - not enable_tls|default(false)
 
@@ -123,6 +127,7 @@
       delay: 10
       failed_when: false
       when:
+        - groups['pd_servers'] | length >= 3
         - pd_leader_name == pd_name
         - enable_tls|default(false)
 
