@@ -113,10 +113,8 @@ def import_dashboard_via_user_pass(api_url, user, password, dashboard):
         resp = urllib2.urlopen(req)
         data = json.load(resp)
         return data
-    except urllib2.HTTPError, error:
-        data = json.load(error)
-        return data
-
+    except urllib2.URLError, error:
+        return error.reason
 
 if __name__ == '__main__':
     for type_ in src['dashboards']:
@@ -127,14 +125,19 @@ if __name__ == '__main__':
 
         for dest in dests:
             dashboard = fill_dashboard_with_dest_config(dashboard, dest, type_)
-            print("[import] as <{}> to [{}]".format(
+            print("[import] <{}> to [{}]".format(
                 dashboard['title'], dest['name']), end='\t............. ')
             if 'user' in dest:
                 ret = import_dashboard_via_user_pass(dest['url'], dest['user'], dest['password'], dashboard)
             else:
                 ret = import_dashboard(dest['url'], dest['key'], dashboard)
-            print(ret['status'])
 
-            if ret['status'] != 'success':
-                print('  > ERROR: ', ret)
+            if isinstance(ret,dict):
+                if ret['status'] != 'success':
+                    print('ERROR: ', ret)
+                    raise RuntimeError
+                else:
+                    print(ret['status'])
+            else:
+                print('ERROR: ', ret)
                 raise RuntimeError
