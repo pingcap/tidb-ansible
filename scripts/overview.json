@@ -91,7 +91,7 @@
           "id": 76,
           "links": [],
           "pageSize": null,
-          "scroll": false,
+          "scroll": true,
           "showHeader": true,
           "sort": {
             "col": null,
@@ -257,7 +257,7 @@
           "id": 77,
           "links": [],
           "pageSize": null,
-          "scroll": false,
+          "scroll": true,
           "showHeader": true,
           "sort": {
             "col": null,
@@ -416,6 +416,94 @@
       "repeatRowId": null,
       "showTitle": true,
       "title": "Services Port Status",
+      "titleSize": "h6"
+    },
+    {
+      "collapse": true,
+      "height": 250,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "fill": 0,
+          "id": 80,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 12,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum (tidb_exporter_tidb_query_error) by (instance, target, label)",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "TiDB exporter query error",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": true,
+      "title": "TiDB exporter",
       "titleSize": "h6"
     },
     {
@@ -4173,7 +4261,7 @@
           "id": 57,
           "links": [],
           "pageSize": null,
-          "scroll": false,
+          "scroll": true,
           "showHeader": true,
           "sort": {
             "col": null,
@@ -4888,5 +4976,5 @@
   },
   "timezone": "browser",
   "title": "Test-Cluster-Overview",
-  "version": 33
+  "version": 68
 }
