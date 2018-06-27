@@ -3,6 +3,7 @@
 from __future__ import print_function, \
     unicode_literals
 
+import argparse
 import os
 import json
 import tarfile
@@ -39,8 +40,18 @@ def read_url(url):
         print("Reading URL %s error: %s" % (url, e))
         return None
 
-if __name__ == '__main__':
+def parse_opts():
+    parser = argparse.ArgumentParser(description="Export Grafana charts to PDF")
+    parser.add_argument("-t", "--time", action="store", default=None,
+                        help="Relative time from now, supported format is like: 2h, 4h. If not set, assume 3h by default.")
+    parser.add_argument("--time-from", action="store", default=None,
+                        help="Start timestamp of time range.")
+    parser.add_argument("--time-to", action="store", default=None,
+                        help="End timestamp of time range.")
+    return parser.parse_args()
 
+if __name__ == '__main__':
+    args = parse_opts()
     if not os.path.isdir(download_dir):
         os.makedirs(download_dir)
 
@@ -50,6 +61,16 @@ if __name__ == '__main__':
 
         for dashboard in dest['titles']:
             url = "{0}api/report/{1}?apitoken={2}".format(report_url, dest['titles'][dashboard].lower(), apikey)
+            if args.time:
+                url = "{0}&from=now-{1}&to=now".format(url, args.time)
+            elif args.time_from:
+                end_time = "now"
+                if args.time_to:
+                    end_time = args.time_to
+                url = "{0}&from={1}&to={2}".format(url, args.time_from, end_time)
+            else:
+                url = "{0}&from=now-3h&to=now".format(url)
+
             filename = "{0}.pdf".format(dest['titles'][dashboard])
 
             print("Downloading: ", filename)
