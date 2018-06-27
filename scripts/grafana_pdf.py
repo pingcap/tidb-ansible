@@ -5,6 +5,7 @@ from __future__ import print_function, \
 
 import argparse
 import os
+import time
 import json
 import tarfile
 import shutil
@@ -45,9 +46,9 @@ def parse_opts():
     parser.add_argument("-t", "--time", action="store", default=None,
                         help="Relative time from now, supported format is like: 2h, 4h. If not set, assume 3h by default.")
     parser.add_argument("--time-from", action="store", default=None,
-                        help="Start timestamp of time range.")
+                        help="Start timestamp of time range, format: '%Y-%m-%d %H:%M:%S'.")
     parser.add_argument("--time-to", action="store", default=None,
-                        help="End timestamp of time range.")
+                        help="End timestamp of time range, format: '%Y-%m-%d %H:%M:%S'.")
     return parser.parse_args()
 
 if __name__ == '__main__':
@@ -58,10 +59,11 @@ if __name__ == '__main__':
     if args.time:
         time_args = "&from=now-{0}&to=now".format(args.time)
     elif args.time_from:
+        start_time = int(time.mktime(time.strptime(args.time_from, "%Y-%m-%d %H:%M:%S")))
         end_time = "now"
         if args.time_to:
-            end_time = args.time_to
-        time_args = "&from={0}&to={1}".format(args.time_from, end_time)
+            end_time = int(time.mktime(time.strptime(args.time_to, "%Y-%m-%d %H:%M:%S")))
+        time_args = "&from={0}&to={1}".format(start_time, end_time)
     else:
         time_args = "&from=now-3h&to=now"
 
