@@ -51,6 +51,22 @@ def parse_opts():
                         help="End timestamp of time range, format: '%Y-%m-%d %H:%M:%S'.")
     return parser.parse_args()
 
+def parse_timestamp(time_string):
+    format_guess = [
+        "%Y-%m-%d %H:%M:%S",
+        "%Y-%m-%d %H:%M",
+        "%Y-%m-%d %H",
+        "%H:%M:%S",
+        "%H:%M",
+        "%H"
+    ]
+    for time_format in format_guess:
+        try:
+            return time.mktime(time.strptime(time_string, time_format))
+        except ValueError:
+            pass
+    raise ValueError("time data '%s' does not match any supported format." % time_string)
+
 if __name__ == '__main__':
     args = parse_opts()
     if not os.path.isdir(download_dir):
@@ -59,10 +75,10 @@ if __name__ == '__main__':
     if args.time:
         time_args = "&from=now-{0}&to=now".format(args.time)
     elif args.time_from:
-        start_time = int(time.mktime(time.strptime(args.time_from, "%Y-%m-%d %H:%M:%S")))
+        start_time = int(parse_timestamp(args.time_from))
         end_time = "now"
         if args.time_to:
-            end_time = int(time.mktime(time.strptime(args.time_to, "%Y-%m-%d %H:%M:%S")))
+            end_time = int(parse_timestamp(args.time_to))
         time_args = "&from={0}&to={1}".format(start_time, end_time)
     else:
         time_args = "&from=now-3h&to=now"
