@@ -61,6 +61,8 @@ def parse_timestamp(time_string):
         "%Y-%m-%d %H:%M:%S",
         "%Y-%m-%d %H:%M",
         "%Y-%m-%d %H",
+        "%Y-%m-%d",
+        "%m-%d",
         "%H:%M:%S",
         "%H:%M",
         "%H"
