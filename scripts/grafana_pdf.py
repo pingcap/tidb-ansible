@@ -28,6 +28,17 @@ def make_tarfile(output_filename, source_dir):
     with tarfile.open(output_filename, "w:gz") as tar:
         tar.add(source_dir, arcname=os.path.basename(source_dir))
 
+def read_url(url):
+    try:
+        f = urlreq.urlopen(url)
+        return f.read()
+    except HTTPError as e:
+        print("HTTP Error: %s" % e.read())
+        return e.read()
+    except URLError as e:
+        print("Reading URL %s error: %s" % (url, e))
+        return None
+
 if __name__ == '__main__':
 
     if not os.path.isdir(download_dir):
@@ -42,8 +53,7 @@ if __name__ == '__main__':
             filename = "{0}.pdf".format(dest['titles'][dashboard])
 
             print("Downloading: ", filename)
-            f = urlreq.urlopen(url)
-            data = f.read()
+            data = read_url(url)
             with open(os.path.join(download_dir, filename), "wb") as pdf:
                 pdf.write(data)
 
