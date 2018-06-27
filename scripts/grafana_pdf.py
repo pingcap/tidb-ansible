@@ -26,9 +26,11 @@ if not dests:
     with open("./dests.json") as fp:
         dests = json.load(fp)
 
+
 def make_tarfile(output_filename, source_dir):
     with tarfile.open(output_filename, "w:gz") as tar:
         tar.add(source_dir, arcname=os.path.basename(source_dir))
+
 
 def read_url(url):
     try:
@@ -41,15 +43,18 @@ def read_url(url):
         print("Reading URL %s error: %s" % (url, e))
         return None
 
+
 def parse_opts():
-    parser = argparse.ArgumentParser(description="Export Grafana charts to PDF")
+    parser = argparse.ArgumentParser(
+        description="Export Grafana charts to PDF")
     parser.add_argument("-t", "--time", action="store", default=None,
-                        help="Relative time from now, supported format is like: 2h, 4h. If not set, assume 3h by default.")
+                        help="Relative time to now, supported format is like: 2h, 4h. If not set, assume 3h by default.")
     parser.add_argument("--time-from", action="store", default=None,
                         help="Start timestamp of time range, format: '%Y-%m-%d %H:%M:%S'.")
     parser.add_argument("--time-to", action="store", default=None,
                         help="End timestamp of time range, format: '%Y-%m-%d %H:%M:%S'.")
     return parser.parse_args()
+
 
 def parse_timestamp(time_string):
     format_guess = [
@@ -65,7 +70,9 @@ def parse_timestamp(time_string):
             return time.mktime(time.strptime(time_string, time_format))
         except ValueError:
             pass
-    raise ValueError("time data '%s' does not match any supported format." % time_string)
+    raise ValueError(
+        "time data '%s' does not match any supported format." % time_string)
+
 
 if __name__ == '__main__':
     args = parse_opts()
@@ -88,7 +95,8 @@ if __name__ == '__main__':
         apikey = dest['apikey']
 
         for dashboard in dest['titles']:
-            url = "{0}api/report/{1}?apitoken={2}{3}".format(report_url, dest['titles'][dashboard].lower(), apikey, time_args)
+            url = "{0}api/report/{1}?apitoken={2}{3}".format(
+                report_url, dest['titles'][dashboard].lower(), apikey, time_args)
             filename = "{0}.pdf".format(dest['titles'][dashboard])
 
             print("Downloading: ", filename)
