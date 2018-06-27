@@ -1,13 +1,21 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 
 from __future__ import print_function, \
     unicode_literals
 
 import os
-import urllib2
 import json
 import tarfile
 import shutil
+
+try:
+    # For Python 2
+    import urllib2 as urlreq
+    from urllib2 import HTTPError, URLError
+except ImportError:
+    # For Python 3
+    import urllib.request as urlreq
+    from urllib.error import HTTPError, URLError
 
 dests = []
 download_dir = "grafana_pdf"
@@ -34,7 +42,7 @@ if __name__ == '__main__':
             filename = "{0}.pdf".format(dest['titles'][dashboard])
 
             print("Downloading: ", filename)
-            f = urllib2.urlopen(url)
+            f = urlreq.urlopen(url)
             data = f.read()
             with open(os.path.join(download_dir, filename), "wb") as pdf:
                 pdf.write(data)
