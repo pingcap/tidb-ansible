@@ -55,22 +55,22 @@ if __name__ == '__main__':
     if not os.path.isdir(download_dir):
         os.makedirs(download_dir)
 
+    if args.time:
+        time_args = "&from=now-{0}&to=now".format(args.time)
+    elif args.time_from:
+        end_time = "now"
+        if args.time_to:
+            end_time = args.time_to
+        time_args = "&from={0}&to={1}".format(args.time_from, end_time)
+    else:
+        time_args = "&from=now-3h&to=now"
+
     for dest in dests:
         report_url = dest['report_url']
         apikey = dest['apikey']
 
         for dashboard in dest['titles']:
-            url = "{0}api/report/{1}?apitoken={2}".format(report_url, dest['titles'][dashboard].lower(), apikey)
-            if args.time:
-                url = "{0}&from=now-{1}&to=now".format(url, args.time)
-            elif args.time_from:
-                end_time = "now"
-                if args.time_to:
-                    end_time = args.time_to
-                url = "{0}&from={1}&to={2}".format(url, args.time_from, end_time)
-            else:
-                url = "{0}&from=now-3h&to=now".format(url)
-
+            url = "{0}api/report/{1}?apitoken={2}{3}".format(report_url, dest['titles'][dashboard].lower(), apikey, time_args)
             filename = "{0}.pdf".format(dest['titles'][dashboard])
 
             print("Downloading: ", filename)
