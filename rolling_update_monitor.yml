@@ -38,14 +38,23 @@
     - node_exporter
 
   pre_tasks:
+    - name: check node_exporter existed
+      stat:
+        path: "{{ deploy_dir }}/bin/node_exporter"
+      register: node_exporter_binary_file
+
     - name: stop node_exporter by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_node_exporter.sh
-      when: process_supervision == 'supervise'
+      when:
+        - process_supervision == 'supervise'
+        - node_exporter_binary_file.stat.exists == True
 
     - name: stop node_exporter by systemd
       systemd: name=node_exporter-{{ node_exporter_port }}.service state=stopped
       become: true
-      when: process_supervision == 'systemd'
+      when:
+        - process_supervision == 'systemd'
+        - node_exporter_binary_file.stat.exists == True
 
     - name: wait for node_exporter down
       wait_for: host={{ ansible_host }} port={{ node_exporter_port }} state=stopped
@@ -83,12 +92,16 @@
 
     - name: stop blackbox_exporter by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_blackbox_exporter.sh
-      when: process_supervision == 'supervise' and  blackbox_exporter_configure_file.stat.exists == True
+      when:
+        - process_supervision == 'supervise'
+        - blackbox_exporter_configure_file.stat.exists == True
 
     - name: stop blackbox_exporter by systemd
       systemd: name=blackbox_exporter-{{ blackbox_exporter_port }}.service state=stopped
       become: true
-      when: process_supervision == 'systemd' and blackbox_exporter_configure_file.stat.exists == True
+      when:
+        - process_supervision == 'systemd' and 
+        - blackbox_exporter_configure_file.stat.exists == True
 
     - name: wait for blackbox_exporter down
       wait_for: host={{ ansible_host }} port={{ blackbox_exporter_port }} state=stopped
@@ -126,12 +139,16 @@
 
     - name: stop alertmanager by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_alertmanager.sh
-      when: process_supervision == 'supervise' and  alertmanager_configure_file.stat.exists == True
+      when:
+        - process_supervision == 'supervise' 
+        - alertmanager_configure_file.stat.exists == True
 
     - name: stop alertmanager by systemd
       systemd: name=alertmanager-{{ alertmanager_port }}.service state=stopped
       become: true
-      when: process_supervision == 'systemd' and alertmanager_configure_file.stat.exists == True
+      when:
+        - process_supervision == 'systemd' 
+        - alertmanager_configure_file.stat.exists == True
 
     - name: wait for alertmanager down
       wait_for: host={{ ansible_host }} port={{ alertmanager_port }} state=stopped
@@ -274,14 +291,18 @@
 
     - name: stop grafana_collector by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      when: process_supervision == 'supervise' and  grafana_collector_config_file.stat.exists == True
+      when:
+        - process_supervision == 'supervise'   
+        - grafana_collector_config_file.stat.exists == True
       with_items:
         - grafana_collector
 
     - name: stop grafana_collector by systemd
       systemd: name=grafana_collector-{{ grafana_collector_port }}.service state=stopped
       become: true
-      when: process_supervision == 'systemd' and  grafana_collector_config_file.stat.exists == True
+      when:
+        - process_supervision == 'systemd' 
+        - grafana_collector_config_file.stat.exists == True
 
     - name: wait for grafana_collector down
       wait_for: host={{ ansible_host }} port={{ grafana_collector_port }} state=stopped
