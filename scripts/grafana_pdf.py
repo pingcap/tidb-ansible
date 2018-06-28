@@ -50,9 +50,9 @@ def parse_opts():
     parser.add_argument("-t", "--time", action="store", default=None,
                         help="Relative time to now, supported format is like: 2h, 4h. If not set, assume 3h by default.")
     parser.add_argument("--time-from", action="store", default=None,
-                        help="Start timestamp of time range, format: '%Y-%m-%d %H:%M:%S'.")
+                        help="Start timestamp of time range, format: '%%Y-%%m-%%d %%H:%%M:%%S'.")
     parser.add_argument("--time-to", action="store", default=None,
-                        help="End timestamp of time range, format: '%Y-%m-%d %H:%M:%S'.")
+                        help="End timestamp of time range, format: '%%Y-%%m-%%d %%H:%%M:%%S'.")
     return parser.parse_args()
 
 
