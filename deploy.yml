@@ -30,11 +30,19 @@
   roles:
     - check_config_dynamic
 
-- name: deploying monitoring agent
+- name: deploying node_exporter
   hosts: monitored_servers
+  tags:
+    - node_exporter
   roles:
-    - { role: node_exporter, when: "groups.monitoring_servers | default(False)" }
-    - { role: blackbox_exporter, when: "groups.monitoring_servers | default(False)" }
+    - node_exporter
+
+- name: deploying blackbox_exporter
+  hosts: monitored_servers
+  tags:
+    - blackbox_exporter
+  roles:
+    - blackbox_exporter
 
 - name: deploying diagnostic tools
   hosts: monitored_servers
@@ -45,17 +53,29 @@
 
 - name: deploying alertmanager
   hosts: alertmanager_servers
+  tags:
+    - alertmanager
   roles:
     - alertmanager
 
-- name: deploying monitoring server
+- name: deploying pushgateway
   hosts: monitoring_servers
+  tags:
+    - pushgateway
   roles:
     - pushgateway
+
+- name: deploying prometheus
+  hosts: monitoring_servers
+  tags:
+    - prometheus
+  roles:
     - prometheus
 
 - name: deploying grafana
   hosts: grafana_servers
+  tags:
+    - grafana
   roles:
     - grafana
     - grafana_collector
