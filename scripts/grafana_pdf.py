@@ -69,7 +69,8 @@ def parse_timestamp(time_string):
     ]
     for time_format in format_guess:
         try:
-            return time.mktime(time.strptime(time_string, time_format))
+            # Grafana API's timestamp is in ms
+            return time.mktime(time.strptime(time_string, time_format)) * 1000
         except ValueError:
             pass
     raise ValueError(
