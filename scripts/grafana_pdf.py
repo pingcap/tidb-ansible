@@ -37,7 +37,7 @@ def read_url(url):
         f = urlreq.urlopen(url)
         return f.read()
     except HTTPError as e:
-        print("HTTP Error: %s" % e.read())
+        print("HTTP Error: %s" % e.getcode())
         return e.read()
     except URLError as e:
         print("Reading URL %s error: %s" % (url, e))
