@@ -46,7 +46,7 @@
   },
   "editable": true,
   "gnetId": null,
-  "graphTooltip": 0,
+  "graphTooltip": 1,
   "hideControls": false,
   "id": null,
   "links": [
@@ -976,7 +976,7 @@
     },
     {
       "collapse": true,
-      "height": "300",
+      "height": "350",
       "panels": [
         {
           "aliasColors": {},
@@ -995,9 +995,10 @@
             "rightSide": true,
             "show": true,
             "sideWidth": 300,
+            "sort": "max",
+            "sortDesc": true,
             "total": false,
-            "values": true,
-            "sortDesc": true
+            "values": true
           },
           "lines": true,
           "linewidth": 1,
@@ -1021,18 +1022,18 @@
               "refId": "A"
             },
             {
-              "refId": "B",
               "expr": "sum(rate(tikv_thread_cpu_seconds_total{job=\"$store\",name=~\"cop_normal.*\"}[1m]))",
-              "intervalFactor": 2,
               "format": "time_series",
-              "legendFormat": "cop-normal"
+              "intervalFactor": 2,
+              "legendFormat": "cop-normal",
+              "refId": "B"
             },
             {
-              "refId": "C",
               "expr": "sum(rate(tikv_thread_cpu_seconds_total{job=\"$store\",name=~\"cop_low.*\"}[1m]))",
-              "intervalFactor": 2,
               "format": "time_series",
-              "legendFormat": "cop-low"
+              "intervalFactor": 2,
+              "legendFormat": "cop-low",
+              "refId": "C"
             }
           ],
           "thresholds": [],
@@ -1088,6 +1089,8 @@
             "rightSide": true,
             "show": true,
             "sideWidth": 300,
+            "sort": "max",
+            "sortDesc": true,
             "total": false,
             "values": true
           },
@@ -1191,24 +1194,42 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": " sum(rate(tikv_coprocessor_request_duration_seconds_sum{job=\"$store\",req=\"select\"}[1m])) / sum(rate(tikv_coprocessor_request_duration_seconds_count{job=\"$store\",req=\"select\"}[1m]))",
+              "expr": " sum(rate(tikv_coprocessor_request_duration_seconds_sum{job=\"$store\"}[1m])) by (req) / sum(rate(tikv_coprocessor_request_duration_seconds_count{job=\"$store\"}[1m])) by (req)",
               "format": "time_series",
+              "interval": "",
               "intervalFactor": 2,
-              "legendFormat": "table",
+              "legendFormat": "{{req}}-avg",
               "refId": "A"
             },
             {
-              "expr": " sum(rate(tikv_coprocessor_request_duration_seconds_sum{job=\"$store\",req=\"index\"}[1m])) / sum(rate(tikv_coprocessor_request_duration_seconds_count{job=\"$store\",req=\"index\"}[1m]))",
+              "expr": "histogram_quantile(0.9999, sum(rate(tikv_coprocessor_request_duration_seconds_bucket{job=\"$store\"}[1m])) by (le,req))",
               "format": "time_series",
+              "hide": false,
               "intervalFactor": 2,
-              "legendFormat": "index",
-              "refId": "B"
+              "legendFormat": "{{req}}-99.99%",
+              "refId": "C"
+            },
+            {
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_coprocessor_request_duration_seconds_bucket{job=\"$store\"}[1m])) by (le,req))",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 2,
+              "legendFormat": "{{req}}-99%",
+              "refId": "D"
+            },
+            {
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_coprocessor_request_duration_seconds_bucket{job=\"$store\"}[1m])) by (le,req))",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 2,
+              "legendFormat": "{{req}}-95%",
+              "refId": "E"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Request duration (average)",
+          "title": "Request Duration",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -1248,7 +1269,7 @@
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "fill": 1,
-          "id": 6,
+          "id": 219,
           "legend": {
             "alignAsTable": true,
             "avg": false,
@@ -1276,194 +1297,39 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_coprocessor_request_duration_seconds_bucket{job=\"$store\",req=\"select\"}[1m])) by (le))",
+              "expr": " sum(rate(tikv_coprocessor_request_wait_seconds_sum{job=\"$store\"}[1m])) by (req) / sum(rate(tikv_coprocessor_request_wait_seconds_count{job=\"$store\"}[1m])) by (req)",
               "format": "time_series",
+              "interval": "",
               "intervalFactor": 2,
-              "legendFormat": "table",
+              "legendFormat": "{{req}}-avg",
               "refId": "A"
             },
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_coprocessor_request_duration_seconds_bucket{job=\"$store\",req=\"index\"}[1m])) by (le))",
+              "expr": "histogram_quantile(0.9999, sum(rate(tikv_coprocessor_request_wait_seconds_bucket{job=\"$store\"}[1m])) by (le,req))",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "index",
-              "refId": "B"
+              "legendFormat": "{{req}}-99.99%",
+              "refId": "C"
+            },
+            {
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_coprocessor_request_wait_seconds_bucket{job=\"$store\"}[1m])) by (le,req))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "{{req}}-99%",
+              "refId": "D"
+            },
+            {
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_coprocessor_request_wait_seconds_bucket{job=\"$store\"}[1m])) by (le,req))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "{{req}}-95%",
+              "refId": "E"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Request duration (99%)",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "s",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
-          "fill": 1,
-          "id": 7,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": true,
-            "max": true,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "sideWidth": 300,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": " sum(rate(tikv_coprocessor_request_wait_seconds_sum{job=\"$store\",req=\"select\"}[1m])) /  sum(rate(tikv_coprocessor_request_wait_seconds_count{job=\"$store\",req=\"select\"}[1m]))",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "table",
-              "refId": "A"
-            },
-            {
-              "expr": " sum(rate(tikv_coprocessor_request_wait_seconds_sum{job=\"$store\",req=\"index\"}[1m])) /  sum(rate(tikv_coprocessor_request_wait_seconds_count{job=\"$store\",req=\"index\"}[1m]))",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "index",
-              "refId": "B"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Wait duration (average)",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "s",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
-          "fill": 1,
-          "id": 8,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": true,
-            "max": true,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "sideWidth": 300,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_coprocessor_request_wait_seconds_bucket{job=\"$store\",req=\"select\"}[1m])) by (le))",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "table",
-              "refId": "A"
-            },
-            {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_coprocessor_request_wait_seconds_bucket{job=\"$store\",req=\"index\"}[1m])) by (le))",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "index",
-              "refId": "B"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Wait duration (99%)",
+          "title": "Wait Duration",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -1531,109 +1397,38 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": " sum(rate(tikv_coprocessor_request_handle_seconds_sum{job=\"$store\",req=\"select\"}[1m])) /  sum(rate(tikv_coprocessor_request_handle_seconds_count{job=\"$store\",req=\"select\"}[1m]))",
+              "expr": " sum(rate(tikv_coprocessor_request_handle_seconds_sum{job=\"$store\"}[1m])) by (req) / sum(rate(tikv_coprocessor_request_handle_seconds_count{job=\"$store\"}[1m])) by (req)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "table",
+              "legendFormat": "{{req}}-avg",
               "refId": "A"
             },
             {
-              "expr": " sum(rate(tikv_coprocessor_request_handle_seconds_sum{job=\"$store\",req=\"index\"}[1m])) /  sum(rate(tikv_coprocessor_request_handle_seconds_count{job=\"$store\",req=\"index\"}[1m]))",
+              "expr": "histogram_quantile(0.9999, sum(rate(tikv_coprocessor_request_handle_seconds_bucket[1m])) by (le,req))",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "index",
+              "legendFormat": "{{req}}-99.99%",
               "refId": "B"
+            },
+            {
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_coprocessor_request_handle_seconds_bucket[1m])) by (le,req))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "{{req}}-99%",
+              "refId": "C"
+            },
+            {
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_coprocessor_request_handle_seconds_bucket[1m])) by (le,req))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "{{req}}-95%",
+              "refId": "D"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Handle duration (average)",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "s",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
-          "fill": 1,
-          "id": 10,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": true,
-            "max": true,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "sideWidth": 300,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_coprocessor_request_handle_seconds_bucket{job=\"$store\",req=\"select\"}[1m])) by (le))",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "table",
-              "refId": "A"
-            },
-            {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_coprocessor_request_handle_seconds_bucket{job=\"$store\",req=\"index\"}[1m])) by (le))",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "index",
-              "refId": "B"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Handle duration (99%)",
+          "title": "Handle Duration",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -2055,24 +1850,38 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": " sum(rate(tikv_coprocessor_scan_keys_sum{job=\"$store\",req=\"select\"}[1m])) / sum(rate(tikv_coprocessor_scan_keys_count{job=\"$store\",req=\"select\"}[1m]))",
+              "expr": " sum(rate(tikv_coprocessor_scan_keys_sum{job=\"$store\"}[1m])) by (req) / sum(rate(tikv_coprocessor_scan_keys_count{job=\"$store\"}[1m])) by (req)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "table",
+              "legendFormat": "{{req}}-avg",
               "refId": "A"
             },
             {
-              "expr": " sum(rate(tikv_coprocessor_scan_keys_sum{job=\"$store\",req=\"index\"}[1m])) / sum(rate(tikv_coprocessor_scan_keys_count{job=\"$store\",req=\"index\"}[1m]))",
+              "expr": "histogram_quantile(0.9999, avg(rate(tikv_coprocessor_scan_keys_bucket{job=\"$store\"}[1m])) by (le, req))  ",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "index",
+              "legendFormat": "{{req}}-99.99%",
               "refId": "B"
+            },
+            {
+              "expr": "histogram_quantile(0.99, avg(rate(tikv_coprocessor_scan_keys_bucket{job=\"$store\"}[1m])) by (le, req))  ",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "{{req}}-99%",
+              "refId": "C"
+            },
+            {
+              "expr": "histogram_quantile(0.95, avg(rate(tikv_coprocessor_scan_keys_bucket{job=\"$store\"}[1m])) by (le, req))  ",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "{{req}}-95%",
+              "refId": "D"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Scan keys (average)",
+          "title": "Scan Keys",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -2112,92 +1921,6 @@
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "fill": 1,
-          "id": 37,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": true,
-            "max": true,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "sideWidth": 300,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_coprocessor_scan_keys_bucket{job=\"$store\",req=\"select\"}[1m])) by (le))",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "table",
-              "refId": "A"
-            },
-            {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_coprocessor_scan_keys_bucket{job=\"$store\",req=\"index\"}[1m])) by (le))",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "index",
-              "refId": "B"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Scan keys (99%)",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
-          "fill": 1,
-          "height": "600",
           "id": 38,
           "legend": {
             "alignAsTable": true,
@@ -2209,7 +1932,9 @@
             "min": false,
             "rightSide": true,
             "show": true,
-            "sideWidth": 400,
+            "sideWidth": null,
+            "sort": "max",
+            "sortDesc": true,
             "total": false,
             "values": true
           },
@@ -2245,7 +1970,355 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Scan details",
+          "title": "Scan Details",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "fill": 1,
+          "id": 220,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "hideEmpty": true,
+            "hideZero": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": null,
+            "sort": "max",
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(tikv_coprocessor_scan_details{req=\"select\",job=\"$store\"}[1m])) by (cf,tag,req)",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "{{cf}}-{{tag}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Table Scan Details by CF",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "fill": 1,
+          "id": 221,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "hideEmpty": true,
+            "hideZero": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": null,
+            "sort": "max",
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(tikv_coprocessor_scan_details{req=\"index\",job=\"$store\"}[1m])) by (cf,tag,req)",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "{{cf}}-{{tag}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Index Scan Details by CF",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "fill": 1,
+          "id": 222,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "hideEmpty": true,
+            "hideZero": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": null,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "key_skipped",
+              "yaxis": 2
+            }
+          ],
+          "spaceLength": 10,
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(tikv_coprocessor_rocksdb_perf{req=\"select\",metric=\"internal_delete_skipped_count\"}[1m])) by (metric)",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "delete_skipped",
+              "refId": "A"
+            },
+            {
+              "expr": "sum(rate(tikv_coprocessor_rocksdb_perf{req=\"select\",metric=\"internal_key_skipped_count\"}[1m])) by (metric)",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "key_skipped",
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Table Scan Perf Statistics",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "fill": 1,
+          "id": 223,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "hideEmpty": true,
+            "hideZero": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": null,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "key_skipped",
+              "yaxis": 2
+            }
+          ],
+          "spaceLength": 10,
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(tikv_coprocessor_rocksdb_perf{req=\"index\",metric=\"internal_delete_skipped_count\"}[1m])) by (metric)",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "delete_skipped",
+              "refId": "A"
+            },
+            {
+              "expr": "sum(rate(tikv_coprocessor_rocksdb_perf{req=\"index\",metric=\"internal_key_skipped_count\"}[1m])) by (metric)",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "key_skipped",
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Index Scan Perf Statistics",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -10616,5 +10689,5 @@
   },
   "timezone": "",
   "title": "Test-Cluster-TiKV-Instances",
-  "version": 2
+  "version": 1
 }
