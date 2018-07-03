@@ -157,6 +157,10 @@
     - svc
   when: process_supervision == 'supervise'
 
+- name: cp tidb-insight
+  shell: >
+    cp -rv {{ downloads_dir }}/tidb-insight-* "{{ playbook_dir }}/scripts/insight"
+
 - name: clean up download dir
   shell: >
     cd "{{ downloads_dir }}" && find . -mindepth 1 -maxdepth 1 -type d -exec rm -rf {} \;
