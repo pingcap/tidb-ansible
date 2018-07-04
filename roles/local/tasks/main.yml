@@ -12,6 +12,7 @@
   - "{{ downloads_dir }}"
   - "{{ resources_dir }}"
   - "{{ resources_dir }}/bin"
+  - "{{ playbook_dir }}/scripts/insight/"
 
 - name: create cert directory
   file: path="{{ cert_dir }}" state=directory mode=0755
@@ -159,7 +160,7 @@
 
 - name: cp tidb-insight
   shell: >
-    cp -rv {{ downloads_dir }}/tidb-insight-* "{{ playbook_dir }}/scripts/insight"
+     cp -rv {{ downloads_dir }}/tidb-insight-*/* "{{ playbook_dir }}/scripts/insight/"
 
 - name: clean up download dir
   shell: >
