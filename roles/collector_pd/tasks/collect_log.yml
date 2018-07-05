@@ -9,7 +9,7 @@
   when: log_dir_st.stat.isdir is not defined or log_dir_st.stat.isdir == False
 
 - name: collect pd log
-  shell: "python {{ collector_dir }}/scripts/insight/insight.py -l --log-dir={{ pd_log_dir }} --log-prefix=pd --log-retention={{ collect_log_recent_hours | default('2') }} --output={{ pd_log_dir }} --alias={{ inventory_hostname }} --compress"
+  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py -l --log-dir={{ pd_log_dir }} --log-prefix=pd --log-retention={{ collect_log_recent_hours | default('2') }} --output={{ pd_log_dir }} --alias={{ inventory_hostname }} --compress"
 
 - name: fetch pd log tarball with bandwidth limit
   delegate_to: localhost
