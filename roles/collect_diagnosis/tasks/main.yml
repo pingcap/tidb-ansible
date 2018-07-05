@@ -1,12 +1,8 @@
 ---
 
-- name: deploy tidb-insight scripts
-  copy: src="{{ script_dir }}/{{ item }}" dest="{{ deploy_dir }}/scripts/" mode=0644
-  with_items:
-    - tidb-insight.tar.gz
-
 - name: uncompress tidb-insight scripts
-  shell: tar xzf tidb-insight.tar.gz && mv tidb-insight-* insight
-  args:
-    chdir: "{{ deploy_dir }}/scripts/"
-    warn: no
+  unarchive: >
+    mode=0755
+    dest={{ deploy_dir }}/scripts/
+    src={{ downloads_dir }}/tidb-insight-v0.2.1-1-gc066a0e.tar.gz
+
