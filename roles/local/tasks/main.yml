@@ -12,7 +12,6 @@
   - "{{ downloads_dir }}"
   - "{{ resources_dir }}"
   - "{{ resources_dir }}/bin"
-  - "{{ playbook_dir }}/scripts/insight/"
 
 - name: create cert directory
   file: path="{{ cert_dir }}" state=directory mode=0755
@@ -80,6 +79,20 @@
   retries: 4
   delay: "{{ retry_stagger | random + 3 }}"
   with_items: "{{ common_packages }}"
+  when: has_outbound_network
+
+- name: download diagnosis tools
+  get_url:
+    url: "{{ item.url }}"
+    dest: "{{ downloads_dir }}/{{ item.name }}-{{ item.version }}.tar.gz"
+    checksum: "{{ item.checksum | default(omit) }}"
+    force: yes
+    validate_certs: no
+  register: get_url_result
+  until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
+  retries: 4
+  delay: "{{ retry_stagger | random + 3 }}"
+  with_items: "{{ diagnosis_packages }}"
   when: has_outbound_network
 
 - name: download cfssl binary
@@ -160,7 +173,7 @@
 
 - name: cp tidb-insight
   shell: >
-     cp -rv {{ downloads_dir }}/tidb-insight-*/* "{{ playbook_dir }}/scripts/insight/"
+     cp -v {{ downloads_dir }}/tidb-insight-*.tar.gz "{{ script_dir }}/tidb-insight.tar.gz"
 
 - name: clean up download dir
   shell: >
