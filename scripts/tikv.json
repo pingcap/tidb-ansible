@@ -8180,7 +8180,7 @@
           "lines": true,
           "linewidth": 1,
           "links": [],
-          "nullPointMode": "null",
+          "nullPointMode": "null as zero",
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -8192,7 +8192,8 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_storage_command_total{type=\"gc\"}[1m]))",
+              "expr": "sum(rate(tikv_gcworker_gc_tasks[1m]))",
+              "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "total",
               "metric": "tikv_storage_command_total",
@@ -8201,17 +8202,31 @@
             },
             {
               "expr": "sum(rate(tikv_storage_gc_skipped_counter[1m]))",
+              "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "skipped",
               "metric": "tikv_storage_gc_skipped_counter",
               "refId": "B",
               "step": 4
+            },
+            {
+              "expr": "sum(rate(tikv_gcworker_gc_task_fail[1m]))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "failed",
+              "refId": "C"
+            },
+            {
+              "expr": "sum(rate(tikv_gc_worker_too_busy[1m]))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "refId": "D"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "GC Commands",
+          "title": "GC Tasks",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -8232,6 +8247,191 @@
               "logBase": 1,
               "max": null,
               "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "decimals": 1,
+          "fill": 1,
+          "id": 2224,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 250,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null as zero",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "histogram_quantile(1, sum(rate(tikv_gcworker_gc_task_duration_bucket[1m])) by (le))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "max",
+              "metric": "tikv_storage_command_total",
+              "refId": "A",
+              "step": 4
+            },
+            {
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_gcworker_gc_task_duration_bucket[1m])) by (le))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "99%",
+              "metric": "tikv_storage_gc_skipped_counter",
+              "refId": "B",
+              "step": 4
+            },
+            {
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_gcworker_gc_task_duration_bucket[1m])) by (le))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "95%",
+              "refId": "C"
+            },
+            {
+              "expr": "sum(rate(tikv_gcworker_gc_task_duration_sum[1m])) / sum(rate(tikv_gcworker_gc_task_duration_count[1m])) ",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "average",
+              "refId": "D"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "GC Tasks Duration",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "s",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "decimals": 1,
+          "fill": 1,
+          "id": 2225,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 250,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null as zero",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(tikv_gcworker_gc_keys{cf=\"write\"}[1m])) by (tag)",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "{{tag}}",
+              "metric": "tikv_storage_command_total",
+              "refId": "A",
+              "step": 4
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "GC Keys (write_cf)",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
               "show": true
             },
             {
@@ -8284,6 +8484,7 @@
           "targets": [
             {
               "expr": "sum(rate(tidb_tikvclient_gc_action_result_total[1m])) by (type)",
+              "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
               "metric": "",
@@ -8294,7 +8495,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "GC Actions Result",
+          "title": "TiDB GC Actions Result",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -8368,6 +8569,7 @@
           "targets": [
             {
               "expr": "sum(rate(tidb_tikvclient_gc_worker_actions_total[1m])) by (type)",
+              "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
               "metric": "",
@@ -8378,7 +8580,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "GC Worker Actions",
+          "title": "TiDB GC Worker Actions",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -8452,6 +8654,7 @@
           "targets": [
             {
               "expr": "histogram_quantile(1.0, sum(rate(tidb_tikvclient_gc_seconds_bucket[1m])) by (instance, le))",
+              "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
               "refId": "A",
@@ -8461,7 +8664,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "gc Seconds",
+          "title": "TiDB GC Seconds",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -8535,6 +8738,7 @@
           "targets": [
             {
               "expr": "sum(rate(tidb_tikvclient_gc_failure_total[1m])) by (type)",
+              "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
               "metric": "",
@@ -8545,7 +8749,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "gc failure",
+          "title": "TiDB GC failure",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -14427,6 +14631,6 @@
     ]
   },
   "timezone": "browser",
-  "title": "Test-Cluster-TiKV",
-  "version": 1
+  "title": "Test-Cluster-TiKV-master",
+  "version": 2
 }
