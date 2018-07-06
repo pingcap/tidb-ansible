@@ -1,6 +1,8 @@
 ---
 
-- name: deploy collect-log.py script
-  copy: src="{{ script_dir }}/{{ item }}" dest="{{ deploy_dir }}/scripts/" mode=0755
-  with_items:
-    - collect-log.py
+- name: uncompress tidb-insight scripts
+  unarchive: >
+    mode=0755
+    dest={{ deploy_dir }}/scripts/
+    src={{ downloads_dir }}/tidb-insight-v0.2.1-1-gc066a0e.tar.gz
+
