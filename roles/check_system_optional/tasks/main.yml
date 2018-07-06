@@ -129,15 +129,15 @@
     - monitor_disk_alert
     - "'monitoring_servers' in group_names"
 
-- name: deploy check_cpufreq script
+- name: Deploy check_cpufreq script
   copy: src="{{ script_dir }}/check/check_cpufreq.py" dest="{{ deploy_dir }}/check_cpufreq.py" mode=0755
 
 - name: Preflight check - Check CPUfreq governors available in the kernel
-  shell: "python {{ deploy_dir }}/scripts/check_cpufreq.py --available_governors"
+  shell: "python {{ deploy_dir }}/check_cpufreq.py --available_governors"
   register: cpufreq_available_governors
 
 - name: Preflight check - Check the currently active governor
-  shell: "python {{ deploy_dir }}/scripts/check_cpufreq.py --current_governor"
+  shell: "python {{ deploy_dir }}/check_cpufreq.py --current_governor"
   register: cpufreq_current_governor
 
 - name: Preflight check - Fail when CPU frequency governor is not set to performance mode
@@ -146,3 +146,6 @@
   when:
     - cpufreq_available_governors.stdout.find("performance") != -1
     - cpufreq_current_governor.stdout.find("performance") == -1
+
+- name: Clean check_cpufreq script
+  file: path={{ deploy_dir }}/check_cpufreq.py state=absent
