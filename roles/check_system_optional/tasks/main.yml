@@ -133,11 +133,11 @@
   copy: src="{{ script_dir }}/check/check_cpufreq.py" dest="{{ deploy_dir }}/check_cpufreq.py" mode=0755
 
 - name: Preflight check - Check CPUfreq governors available in the kernel
-  shell: "python {{ deploy_dir }}/check_cpufreq.py --available_governors"
+  shell: "python {{ deploy_dir }}/check_cpufreq.py --available-governors"
   register: cpufreq_available_governors
 
 - name: Preflight check - Check the currently active governor
-  shell: "python {{ deploy_dir }}/check_cpufreq.py --current_governor"
+  shell: "python {{ deploy_dir }}/check_cpufreq.py --current-governor"
   register: cpufreq_current_governor
 
 - name: Preflight check - Fail when CPU frequency governor is not set to performance mode

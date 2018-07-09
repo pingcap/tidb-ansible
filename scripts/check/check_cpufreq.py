@@ -28,9 +28,9 @@ def get_file_content(path, default=None, strip=True):
 def parse_opts():
     parser = argparse.ArgumentParser(
         description="Check Linux system CPUfreq governor.")
-    parser.add_argument("--available_governors", action="store_true", default=False,
+    parser.add_argument("--available-governors", action="store_true", default=False,
                         help="Show the CPUfreq governors available in the kernel.")
-    parser.add_argument("--current_governor", action="store_true", default=False,
+    parser.add_argument("--current-governor", action="store_true", default=False,
                         help="Show the currently active governor.")
 
     return parser.parse_args()
@@ -54,10 +54,10 @@ if __name__ == '__main__':
     available_governors = get_file_content(sysfs_cpufreq_available_governors)
     current_governor = get_file_content(sysfs_cpufreq_governor)
 
-    if args.available_governors:   
+    if args.available-governors:   
         print(available_governors)
         sys.exit()
 
-    if args.current_governor:
+    if args.current-governor:
         print(current_governor)
         sys.exit()
