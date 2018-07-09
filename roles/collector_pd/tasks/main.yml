@@ -11,3 +11,25 @@
     - "{{ fetch_tmp_dir }}/{{ service_host }}"
 
 - include_tasks: collect_log.yml
+
+- name: compress collected data
+  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --compress --output={{ deploy_dir }} --alias={{ inventory_hostname }}"
+
+- name: fetch pd diagnosis tarball with bandwidth limit
+  delegate_to: localhost
+  shell: "scp -P {{ ansible_port|default(22) }} -l {{ collect_bandwidth_limit|default('10000') }} -o StrictHostKeyChecking=no {{ service_host }}:{{ deploy_dir }}/{{ inventory_hostname }}.tar.gz {{ fetch_tmp_dir }}/{{ service_host }}/pd_{{ inventory_hostname }}.tar.gz"
+  when: enable_bandwidth_limit|default(true)
+
+- name: fetch pd diagnosis tarball without bandwidth limit
+  fetch:
+    src: "{{ deploy_dir }}/{{ inventory_hostname }}.tar.gz"
+    dest: "{{ fetch_tmp_dir }}/{{ service_host }}/pd_{{ inventory_hostname }}.tar.gz"
+    flat: yes
+  when: not enable_bandwidth_limit|default(true)
+
+- name: remove pd temporary diagnosis tarball
+  file:
+    path: "{{ deploy_dir }}/{{ item }}"
+    state: absent
+  with_items:
+    - "{{ inventory_hostname }}.tar.gz"
