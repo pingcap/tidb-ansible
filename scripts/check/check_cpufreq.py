@@ -54,10 +54,10 @@ if __name__ == '__main__':
     available_governors = get_file_content(sysfs_cpufreq_available_governors)
     current_governor = get_file_content(sysfs_cpufreq_governor)
 
-    if args.available-governors:   
+    if args.available_governors:   
         print(available_governors)
         sys.exit()
 
-    if args.current-governor:
+    if args.current_governor:
         print(current_governor)
         sys.exit()
