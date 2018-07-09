@@ -1,12 +1,12 @@
 ---
 
 - name: check pd config directory
-  stat: path={{ tikv_conf_dir }} get_md5=false get_checksum=false
+  stat: path={{ tikv_conf_dir | default({{ deploy_dir }}/conf) }} get_md5=false get_checksum=false
   register: conf_dir_st
 
 - fail:
-    msg: "{{ tikv_conf_dir }} must exist and is a directory"
+    msg: "{{ tikv_conf_dir | default({{ deploy_dir }}/conf) }} must exist and is a directory"
   when: conf_dir_st.stat.isdir is not defined or conf_dir_st.stat.isdir == False
 
 - name: collect tikv config
-  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py -l --config-dir={{ tikv_conf_dir }} --config-prefix=pd --output={{ deploy_dir }} --alias={{ inventory_hostname }}"
+  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py -l --config-dir={{ tikv_conf_dir | default({{ deploy_dir }}/conf) }} --config-prefix=pd --output={{ deploy_dir }} --alias={{ inventory_hostname }}"
