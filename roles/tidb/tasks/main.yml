@@ -26,11 +26,6 @@
 - name: generate dynamic config
   set_fact:
     tidb_conf_generated:
-      status:
-        metrics-addr: >-
-          {{ hostvars[groups.monitoring_servers[0]].ansible_host | default(hostvars[groups.monitoring_servers[0]].inventory_hostname) ~ ':' ~
-           (hostvars.get(groups.monitoring_servers.0).pushgateway_port | default('9091')) |
-           default('') }}
       security:
         cluster-ssl-ca: >-
           {%- if enable_tls|default(false) -%}{{ tidb_cert_dir }}/ca.pem{%- else -%}{%- endif -%}
