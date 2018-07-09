@@ -11,6 +11,7 @@
     - "{{ fetch_tmp_dir }}/{{ service_host }}"
 
 - include_tasks: collect_log.yml
+- include_tasks: collect_config.yml
 
 - name: compress collected data
   shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --compress --output={{ deploy_dir }} --alias={{ inventory_hostname }}"
