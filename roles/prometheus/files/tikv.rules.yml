@@ -2,14 +2,14 @@ groups:
 - name: alert.rules
   rules:
   - alert: TiKV_memory_used_too_fast
-    expr: (node_memory_MemAvailable offset 5m) - node_memory_MemAvailable > 5*1024*1024*1024
+    expr: process_resident_memory_bytes{job=~"tikv.*"} - (process_resident_memory_bytes{job=~"tikv.*"} offset 5m) > 5*1024*1024*1024
     for: 5m
     labels:
       env: ENV_LABELS_ENV
       level: emergency
-      expr: (node_memory_MemAvailable offset 5m) - node_memory_MemAvailable > 5*1024*1024*1024
+      expr: process_resident_memory_bytes{job=~"tikv.*"} - (process_resident_memory_bytes{job=~"tikv.*"} offset 5m) > 5*1024*1024*1024
     annotations:
-      description: 'alert: instance: {{ $labels.instance }}  values: {{ $value }}'
+      description: 'alert: instance: {{ $labels.instance }} job: {{ $labels.job }} values: {{ $value }}'
       value: '{{ $value }}'
       summary: TiKV memory used too fast
 
