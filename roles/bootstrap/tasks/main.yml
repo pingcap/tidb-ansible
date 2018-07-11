@@ -8,11 +8,6 @@
   group_by: key="{{ ansible_distribution }}-{{ ansible_distribution_version }}"
   changed_when: false
 
-- name: Set deploy_user - set ansible_user as default
-  set_fact:
-    deploy_user: "{{ ansible_user }}"
-  when: deploy_user is not defined
-
 - name: Set deploy_dir if not presented
   set_fact: deploy_dir="/home/{{ deploy_user }}/deploy"
   when: deploy_dir is not defined

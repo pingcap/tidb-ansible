@@ -56,11 +56,6 @@
     - "'monitoring_servers' in group_names"
     - ansible_memtotal_mb < monitor_min_ram|int
 
-- name: Set deploy_user - set ansible_user as default
-  set_fact:
-    deploy_user: "{{ ansible_user }}"
-  when: deploy_user is not defined
-
 - name: Set deploy_dir if not presented
   set_fact: deploy_dir="/home/{{ deploy_user }}/deploy"
   when: deploy_dir is not defined
@@ -133,3 +128,24 @@
     - monitor_disk_alert is defined
     - monitor_disk_alert
     - "'monitoring_servers' in group_names"
+
+- name: Deploy check_cpufreq script
+  copy: src="{{ script_dir }}/check/check_cpufreq.py" dest="{{ deploy_dir }}/check_cpufreq.py" mode=0755
+
+- name: Preflight check - Check CPUfreq governors available in the kernel
+  shell: "python {{ deploy_dir }}/check_cpufreq.py --available-governors"
+  register: cpufreq_available_governors
+
+- name: Preflight check - Check the currently active governor
+  shell: "python {{ deploy_dir }}/check_cpufreq.py --current-governor"
+  register: cpufreq_current_governor
+
+- name: Preflight check - Fail when CPU frequency governor is not set to performance mode
+  fail:
+    msg: To achieve maximum performance, it is recommended to set The CPU frequency governor to performance mode, see https://github.com/pingcap/docs/blob/master/op-guide/ansible-deployment.md#step-7-configure-the-cpufreq-governor-mode-on-the-target-machine
+  when:
+    - cpufreq_available_governors.stdout.find("performance") != -1
+    - cpufreq_current_governor.stdout.find("performance") == -1
+
+- name: Clean check_cpufreq script
+  file: path={{ deploy_dir }}/check_cpufreq.py state=absent
