@@ -6,6 +6,11 @@ global:
   # Note that `debug` and `trace` are only available in development builds.
   # log-level: "info"
 
+  # timespan between rotating the log files.
+  # Once this timespan passes the existing log file will have a timestamp appended to its name,
+  # and a new file will be created.
+  # log-rotation-timespan: "24h"
+
 readpool:
   storage:
     # size of thread pool for high-priority read operations
@@ -108,6 +113,9 @@ metric:
 raftstore:
   # true (default value) for high reliability, this can prevent data loss when power failure.
   sync-log: true
+
+  # minimizes disruption when a partitioned node rejoins the cluster by using a two phase election.
+  # prevote: false
 
   # set the path to raftdb directory, default value is data-dir/raft
   # raftdb-path: ""
