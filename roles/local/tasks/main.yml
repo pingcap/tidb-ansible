@@ -171,6 +171,9 @@
     - svc
   when: process_supervision == 'supervise'
 
+- name: cp tidb-insight tarball
+  shell: mv {{ downloads_dir }}/tidb-insight-v*.tar.gz {{ downloads_dir }}/tidb-insight.tar.gz
+
 - name: clean up download dir
   shell: >
     cd "{{ downloads_dir }}" && find . -mindepth 1 -maxdepth 1 -type d -exec rm -rf {} \;
