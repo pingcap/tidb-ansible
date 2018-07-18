@@ -9,7 +9,7 @@ groups:
       level: emergency
       expr:  increase(tidb_session_schema_lease_error_total{type="outdated"}[15m]) > 0
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiDB schema error
 
@@ -21,7 +21,7 @@ groups:
       level: emergency
       expr:  increase( tidb_tikvclient_region_err_total[10m] )  > 6000
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiDB tikvclient_backoff_count error
 
@@ -33,7 +33,7 @@ groups:
       level: emergency
       expr:  increase( tidb_domain_load_schema_total{type="failed"}[10m] )  > 10
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiDB domain_load_schema_total error
 
@@ -45,7 +45,7 @@ groups:
       level: emergency
       expr:  increase(tidb_monitor_keep_alive_total[10m]) < 100
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiDB monitor_keep_alive error
 
@@ -57,7 +57,7 @@ groups:
       level: critical
       expr:  increase(tidb_server_panic_total[10m]) > 0
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiDB server panic total
 
@@ -69,7 +69,7 @@ groups:
       level: warning
       expr: go_memstats_heap_inuse_bytes{job="tidb"} > 1e+10
     annotations:
-      description: 'alert: values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiDB mem heap is over 1GiB
 
@@ -81,7 +81,7 @@ groups:
       level: warning
       expr:  histogram_quantile(0.99, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) BY (le, instance)) > 1
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiDB query duration 99th percentile is above 1s
 
@@ -93,7 +93,7 @@ groups:
       level: warning
       expr:  increase(tidb_server_server_event{type=~"server_start|server_hang"}[15m])  > 0
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiDB server event error
 
@@ -105,7 +105,7 @@ groups:
       level: warning
       expr:  increase( tidb_tikvclient_backoff_count[10m] )  > 10
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiDB tikvclient_backoff_count error
 
@@ -117,7 +117,7 @@ groups:
       level: warning
       expr:  increase(tidb_monitor_time_jump_back_total[10m])  > 0
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiDB monitor time_jump_back error
 
@@ -129,6 +129,6 @@ groups:
       level: warning
       expr:  sum(tidb_ddl_waiting_jobs) > 5
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiDB ddl waiting_jobs too much
