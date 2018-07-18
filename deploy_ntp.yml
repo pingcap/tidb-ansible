@@ -1,7 +1,6 @@
 ---
 
 - hosts: all
-  user: root
   tasks:
     - name: Get distro name from /etc/os-release
       raw: "([ -f /etc/os-release ] && grep '^NAME=' /etc/os-release | sed s'/NAME=//' | tr -d \\\") || ([ -f /etc/redhat-release ] && cat /etc/redhat-release | cut '-d ' -f1)"
