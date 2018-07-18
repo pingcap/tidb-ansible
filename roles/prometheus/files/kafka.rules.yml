@@ -9,7 +9,7 @@ groups:
       level: emergency
       expr: probe_success{group="kafka"} == 0
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: Kafka is down
 
@@ -21,7 +21,7 @@ groups:
       level: emergency
       expr:  kafka_brokers < 3
     annotations:
-      description: 'alert: instance: {{ $labels.instance }}  values:{{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: One or more kafka brokers are down
 
@@ -33,7 +33,7 @@ groups:
       level: emergency
       expr: probe_success{group="zookeeper"} == 0
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: Zookeeper is down
 
@@ -45,7 +45,7 @@ groups:
       level: critical
       expr: kafka_topic_partition_in_sync_replica != 3
     annotations:
-      description: 'alert: topic: {{ $labels.topic }} partition: {{ $labels.partition }}  values:{{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, topic: {{ $labels.topic }}, partition: {{ $labels.partition }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: kafka topic partition in sync replica is missing
 
@@ -57,6 +57,6 @@ groups:
       level: warning
       expr: changes(kafka_topic_partition_leader[10m]) >= 1
     annotations:
-      description: 'alert: topic: {{ $labels.topic }} partition: {{ $labels.partition }}  values:{{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, topic: {{ $labels.topic }}, partition: {{ $labels.partition }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: kafka topic partition leader change

@@ -9,7 +9,7 @@ groups:
       level: emergency
       expr: process_resident_memory_bytes{job=~"tikv.*"} - (process_resident_memory_bytes{job=~"tikv.*"} offset 5m) > 5*1024*1024*1024
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} job: {{ $labels.job }} values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, job: {{ $labels.job }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: TiKV memory used too fast
 
@@ -21,7 +21,7 @@ groups:
       level: emergency
       expr: sum(increase(tidb_tikvclient_gc_action_result{type="success"}[6h])) < 1
     annotations:
-      description: 'alert: instance: {{ $labels.instance }}  values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiKV GC can not work
 
@@ -33,7 +33,7 @@ groups:
       level: critical
       expr:  sum(rate(tikv_server_report_failure_msg_total{type="unreachable"}[10m])) BY (store_id) > 10
     annotations:
-      description: 'alert: instance: {{ $labels.instance }}  values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiKV server_report_failure_msg_total error
 
@@ -45,7 +45,7 @@ groups:
       level: critical
       expr:  sum(rate(tikv_channel_full_total[10m])) BY (type, instance) > 0
     annotations:
-      description: 'alert: instance: {{ $labels.instance }}  values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiKV channel full
 
@@ -57,7 +57,7 @@ groups:
       level: critical
       expr:  delta( tikv_engine_write_stall[10m])  > 0
     annotations:
-      description: 'alert: type: {{ $labels.type }} instance: {{ $labels.instance }}  values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, type: {{ $labels.type }}, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: TiKV write stall
 
@@ -69,7 +69,7 @@ groups:
       level: critical
       expr:  histogram_quantile(0.99, sum(rate(tikv_raftstore_log_lag_bucket[1m])) by (le, instance, job))  > 5000
     annotations:
-      description: 'alert: instance {{ $labels.instance }}  values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: TiKV raftstore log lag more than 5000
 
@@ -81,7 +81,7 @@ groups:
       level: critical
       expr:  histogram_quantile(0.99, sum(rate(tikv_storage_engine_async_request_duration_seconds_bucket{type="snapshot"}[1m])) by (le, instance, job,type)) > 1
     annotations:
-      description: 'alert: instance: {{ $labels.instance }}  values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiKV async request snapshot duration seconds more than 1s
 
@@ -93,7 +93,7 @@ groups:
       level: critical
       expr:  histogram_quantile(0.99, sum(rate(tikv_storage_engine_async_request_duration_seconds_bucket{type="write"}[1m])) by (le, instance, job,type)) > 1
     annotations:
-      description: 'alert: instance: {{ $labels.instance }}  values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiKV async request write duration seconds more than 1s
 
@@ -105,7 +105,7 @@ groups:
       level: critical
       expr:  histogram_quantile(0.9999, sum(rate(tikv_coprocessor_request_wait_seconds_bucket[1m])) by (le, instance, job,req)) > 10
     annotations:
-      description: 'alert: instance: {{ $labels.instance }}  values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiKV coprocessor request wait seconds more than 10s
 
@@ -117,7 +117,7 @@ groups:
       level: critical
       expr: sum(rate(tikv_thread_cpu_seconds_total{name=~"raftstore_.*"}[1m])) by (job, name)  > 0.8
     annotations:
-      description: 'alert: instance: {{ $labels.instance }}  values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiKV raftstore thread CPU seconds is high
 
@@ -129,7 +129,7 @@ groups:
       level: critical
       expr: histogram_quantile(0.99, sum(rate(tikv_raftstore_append_log_duration_seconds_bucket[1m])) by (le, instance, job)) > 1
     annotations:
-      description: 'alert: instance: {{ $labels.instance }}  values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiKV_raft_append_log_duration_secs
 
@@ -141,7 +141,7 @@ groups:
       level: critical
       expr: histogram_quantile(0.99, sum(rate(tikv_raftstore_apply_log_duration_seconds_bucket[1m])) by (le, instance, job)) > 1
     annotations:
-      description: 'alert: instance: {{ $labels.instance }}  values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiKV_raft_apply_log_duration_secs
 
@@ -153,8 +153,7 @@ groups:
       level: critical
       expr:  histogram_quantile(0.99, sum(rate(tikv_scheduler_latch_wait_duration_seconds_bucket[1m])) by (le, instance, job,type))  > 1
     annotations:
-      description: 'alert: instance:
-        {{ $labels.instance }}  values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiKV scheduler latch wait duration seconds more than 1s
 
@@ -166,7 +165,7 @@ groups:
       level: critical
       expr:  sum(rate(tikv_thread_cpu_seconds_total{name="apply_worker"}[1m])) by (job) > 0.9
     annotations:
-      description: 'alert: type: {{ $labels.type }} instance: {{ $labels.instance }}  values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, type: {{ $labels.type }}, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: TiKV thread apply worker cpu seconds is high
 
@@ -178,7 +177,7 @@ groups:
       level: critical
       expr: sum(increase(tidb_tikvclient_gc_action_result{type="fail"}[1m])) > 10
     annotations:
-      description: 'alert: type: {{ $labels.type }} instance: {{ $labels.instance }}  values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, type: {{ $labels.type }}, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: TiDB_tikvclient_gc_action_fail
 
@@ -190,7 +189,7 @@ groups:
       level: warning
       expr: delta(tikv_pd_heartbeat_tick_total{type="leader"}[30s]) < -10
     annotations:
-      description: 'alert: instance: {{ $labels.instance }}  values:{{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiKV leader drops
 
@@ -202,7 +201,7 @@ groups:
       level: warning
       expr: histogram_quantile(0.999, sum(rate(tikv_raftstore_raft_process_duration_secs_bucket{type='ready'}[1m])) by (le, instance, job,type)) > 2
     annotations:
-      description: 'alert: instance: {{ $labels.instance }}  values:{{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: TiKV_raft_process_ready_duration_secs
 
@@ -214,7 +213,7 @@ groups:
       level: warning
       expr: histogram_quantile(0.999, sum(rate(tikv_raftstore_raft_process_duration_secs_bucket{type='tick'}[1m])) by (le, instance, job,type)) > 2
     annotations:
-      description: 'alert: instance: {{ $labels.instance }}  values:{{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: TiKV_raft_process_tick_duration_secs
 
@@ -226,7 +225,7 @@ groups:
       level: warning
       expr:  abs(delta( tikv_scheduler_contex_total[5m])) > 1000
     annotations:
-      description: 'alert: instance: {{ $labels.instance }}  values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiKV scheduler context total
 
@@ -238,7 +237,7 @@ groups:
       level: warning
       expr:  histogram_quantile(0.99, sum(rate(tikv_scheduler_command_duration_seconds_bucket[1m])) by (le, instance, job,type)  / 1000)  > 1
     annotations:
-      description: 'alert: instance: {{ $labels.instance }}  values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiKV scheduler command duration seconds more than 1s
 
@@ -250,7 +249,7 @@ groups:
       level: warning
       expr:  sum(rate(tikv_thread_cpu_seconds_total{name=~"storage_schedul.*"}[1m])) by (job) > 0.8
     annotations:
-      description: 'alert: instance: {{ $labels.instance }}  values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiKV storage scheduler cpu seconds more than 80%
 
@@ -262,7 +261,7 @@ groups:
       level: warning
       expr:  delta( tikv_coprocessor_outdated_request_wait_seconds_count[10m] )  > 0
     annotations:
-      description: 'alert: instance: {{ $labels.instance }}  values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: TiKV coprocessor outdated request wait seconds
 
@@ -274,7 +273,7 @@ groups:
       level: warning
       expr:  increase(tikv_coprocessor_request_error[10m]) > 100
     annotations:
-      description: 'alert: type: {{ $labels.type }} instance: {{ $labels.instance }}  values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, type: {{ $labels.type }}, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: TiKV coprocessor_request_error
 
@@ -286,7 +285,7 @@ groups:
       level: warning
       expr:  delta( tikv_coprocessor_pending_request[10m]) > 5000
     annotations:
-      description: 'alert: type: {{ $labels.type }} instance: {{ $labels.instance }}  values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, type: {{ $labels.type }}, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: TiKV pending {{ $labels.type }} request is high
 
@@ -298,7 +297,7 @@ groups:
       level: warning
       expr:  sum(rate(tikv_thread_cpu_seconds_total{name=~"cop_.*"}[1m])) by (job) / ( count(tikv_thread_cpu_seconds_total{name=~"cop_.*"}) *  0.9 ) / count(count(tikv_thread_cpu_seconds_total) by (instance)) > 0
     annotations:
-      description: 'alert: type: {{ $labels.type }} instance: {{ $labels.instance }}  values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, type: {{ $labels.type }}, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: TiKV batch request snapshot nums is high
 
@@ -310,7 +309,7 @@ groups:
       level: warning
       expr:  sum(tikv_worker_pending_task_total) BY (job,instance,name)  > 1000
     annotations:
-      description: 'alert: type: {{ $labels.type }} instance: {{ $labels.instance }}  values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, type: {{ $labels.type }}, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: TiKV pending task too much
 
@@ -322,6 +321,6 @@ groups:
       level: warning
       expr:  count( (sum(tikv_store_size_bytes{type="available"}) by (job) / sum(tikv_store_size_bytes{type="capacity"}) by (job) < 0.2) and (sum(tikv_raftstore_snapshot_traffic_total{type="applying"}) by (job) > 0 ) ) > 0
     annotations:
-      description: 'alert: type: {{ $labels.type }} instance: {{ $labels.instance }}  values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, type: {{ $labels.type }}, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: TiKV low_space and add_region

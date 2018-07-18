@@ -9,7 +9,7 @@ groups:
       level: emergency
       expr: probe_success{group="tidb"} == 0
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: TiDB server is down
 
@@ -21,7 +21,7 @@ groups:
       level: emergency
       expr: probe_success{group="pump"} == 0
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: Pump server is down
 
@@ -33,7 +33,7 @@ groups:
       level: emergency
       expr: probe_success{group="drainer"} == 0
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: Drainer server is down
 
@@ -45,7 +45,7 @@ groups:
       level: emergency
       expr: probe_success{group="tikv"} == 0
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: TiKV server is down
 
@@ -57,7 +57,7 @@ groups:
       level: emergency
       expr: probe_success{group="pd"} == 0
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: PD server is down
 
@@ -69,7 +69,7 @@ groups:
       level: emergency
       expr: probe_success{group="node_exporter"} == 0
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: Node_exporter server is down
 
@@ -81,7 +81,7 @@ groups:
       level: emergency
       expr: probe_success{group="blackbox_exporter"} == 0
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: Blackbox_exporter server is down
 
@@ -93,7 +93,7 @@ groups:
       level: emergency
       expr: probe_success{group="grafana"} == 0
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: Grafana server is down
 
@@ -105,7 +105,7 @@ groups:
       level: emergency
       expr: probe_success{group="pushgateway"} == 0
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: Pushgateway server is down
 
@@ -117,7 +117,7 @@ groups:
       level: emergency
       expr: probe_success{group="kafka_exporter"} == 0
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: Kafka_exporter server is down
 
@@ -129,7 +129,7 @@ groups:
       level: emergency
       expr: probe_success{job="blackbox_exporter_http"}  == 0
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: Pushgateway metrics interface is down
 
@@ -141,6 +141,6 @@ groups:
       level: warning
       expr: max_over_time(probe_duration_seconds{job=~"blackbox_exporter.*_icmp"}[1m]) > 1
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values: {{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: blackbox_exporter ping latency more than 1s
