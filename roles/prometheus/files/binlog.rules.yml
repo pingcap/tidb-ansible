@@ -9,7 +9,7 @@ groups:
       level: emergency
       expr: changes(binlog_pump_loss_binlog_count[1m]) > 0
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: BINLOG pump lose some binlogs
 
@@ -21,7 +21,7 @@ groups:
       level: emergency
       expr: changes(binlog_pump_corruption_binlog_count[1m]) > 0
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: BINLOG pump has corruption binlogs
 
@@ -33,10 +33,10 @@ groups:
       level: critical
       expr: (binlog_drainer_window{marker="upper"} - ignoring(marker)binlog_drainer_window{marker="lower"})/(2^18*10^3) > 3600
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: BINLOG drainer window more than 1 hour
-  
+
   - alert: binlog_pump_checkpoint_gap
     expr: binlog_pump_checkpoint{label="latest"} - ignoring(label)binlog_pump_checkpoint{label="current"} > 1000*1000*1000
     for: 5m
@@ -45,10 +45,10 @@ groups:
       level: critical
       expr: binlog_pump_checkpoint{label="latest"} - ignoring(label)binlog_pump_checkpoint{label="current"} > 1000*1000*1000
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: BINLOG pump checkpoint gap is too large
-      
+
   - alert: BINLOG_drainer_error_binlog_count
     expr: changes(binlog_drainer_error_binlog_count[1m]) > 0
     for: 1m
@@ -57,7 +57,7 @@ groups:
       level: warning
       expr: changes(binlog_drainer_error_binlog_count[1m]) > 0
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: BINLOG drainer maybe lose some binlogs
 
@@ -69,7 +69,7 @@ groups:
       level: warning
       expr: histogram_quantile(0.9, rate(binlog_pump_rpc_duration_seconds_bucket[5m])) > 1
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: BINLOG pump write binlog RPC latency is too slow
 
@@ -81,7 +81,7 @@ groups:
       level: warning
       expr: changes(binlog_pump_write_error_count[5m]) > 0
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} storage: {{ $labels.label }} values:{{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, storage: {{ $labels.label }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: BINLOG pump fails to write binlog
 
@@ -93,7 +93,7 @@ groups:
       level: warning
       expr: changes(binlog_pump_read_error_count[5m]) > 0
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} storage: {{ $labels.label }} values:{{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, storage: {{ $labels.label }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: BINLOG pump fails to read binlog
 
@@ -105,7 +105,7 @@ groups:
       level: warning
       expr: histogram_quantile(0.9, rate(binlog_pump_write_binlog_duration_time_bucket[5m])) > 1
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} storage: {{ $labels.label }} values:{{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, storage: {{ $labels.label }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: BINLOG pump write binlog is too slow
 
@@ -117,7 +117,7 @@ groups:
       level: warning
       expr: histogram_quantile(0.9, rate(binlog_pump_read_binlog_duration_time_bucket[5m])) > 1
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} storage: {{ $labels.label }} values:{{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, storage: {{ $labels.label }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: BINLOG pump read binlog is too slow
 
@@ -129,7 +129,7 @@ groups:
       level: warning
       expr: sum(rate(binlog_drainer_event[10m])) < 1
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: BINLOG binlog stop syncing drainer event
 
@@ -141,7 +141,7 @@ groups:
       level: warning
       expr: histogram_quantile(0.9, rate(binlog_drainer_txn_duration_time_bucket[1m])) > 10
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} values:{{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: BINLOG binlog drainer txn_duration_time_more_than_10s
 
@@ -153,7 +153,7 @@ groups:
       level: warning
       expr: histogram_quantile(0.9, rate(binlog_drainer_read_binlog_duration_time_bucket[1m])) > 1
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} pump: {{ $labels.nodeID }} values:{{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, pump: {{ $labels.nodeID }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: BINLOG drainer read binlog latency
 
@@ -165,6 +165,6 @@ groups:
       level: warning
       expr: rate(binlog_drainer_publish_binlog_count[5m]) < 1
     annotations:
-      description: 'alert: instance: {{ $labels.instance }} pump: {{ $labels.nodeID }} values:{{ $value }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, pump: {{ $labels.nodeID }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: BINLOG drainer stops to publish binlog
