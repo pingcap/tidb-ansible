@@ -14,7 +14,7 @@
 - include_tasks: collect_config.yml
 
 - name: collect PD information
-  shell: python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ pd_log_dir }} --alias={{ inventory_hostname }} --pdctl --pd-host={{ inventory_hostname }} --pd-port={{ pd_client_port }}
+  shell: python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ pd_log_dir }} --alias={{ inventory_hostname }} --pdctl --pd-host={{ pd_host }} --pd-port={{ pd_client_port }}
 
 - name: collect basic system information
   shell: python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ pd_log_dir }}/pd_{{ inventory_hostname }} --alias={{ inventory_hostname }} --collector
