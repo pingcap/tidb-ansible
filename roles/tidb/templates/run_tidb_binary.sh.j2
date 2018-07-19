@@ -9,6 +9,8 @@ DEPLOY_DIR={{ deploy_dir }}
 
 cd "${DEPLOY_DIR}" || exit 1
 
+{% set my_ip = hostvars[inventory_hostname].ansible_host | default(hostvars[inventory_hostname].inventory_hostname) -%}
+
 {% set all_pd = [] -%}
 {% set pd_hosts = groups.pd_servers %}
 {% for host in pd_hosts -%}
@@ -20,6 +22,7 @@ cd "${DEPLOY_DIR}" || exit 1
 exec bin/tidb-server \
     -P {{ tidb_port }} \
     --status="{{ tidb_status_port }}" \
+    --advertise-address="{{ my_ip }}" \
     --path="{{ all_pd | join(',') }}" \
     --config=conf/tidb.toml \
 {% if enable_binlog|default(false) %}
