@@ -9,8 +9,8 @@
   fail: msg="monitored_servers should be specified."
   when: groups['monitored_servers'] | length < 1
 
-- name: Warn if TiDB host not exists
-  debug: msg="No tidb host is specified. This cluster will run into a RawKV mode."
+- name: Ensure TiDB host exists
+  fail: msg="No tidb host is specified. This cluster will run into a RawKV mode."
   when:
     - groups['tidb_servers'] | length < 1
     - deploy_without_tidb is defined
