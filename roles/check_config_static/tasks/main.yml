@@ -2,13 +2,17 @@
 # Common Tasks
 
 - name: Ensure only one monitoring host exists
-  fail: msg="One, or no monitoring host may be specified."
-  when: "groups.get('monitoring_servers', [])|length > 1"
+  fail: msg="One monitoring host should be specified."
+  when: groups['monitoring_servers'] | length != 1
+
+- name: Ensure monitored_servers exists
+  fail: msg="monitored_servers should be specified."
+  when: groups['monitored_servers'] | length < 1
 
 - name: Warn if TiDB host not exists
   debug: msg="No tidb host is specified. This cluster will run into a RawKV mode."
   when:
-    - "groups.get('tidb_servers', []) | length == 0"
+    - groups['tidb_servers'] | length < 1
     - deploy_without_tidb is defined
     - "not deploy_without_tidb"
 
@@ -20,24 +24,18 @@
     - zookeeper_addrs == ""
 
 - name: Ensure PD host exists
-  fail: msg="One, or more pd hosts may be specified."
-  when: "groups.get('pd_servers', [])|length < 1"
+  fail: msg="One, or more pd hosts should be specified."
+  when: groups['pd_servers'] | length < 1
 
 - name: Ensure TiKV host exists
-  fail: msg="One, or more tikv hosts may be specified."
-  when: "groups.get('tikv_servers', [])|length < 1"
-
-- name: Ensure enable_tls is disabled when deployment_method is docker
-  fail: msg="TLS is not supported yet when deployment_method is docker in tidb-ansible."
-  when:
-    - deployment_method == 'docker'
-    - enable_tls|default(false)
+  fail: msg="One, or more tikv hosts should be specified."
+  when: groups['tikv_servers'] | length < 1
 
 - name: Check ansible_user variable
   fail: msg="ansible_user == 'root' is not supported, please ssh via normal user"
   when: ansible_user == 'root'
 
-- name: Close old control master
+- name: Close old SSH control master processes
   raw: ps aux | grep ansible-ssh | grep -v grep | awk '{print $2}' | xargs kill -9 ; true
   ignore_errors: true
   changed_when: false
