@@ -9,18 +9,23 @@
 - name: get facts
   setup:
 
-- name: Preflight check - Set NTP service status
-  shell: ntpstat | grep -w synchronised | wc -l
-  register: ntp_st
-  changed_when: false
-  when: enable_ntpd
+- name: Preflight check - Get hostnames of all nodes in cluster
+  set_fact:
+    all_hostnames: |-
+      [
+      {% set all_hosts = groups['monitored_servers']|unique|sort -%}
+      {% for host in all_hosts -%}
+        {% set hostname = hostvars[host].ansible_hostname -%}
+        "{{ hostname }}",
+      {% endfor %}
+      ]
+  run_once: true
 
-- name: Preflight check - NTP service
+- name: Preflight check - Does every node in cluster have different hostname
   fail:
-    msg: "Make sure NTP service is running and ntpstat is synchronised to NTP server. See https://github.com/pingcap/docs/blob/master/op-guide/ansible-deployment.md#how-to-check-whether-the-ntp-service-is-normal ."
-  when:
-    - enable_ntpd
-    - ntp_st.stdout|int != 1
+    msg: 'hostnames of all nodes in cluster: {{ all_hostnames | to_yaml }}'
+  when: all_hostnames | unique | length != groups['monitored_servers'] | length
+  run_once: true
 
 - name: Set enable_binlog - set default
   set_fact:
