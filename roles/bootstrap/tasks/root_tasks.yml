@@ -31,11 +31,9 @@
       {{ deploy_user }}        soft        stack         10240
   when: tuning_kernel_parameters
 
-- name: swap - disable swap
-  shell: "([ $(swapon -s | wc -l) -ge 1 ] && (swapoff -a && echo disable)) || echo already"
-  ignore_errors: yes
-  register: swapoff_result
-  changed_when: "swapoff_result.stdout.strip() == 'disable'"
+- name: disable swap
+  command: swapoff -a
+  when: ansible_swaptotal_mb > 0
 
 - name: create group
   group: name={{ deploy_user }}
