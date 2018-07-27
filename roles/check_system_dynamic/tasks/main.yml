@@ -9,12 +9,25 @@
 - name: get facts
   setup:
 
-- name: Preflight check - System version
-  fail:
-    msg: "Red Hat Enterprise Linux/CentOS 6 is deprecated. Please use CentOS 7.3 and above. See https://github.com/pingcap/docs/blob/master/op-guide/recommendation.md"
-  when: "ansible_os_family == 'RedHat' and ansible_distribution_major_version == '6'"
+- name: Preflight check - Get hostnames of all nodes in cluster
+  set_fact:
+    all_hostnames: |-
+      [
+      {% set all_hosts = groups['monitored_servers']|unique|sort -%}
+      {% for host in all_hosts -%}
+        {% set hostname = hostvars[host].ansible_hostname -%}
+        "{{ hostname }}",
+      {% endfor %}
+      ]
+  run_once: true
 
-- name: Preflight check - Set NTP service status
+- name: Preflight check - Does every node in cluster have different hostname
+  fail:
+    msg: 'hostnames of all nodes in cluster: {{ all_hostnames | to_yaml }}'
+  when: all_hostnames | unique | length != groups['monitored_servers'] | length
+  run_once: true
+
+- name: Preflight check - Get NTP service status
   shell: ntpstat | grep -w synchronised | wc -l
   register: ntp_st
   changed_when: false
@@ -27,7 +40,7 @@
     - enable_ntpd
     - ntp_st.stdout|int != 1
 
-- name: Set deploy_dir if not presented
+- name: Set deploy_dir if not set
   set_fact: deploy_dir="/home/{{ deploy_user }}/deploy"
   when: deploy_dir is not defined
 
@@ -41,12 +54,15 @@
   when: "'tikv_servers' in group_names and item.mount == deploy_partition.stdout and item.fstype == 'xfs'"
   with_items: "{{ ansible_mounts }}"
 
-- name: Preflight check - Check bug if file system is xfs
+- name: Preflight check - Check bug if filesystem is xfs
   shell: cd {{ deploy_dir }} && fallocate -n -o 0 -l 9192 tidb_test && printf 'a%.0s' {1..5000} > tidb_test && truncate -s 5000 tidb_test && fallocate -p -n -o 5000 -l 4192 tidb_test && LANG=en_US.UTF-8  stat tidb_test |awk 'NR==2{print $2}'
   register: xfs_result
-  when: "'tikv_servers' in group_names and xfs_filesystem is defined and xfs_filesystem"
+  when:
+    - "'tikv_servers' in group_names"
+    - xfs_filesystem is defined
+    - xfs_filesystem
 
-- name: Preflight check - Clean check file for xfs file system
+- name: Clean check file for xfs filesystem
   file: path={{ deploy_dir }}/tidb_test state=absent
 
 - set_fact:
@@ -66,7 +82,7 @@
     - ext4_filesystem_alert is defined
     - ext4_filesystem_alert
 
-- name: Preflight check - set fssystem_check_result status
+- name: Preflight check - Set fssystem_check_result fact
   set_fact:
     fssystem_check_result: true
   when: "('tikv_servers' in group_names and item.mount == deploy_partition.stdout and item.fstype == 'ext4') or ('tikv_servers' in group_names and xfs_filesystem is defined and xfs_filesystem and xfs_result.stdout|int == 5000)"
@@ -75,5 +91,33 @@
 - name: Preflight check - Does deploy dir meet ext4 or xfs file system requirement
   fail:
     msg: 'The file system mounted at {{ item.mount }} does not meet ext4 or xfs file system requirement'
-  when: "'tikv_servers' in group_names and item.mount == deploy_partition.stdout and fssystem_check_result is not defined"
+  when:
+    - "'tikv_servers' in group_names"
+    - item.mount == deploy_partition.stdout
+    - fssystem_check_result is not defined
   with_items: "{{ ansible_mounts }}"
+
+- name: Preflight check - Get umask
+  shell: umask
+  register: umask
+  changed_when: False
+
+- name: Preflight check - Does the system have a standard umask
+  fail:
+    msg: 'The umask of the system ({{ umask.stdout.strip() }}) prevents successful installation. We suggest a standard umask such as 0022.'
+  when: umask.stdout.strip()[-2:] not in ('00', '02', '20', '22')
+
+- name: Preflight check - Get maximum number of open file descriptors limit
+  shell: ulimit -H -n
+  register: ulimit
+  changed_when: False
+
+- name: Preflight check - ulimit -n
+  fail:
+    msg: 'The default maximum number of open file descriptors is too low {{ ulimit.stdout }}, should be {{ min_open_fds }}'
+  when: ulimit.stdout|int < min_open_fds|int
+
+- name: Preflight check - Check swap
+  fail:
+    msg: "Swap is on, for best performance, turn swap off"
+  when: ansible_swaptotal_mb != 0

@@ -22,6 +22,14 @@
   roles:
     - check_config_static
 
+- name: check system environment
+  hosts: all
+  any_errors_fatal: true
+  tags:
+    - always
+  roles:
+    - check_system_dynamic
+
 - name: gather all facts, and check dest
   hosts: all
   any_errors_fatal: true

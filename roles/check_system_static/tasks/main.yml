@@ -1,0 +1,36 @@
+---
+
+- name: Disk space check - Fail task when disk is full
+  raw: df -h . | tail -n1
+  register: disk_space_st
+  failed_when: " '100%' in disk_space_st.stdout "
+  changed_when: false
+
+- name: get facts
+  setup:
+
+- name: Preflight check - Linux OS family and distribution version
+  fail:
+    msg: "Red Hat Enterprise Linux/CentOS 6 is deprecated. Please use CentOS 7.3 and above. See https://github.com/pingcap/docs/blob/master/op-guide/recommendation.md"
+  when: "ansible_os_family == 'RedHat' and ansible_distribution_major_version == '6'"
+
+- name: Deploy check_cpufreq script
+  copy: src="{{ script_dir }}/check/check_cpufreq.py" dest="{{ deploy_dir }}/check_cpufreq.py" mode=0755
+
+- name: Preflight check - Check CPUfreq governors available in the kernel
+  shell: "python {{ deploy_dir }}/check_cpufreq.py --available-governors"
+  register: cpufreq_available_governors
+
+- name: Preflight check - Check the currently active governor
+  shell: "python {{ deploy_dir }}/check_cpufreq.py --current-governor"
+  register: cpufreq_current_governor
+
+- name: Preflight check - Fail when CPU frequency governor is not set to performance mode
+  fail:
+    msg: To achieve maximum performance, it is recommended to set The CPU frequency governor to performance mode, see https://github.com/pingcap/docs/blob/master/op-guide/ansible-deployment.md#step-7-configure-the-cpufreq-governor-mode-on-the-target-machine
+  when:
+    - cpufreq_available_governors.stdout.find("performance") != -1
+    - cpufreq_current_governor.stdout.find("performance") == -1
+
+- name: Clean check_cpufreq script
+  file: path={{ deploy_dir }}/check_cpufreq.py state=absent
