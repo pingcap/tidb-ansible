@@ -1,5 +1,10 @@
 ---
 
+- name: Get ansible_mounts Fact
+  setup:
+    gather_subset: hardware
+    filter: ansible_mounts
+
 - name: Determine which mountpoint that tikv data dir exists on
   shell: "df {{ tikv_data_dir }} | tail -n1 | awk '{print $NF}'"
   register: deploy_partition
