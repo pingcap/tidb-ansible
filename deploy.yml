@@ -22,6 +22,14 @@
   roles:
     - check_config_static
 
+- name: check system environment
+  hosts: monitored_servers
+  any_errors_fatal: true
+  tags:
+    - always
+  roles:
+    - check_system_dynamic
+
 - name: initializing deployment target
   hosts: all
   any_errors_fatal: true
