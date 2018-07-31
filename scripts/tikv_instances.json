@@ -5688,14 +5688,14 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{job=\"$store\",name=~\"snapshot_worker.*\"}[1m]))",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{job=\"$store\",name=~\"snapshot_worker\"}[1m]))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "snapshot",
               "refId": "D"
             },
             {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{job=\"$store\",name=~\"split_check.*\"}[1m]))",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{job=\"$store\",name=~\"split_check\"}[1m]))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "split check",
@@ -5709,7 +5709,7 @@
               "refId": "B"
             },
             {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{job=\"$store\",name=~\"consistency.*\"}[1m]))",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{job=\"$store\",name=~\"consistency_\"}[1m]))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "consistency check",
@@ -5883,28 +5883,28 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_worker_handled_task_total{job=\"$store\",name=~\"snapshot worker\"}[1m]))",
+              "expr": "sum(rate(tikv_worker_handled_task_total{job=\"$store\",name=~\"snapshot worker|snapshot-worker\"}[1m]))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "snapshot",
               "refId": "B"
             },
             {
-              "expr": "sum(rate(tikv_worker_handled_task_total{job=\"$store\",name=~\"split check worker\"}[1m]))",
+              "expr": "sum(rate(tikv_worker_handled_task_total{job=\"$store\",name=~\"split check worker|split-check\"}[1m]))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "split check",
               "refId": "C"
             },
             {
-              "expr": "sum(rate(tikv_worker_handled_task_total{job=\"$store\",name=~\"compact worker\"}[1m]))",
+              "expr": "sum(rate(tikv_worker_handled_task_total{job=\"$store\",name=~\"compact worker|compact-worker\"}[1m]))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "compact range",
               "refId": "D"
             },
             {
-              "expr": "sum(rate(tikv_worker_handled_task_total{job=\"$store\",name=~\"consistency check worker\"}[1m]))",
+              "expr": "sum(rate(tikv_worker_handled_task_total{job=\"$store\",name=~\"consistency check worker|consistency-\"}[1m]))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "consistency check",
@@ -10098,21 +10098,21 @@
               "expr": "sum(rate(tikv_thread_cpu_seconds_total{job=\"$store\",name=~\"pd_0\"}[1m]))",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "pd client",
+              "legendFormat": "PD Client",
               "refId": "A"
             },
             {
               "expr": "sum(rate(tikv_thread_cpu_seconds_total{job=\"$store\",name=~\"pd_worker\"}[1m]))",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "pd worker",
+              "legendFormat": "PD Worker",
               "refId": "B"
             },
             {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{job=\"$store\",name=~\"store_address_r\"}[1m]))",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{job=\"$store\",name=~\"store_address_r|addr_resolver\"}[1m]))",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "store address",
+              "legendFormat": "PD Store Address Resolve Worker",
               "refId": "C"
             }
           ],
