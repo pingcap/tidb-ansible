@@ -11,6 +11,7 @@ ExecStartPre=-{{ docker_bin_dir }}/docker rm -f {{ service_name }}
 ExecStop={{ docker_bin_dir }}/docker stop {{ service_name }}
 Restart=always
 RestartSec=15s
+LimitCORE=infinity
 
 [Install]
 WantedBy=multi-user.target
