@@ -11,10 +11,10 @@
     - "{{ fetch_tmp_dir }}/{{ service_host }}"
 
 - name: collect Prometheus metrics
-  shell: python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ prometheus_log_dir }} --alias={{ inventory_hostname }} metric prom --host={{ ansible_host }} --port={{ prometheus_port }} --retention {{ collect_log_recent_hours | default('2') }}
+  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ prometheus_log_dir }} --alias={{ inventory_hostname }} metric prom --host={{ ansible_host }} --port={{ prometheus_port }} --retention {{ collect_log_recent_hours | default('2') }}"
 
 - name: compress collected data
-  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --compress --output={{ prometheus_log_dir }} --alias={{ inventory_hostname }}"
+  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ prometheus_log_dir }} --alias={{ inventory_hostname }} archive"
 
 - name: fetch prometheus diagnosis tarball with bandwidth limit
   delegate_to: localhost
