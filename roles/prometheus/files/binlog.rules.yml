@@ -3,7 +3,6 @@ groups:
   rules:
   - alert: binlog_pump_loss_binlog_count
     expr: changes(binlog_pump_loss_binlog_count[1m]) > 0
-    for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: emergency
@@ -15,7 +14,6 @@ groups:
 
   - alert: binlog_pump_corruption
     expr: changes(binlog_pump_corruption_binlog_count[1m]) > 0
-    for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: emergency
@@ -39,7 +37,7 @@ groups:
 
   - alert: binlog_pump_checkpoint_gap
     expr: binlog_pump_checkpoint{label="latest"} - ignoring(label)binlog_pump_checkpoint{label="current"} > 1000*1000*1000
-    for: 5m
+    for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: critical
@@ -63,7 +61,7 @@ groups:
 
   - alert: binlog_pump_rpc_duration_seconds_bucket
     expr: histogram_quantile(0.9, rate(binlog_pump_rpc_duration_seconds_bucket[5m])) > 1
-    for: 5m
+    for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: warning
@@ -75,7 +73,7 @@ groups:
 
   - alert: binlog_pump_write_error_count
     expr: changes(binlog_pump_write_error_count[5m]) > 0
-    for: 5m
+    for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: warning
@@ -87,7 +85,7 @@ groups:
 
   - alert: binlog_pump_read_error_count
     expr: changes(binlog_pump_read_error_count[5m]) > 0
-    for: 5m
+    for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: warning
@@ -99,7 +97,7 @@ groups:
 
   - alert: binlog_pump_write_binlog_duration_time_bucket
     expr: histogram_quantile(0.9, rate(binlog_pump_write_binlog_duration_time_bucket[5m])) > 1
-    for: 5m
+    for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: warning
@@ -111,7 +109,7 @@ groups:
 
   - alert: binlog_pump_read_binlog_duration_time_bucket
     expr: histogram_quantile(0.9, rate(binlog_pump_read_binlog_duration_time_bucket[5m])) > 1
-    for: 5m
+    for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: warning
@@ -123,7 +121,7 @@ groups:
 
   - alert: BINLOG_drainer_event
     expr: sum(rate(binlog_drainer_event[10m])) < 1
-    for: 10m
+    for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: warning
@@ -147,7 +145,7 @@ groups:
 
   - alert: binlog_drainer_read_binlog_duration_time_bucket
     expr: histogram_quantile(0.9, rate(binlog_drainer_read_binlog_duration_time_bucket[1m])) > 1
-    for: 5m
+    for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: warning
@@ -159,7 +157,7 @@ groups:
 
   - alert: binlog_drainer_publish_binlog_count
     expr: rate(binlog_drainer_publish_binlog_count[5m]) < 1
-    for: 5m
+    for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: warning
