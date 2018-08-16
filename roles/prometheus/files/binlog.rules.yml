@@ -23,6 +23,18 @@ groups:
       value: '{{ $value }}'
       summary: BINLOG pump has corruption binlogs
 
+  - alert: binlog_pump_write_error_count
+    expr: changes(binlog_pump_write_error_count[5m]) > 0
+    for: 1m
+    labels:
+      env: ENV_LABELS_ENV
+      level: emergency
+      expr: changes(binlog_pump_write_error_count[5m]) > 0
+    annotations:
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, storage: {{ $labels.label }}, values: {{ $value }}'
+      value: '{{ $value }}'
+      summary: BINLOG pump fails to write binlog
+
   - alert: BINLOG_drainer_window_more_than_3600s
     expr: (binlog_drainer_window{marker="upper"} - ignoring(marker)binlog_drainer_window{marker="lower"})/(2^18*10^3) > 3600
     for: 1m
@@ -52,7 +64,7 @@ groups:
     for: 1m
     labels:
       env: ENV_LABELS_ENV
-      level: warning
+      level: critical
       expr: changes(binlog_drainer_error_binlog_count[1m]) > 0
     annotations:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
@@ -70,18 +82,6 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: BINLOG pump write binlog RPC latency is too slow
-
-  - alert: binlog_pump_write_error_count
-    expr: changes(binlog_pump_write_error_count[5m]) > 0
-    for: 1m
-    labels:
-      env: ENV_LABELS_ENV
-      level: warning
-      expr: changes(binlog_pump_write_error_count[5m]) > 0
-    annotations:
-      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, storage: {{ $labels.label }}, values: {{ $value }}'
-      value: '{{ $value }}'
-      summary: BINLOG pump fails to write binlog
 
   - alert: binlog_pump_read_error_count
     expr: changes(binlog_pump_read_error_count[5m]) > 0
