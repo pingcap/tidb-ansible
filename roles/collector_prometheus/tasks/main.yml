@@ -1,0 +1,36 @@
+---
+
+- set_fact:
+    collector_dir: "{{ hostvars[groups.monitored_servers[0]].deploy_dir }}"
+    service_host: "{{ ansible_host }}"
+
+- name: create prometheus fetch directory
+  delegate_to: localhost
+  file: path={{ item }} state=directory mode=0755
+  with_items:
+    - "{{ fetch_tmp_dir }}/{{ service_host }}"
+
+- name: collect Prometheus metrics
+  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ deploy_dir }}/log --alias={{ inventory_hostname }} metric prom --host={{ ansible_host }} --port={{ prometheus_port }} --retention {{ collect_log_recent_hours | default('2') }}"
+
+- name: compress collected data
+  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ deploy_dir }}/log --alias={{ inventory_hostname }} archive"
+
+- name: fetch prometheus diagnosis tarball with bandwidth limit
+  delegate_to: localhost
+  shell: "scp -P {{ ansible_port|default(22) }} -l {{ collect_bandwidth_limit|default('10000') }} -o StrictHostKeyChecking=no {{ service_host }}:{{ deploy_dir }}/log/{{ inventory_hostname }}.tar.gz {{ fetch_tmp_dir }}/{{ service_host }}/prometheus_{{ inventory_hostname }}.tar.gz"
+  when: enable_bandwidth_limit|default(true)
+
+- name: fetch prometheus diagnosis tarball without bandwidth limit
+  fetch:
+    src: "{{ deploy_dir }}/log/{{ inventory_hostname }}.tar.gz"
+    dest: "{{ fetch_tmp_dir }}/{{ service_host }}/prometheus_{{ inventory_hostname }}.tar.gz"
+    flat: yes
+  when: not enable_bandwidth_limit|default(true)
+
+- name: remove prometheus temporary diagnosis tarball
+  file:
+    path: "{{ deploy_dir }}/log/{{ item }}"
+    state: absent
+  with_items:
+    - "{{ inventory_hostname }}.tar.gz"

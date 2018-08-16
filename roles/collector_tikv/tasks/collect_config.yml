@@ -14,4 +14,4 @@
   when: conf_dir_st.stat.isdir is not defined or conf_dir_st.stat.isdir == False
 
 - name: collect tikv config
-  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --config-file --config-dir={{ tikv_conf_dir }} --config-prefix=tikv --output={{ tikv_log_dir }} --alias={{ inventory_hostname }}"
+  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ tikv_log_dir }} --alias={{ inventory_hostname }} config --dir={{ tikv_conf_dir }} --prefix=tikv"
