@@ -141,6 +141,6 @@ groups:
       level: warning
       expr: max_over_time(probe_duration_seconds{job=~"blackbox_exporter.*_icmp"}[1m]) > 1
     annotations:
-      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}'
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: blackbox_exporter ping latency more than 1s
