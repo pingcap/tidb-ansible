@@ -21,14 +21,14 @@
       {% endfor %}
       ]
   run_once: true
-  when: ansible_play_hosts | length > 1
+  when: ansible_play_hosts | length == groups['monitored_servers'] | length
 
 - name: Preflight check - Does every node in cluster have different hostname
   fail:
     msg: 'hostnames of all nodes in cluster: {{ all_hostnames | to_yaml }}'
   run_once: true
   when:
-    - ansible_play_hosts | length > 1
+    - ansible_play_hosts | length == groups['monitored_servers'] | length
     - all_hostnames | unique | length != groups['monitored_servers'] | length
 
 - name: Preflight check - Get NTP service status
