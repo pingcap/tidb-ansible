@@ -5322,10 +5322,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(increase(tidb_ddl_worker_operation_duration_seconds_bucket[1m])) by (le, type, result))",
+              "expr": "histogram_quantile(0.99, sum(increase(tidb_ddl_worker_operation_duration_seconds_bucket[1m])) by (le, type, action, result))",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{type}}-{{result}}",
+              "legendFormat": "{{type}}-{{action}}-{{result}}",
               "refId": "A"
             }
           ],
@@ -5476,10 +5476,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(1, sum(rate(tidb_ddl_owner_handle_syncer_duration_seconds_bucket[2m])) by (le, type, result))",
+              "expr": "histogram_quantile(1, sum(rate(tidb_ddl_owner_handle_syncer_duration_seconds_bucket[1m])) by (le, type, version, result))",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{type}}-{{result}}",
+              "legendFormat": "{{type}}-{{version}}-{{result}}",
               "refId": "A"
             }
           ],
@@ -5553,10 +5553,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(1, sum(rate(tidb_ddl_update_self_ver_duration_seconds_bucket[2m])) by (le, result))",
+              "expr": "histogram_quantile(1, sum(rate(tidb_ddl_update_self_ver_duration_seconds_bucket[1m])) by (le,version, result))",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{result}}",
+              "legendFormat": "{{version}}-{{result}}",
               "refId": "A"
             }
           ],
