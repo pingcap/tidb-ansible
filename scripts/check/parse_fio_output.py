@@ -25,7 +25,7 @@ def parse_opts():
 if __name__ == '__main__':
     args = parse_opts()
 
-    if args.target is None:
+    if not args.target:
         print("Please add `--target` flag to specify file path of fio JSON output.")
         sys.exit(1)
     else:
