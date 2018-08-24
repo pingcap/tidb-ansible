@@ -144,3 +144,15 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, type: {{ $labels.type }}, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: TiKV_space_used_more_than_80%
+
+  - alert: PD_system_time_slow
+    expr: changes(pd_server_tso{type="system_time_slow"}[10m]) >= 1
+    for: 1m
+    labels:
+      env: ENV_LABELS_ENV
+      level: warning
+      expr: changes(pd_server_tso{type="system_time_slow"}[10m]) >= 1
+    annotations:
+      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
+      value: '{{ $value }}'
+      summary: PD_system_time_slow
