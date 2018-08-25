@@ -44,4 +44,4 @@
 - name: Preflight check - Fail when Linux kernel vm.overcommit_memory parameter is set to 2
   fail:
     msg: "To avoid OOM, it is not recommended to set vm.overcommit_memory to 2, set it to 0 or 1."
-  when: vm_overcommit_memory == 2
+  when: vm_overcommit_memory.stdout | int == 2
