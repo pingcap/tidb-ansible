@@ -1555,7 +1555,93 @@
               "show": true
             }
           ]
-        }
+        },
+	{
+	  "type": "graph",
+	  "title": "Get Token Duration",
+	  "gridPos": {
+	    "x": 0,
+	    "y": 24,
+	    "w": 12,
+	    "h": 9
+	  },
+	  "id": 111,
+	  "datasource": null,
+	  "targets": [
+	    {
+	      "expr": "histogram_quantile(0.99, sum(rate(tidb_server_get_token_duration_seconds_bucket[1m])) by (le))",
+	      "intervalFactor": 1,
+	      "format": "time_series",
+	      "refId": "A",
+	      "legendFormat": "99"
+	    }
+	  ],
+	  "renderer": "flot",
+	  "yaxes": [
+	    {
+	      "label": null,
+	      "show": true,
+	      "logBase": 1,
+	      "min": null,
+	      "max": null,
+	      "format": "µs"
+	    },
+	    {
+	      "label": null,
+	      "show": true,
+	      "logBase": 1,
+	      "min": null,
+	      "max": null,
+	      "format": "short"
+	    }
+	  ],
+	  "xaxis": {
+	    "show": true,
+	    "mode": "time",
+	    "name": null,
+	    "values": [],
+	    "buckets": null
+	  },
+	  "yaxis": {
+	    "align": false,
+	    "alignLevel": null
+	  },
+	  "lines": true,
+	  "fill": 1,
+	  "linewidth": 1,
+	  "dashes": false,
+	  "dashLength": 10,
+	  "spaceLength": 10,
+	  "points": false,
+	  "pointradius": 5,
+	  "bars": false,
+	  "stack": false,
+	  "percentage": false,
+	  "legend": {
+	    "show": true,
+	    "values": false,
+	    "min": false,
+	    "max": false,
+	    "current": false,
+	    "total": false,
+	    "avg": false
+	  },
+	  "nullPointMode": "null",
+	  "steppedLine": false,
+	  "tooltip": {
+	    "value_type": "individual",
+	    "shared": true,
+	    "sort": 0
+	  },
+	  "timeFrom": null,
+	  "timeShift": null,
+	  "aliasColors": {},
+	  "seriesOverrides": [],
+	  "thresholds": [],
+	  "links": [],
+	  "description": "Duration (us) for getting token, it should be small until concurrency limit is reached.",
+	  "transparent": false
+	}
       ],
       "repeat": null,
       "repeatIteration": null,
