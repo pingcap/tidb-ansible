@@ -38,6 +38,7 @@
 
 - name: Preflight check - Check Linux kernel overcommit_memory parameter
   shell: "sysctl -n vm.overcommit_memory"
+  become: true
   register: vm_overcommit_memory
 
 - name: Preflight check - Fail when Linux kernel vm.overcommit_memory parameter is set to 2
