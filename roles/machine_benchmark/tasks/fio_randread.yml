@@ -1,9 +1,7 @@
 ---
 
 - name: fio randread benchmark on tikv_data_dir disk
-  shell: "./fio -ioengine=psync -bs=32k -fdatasync=1 -thread -rw=randread -size={{ benchmark_size }} -filename=fio_randread_test.txt -name='fio randread test' -iodepth=4 -runtime=60 -numjobs=4 -group_reporting --output-format=json --output=fio_randread_result.json"
-  args:
-    chdir: "{{ fio_deploy_dir }}/"
+  shell: "cd {{ fio_deploy_dir }} && ./fio -ioengine=psync -bs=32k -fdatasync=1 -thread -rw=randread -size={{ benchmark_size }} -filename=fio_randread_test.txt -name='fio randread test' -iodepth=4 -runtime=60 -numjobs=4 -group_reporting --output-format=json --output=fio_randread_result.json"
 
 - name: clean fio randread benchmark temporary file
   file:
