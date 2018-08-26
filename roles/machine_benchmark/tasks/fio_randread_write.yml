@@ -22,6 +22,18 @@
   args:
     chdir: "{{ fio_deploy_dir }}/"
 
+- name: get fio randread iops
+  shell: "python parse_fio_output.py --target='fio_randread_write_test.json' --read-iops"
+  register: disk_mix_randread_iops
+  args:
+    chdir: "{{ fio_deploy_dir }}/"
+
+- name: get fio write iops
+  shell: "python parse_fio_output.py --target='fio_randread_write_test.json' --write-iops"
+  register: disk_mix_write_iops
+  args:
+    chdir: "{{ fio_deploy_dir }}/"
+
 - name: get fio mixed randread and sequential write summary
   shell: "python parse_fio_output.py --target='fio_randread_write_test.json' --summary"
   register: disk_mix_randread_write_smmary
