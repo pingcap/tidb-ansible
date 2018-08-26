@@ -1,7 +1,7 @@
 ---
 
 - name: fio mixed randread and sequential write benchmark on tikv_data_dir disk
-  shell: "./fio -ioengine=psync -bs=32k -fdatasync=1 -thread -rw=randrw -percentage_random=100,0 -size={{ benchmark_size }} -filename=fio_randread_write_test.txt -name="fio mixed randread and sequential write test" -iodepth=4 -runtime=60 -numjobs=4 -group_reporting --output-format=json --output=fio_randread_write_test.json"
+  shell: "./fio -ioengine=psync -bs=32k -fdatasync=1 -thread -rw=randrw -percentage_random=100,0 -size={{ benchmark_size }} -filename=fio_randread_write_test.txt -name='fio mixed randread and sequential write test' -iodepth=4 -runtime=60 -numjobs=4 -group_reporting --output-format=json --output=fio_randread_write_test.json"
   args:
     chdir: "{{ fio_deploy_dir }}/"
 
@@ -22,15 +22,15 @@
   args:
     chdir: "{{ fio_deploy_dir }}/"
 
-- name: get fio randread iops
+- name: get fio randread latency
   shell: "python parse_fio_output.py --target='fio_randread_write_test.json' --read-iops"
-  register: disk_mix_randread_iops
+  register: disk_mix_randread_lat
   args:
     chdir: "{{ fio_deploy_dir }}/"
 
-- name: get fio write iops
+- name: get fio write latency
   shell: "python parse_fio_output.py --target='fio_randread_write_test.json' --write-iops"
-  register: disk_mix_write_iops
+  register: disk_mix_write_lat
   args:
     chdir: "{{ fio_deploy_dir }}/"
 
