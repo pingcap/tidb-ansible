@@ -39,9 +39,13 @@
   args:
     chdir: "{{ fio_deploy_dir }}/"
 
-- name: fio mixed randread and sequential write summary
+- name: fio mixed randread and sequential write benchmark command
   debug:
-    msg: "run command on server: {{ fio_randread_write.cmd }}, and result is: {{ disk_mix_randread_write_smmary }}."
+    msg: "fio mixed randread and sequential write benchmark command: {{ fio_randread_write.cmd }}."
+
+- name: fio mixed randread and sequential write benchmark summary
+  debug:
+    msg: "fio mixed randread and sequential write benchmark summary: {{ disk_mix_randread_write_smmary.stdout }}."
 
 - name: Preflight check - Does fio mixed randread and sequential write iops of tikv_data_dir disk meet requirement - randread
   fail:

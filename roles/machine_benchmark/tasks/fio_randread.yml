@@ -21,9 +21,13 @@
   args:
     chdir: "{{ fio_deploy_dir }}/"
 
-- name: fio randread summary
+- name: fio randread benchmark command
   debug:
-    msg: "run command on server: {{ fio_randread.cmd }}, and the result is {{ disk_randread_smmary.stdout }}."
+    msg: "fio randread benchmark command: {{ fio_randread.cmd }}."
+
+- name: fio randread benchmark summary
+  debug:
+    msg: "fio randread benchmark summary: {{ disk_randread_smmary.stdout }}."
 
 - name: Preflight check - Does fio randread iops of tikv_data_dir disk meet requirement
   fail:
