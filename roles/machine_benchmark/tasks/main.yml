@@ -24,26 +24,4 @@
     dest: "{{ fio_deploy_dir }}/parse_fio_output.py"
     mode: 0755
 
-- name: fio randread benchmark on tikv_data_dir disk
-  shell: "./fio -ioengine=psync -bs=32k -fdatasync=1 -thread -rw=randread -size={{ benchmark_size }} -filename=fio_randread_test.txt -name="fio randread test" -iodepth=4 -runtime=60 -numjobs=4 -group_reporting --output-format=json --output=fio_randread_result.json"
-  args:
-    chdir: "{{ fio_deploy_dir }}/"
-
-- name: clean fio randread benchmark temporary file
-  file:
-    path: "{{ deploy_dir }}/fio_randread_test.txt"
-    state: absent
-
-- name: get fio randread iops
-  shell: "python {{ fio_deploy_dir }}/parse_fio_output.py --read-iops"
-  register: disk_randread_iops
-
-- name: get fio randread summary
-  shell: "python parse_fio_output.py --target='fio_randread_result.json' --summary"
-  register: disk_randread_smmary
-  args:
-    chdir: "{{ fio_deploy_dir }}/"
-
-- name: fio randread summary
-  debug:
-    msg: "run command on server: {{ disk_randread_iops.cmd }}, and the result is {{ disk_randread_smmary.stdout }}."
+- include_tasks: fio_randread.yml

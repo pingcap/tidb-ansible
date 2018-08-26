@@ -1,0 +1,38 @@
+---
+
+- name: fio mixed randread and sequential write benchmark on tikv_data_dir disk
+  shell: "./fio -ioengine=psync -bs=32k -fdatasync=1 -thread -rw=randrw -percentage_random=100,0 -size={{ benchmark_size }} -filename=fio_randread_write_test.txt -name="fio mixed randread and sequential write test" -iodepth=4 -runtime=60 -numjobs=4 -group_reporting --output-format=json --output=fio_randread_write_test.json"
+  args:
+    chdir: "{{ fio_deploy_dir }}/"
+
+- name: clean fio mixed randread and sequential write benchmark temporary file
+  file:
+    path: "{{ deploy_dir }}/fio_randread_write_test.txt"
+    state: absent
+
+- name: get fio randread iops
+  shell: "python parse_fio_output.py --target='fio_randread_write_test.json' --read-iops"
+  register: disk_mix_randread_iops
+  args:
+    chdir: "{{ fio_deploy_dir }}/"
+
+- name: get fio write iops
+  shell: "python parse_fio_output.py --target='fio_randread_write_test.json' --write-iops"
+  register: disk_mix_write_iops
+  args:
+    chdir: "{{ fio_deploy_dir }}/"
+
+- name: get fio mixed randread and sequential write summary
+  shell: "python parse_fio_output.py --target='fio_randread_write_test.json' --summary"
+  register: disk_mix_randread_write_smmary
+  args:
+    chdir: "{{ fio_deploy_dir }}/"
+
+- name: fio mixed randread and sequential write summary
+  debug:
+    msg: "run command on server: {{ disk_randr_write_iops.cmd }}, and fio mixed randread and sequential write iops result: {{ disk_mix_randread_write_smmary }}."
+
+- name: Preflight check - Does fio randread iops of tikv_data_dir disk meet requirement
+  fail:
+    msg: 'fio: randread iops of tikv_data_dir disk is too low: {{ disk_randread_iops.stdout }} < {{ min_ssd_randread_iops }}, it is strongly recommended to use SSD disks for TiKV and PD, or there might be performance issues.'
+  when: disk_randread_iops.stdout|int < min_ssd_randread_iops|int
