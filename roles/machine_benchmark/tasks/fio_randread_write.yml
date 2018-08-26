@@ -5,7 +5,7 @@
 
 - name: clean fio mixed randread and sequential write benchmark temporary file
   file:
-    path: "{{ deploy_dir }}/fio_randread_write_test.txt"
+    path: "{{ fio_deploy_dir }}/fio_randread_write_test.txt"
     state: absent
 
 - name: get fio randread iops
@@ -42,7 +42,22 @@
   debug:
     msg: "run command on server: {{ disk_randr_write_iops.cmd }}, and fio mixed randread and sequential write iops result: {{ disk_mix_randread_write_smmary }}."
 
-- name: Preflight check - Does fio randread iops of tikv_data_dir disk meet requirement
+- name: Preflight check - Does fio mixed randread and sequential write iops of deploy_dir disk meet requirement - randread
   fail:
-    msg: 'fio: randread iops of tikv_data_dir disk is too low: {{ disk_randread_iops.stdout }} < {{ min_ssd_randread_iops }}, it is strongly recommended to use SSD disks for TiKV and PD, or there might be performance issues.'
-  when: disk_randread_iops.stdout|int < min_ssd_randread_iops|int
+    msg: 'fio mixed randread and sequential write test: randread iops of  deploy_dir disk is too low: {{ disk_mix_randread_iops }} < {{ min_ssd_mix_randread_iops }}, it is strongly recommended to use SSD disks for TiKV, TiDB and PD, or there might be performance issues.'
+  when: disk_mix_randread_iops|int < min_ssd_mix_randread_iops|int
+
+- name: Preflight check - Does fio mixed randread and sequential write iops of deploy_dir disk meet requirement - sequential write
+  fail:
+    msg: 'fio mixed randread and sequential write test: sequential write iops of deploy_dir disk is too low: {{ disk_mix_write_iops }} < {{ min_ssd_mix_write_iops }}, it is strongly recommended to use SSD disks for TiKV, TiDB and PD, or there might be performance issues.'
+  when: disk_mix_write_iops|int < min_ssd_mix_write_iops|int
+
+- name: Preflight check - Does fio mixed randread and sequential write latency of deploy_dir disk meet requirement - randread
+  fail:
+    msg: 'fio mixed randread and sequential write test: randread latency of  deploy_dir disk is too low: {{ disk_mix_randread_lat }} usec > {{ max_ssd_mix_randread_lat }} usec, it is strongly recommended to use SSD disks for TiKV, TiDB and PD, or there might be performance issues.'
+  when: disk_mix_randread_lat|int > max_ssd_mix_randread_lat|int
+
+- name: Preflight check - Does fio mixed randread and sequential write latency of deploy_dir disk meet requirement - sequential write
+  fail:
+    msg: 'fio mixed randread and sequential write test: sequential write latency of deploy_dir disk is too low: {{ disk_mix_write_lat }} usec > {{ max_ssd_mix_write_lat }} usec, it is strongly recommended to use SSD disks for TiKV, TiDB and PD, or there might be performance issues.'
+  when: disk_mix_write_lat|int > max_ssd_mix_write_lat|int
