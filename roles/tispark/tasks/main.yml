@@ -11,8 +11,9 @@
     mv {{ deploy_dir }}/spark-* "{{ deploy_dir }}/spark"
 
 - name: deploy tispark
-  copy: >
-    src={{ downloads_dir }}/tispark-SNAPSHOT-jar-with-dependencies.jar dest={{ deploy_dir }}/spark/jars/
+  copy:
+    src: "{{ resources_dir }}/bin/tispark-SNAPSHOT-jar-with-dependencies.jar"
+    dest: "{{ deploy_dir }}/spark/jars/"
 
 - include_tasks: standalone.yml
   when:
