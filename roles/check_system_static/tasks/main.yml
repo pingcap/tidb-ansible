@@ -35,3 +35,13 @@
 
 - name: Clean check_cpufreq script
   file: path={{ deploy_dir }}/check_cpufreq.py state=absent
+
+- name: Preflight check - Check Linux kernel overcommit_memory parameter
+  shell: "sysctl -n vm.overcommit_memory"
+  become: true
+  register: vm_overcommit_memory
+
+- name: Preflight check - Fail when Linux kernel vm.overcommit_memory parameter is set to 2
+  fail:
+    msg: "It is not recommended to set vm.overcommit_memory to 2, set it to 0 or 1."
+  when: vm_overcommit_memory.stdout | int == 2
