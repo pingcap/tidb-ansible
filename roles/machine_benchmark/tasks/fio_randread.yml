@@ -1,0 +1,36 @@
+---
+
+- name: fio randread benchmark on tikv_data_dir disk
+  shell: "cd {{ fio_deploy_dir }} && ./fio -ioengine=psync -bs=32k -fdatasync=1 -thread -rw=randread -size={{ benchmark_size }} -filename=fio_randread_test.txt -name='fio randread test' -iodepth=4 -runtime=60 -numjobs=4 -group_reporting --output-format=json --output=fio_randread_result.json"
+  register: fio_randread
+
+- name: clean fio randread benchmark temporary file
+  file:
+    path: "{{ fio_deploy_dir }}/fio_randread_test.txt"
+    state: absent
+
+- name: get fio randread iops
+  shell: "python parse_fio_output.py --target='fio_randread_result.json' --read-iops"
+  register: disk_randread_iops
+  args:
+    chdir: "{{ fio_deploy_dir }}/"
+
+- name: get fio randread summary
+  shell: "python parse_fio_output.py --target='fio_randread_result.json' --summary"
+  register: disk_randread_smmary
+  args:
+    chdir: "{{ fio_deploy_dir }}/"
+
+- name: fio randread benchmark command
+  debug:
+    msg: "fio randread benchmark command: {{ fio_randread.cmd }}."
+  run_once: true
+
+- name: fio randread benchmark summary
+  debug:
+    msg: "fio randread benchmark summary: {{ disk_randread_smmary.stdout }}."
+
+- name: Preflight check - Does fio randread iops of tikv_data_dir disk meet requirement
+  fail:
+    msg: 'fio: randread iops of tikv_data_dir disk is too low: {{ disk_randread_iops.stdout }} < {{ min_ssd_randread_iops }}, it is strongly recommended to use SSD disks for TiKV and PD, or there might be performance issues.'
+  when: disk_randread_iops.stdout|int < min_ssd_randread_iops|int
