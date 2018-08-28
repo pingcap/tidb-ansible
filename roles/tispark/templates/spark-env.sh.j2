@@ -76,4 +76,7 @@
   {% set tispark_master_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
   {% set _ = tispark_master.append("%s" % (tispark_master_ip)) -%}
 {% endfor -%}
+
+{% if tispark_master %}
 SPARK_MASTER_HOST={{ tispark_master | join('') }}
+{% endif %}
