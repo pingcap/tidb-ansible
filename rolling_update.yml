@@ -271,8 +271,8 @@
         body_format: json
         status_code: 200
       register: store_info
-      until: (store_info.json.status.leader_count is defined and store_info.json.status.leader_count|int < 10) or store_info.json.status.leader_count is not defined
-      retries: 12
+      until: (store_info.json.status.leader_count is defined and store_info.json.status.leader_count|int < 1) or store_info.json.status.leader_count is not defined
+      retries: 18
       delay: 10
       failed_when: false
       when: not enable_tls|default(false)
@@ -288,8 +288,8 @@
         body_format: json
         status_code: 200
       register: store_info_tls
-      until: (store_info_tls.json.status.leader_count is defined and store_info_tls.json.status.leader_count|int < 10) or store_info_tls.json.status.leader_count is not defined
-      retries: 12
+      until: (store_info_tls.json.status.leader_count is defined and store_info_tls.json.status.leader_count|int < 1) or store_info_tls.json.status.leader_count is not defined
+      retries: 18
       delay: 10
       failed_when: false
       when: enable_tls|default(false)
