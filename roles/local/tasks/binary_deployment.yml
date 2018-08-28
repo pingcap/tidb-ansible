@@ -55,6 +55,13 @@
     warn: no
   with_items: "{{ third_party_packages }}"
 
+- name: unarchive tispark
+  shell: tar xzf tispark-latest.tar.gz
+  args:
+    chdir: "{{ downloads_dir }}"
+    warn: no
+  when: not deploy_without_tidb|default(false)
+
 - name: unarchive tispark-sample-data
   shell: ls -1 tispark-sample-data.tar.gz | xargs -n1 tar xzf
   args:
@@ -71,6 +78,11 @@
     - node_exporter
     - pushgateway
     - blackbox_exporter
+
+- name: cp tispark
+  shell: >
+    cp -v {{ downloads_dir }}/core/target/tispark-core-*-SNAPSHOT-jar-with-dependencies.jar "{{ resources_dir }}/bin/tispark-SNAPSHOT-jar-with-dependencies.jar"
+  when: not deploy_without_tidb|default(false)
 
 - name: cp tispark-sample-data
   shell: >
