@@ -61,7 +61,7 @@ groups:
       value: '{{ $value }}'
       summary: TiDB server panic total
 
-  - alert: TiDB_memery_abnormal
+  - alert: TiDB_memory_abnormal
     expr: go_memstats_heap_inuse_bytes{job="tidb"} > 1e+10
     for: 1m
     labels:
@@ -71,7 +71,7 @@ groups:
     annotations:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
-      summary: TiDB mem heap is over 1GiB
+      summary: TiDB heap memory usage is over 10 GB
 
   - alert: TiDB_query_duration
     expr: histogram_quantile(0.99, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) BY (le, instance)) > 1
