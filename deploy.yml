@@ -90,6 +90,8 @@
 
 - name: deploying kafka_exporter
   hosts: kafka_exporter_servers
+  tags:
+    - kafka_exporter
   roles:
     - { role: kafka_exporter, when: 'enable_binlog|default(false) and kafka_addrs|default("") != ""' }
 
@@ -120,6 +122,8 @@
 
 - name: deploying tispark cluster
   hosts: spark_master,spark_slaves
+  tags:
+    - tispark
   roles:
     - { role: tispark, when: "groups.get('spark_master', []) | length != 0 and groups.get('spark_slaves', []) | length != 0 and deployment_method == 'binary'" }
 

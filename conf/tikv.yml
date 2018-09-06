@@ -56,6 +56,12 @@ server:
   # grpc-raft-conn-num: 10
   # Amount to read ahead on individual grpc streams.
   # grpc-stream-initial-window-size: "2MB"
+  # Time to wait before sending out a ping to check if server is still alive.
+  # This is only for communications between tikv instances.
+  # grpc-keepalive-time: "10s"
+  # Time to wait before closing the connection without receiving keepalive ping
+  # ack.
+  # grpc-keepalive-timeout: "3s"
 
   # How many snapshots can be sent concurrently.
   # concurrent-send-snap-limit: 32
@@ -197,6 +203,11 @@ coprocessor:
   # bit smaller.
   # region-max-size: "144MB"
   # region-split-size: "96MB"
+  # When the region's keys exceeds region-max-keys, we will split the region
+  # into two which the left region's keys will be region-split-keys or a little
+  # bit smaller.
+  # region-max-keys: 1440000
+  # region-split-keys: 960000
 
 rocksdb:
   # Maximum number of concurrent background jobs (compactions and flushes)

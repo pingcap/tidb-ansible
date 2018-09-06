@@ -11,9 +11,34 @@
     mv {{ deploy_dir }}/spark-* "{{ deploy_dir }}/spark"
 
 - name: deploy tispark
-  copy: >
-    src={{ downloads_dir }}/tispark-SNAPSHOT-jar-with-dependencies.jar dest={{ deploy_dir }}/spark/jars/
+  copy:
+    src: "{{ resources_dir }}/bin/tispark-SNAPSHOT-jar-with-dependencies.jar"
+    dest: "{{ deploy_dir }}/spark/jars/"
 
-- include_tasks: standalone.yml
-  when:
-    - "'spark_master' in group_names or 'spark_slaves' in group_names"
+- name: load customized spark_env
+  include_vars: file={{ playbook_dir }}/conf/spark-env.yml name=spark_env_custom
+
+- name: create spark_env.sh file
+  template:
+    src: spark-env.sh.j2
+    dest: "{{ deploy_dir }}/spark/conf/spark-env.sh"
+    mode: 0644
+    backup: yes
+
+- name: load customized spark_defaults
+  include_vars: file={{ playbook_dir }}/conf/spark-defaults.yml name=spark_defaults_custom
+
+- name: create spark_defaults.conf file
+  template:
+    src: spark-defaults.conf.j2
+    dest: "{{ deploy_dir }}/spark/conf/spark-defaults.conf"
+    mode: 0644
+    backup: yes
+
+- name: create spark-slave.sh
+  template:
+    src: "start-slave.sh.j2"
+    dest: "{{ deploy_dir }}/spark/sbin/start-slave.sh"
+    mode: 0755
+    backup: yes
+  when: "'spark_slaves' in group_names"
