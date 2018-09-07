@@ -38,12 +38,12 @@ groups:
       summary: TiDB domain_load_schema_total error
 
   - alert: TiDB_monitor_keep_alive
-    expr: increase(tidb_monitor_keep_alive_total[10m]) < 100
+    expr: increase(tidb_monitor_keep_alive_total{job="tidb"}[10m]) < 100
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: emergency
-      expr:  increase(tidb_monitor_keep_alive_total[10m]) < 100
+      expr: increase(tidb_monitor_keep_alive_total{job="tidb"}[10m]) < 100
     annotations:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
