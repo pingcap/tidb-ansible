@@ -59,10 +59,10 @@
       debug:
         var: pd_addr
 
-    - include_tasks: get_pd_leader.yml
+    - include_tasks: "common_tasks/get_pd_leader.yml"
       when: not enable_tls|default(false)
 
-    - include_tasks: get_pd_leader_tls.yml
+    - include_tasks: "common_tasks/get_pd_leader_tls.yml"
       when: enable_tls|default(false)
 
     - set_fact:
@@ -205,13 +205,13 @@
     - debug:
         var: tikv_addr
 
-    - include_tasks: get_store_id.yml
+    - include_tasks: "common_tasks/get_store_id.yml"
       when: not enable_tls|default(false)
 
-    - include_tasks: get_store_id_tls.yml
+    - include_tasks: "common_tasks/get_store_id_tls.yml"
       when: enable_tls|default(false)
 
-    - include_tasks: evict_leader_scheduler.yml
+    - include_tasks: "common_tasks/evict_leader_scheduler.yml"
 
     - name: stop TiKV by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_tikv.sh
