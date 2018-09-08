@@ -211,7 +211,7 @@
     - include_tasks: "common_tasks/get_store_id_tls.yml"
       when: enable_tls|default(false)
 
-    - include_tasks: "common_tasks/evict_leader_scheduler.yml"
+    - include_tasks: "common_tasks/add_evict_leader_scheduler.yml"
 
     - name: stop TiKV by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_tikv.sh
@@ -269,22 +269,7 @@
       debug:
         msg: "tikv binary or docker pid: {{ new_tikv_pid.stdout }}"
 
-    - name: remove evict-leader-scheduler
-      uri:
-        url: "http://{{ pd_addr }}/pd/api/v1/schedulers/evict-leader-scheduler-{{ store_id }}"
-        method: DELETE
-        status_code: 200
-      when: not enable_tls|default(false)
-
-    - name: remove evict-leader-scheduler when enable_tls|default(false)
-      uri:
-        url: "https://{{ pd_addr }}/pd/api/v1/schedulers/evict-leader-scheduler-{{ store_id_tls }}"
-        validate_certs: no
-        client_cert: "{{ tikv_cert_dir }}/tikv-server-{{ ansible_host }}.pem"
-        client_key: "{{ tikv_cert_dir }}/tikv-server-{{ ansible_host }}-key.pem"
-        method: DELETE
-        status_code: 200
-      when: enable_tls|default(false)
+    - include_tasks: "common_tasks/remove_evict_leader_scheduler.yml"
 
 
 - name: rolling update TiDB cluster
