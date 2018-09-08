@@ -168,27 +168,21 @@
   tags:
     - tikv
   tasks:
-    - set_fact:
-        pd_host: "{{ hostvars[groups.pd_servers[0]].ansible_host | default(hostvars[groups.pd_servers[0]].inventory_hostname) }}"
-        pd_client_port: "{{ hostvars[groups.pd_servers[0]].pd_client_port }}"
-
-    - set_fact:
-        pd_addr: "{{ pd_host }}:{{ pd_client_port }}"
-        tikv_addr: "{{ ansible_host }}:{{ tikv_port }}"
-
-    - debug:
-        var: pd_addr
-
-    - debug:
-        var: tikv_addr
+    - include_tasks: "common_tasks/get_pd_tikv_addr.yml"
+      when: ansible_play_batch | length == 1
 
     - include_tasks: "common_tasks/get_store_id.yml"
-      when: not enable_tls|default(false)
+      when:
+        - not enable_tls|default(false)
+        - ansible_play_batch | length == 1
 
     - include_tasks: "common_tasks/get_store_id_tls.yml"
-      when: enable_tls|default(false)
+      when:
+        - enable_tls|default(false)
+        - ansible_play_batch | length == 1
 
     - include_tasks: "common_tasks/add_evict_leader_scheduler.yml"
+      when: ansible_play_batch | length == 1
 
     - name: stop TiKV by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
@@ -217,6 +211,7 @@
         msg: "tikv binary or docker pid: {{ old_tikv_pid.stdout }}"
 
     - include_tasks: "common_tasks/remove_evict_leader_scheduler.yml"
+      when: ansible_play_batch | length == 1
 
 
 - hosts: pd_servers
