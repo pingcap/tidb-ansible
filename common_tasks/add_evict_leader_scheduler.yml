@@ -83,10 +83,12 @@
   failed_when: false
   when: enable_tls|default(false)
 
-- debug:
-    var: store_info.json.status.leader_count
+- name: display leader_count
+  debug:
+    msg: "leader_count: {{ store_info.json.status.leader_count|default(0) }}"
   when: not enable_tls|default(false)
 
-- debug:
-    var: store_info_tls.json.status.leader_count
+- name: display leader_count when enable_tls|default(false)
+  debug:
+    msg: "leader_count: {{ store_info_tls.json.status.leader_count|default(0) }}"
   when: enable_tls|default(false)
