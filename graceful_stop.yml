@@ -171,6 +171,7 @@
     - name: check ansible_play_batch
       fail:
         msg: "Only one host can be specified at a time when performing graceful stop."
+      run_once: true
       when: ansible_play_batch | length != 1
 
     - include_tasks: "common_tasks/get_pd_tikv_addr.yml"
@@ -219,6 +220,7 @@
     - name: check ansible_play_batch
       fail:
         msg: "Only one host can be specified at a time when performing graceful stop."
+      run_once: true
       when: ansible_play_batch | length != 1
 
     - set_fact:
