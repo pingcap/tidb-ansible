@@ -1,0 +1,94 @@
+---
+
+- name: remove evict-leader-scheduler
+  uri:
+    url: "http://{{ pd_addr }}/pd/api/v1/schedulers/evict-leader-scheduler-{{ store_id }}"
+    method: DELETE
+    status_code: 200,500
+    return_content: yes
+  register: scheduler_info
+  until: "'scheduler not found' in scheduler_info.content"
+  retries: 3
+  delay: 5
+  when: not enable_tls|default(false)
+
+- name: remove evict-leader-scheduler when enable_tls|default(false)
+  uri:
+    url: "https://{{ pd_addr }}/pd/api/v1/schedulers/evict-leader-scheduler-{{ store_id_tls }}"
+    validate_certs: no
+    client_cert: "{{ tikv_cert_dir }}/tikv-server-{{ ansible_host }}.pem"
+    client_key: "{{ tikv_cert_dir }}/tikv-server-{{ ansible_host }}-key.pem"
+    method: DELETE
+    status_code: 200,500
+    return_content: yes
+  register: scheduler_info_tls
+  until: "'scheduler not found' in scheduler_info_tls.content"
+  retries: 3
+  delay: 5
+  when: enable_tls|default(false)
+
+- name: add evict-leader-scheduler
+  uri:
+    url: "http://{{ pd_addr }}/pd/api/v1/schedulers"
+    method: POST
+    status_code: 200
+    body_format: json
+    body:
+      name: "evict-leader-scheduler"
+      store_id: "{{ store_id }}"
+  when: not enable_tls|default(false)
+
+- name: add evict-leader-scheduler when enable_tls|default(false)
+  uri:
+    url: "https://{{ pd_addr }}/pd/api/v1/schedulers"
+    validate_certs: no
+    client_cert: "{{ tikv_cert_dir }}/tikv-server-{{ ansible_host }}.pem"
+    client_key: "{{ tikv_cert_dir }}/tikv-server-{{ ansible_host }}-key.pem"
+    method: POST
+    status_code: 200
+    body_format: json
+    body:
+      name: "evict-leader-scheduler"
+      store_id: "{{ store_id_tls }}"
+  when: enable_tls|default(false)
+
+- name: check tikv's leader count
+  uri:
+    url: "http://{{ pd_addr }}/pd/api/v1/store/{{ store_id }}"
+    method: GET
+    return_content: yes
+    body_format: json
+    status_code: 200
+  register: store_info
+  until: (store_info.json.status.leader_count is defined and store_info.json.status.leader_count|int < 1) or store_info.json.status.leader_count is not defined
+  retries: 18
+  delay: 10
+  failed_when: false
+  when: not enable_tls|default(false)
+
+- name: check tikv's leader count when enable_tls|default(false)
+  uri:
+    url: "https://{{ pd_addr }}/pd/api/v1/store/{{ store_id_tls }}"
+    validate_certs: no
+    client_cert: "{{ tikv_cert_dir }}/tikv-server-{{ ansible_host }}.pem"
+    client_key: "{{ tikv_cert_dir }}/tikv-server-{{ ansible_host }}-key.pem"
+    method: GET
+    return_content: yes
+    body_format: json
+    status_code: 200
+  register: store_info_tls
+  until: (store_info_tls.json.status.leader_count is defined and store_info_tls.json.status.leader_count|int < 1) or store_info_tls.json.status.leader_count is not defined
+  retries: 18
+  delay: 10
+  failed_when: false
+  when: enable_tls|default(false)
+
+- name: display leader_count
+  debug:
+    msg: "leader_count: {{ store_info.json.status.leader_count|default(0) }}"
+  when: not enable_tls|default(false)
+
+- name: display leader_count when enable_tls|default(false)
+  debug:
+    msg: "leader_count: {{ store_info_tls.json.status.leader_count|default(0) }}"
+  when: enable_tls|default(false)

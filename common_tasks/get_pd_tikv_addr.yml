@@ -1,0 +1,17 @@
+---
+
+- set_fact:
+    pd_host: "{{ hostvars[groups.pd_servers[0]].ansible_host | default(hostvars[groups.pd_servers[0]].inventory_hostname) }}"
+    pd_client_port: "{{ hostvars[groups.pd_servers[0]].pd_client_port }}"
+
+- set_fact:
+    pd_addr: "{{ pd_host }}:{{ pd_client_port }}"
+    tikv_addr: "{{ ansible_host }}:{{ tikv_port }}"
+
+- name: display pd addr
+  debug:
+    var: pd_addr
+
+- name: display tikv addr
+  debug:
+    var: tikv_addr
