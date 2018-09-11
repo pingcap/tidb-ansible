@@ -13,9 +13,6 @@
 - include_tasks: collect_log.yml
 - include_tasks: collect_config.yml
 
-- name: collect basic system information
-  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ tidb_log_dir }} --alias={{ inventory_hostname }} system --collector"
-
 - name: collect tidb server information
   shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ tidb_log_dir }} --alias={{ inventory_hostname }} tidb tidbinfo"
   run_once: True
