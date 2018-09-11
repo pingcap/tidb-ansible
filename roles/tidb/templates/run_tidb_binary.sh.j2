@@ -17,6 +17,8 @@ cd "${DEPLOY_DIR}" || exit 1
   {% set _ = all_pd.append("%s:%s" % (pd_ip, pd_port)) -%}
 {% endfor -%}
 
+export TZ={{ timezone }}
+
 exec bin/tidb-server \
     -P {{ tidb_port }} \
     --status="{{ tidb_status_port }}" \
