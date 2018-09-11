@@ -1,0 +1,75 @@
+---
+
+- set_fact:
+    pd_leader_name: "{{ pd_leader_info.json.name }}"
+
+- name: display PD leader name
+  debug:
+    var: pd_leader_name
+
+- name: transfer PD leader to another PD server
+  uri:
+    url: "http://{{ pd_addr }}/pd/api/v1/leader/resign"
+    method: POST
+    status_code: 200
+  when:
+    - groups['pd_servers'] | length >= 3
+    - pd_leader_name == pd_name
+    - not enable_tls|default(false)
+
+- name: transfer PD leader to another PD server when enable_tls|default(false)
+  uri:
+    url: "https://{{ pd_addr }}/pd/api/v1/leader/resign"
+    method: POST
+    validate_certs: no
+    client_cert: "{{ pd_cert_dir }}/pd-server-{{ ansible_host }}.pem"
+    client_key: "{{ pd_cert_dir }}/pd-server-{{ ansible_host }}-key.pem"
+    status_code: 200
+  when:
+    - groups['pd_servers'] | length >= 3
+    - pd_leader_name == pd_name
+    - enable_tls|default(false)
+
+- name: wait for transfering PD leader
+  pause:
+      seconds: 10
+  when:
+    - groups['pd_servers'] | length >= 3
+    - pd_leader_name == pd_name
+
+- name: check current PD leader
+  uri:
+    url: "http://{{ pd_addr }}/pd/api/v1/leader"
+    method: GET
+    return_content: yes
+    body_format: json
+    status_code: 200
+  register: pd_leader_info
+  until: pd_leader_info.json.name is defined and pd_leader_info.json.name != pd_name
+  retries: 12
+  delay: 10
+  failed_when: false
+  when:
+    - groups['pd_servers'] | length >= 3
+    - pd_leader_name == pd_name
+    - not enable_tls|default(false)
+
+- name: check current PD leader when enable_tls|default(false)
+  uri:
+    url: "https://{{ pd_addr }}/pd/api/v1/leader"
+    validate_certs: no
+    client_cert: "{{ pd_cert_dir }}/pd-server-{{ ansible_host }}.pem"
+    client_key: "{{ pd_cert_dir }}/pd-server-{{ ansible_host }}-key.pem"
+    method: GET
+    return_content: yes
+    body_format: json
+    status_code: 200
+  register: pd_leader_info_tls
+  until: pd_leader_info_tls.json.name is defined and pd_leader_info_tls.json.name != pd_name
+  retries: 12
+  delay: 10
+  failed_when: false
+  when:
+    - groups['pd_servers'] | length >= 3
+    - pd_leader_name == pd_name
+    - enable_tls|default(false)
