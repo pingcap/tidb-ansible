@@ -5408,10 +5408,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(increase(tidb_ddl_worker_operation_duration_seconds_bucket[1m])) by (le, type, result))",
+              "expr": "histogram_quantile(0.99, sum(increase(tidb_ddl_worker_operation_duration_seconds_bucket[1m])) by (le, type, action, result))",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{type}}-{{result}}",
+              "legendFormat": "{{type}}-{{action}}-{{result}}",
               "refId": "A"
             }
           ],
