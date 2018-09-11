@@ -15,6 +15,7 @@
 
 - name: compress collected data
   shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ node_exporter_log_dir }} --alias={{ inventory_hostname }} archive"
+  become: true
 
 - include_tasks: collect_log.yml
 
@@ -36,3 +37,4 @@
     state: absent
   with_items:
     - "{{ inventory_hostname }}.tar.gz"
+  become: true
