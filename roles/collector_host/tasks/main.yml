@@ -20,7 +20,7 @@
 
 - name: fetch host diagnosis tarball with bandwidth limit
   delegate_to: localhost
-  shell: "scp -P {{ ansible_port|default(22) }} -l {{ collect_bandwidth_limit|default('10000') }} -o StrictHostKeyChecking=no {{ service_host }}:{{ node_exporter_log_dir }}/{{ inventory_hostname }}.tar.gz {{ fetch_tmp_dir }}/{{ service_host }}/tidb_{{ inventory_hostname }}.tar.gz"
+  shell: "scp -P {{ ansible_port|default(22) }} -l {{ collect_bandwidth_limit|default('10000') }} -o StrictHostKeyChecking=no {{ service_host }}:{{ node_exporter_log_dir }}/{{ inventory_hostname }}.tar.gz {{ fetch_tmp_dir }}/{{ service_host }}/{{ inventory_hostname }}.tar.gz"
   when: enable_bandwidth_limit|default(true)
 
 - name: fetch host diagnosis tarball without bandwidth limit
