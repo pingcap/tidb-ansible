@@ -1,0 +1,32 @@
+---
+# tasks file for drainer
+
+- name: create deploy directories
+  file: path="{{ item }}" state=directory mode=0755
+  with_items:
+  - "{{ drainer_data_dir }}"
+  - "{{ drainer_log_dir }}"
+  - "{{ status_dir }}"
+
+# - include_tasks: check_certs.yml
+#   when: enable_tls|default(false)
+#
+# - include_tasks: gen_certs.yml
+#   when: enable_tls|default(false)
+#
+# - include_tasks: install_certs.yml
+#   when: enable_tls|default(false)
+
+- name: create configuration file
+  copy: src="{{ playbook_dir }}/conf/drainer.toml" dest="{{ deploy_dir }}/conf/drainer.toml" mode=0644 backup=yes
+  register: drainer_conf_st
+
+- name: backup conf file
+  command: mv "{{ drainer_conf_st.backup_file }}" "{{ backup_dir }}"
+  when: drainer_conf_st.changed and drainer_conf_st.backup_file is defined
+
+- include_tasks: "binary_deployment.yml"
+
+- name: prepare firewalld white list
+  set_fact:
+    firewalld_ports: "{{ [drainer_port ~ '/tcp'] + firewalld_ports }}"
