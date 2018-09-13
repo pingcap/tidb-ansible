@@ -95,6 +95,20 @@
   with_items: "{{ diagnosis_packages }}"
   when: has_outbound_network
 
+- name: download new tidb and binlog binary
+  get_url:
+    url: "{{ item.url }}"
+    dest: "{{ downloads_dir }}/{{ item.name }}.tar.gz"
+    checksum: "{{ item.checksum | default(omit) }}"
+    force: yes
+    validate_certs: no
+  register: get_url_result
+  until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
+  retries: 4
+  delay: "{{ retry_stagger | random + 3 }}"
+  with_items: "{{ new_tidb_binlog_packages }}"
+  when: has_outbound_network
+
 - name: download cfssl binary
   get_url:
     url: https://pkg.cfssl.org/R1.2/cfssl_linux-amd64
@@ -141,6 +155,13 @@
     warn: no
   with_items: "{{ common_packages }}"
 
+- name: unarchive new tidb and binlog binary
+  shell: ls -1 {{ item.name }}.tar.gz | xargs -n1 tar xzf
+  args:
+    chdir: "{{ downloads_dir }}"
+    warn: no
+  with_items: "{{ new_tidb_binlog_packages }}"
+
 - name: cp tidb binary
   shell: >
     cp -v {{ downloads_dir }}/{{ item.name }}-{{ item.version}}*/bin/* "{{ resources_dir }}/bin/"
@@ -173,6 +194,21 @@
 
 - name: cp tidb-insight tarball
   shell: mv {{ downloads_dir }}/tidb-insight-v*.tar.gz {{ downloads_dir }}/tidb-insight.tar.gz
+
+- name: clean default version tidb and binlog binary
+  file:
+    path: "{{ resources_dir }}/bin/{{ item }}"
+    state: absent
+  with_items:
+    - tidb-server
+    - goyacc
+    - pump
+    - drainer
+
+- name: cp new tidb and binlog binary
+  shell: >
+    cp -v {{ downloads_dir }}/{{ item.name }}*/bin/* "{{ resources_dir }}/bin/"
+  with_items: "{{ new_tidb_binlog_packages }}"
 
 - name: clean up download dir
   shell: >
