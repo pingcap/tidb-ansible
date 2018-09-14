@@ -23,7 +23,7 @@ cd "${DEPLOY_DIR}" || exit 1
 {% endfor -%}
 
 exec bin/drainer \
-    --addr="0.0.0.0:{{ drainer_port }}" \
+    --addr="{{ my_ip }}:{{ drainer_port }}" \
     --pd-urls="{{ all_pd | join(',') }}" \
     --data-dir="{{ drainer_data_dir }}" \
     --log-file="{{ drainer_log_dir }}/{{ drainer_log_filename }}" \
