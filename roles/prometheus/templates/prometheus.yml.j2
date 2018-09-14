@@ -157,6 +157,14 @@ scrape_configs:
       - '{{ pump_addr }}'
     {% endfor %}
 
+  - job_name: 'drainer'
+    honor_labels: true # don't overwrite job & instance labels
+    static_configs:
+    - targets:
+    {% for drainer_addr in drainer_addrs %}
+      - '{{ drainer_addr }}'
+    {% endfor %}
+
   - job_name: "port_probe"
     scrape_interval: 30s
     metrics_path: /probe
