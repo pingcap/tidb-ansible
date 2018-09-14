@@ -1,6 +1,10 @@
 ---
 # tasks file for drainer
 
+- name: Ensure initial_commit_ts variable is set
+  fail: msg="Please set initial_commit_ts variable for drainer server in inventory.ini."
+  when: (initial_commit_ts is undefined) or (initial_commit_ts is defined and initial_commit_ts == "")
+
 - name: create deploy directories
   file: path="{{ item }}" state=directory mode=0755
   with_items:
