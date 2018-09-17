@@ -1,9 +1,19 @@
 ---
 # tasks file for drainer
 
-- name: Ensure initial_commit_ts variable is set
+- name: Preflight check - ensure initial_commit_ts variable is set
   fail: msg="Please set initial_commit_ts variable for drainer server in inventory.ini."
   when: (initial_commit_ts is undefined) or (initial_commit_ts is defined and initial_commit_ts == "")
+
+- name: "check if the customized config file `{{ playbook_dir }}/conf/{{ inventory_hostname }}_drainer.toml` existed"
+  stat:
+    path: "{{ playbook_dir }}/conf/{{ inventory_hostname }}_drainer.toml"
+  register: drainer_customized_conf_st
+
+- name: "Preflight check - ensure that the customized config file `{{ playbook_dir }}/conf/{{ inventory_hostname }}_drainer.toml` exists"
+  fail:
+    msg: 'You need to create customized config file `{{ playbook_dir }}/conf/{{ inventory_hostname }}_drainer.toml`.'
+  when: drainer_customized_conf_st.stat.exists == False
 
 - name: create deploy directories
   file: path="{{ item }}" state=directory mode=0755
@@ -22,7 +32,7 @@
 #   when: enable_tls|default(false)
 
 - name: create configuration file
-  copy: src="{{ playbook_dir }}/conf/drainer.toml" dest="{{ deploy_dir }}/conf/drainer.toml" mode=0644 backup=yes
+  copy: src="{{ playbook_dir }}/conf/{{ inventory_hostname }}_drainer.toml" dest="{{ deploy_dir }}/conf/drainer.toml" mode=0644 backup=yes
   register: drainer_conf_st
 
 - name: backup conf file
