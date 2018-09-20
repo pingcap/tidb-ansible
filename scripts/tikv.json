@@ -8508,28 +8508,28 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_gcworker_gc_tasks[1m]))",
+              "expr": "sum(rate(tikv_gcworker_gc_tasks_vec[1m])) by (task)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "total",
+              "legendFormat": "total-{{task}}",
               "metric": "tikv_storage_command_total",
               "refId": "A",
               "step": 4
             },
             {
-              "expr": "sum(rate(tikv_storage_gc_skipped_counter[1m]))",
+              "expr": "sum(rate(tikv_storage_gc_skipped_counter[1m])) by (task)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "skipped",
+              "legendFormat": "skipped-{{task}}",
               "metric": "tikv_storage_gc_skipped_counter",
               "refId": "B",
               "step": 4
             },
             {
-              "expr": "sum(rate(tikv_gcworker_gc_task_fail[1m]))",
+              "expr": "sum(rate(tikv_gcworker_gc_task_fail_vec[1m])) by (task)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "failed",
+              "legendFormat": "failed-{{task}}",
               "refId": "C"
             },
             {
@@ -8611,35 +8611,35 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(1, sum(rate(tikv_gcworker_gc_task_duration_bucket[1m])) by (le))",
+              "expr": "histogram_quantile(1, sum(rate(tikv_gcworker_gc_task_duration_vec_bucket[1m])) by (le, task))",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "max",
+              "legendFormat": "max-{{task}}",
               "metric": "tikv_storage_command_total",
               "refId": "A",
               "step": 4
             },
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_gcworker_gc_task_duration_bucket[1m])) by (le))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_gcworker_gc_task_duration_vec_bucket[1m])) by (le, task))",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "99%",
+              "legendFormat": "99%-{{task}}",
               "metric": "tikv_storage_gc_skipped_counter",
               "refId": "B",
               "step": 4
             },
             {
-              "expr": "histogram_quantile(0.95, sum(rate(tikv_gcworker_gc_task_duration_bucket[1m])) by (le))",
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_gcworker_gc_task_duration_vec_bucket[1m])) by (le, task))",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "95%",
+              "legendFormat": "95%-{{task}}",
               "refId": "C"
             },
             {
-              "expr": "sum(rate(tikv_gcworker_gc_task_duration_sum[1m])) / sum(rate(tikv_gcworker_gc_task_duration_count[1m])) ",
+              "expr": "sum(rate(tikv_gcworker_gc_task_duration_vec_sum[1m])) by (task) / sum(rate(tikv_gcworker_gc_task_duration_vec_count[1m])) by (task)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "average",
+              "legendFormat": "average-{{task}}",
               "refId": "D"
             }
           ],
