@@ -195,18 +195,14 @@
 - name: cp tidb-insight tarball
   shell: mv {{ downloads_dir }}/tidb-insight-v*.tar.gz {{ downloads_dir }}/tidb-insight.tar.gz
 
-- name: clean default version tidb and binlog binary
+- name: clean default version binlogctl binary
   file:
     path: "{{ resources_dir }}/bin/{{ item }}"
     state: absent
   with_items:
-    - tidb-server
-    - goyacc
-    - pump
-    - drainer
     - binlogctl
 
-- name: cp new tidb and binlog binary
+- name: cp new binlog binary
   shell: >
     cp -v {{ downloads_dir }}/{{ item.name }}*/bin/* "{{ resources_dir }}/bin/"
   with_items: "{{ new_tidb_binlog_packages }}"
