@@ -140,14 +140,14 @@
     - name: stop alertmanager by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_alertmanager.sh
       when:
-        - process_supervision == 'supervise' 
+        - process_supervision == 'supervise'
         - alertmanager_configure_file.stat.exists == True
 
     - name: stop alertmanager by systemd
       systemd: name=alertmanager-{{ alertmanager_port }}.service state=stopped
       become: true
       when:
-        - process_supervision == 'systemd' 
+        - process_supervision == 'systemd'
         - alertmanager_configure_file.stat.exists == True
 
     - name: wait for alertmanager down
@@ -292,7 +292,7 @@
     - name: stop grafana_collector by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
       when:
-        - process_supervision == 'supervise'   
+        - process_supervision == 'supervise'
         - grafana_collector_config_file.stat.exists == True
       with_items:
         - grafana_collector
@@ -301,7 +301,7 @@
       systemd: name=grafana_collector-{{ grafana_collector_port }}.service state=stopped
       become: true
       when:
-        - process_supervision == 'systemd' 
+        - process_supervision == 'systemd'
         - grafana_collector_config_file.stat.exists == True
 
     - name: wait for grafana_collector down
@@ -374,7 +374,6 @@
               pd:   "{{ cluster_name | title }}-PD"
               tidb: "{{ cluster_name | title }}-TiDB"
               tikv: "{{ cluster_name | title }}-TiKV"
-              tikv_instances: "{{ cluster_name | title }}-TiKV-Instances"
               binlog: "{{ cluster_name | title }}-Binlog"
               overview: "{{ cluster_name | title }}-Overview"
               disk_performance: "{{ cluster_name | title }}-Disk-Performance"
