@@ -15,7 +15,6 @@
 
 - name: collect tidb server information
   shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ tidb_log_dir }} --alias={{ inventory_hostname }} tidb tidbinfo"
-  run_once: True
 
 - name: compress collected data
   shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ tidb_log_dir }} --alias={{ inventory_hostname }} archive"
