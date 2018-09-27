@@ -46,12 +46,26 @@
   roles:
     - collector_tidb
 
+- name: collect pump diagnosis information
+  hosts: pump_servers
+  tags:
+    - pump
+  roles:
+    - collector_pump
+
 - name: collect prometheus metric data
   hosts: monitoring_servers
   tags:
     - prometheus
   roles:
     - collector_prometheus
+
+- name: collect host infomation
+  hosts: monitored_servers
+  roles:
+    - collector_host
+  tags:
+    - host
 
 - hosts: localhost
   tags:

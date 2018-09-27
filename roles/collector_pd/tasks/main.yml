@@ -16,9 +16,6 @@
 - name: collect PD information
   shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ pd_log_dir }} --alias={{ inventory_hostname }} tidb pdctl --host={{ ansible_host }} --port={{ pd_client_port }}"
 
-- name: collect basic system information
-  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ pd_log_dir }} --alias={{ inventory_hostname }} system --collector"
-
 - name: compress collected data
   shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ pd_log_dir }} --alias={{ inventory_hostname }} archive"
 

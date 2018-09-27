@@ -1,0 +1,16 @@
+---
+
+- include_tasks: add_cron.yml
+  when:
+    - enable_log_clean|default(false)
+
+- include_tasks: del_cron.yml
+  when:
+    - not enable_log_clean|default(false)
+
+- name: restart crond
+  become: true
+  systemd:
+    name: crond
+    state: restarted
+    daemon_reload: yes

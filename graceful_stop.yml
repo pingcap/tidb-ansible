@@ -1,0 +1,291 @@
+---
+# Copyright 2016 PingCAP, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# The playbook of TiDB
+
+- name: check config locally
+  hosts: localhost
+  any_errors_fatal: true
+  tags:
+    - always
+  roles:
+    - check_config_static
+
+- name: gather all facts, and check dest
+  hosts: all
+  any_errors_fatal: true
+  tags:
+    - always
+  roles:
+    - check_config_dynamic
+
+
+- hosts: monitored_servers
+  tags:
+    - node_exporter
+    - blackbox_exporter
+  tasks:
+    - name: stop node_exporter/blackbox_exporter by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      with_items:
+        - node_exporter
+        - blackbox_exporter
+      when: process_supervision == 'supervise'
+
+    - name: stop node_exporter/blackbox_exporter by systemd
+      systemd: name={{ item }} state=stopped
+      become: true
+      when: process_supervision == 'systemd'
+      with_items:
+        - node_exporter-{{ node_exporter_port }}.service
+        - blackbox_exporter-{{ blackbox_exporter_port }}.service
+
+    - name: wait for node_exporter down
+      wait_for: host={{ ansible_host }} port={{ node_exporter_port }} state=stopped
+
+    - name: wait for blackbox_exporter down
+      wait_for: host={{ ansible_host }} port={{ blackbox_exporter_port }} state=stopped
+
+
+- hosts: alertmanager_servers
+  tags:
+    - alertmanager
+  tasks:
+    - name: stop alertmanager by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./stop_alertmanager.sh
+      when: process_supervision == 'supervise'
+
+    - name: stop alertmanager by systemd
+      systemd: name=alertmanager-{{ alertmanager_port }}.service state=stopped
+      become: true
+      when: process_supervision == 'systemd'
+
+    - name: wait for alertmanager down
+      wait_for: host={{ ansible_host }} port={{ alertmanager_port }} state=stopped
+
+
+- hosts: monitoring_servers
+  tags:
+    - pushgateway
+    - prometheus
+  tasks:
+    - name: stop monitoring modules by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      with_items:
+        - pushgateway
+        - prometheus
+      when: process_supervision == 'supervise'
+
+    - name: stop monitoring modules by systemd
+      systemd: name={{ item }} state=stopped
+      when: process_supervision == 'systemd'
+      become: true
+      with_items:
+        - pushgateway-{{ pushgateway_port }}.service
+        - prometheus-{{ prometheus_port }}.service
+
+    - name: wait for pushgateway down
+      wait_for: host={{ ansible_host }} port={{ pushgateway_port }} state=stopped
+
+    - name: wait for prometheus down
+      wait_for: host={{ ansible_host }} port={{ prometheus_port }} state=stopped
+
+
+- hosts: kafka_exporter_servers
+  tags:
+    - kafka_exporter
+  tasks:
+    - name: stop kafka_exporter by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./stop_kafka_exporter.sh
+      when:
+        - enable_binlog|default(false)
+        - process_supervision == 'supervise'
+
+    - name: stop kafka_exporter by systemd
+      become: true
+      systemd: name=kafka_exporter-{{ kafka_exporter_port }}.service state=stopped enabled=no
+      when:
+        - enable_binlog|default(false)
+        - process_supervision == 'systemd'
+
+    - name: wait for kafka_exporter down
+      wait_for: |
+        host={{ ansible_host }} port={{ kafka_exporter_port }} state=stopped
+      when: enable_binlog|default(false)
+
+
+- hosts: tidb_servers
+  tags:
+    - tidb
+  tasks:
+    - name: stop TiDB by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      when: process_supervision == 'supervise'
+      with_items:
+        - tidb
+
+    - name: stop TiDB by systemd
+      systemd: name=tidb-{{ tidb_port }}.service state=stopped
+      become: true
+      when: process_supervision == 'systemd'
+
+    - name: wait for TiDB down
+      wait_for: host={{ ansible_host }} port={{ tidb_port }} state=stopped
+
+    - name: stop pump by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      when:
+        - enable_binlog|default(false)
+        - process_supervision == 'supervise'
+      with_items:
+        - pump
+
+    - name: stop pump by systemd
+      systemd: name=pump.service state=stopped
+      become: true
+      when:
+        - enable_binlog|default(false)
+        - process_supervision == 'systemd'
+
+    - name: wait for pump down
+      wait_for: |
+        host={{ ansible_host }} port={{ pump_port }} state=stopped
+      when: enable_binlog|default(false)
+
+
+- hosts: tikv_servers
+  tags:
+    - tikv
+  tasks:
+    - name: check ansible_play_batch
+      fail:
+        msg: "Only one host can be specified at a time when performing graceful stop."
+      run_once: true
+      when: ansible_play_batch | length != 1
+
+    - include_tasks: "common_tasks/get_pd_tikv_addr.yml"
+
+    - include_tasks: "common_tasks/get_store_id.yml"
+      when: not enable_tls|default(false)
+
+    - include_tasks: "common_tasks/get_store_id_tls.yml"
+      when: enable_tls|default(false)
+
+    - include_tasks: "common_tasks/add_evict_leader_scheduler.yml"
+
+    - name: stop TiKV by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      when: process_supervision == 'supervise'
+      with_items:
+        - tikv
+
+    - name: stop TiKV by systemd
+      systemd: name=tikv-{{ tikv_port }}.service state=stopped
+      become: true
+      when: process_supervision == 'systemd'
+
+    - name: wait for TiKV down (via Port)
+      wait_for: host={{ ansible_host }} port={{ tikv_port }} state=stopped
+
+    - name: wait for TiKV down (via PID)
+      wait_for_pid: pid_file={{ deploy_dir }}/status/tikv.pid timeout=300 state=absent
+
+    - command: cat {{ deploy_dir }}/status/tikv.pid
+      register: old_tikv_pid
+      ignore_errors: yes
+      changed_when: false
+
+    - name: display old tikv pid
+      debug:
+        msg: "tikv binary or docker pid: {{ old_tikv_pid.stdout }}"
+
+    - include_tasks: "common_tasks/remove_evict_leader_scheduler.yml"
+
+
+- hosts: pd_servers
+  tags:
+    - pd
+  tasks:
+    - name: check ansible_play_batch
+      fail:
+        msg: "Only one host can be specified at a time when performing graceful stop."
+      run_once: true
+      when: ansible_play_batch | length != 1
+
+    - set_fact:
+        pd_addr: "{{ ansible_host }}:{{ pd_client_port }}"
+        pd_name: "pd{{ groups.pd_servers.index(inventory_hostname) + 1 }}"
+
+    - name: display PD name
+      debug:
+        var: pd_name
+
+    - name: display PD address
+      debug:
+        var: pd_addr
+
+    - include_tasks: "common_tasks/get_pd_leader.yml"
+      when: not enable_tls|default(false)
+
+    - include_tasks: "common_tasks/get_pd_leader_tls.yml"
+      when: enable_tls|default(false)
+
+    - include_tasks: "common_tasks/transfer_pd_leader.yml"
+
+    - name: stop PD by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      when: process_supervision == 'supervise'
+      with_items:
+        - pd
+
+    - name: stop PD by systemd
+      systemd: name=pd.service state=stopped
+      become: true
+      when: process_supervision == 'systemd'
+
+    - name: wait for PD down
+      wait_for: host={{ ansible_host }} port={{ pd_client_port }} state=stopped
+
+
+- hosts: grafana_servers
+  tags:
+    - grafana
+  tasks:
+    - name: stop grafana by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      when: process_supervision == 'supervise'
+      with_items:
+        - grafana
+
+    - name: stop grafana by systemd
+      systemd: name=grafana-{{ grafana_port }}.service state=stopped
+      become: true
+      when: process_supervision == 'systemd'
+
+    - name: wait for grafana down
+      wait_for: host={{ ansible_host }} port={{ grafana_port }} state=stopped
+
+    - name: stop grafana_collector by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      when: process_supervision == 'supervise'
+      with_items:
+        - grafana_collector
+
+    - name: stop grafana_collector by systemd
+      systemd: name=grafana_collector-{{ grafana_collector_port }}.service state=stopped
+      become: true
+      when: process_supervision == 'systemd'
+
+    - name: wait for grafana_collector down
+      wait_for: host={{ ansible_host }} port={{ grafana_collector_port }} state=stopped

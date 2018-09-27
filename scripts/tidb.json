@@ -533,6 +533,95 @@
               "show": true
             }
           ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "fill": 1,
+          "id": 112,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 12,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.90, sum(rate(tidb_server_slow_query_process_duration_seconds_bucket[1m])) by (le))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "all_proc",
+              "refId": "A"
+            },
+            {
+              "expr": "histogram_quantile(0.90, sum(rate(tidb_server_slow_query_cop_duration_seconds_bucket[1m])) by (le))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "all_cop_proc",
+              "refId": "B"
+            },
+            {
+              "expr": "histogram_quantile(0.90, sum(rate(tidb_server_slow_query_wait_duration_seconds_bucket[1m])) by (le))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "all_cop_wait",
+              "refId": "C"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Slow query",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "s",
+              "label": null,
+              "logBase": 2,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
         }
       ],
       "repeat": null,
@@ -835,7 +924,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le, instance))",
+              "expr": "histogram_quantile(0.999, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) by (le, instance))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
@@ -1557,90 +1646,91 @@
           ]
         },
 	{
-	  "type": "graph",
-	  "title": "Get Token Duration",
-	  "gridPos": {
-	    "x": 0,
-	    "y": 24,
-	    "w": 12,
-	    "h": 9
-	  },
-	  "id": 111,
-	  "datasource": null,
-	  "targets": [
-	    {
-	      "expr": "histogram_quantile(0.99, sum(rate(tidb_server_get_token_duration_seconds_bucket[1m])) by (le))",
-	      "intervalFactor": 1,
-	      "format": "time_series",
-	      "refId": "A",
-	      "legendFormat": "99"
-	    }
-	  ],
-	  "renderer": "flot",
-	  "yaxes": [
-	    {
-	      "label": null,
-	      "show": true,
-	      "logBase": 1,
-	      "min": null,
-	      "max": null,
-	      "format": "µs"
-	    },
-	    {
-	      "label": null,
-	      "show": true,
-	      "logBase": 1,
-	      "min": null,
-	      "max": null,
-	      "format": "short"
-	    }
-	  ],
-	  "xaxis": {
-	    "show": true,
-	    "mode": "time",
-	    "name": null,
-	    "values": [],
-	    "buckets": null
-	  },
-	  "yaxis": {
-	    "align": false,
-	    "alignLevel": null
-	  },
-	  "lines": true,
-	  "fill": 1,
-	  "linewidth": 1,
-	  "dashes": false,
-	  "dashLength": 10,
-	  "spaceLength": 10,
-	  "points": false,
-	  "pointradius": 5,
-	  "bars": false,
-	  "stack": false,
-	  "percentage": false,
-	  "legend": {
-	    "show": true,
-	    "values": false,
-	    "min": false,
-	    "max": false,
-	    "current": false,
-	    "total": false,
-	    "avg": false
-	  },
-	  "nullPointMode": "null",
-	  "steppedLine": false,
-	  "tooltip": {
-	    "value_type": "individual",
-	    "shared": true,
-	    "sort": 0
-	  },
-	  "timeFrom": null,
-	  "timeShift": null,
-	  "aliasColors": {},
-	  "seriesOverrides": [],
-	  "thresholds": [],
-	  "links": [],
-	  "description": "Duration (us) for getting token, it should be small until concurrency limit is reached.",
-	  "transparent": false
+		"aliasColors": {},
+		"bars": false,
+		"dashLength": 10,
+		"dashes": false,
+		"datasource": "${DS_TEST-CLUSTER}",
+		"description": "Duration (us) for getting token, it should be small until concurrency limit is reached.",
+		"fill": 1,
+		"gridPos": {
+			"h": 9,
+			"w": 12,
+			"x": 0,
+			"y": 24
+		},
+		"id": 111,
+		"legend": {
+			"avg": false,
+			"current": false,
+			"max": false,
+			"min": false,
+			"show": true,
+			"total": false,
+			"values": false
+		},
+		"lines": true,
+		"linewidth": 1,
+		"links": [],
+		"nullPointMode": "null",
+		"percentage": false,
+		"pointradius": 5,
+		"points": false,
+		"renderer": "flot",
+		"seriesOverrides": [],
+		"spaceLength": 10,
+		"stack": false,
+		"steppedLine": false,
+		"targets": [
+			{
+				"expr": "histogram_quantile(0.99, sum(rate(tidb_server_get_token_duration_seconds_bucket[1m])) by (le))",
+				"format": "time_series",
+				"intervalFactor": 1,
+				"legendFormat": "99",
+				"refId": "A"
+			}
+		],
+		"thresholds": [],
+		"timeFrom": null,
+		"timeShift": null,
+		"title": "Get Token Duration",
+		"tooltip": {
+			"shared": true,
+			"sort": 0,
+			"value_type": "individual"
+		},
+		"transparent": false,
+		"type": "graph",
+		"xaxis": {
+			"buckets": null,
+			"mode": "time",
+			"name": null,
+			"show": true,
+			"values": []
+		},
+		"yaxes": [
+			{
+				"format": "µs",
+				"label": null,
+				"logBase": 1,
+				"max": null,
+				"min": null,
+				"show": true
+			},
+			{
+				"format": "short",
+				"label": null,
+				"logBase": 1,
+				"max": null,
+				"min": null,
+				"show": true
+			}
+		],
+		"yaxis": {
+			"align": false,
+			"alignLevel": null
+		},
+		"span": 6
 	}
       ],
       "repeat": null,
@@ -5408,10 +5498,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(increase(tidb_ddl_worker_operation_duration_seconds_bucket[1m])) by (le, type, result))",
+              "expr": "histogram_quantile(0.99, sum(increase(tidb_ddl_worker_operation_duration_seconds_bucket[1m])) by (le, type, action, result))",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{type}}-{{result}}",
+              "legendFormat": "{{type}}-{{action}}-{{result}}",
               "refId": "A"
             }
           ],

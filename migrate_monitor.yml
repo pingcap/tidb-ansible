@@ -299,7 +299,7 @@
     - set_fact:
         grafana_host: "{{ ansible_host }}"
 
-    - include_tasks: create_grafana_api_keys.yml
+    - include_tasks: "common_tasks/create_grafana_api_keys.yml"
 
     - name: import grafana data source
       shell: >
@@ -327,7 +327,6 @@
               pd:   "{{ cluster_name | title }}-PD"
               tidb: "{{ cluster_name | title }}-TiDB"
               tikv: "{{ cluster_name | title }}-TiKV"
-              tikv_instances: "{{ cluster_name | title }}-TiKV-Instances"
               binlog: "{{ cluster_name | title }}-Binlog"
               overview: "{{ cluster_name | title }}-Overview"
               disk_performance: "{{ cluster_name | title }}-Disk-Performance"
