@@ -13,7 +13,7 @@
 - include_tasks: collect_log.yml
 
 - name: compress collected data
-  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ pump_log_dir }} --alias={{ inventory_hostname }} archive"
+  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output=pump_{{ pump_log_dir }} --alias={{ inventory_hostname }} archive"
 
 - name: fetch pump diagnosis tarball with bandwidth limit
   delegate_to: localhost

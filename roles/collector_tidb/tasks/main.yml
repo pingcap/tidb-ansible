@@ -14,15 +14,15 @@
 - include_tasks: collect_config.yml
 
 - name: collect tidb process information
-  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ tidb_log_dir }} --alias={{ inventory_hostname }} system --collector --port {{ tidb_port }}"
+  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ tidb_log_dir }} --alias=tidb_{{ inventory_hostname }} system --collector --port {{ tidb_port }}"
   become: true
 
 - name: collect tidb server information
-  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ tidb_log_dir }} --alias={{ inventory_hostname }} tidb tidbinfo"
+  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ tidb_log_dir }} --alias=tidb_{{ inventory_hostname }} tidb tidbinfo"
   run_once: True
 
 - name: compress collected data
-  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ tidb_log_dir }} --alias={{ inventory_hostname }} archive"
+  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ tidb_log_dir }} --alias=tidb_{{ inventory_hostname }} archive"
 
 - name: fetch tidb diagnosis tarball with bandwidth limit
   delegate_to: localhost

@@ -14,11 +14,11 @@
 - include_tasks: collect_config.yml
 
 - name: collect tikv process information
-  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ tikv_log_dir }} --alias={{ inventory_hostname }} system --collector --port {{ tikv_port }}"
+  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ tikv_log_dir }} --alias=tikv_{{ inventory_hostname }} system --collector --port {{ tikv_port }}"
   become: true
 
 - name: compress collected data
-  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ tikv_log_dir }} --alias={{ inventory_hostname }} archive"
+  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ tikv_log_dir }} --alias=tikv_{{ inventory_hostname }} archive"
 
 - name: fetch tikv diagnosis tarball with bandwidth limit
   delegate_to: localhost

@@ -14,14 +14,14 @@
 - include_tasks: collect_config.yml
 
 - name: collect PD process information
-  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ pd_log_dir }} --alias={{ inventory_hostname }} system --collector --port {{ pd_client_port }}"
+  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ pd_log_dir }} --alias=pd_{{ inventory_hostname }} system --collector --port {{ pd_client_port }}"
   become: true
 
 - name: collect PD information
-  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ pd_log_dir }} --alias={{ inventory_hostname }} tidb pdctl --host={{ ansible_host }} --port={{ pd_client_port }}"
+  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ pd_log_dir }} --alias=pd_{{ inventory_hostname }} tidb pdctl --host={{ ansible_host }} --port={{ pd_client_port }}"
 
 - name: compress collected data
-  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ pd_log_dir }} --alias={{ inventory_hostname }} archive"
+  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ pd_log_dir }} --alias=pd_{{ inventory_hostname }} archive"
 
 - name: fetch pd diagnosis tarball with bandwidth limit
   delegate_to: localhost
