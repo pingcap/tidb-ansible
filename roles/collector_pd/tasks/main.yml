@@ -14,7 +14,7 @@
 - include_tasks: collect_config.yml
 
 - name: collect PD process information
-  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ pd_log_dir }} --alias={{ inventory_hostname }} system --collector --port {{ pd_port }}"
+  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ pd_log_dir }} --alias={{ inventory_hostname }} system --collector --port {{ pd_client_port }}"
   become: true
 
 - name: collect PD information
