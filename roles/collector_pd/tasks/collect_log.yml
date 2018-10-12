@@ -9,4 +9,4 @@
   when: log_dir_st.stat.isdir is not defined or log_dir_st.stat.isdir == False
 
 - name: collect pd log
-  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ pd_log_dir }} --alias={{ inventory_hostname }} log --dir={{ pd_log_dir }} --prefix=pd --retention={{ collect_log_recent_hours | default('2') }}"
+  shell: "python {{ collector_dir }}/scripts/tidb-insight/insight.py --output={{ pd_log_dir }} --alias=pd_{{ inventory_hostname }} log --dir={{ pd_log_dir }} --prefix=pd --retention={{ collect_log_recent_hours | default('2') }}"
