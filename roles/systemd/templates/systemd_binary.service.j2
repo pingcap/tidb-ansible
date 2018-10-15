@@ -3,6 +3,9 @@ Description={{ service_name }} service
 After=syslog.target network.target remote-fs.target nss-lookup.target
 
 [Service]
+{% if MemoryLimit|default("") %}
+MemoryLimit={{ MemoryLimit }}
+{% endif %}
 LimitNOFILE=1000000
 #LimitCORE=infinity
 LimitSTACK=10485760
