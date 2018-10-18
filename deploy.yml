@@ -127,6 +127,20 @@
   roles:
     - { role: tispark, when: "groups.get('spark_master', []) | length != 0 and groups.get('spark_slaves', []) | length != 0 and deployment_method == 'binary'" }
 
+- name: deploying tidb-lightning
+  hosts: lightning_server
+  tags:
+    - lightning
+  roles:
+    - tidb_lightning
+
+- name: deploying tikv-importer
+  hosts: importer_server
+  tags:
+    - lightning
+  roles:
+    - tikv_importer
+
 - name: finalizing deployment target
   hosts: all
   become: true

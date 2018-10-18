@@ -1,0 +1,42 @@
+---
+# tasks file for lightning
+
+- name: create deploy directories
+  file: path="{{ item }}" state=directory mode=0755
+  with_items:
+  - "{{ import_dir }}"
+
+- name: "load tikv-importer customized config: tidb-ansible/conf/tikv-importer.yml"
+  include_vars: file={{ playbook_dir }}/conf/tikv-importer.yml name=tikv_importer_conf_custom
+
+- name: load tikv-importer default config
+  include_vars: file=tikv-importer.yml name=tikv_importer_conf_default
+
+- name: generate tikv-importer dynamic config
+  set_fact:
+    tikv_importer_conf_generated:
+      server:
+        addr: "{{ ansible_host }}:{{ tikv_importer_port }}"
+      import:
+        import-dir: "{{ import_dir }}"
+      metric:
+        address: >-
+          {{ hostvars[groups.monitoring_servers[0]].ansible_host | default(hostvars[groups.monitoring_servers[0]].inventory_hostname) ~ ':' ~
+           (hostvars.get(groups.monitoring_servers.0).pushgateway_port | default('9091')) |
+           default('') }}
+
+- name: generate tikv-importer final config
+  set_fact:
+    tikv_importer_conf: "{{ tikv_importer_conf_custom | with_default_dicts(tikv_importer_conf_generated, tikv_importer_conf_default) }}"
+
+- debug: var=tikv_importer_conf
+
+- name: create tikv-importer configuration file
+  template: src=tikv-importer.toml.j2 dest={{ deploy_dir }}/conf/tikv-importer.toml mode=0644 backup=yes
+  register: tikv_importer_conf_st
+
+- name: backup tikv-importer conf file
+  command: mv "{{ tikv_importer_conf_st.backup_file }}" "{{ backup_dir }}"
+  when: tikv_importer_conf_st.changed and tikv_importer_conf_st.backup_file is defined
+
+- include_tasks: "binary_deployment.yml"

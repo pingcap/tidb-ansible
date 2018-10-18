@@ -1,0 +1,62 @@
+---
+### tidb-lightning configuration
+lightning:
+  # table-concurrency controls the maximum handled tables concurrently while reading Mydumper SQL files. It can affect the tikv-importer memory usage amount.
+  table-concurrency: 8
+  # region-concurrency changes the concurrency number of data. It is set to the number of logical CPU cores by default and needs no configuration.
+  # in mixed configuration, you can set it to 75% of the size of logical CPU cores.
+  # region-concurrency default to runtime.NumCPU()
+  # region-concurrency =  
+  
+  # logging
+  level: "info"
+  file: "log/tidb_lightning.log"
+  max-size: 128 # MB
+  max-days: 28
+  max-backups: 14
+
+tikv_importer:
+  # the listening address of tikv-importer. Change it to the actual address in tikv-importer.toml.
+  # addr: "0.0.0.0:20170"
+  # size of batch to import KV data into TiKV: xxx (GB)
+  batch-size: 500 # GB
+
+mydumper:
+  # block size of file reading
+  read-block-size: 4096 # Byte (default = 4 KB)
+  # divide source data file into multiple Region/chunk to execute restoring in parallel
+  region-min-size: 268435456 # Byte (default = 256 MB)
+  # the source data directory of Mydumper. tidb-lightning will automatically create the corresponding database and tables based on the schema file in the directory.
+  # data-source-dir: "/data/mydumper"
+  # If no-schema is set to true, tidb-lightning will obtain the table schema information from tidb-server,
+  # instead of creating the database or tables based on the schema file of data-source-dir.
+  # This applies to manually creating tables or the situation where the table schema exits in TiDB.
+  no-schema: false
+
+# configuration for TiDB (pick one of them if it has many TiDB servers) and the PD server.
+tidb:
+  # the target cluster information
+  # the listening address of tidb-server. Setting one of them is enough.
+  # host: "127.0.0.1"
+  # port: 4000
+  # user: "root"
+  # password: ""
+  # table schema information is fetched from TiDB via this status-port.
+  # status-port: 10080
+  # Lightning uses some code of TiDB (used as a library) and the flag controls its log level.
+  log-level: "error"
+  # set TiDB session variable to speed up performing the Checksum or Analyze operation on the table.
+  distsql-scan-concurrency: 16
+  
+  # when data importing is finished, tidb-lightning can automatically perform the Checksum, Compact and Analyze operations.
+  # it is recommended to set it to true in the production environment.
+  # the execution order: Checksum -> Compact -> Analyze
+post_restore:
+  # if it is set to true, tidb-lightning will perform the ADMIN CHECKSUM TABLE <table> operation on the tables one by one.
+  checksum: true
+  # if it is set to true, tidb-lightning will perform a full Compact operation on all the data.
+  # If the Compact operation fails, you can use ./bin/tidb-lightning -compact or the command of tikv-ctl to compact the data manually.
+  compact: true
+  # if it is set to true, tidb-lightning will perform the ANALYZE TABLE <table> operation on the tables one by one.
+  # If the Analyze operation fails, you can analyze data manually on the Mysql client.
+  analyze: true

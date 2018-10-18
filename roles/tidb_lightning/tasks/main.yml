@@ -1,0 +1,40 @@
+---
+# tasks file for tidb-lightning
+
+- name: "load lightning customized config: tidb-ansible/conf/tidb-lightning.yml"
+  include_vars: file={{ playbook_dir }}/conf/tidb-lightning.yml name=tidb_lightning_conf_custom
+
+- name: load tidb-lightning default config
+  include_vars: file=tidb-lightning.yml name=tidb_lightning_conf_default
+
+- name: generate tidb-lightning dynamic config
+  set_fact:
+    tidb_lightning_conf_generated:
+      lightning:
+        pprof-port: "{{ tidb_lightning_pprof_port }}"
+      tikv_importer:
+        addr: "{{ ansible_host }}:{{ tikv_importer_port }}"
+      mydumper:
+        data-source-dir: "{{ data_source_dir }}"
+      tidb:
+        host: "{{ tidb_host }}"
+        port: "{{ tidb_port }}"
+        user: "{{ tidb_user }}"
+        password: "{{ tidb_password }}"
+        status-port: "{{ tidb_status_port }}"
+
+- name: generate tidb-lightning final config
+  set_fact:
+    tidb_lightning_conf: "{{ tidb_lightning_conf_custom | with_default_dicts(tidb_lightning_conf_generated, tidb_lightning_conf_default) }}"
+
+- debug: var=tidb_lightning_conf
+
+- name: create tidb-lightning configuration file
+  template: src=tidb-lightning.toml.j2 dest={{ deploy_dir }}/conf/tidb-lightning.toml mode=0644 backup=yes
+  register: tidb_lightning_conf_st
+
+- name: backup tidb-lightning conf file
+  command: mv "{{ tidb_lightning_conf_st.backup_file }}" "{{ backup_dir }}"
+  when: tidb_lightning_conf_st.changed and tidb_lightning_conf_st.backup_file is defined
+
+- include_tasks: "binary_deployment.yml"
