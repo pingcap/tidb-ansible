@@ -1,7 +1,10 @@
 ---
 ### tidb-lightning configuration
 lightning:
+  # check if the cluster satisfies the minimum requirement before starting
+  # check-requirements = true
   # table-concurrency controls the maximum handled tables concurrently while reading Mydumper SQL files. It can affect the tikv-importer memory usage amount.
+  # table-concurrency must be <= max-open-engines value in tikv-importer.tmol
   table-concurrency: 8
   # region-concurrency changes the concurrency number of data. It is set to the number of logical CPU cores by default and needs no configuration.
   # in mixed configuration, you can set it to 75% of the size of logical CPU cores.
@@ -14,6 +17,21 @@ lightning:
   max-size: 128 # MB
   max-days: 28
   max-backups: 14
+
+checkpoint:
+  # Whether to enable checkpoints.
+  # While importing, Lightning will record which tables have been imported, so even if Lightning or other component
+  # crashed, we could start from a known good state instead of redoing everything.
+  enable: true
+  # The schema name (database name) to store the checkpoints
+  schema: "tidb_lightning_checkpoint"
+  # The data source name (DSN) in the form "USER:PASS@tcp(HOST:PORT)/".
+  # If not specified, the TiDB server from the [tidb] section will be used to store the checkpoints. You could also
+  # specify a different MySQL-compatible database server if you like.
+  #dsn: "root@tcp(127.0.0.1:4000)/"
+  # Whether to keep the checkpoints after all data are imported. If false, the checkpoints will be deleted. The schema
+  # needs to be dropped manually, however.
+  #keep-after-success: false
 
 tikv_importer:
   # the listening address of tikv-importer. Change it to the actual address in tikv-importer.toml.
@@ -48,9 +66,6 @@ tidb:
   # set TiDB session variable to speed up performing the Checksum or Analyze operation on the table.
   distsql-scan-concurrency: 16
   
-  # when data importing is finished, tidb-lightning can automatically perform the Checksum, Compact and Analyze operations.
-  # it is recommended to set it to true in the production environment.
-  # the execution order: Checksum -> Compact -> Analyze
 post_restore:
   # if it is set to true, tidb-lightning will perform the ADMIN CHECKSUM TABLE <table> operation on the tables one by one.
   checksum: true
