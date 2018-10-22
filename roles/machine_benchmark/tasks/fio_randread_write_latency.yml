@@ -1,0 +1,47 @@
+---
+
+- name: fio mixed randread and sequential write benchmark for latency on tikv_data_dir disk
+  shell: "cd {{ fio_deploy_dir }} && ./fio -ioengine=psync -bs=32k -fdatasync=1 -thread -rw=randrw -percentage_random=100,0 -size={{ benchmark_size }} -filename=fio_randread_write_latency_test.txt -name='fio mixed randread and sequential write test' -iodepth=1 -runtime=60 -numjobs=1 -group_reporting --output-format=json --output=fio_randread_write_latency_test.json"
+  register: fio_randread_write_latency
+
+- name: clean fio mixed randread and sequential write benchmark for latency temporary file
+  file:
+    path: "{{ fio_deploy_dir }}/fio_randread_write_latency_test.txt"
+    state: absent
+
+- name: get fio mixed test randread latency
+  shell: "python parse_fio_output.py --target='fio_randread_write_latency_test.json' --read-lat"
+  register: disk_mix_randread_lat
+  args:
+    chdir: "{{ fio_deploy_dir }}/"
+
+- name: get fio mixed test write latency
+  shell: "python parse_fio_output.py --target='fio_randread_write_latency_test.json' --write-lat"
+  register: disk_mix_write_lat
+  args:
+    chdir: "{{ fio_deploy_dir }}/"
+
+- name: get fio mixed randread and sequential write for latency summary
+  shell: "python parse_fio_output.py --target='fio_randread_write_latency_test.json' --summary"
+  register: disk_mix_randread_write_latency_smmary
+  args:
+    chdir: "{{ fio_deploy_dir }}/"
+
+- name: fio mixed randread and sequential write benchmark for latency command
+  debug:
+    msg: "fio mixed randread and sequential write benchmark for latency command: {{ fio_randread_write_latency.cmd }}."
+  run_once: true
+
+- name: fio mixed randread and sequential write benchmark for latency summary
+  debug:
+    msg: "fio mixed randread and sequential write benchmark summary: {{ disk_mix_randread_write_latency_smmary.stdout }}."
+
+- name: Preflight check - Does fio mixed randread and sequential write latency of tikv_data_dir disk meet requirement - randread
+  fail:
+    msg: 'fio mixed randread and sequential write test: randread latency of  tikv_data_dir disk is too low: {{ disk_mix_randread_lat.stdout }} ns > {{ max_ssd_mix_randread_lat }} ns, it is strongly recommended to use SSD disks for TiKV and PD, or there might be performance issues.'
+  when: disk_mix_randread_lat.stdout|int > max_ssd_mix_randread_lat|int
+
+- name: Preflight check - Does fio mixed randread and sequential write latency of tikv_data_dir disk meet requirement - sequential write
+  fail:
+    msg: 'fio mixed randread and sequential write test: sequential write latency of tikv_data_dir disk is too low: {{ disk_mix_write_lat.stdout }} ns > {{ max_ssd_mix_write_lat }} ns, it is strongly recommended to use SSD disks for TiKV and PD, or there might be performance issues.'
+  when: disk_mix_write_lat.stdout|int > max_ssd_mix_write_lat|int

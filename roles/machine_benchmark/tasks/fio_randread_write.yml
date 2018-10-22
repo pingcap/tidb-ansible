@@ -21,18 +21,6 @@
   args:
     chdir: "{{ fio_deploy_dir }}/"
 
-- name: get fio mixed test randread latency
-  shell: "python parse_fio_output.py --target='fio_randread_write_test.json' --read-lat"
-  register: disk_mix_randread_lat
-  args:
-    chdir: "{{ fio_deploy_dir }}/"
-
-- name: get fio mixed test write latency
-  shell: "python parse_fio_output.py --target='fio_randread_write_test.json' --write-lat"
-  register: disk_mix_write_lat
-  args:
-    chdir: "{{ fio_deploy_dir }}/"
-
 - name: get fio mixed randread and sequential write summary
   shell: "python parse_fio_output.py --target='fio_randread_write_test.json' --summary"
   register: disk_mix_randread_write_smmary
@@ -57,13 +45,3 @@
   fail:
     msg: 'fio mixed randread and sequential write test: sequential write iops of tikv_data_dir disk is too low: {{ disk_mix_write_iops.stdout }} < {{ min_ssd_mix_write_iops }}, it is strongly recommended to use SSD disks for TiKV and PD, or there might be performance issues.'
   when: disk_mix_write_iops.stdout|int < min_ssd_mix_write_iops|int
-
-- name: Preflight check - Does fio mixed randread and sequential write latency of tikv_data_dir disk meet requirement - randread
-  fail:
-    msg: 'fio mixed randread and sequential write test: randread latency of  tikv_data_dir disk is too low: {{ disk_mix_randread_lat.stdout }} ns > {{ max_ssd_mix_randread_lat }} ns, it is strongly recommended to use SSD disks for TiKV and PD, or there might be performance issues.'
-  when: disk_mix_randread_lat.stdout|int > max_ssd_mix_randread_lat|int
-
-- name: Preflight check - Does fio mixed randread and sequential write latency of tikv_data_dir disk meet requirement - sequential write
-  fail:
-    msg: 'fio mixed randread and sequential write test: sequential write latency of tikv_data_dir disk is too low: {{ disk_mix_write_lat.stdout }} ns > {{ max_ssd_mix_write_lat }} ns, it is strongly recommended to use SSD disks for TiKV and PD, or there might be performance issues.'
-  when: disk_mix_write_lat.stdout|int > max_ssd_mix_write_lat|int
