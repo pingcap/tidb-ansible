@@ -28,5 +28,8 @@
   register: lightning_script
 
 - name: backup script file
-  command: mv "{{ lightning_script.backup_file }}" "{{ backup_dir }}"
-  when: lightning_script.changed and lightning_script.backup_file is defined
+  command: mv "{{ item.backup_file }}" "{{ backup_dir }}"
+  when:
+    - item.changed
+    - item.backup_file is defined
+  with_items: "{{ lightning_script.results }}"

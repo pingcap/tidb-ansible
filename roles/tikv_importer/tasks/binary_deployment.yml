@@ -20,5 +20,8 @@
   register: importer_script
 
 - name: backup script file
-  command: mv "{{ importer_script.backup_file }}" "{{ backup_dir }}"
-  when: importer_script.changed and importer_script.backup_file is defined
+  command: mv "{{ item.backup_file }}" "{{ backup_dir }}"
+  when:
+    - item.changed
+    - item.backup_file is defined
+  with_items: "{{ importer_script.results }}"
