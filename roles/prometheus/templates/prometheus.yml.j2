@@ -121,6 +121,12 @@ scrape_configs:
         replacement: {{ blackbox_host }}:{{ blackbox_port }}
 {% endif %}
 
+{% if groups.lightning_server | length == 1 %}
+  - job_name: "lightning"
+    static_configs:
+      - targets: ['{{ hostvars[groups.lightning_server[0]].ansible_host | default(hostvars[groups.lightning_server[0]].inventory_hostname) }}:{{ hostvars[groups.lightning_server[0]].tidb_lightning_pprof_port }}']
+{% endif %}
+
   - job_name: "overwritten-nodes"
     honor_labels: true # don't overwrite job & instance labels
     static_configs:

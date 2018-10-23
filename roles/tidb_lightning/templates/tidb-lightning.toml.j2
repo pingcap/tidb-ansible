@@ -13,6 +13,11 @@
 {{ item }} = {{ value | to_json }}
 {% endfor %}
 
+[checkpoint]
+{% for item, value in tidb_lightning_conf.checkpoint | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+
 [tikv-importer]
 {% for item, value in tidb_lightning_conf.tikv_importer | dictsort -%}
 {{ item }} = {{ value | to_json }}
@@ -25,7 +30,11 @@
 
 [tidb]
 {% for item, value in tidb_lightning_conf.tidb | dictsort -%}
+{% if item == "port" or item == "status-port" %}
+{{ item }} = {{ value | int}}
+{% else %}
 {{ item }} = {{ value | to_json}}
+{% endif %}
 {% endfor %}
 pd-addr = "{{ all_pd |join(',') }}"
 

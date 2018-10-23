@@ -16,7 +16,7 @@
   set_fact:
     tikv_importer_conf_generated:
       server:
-        addr: "{{ ansible_host }}:{{ tikv_importer_port }}"
+        addr: "{{ hostvars[groups.importer_server[0]].ansible_host | default(hostvars[groups.importer_server[0]].inventory_hostname) }}:{{ tikv_importer_port }}"
       import:
         import-dir: "{{ import_dir }}"
       metric:

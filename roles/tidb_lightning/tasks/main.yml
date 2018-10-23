@@ -13,7 +13,7 @@
       lightning:
         pprof-port: "{{ tidb_lightning_pprof_port }}"
       tikv_importer:
-        addr: "{{ ansible_host }}:{{ tikv_importer_port }}"
+        addr: "{{ hostvars[groups.importer_server[0]].ansible_host | default(hostvars[groups.importer_server[0]].inventory_hostname) }}:{{ tikv_importer_port }}"
       mydumper:
         data-source-dir: "{{ data_source_dir }}"
       tidb:
