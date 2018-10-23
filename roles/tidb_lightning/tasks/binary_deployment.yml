@@ -1,0 +1,35 @@
+---
+
+- name: deploy tidb-lightning binary
+  copy: src="{{ resources_dir }}/bin/tidb-lightning" dest="{{ deploy_dir }}/bin/" mode=0755 backup=yes
+  register: tidb_lightning
+
+- name: deploy tidb-lightning-ctl binary
+  copy: src="{{ resources_dir }}/bin/tidb-lightning-ctl" dest="{{ deploy_dir }}/bin/" mode=0755 backup=yes
+  register: tidb_lightning_ctl
+
+- name: backup tidb-lightning bianry file
+  command: mv "{{ tidb_lightning.backup_file }}" "{{ backup_dir }}"
+  when: tidb_lightning.changed and tidb_lightning.backup_file is defined
+
+- name: backup tidb-lightning-ctl bianry file
+  command: mv "{{ tidb_lightning_ctl.backup_file }}" "{{ backup_dir }}"
+  when: tidb_lightning_ctl.changed and tidb_lightning_ctl.backup_file is defined
+
+- name: create run script
+  template:
+    src: "{{ item }}_lightning_binary.sh.j2"
+    dest: "{{ deploy_dir }}/scripts/{{ item }}_lightning.sh"
+    mode: "0755"
+    backup: yes
+  with_items:
+    - start
+    - stop
+  register: lightning_script
+
+- name: backup script file
+  command: mv "{{ item.backup_file }}" "{{ backup_dir }}"
+  when:
+    - item.changed
+    - item.backup_file is defined
+  with_items: "{{ lightning_script.results }}"
