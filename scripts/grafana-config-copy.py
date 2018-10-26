@@ -28,7 +28,8 @@ src = dict(
                 "overview": 'overview.json',
                 "disk_performance": 'disk_performance.json',
                 "blackbox_exporter": "blackbox_exporter.json",
-                "kafka_overview": "kafka.json"})
+                "kafka_overview": "kafka.json",
+                "lightning": "lightning.json"})
 
 dests = [
 ]
