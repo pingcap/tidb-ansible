@@ -26,7 +26,7 @@ Usage : $(basename $0) [-d <ssldir>]
       -h | --help         : Show this message
       -d | --ssldir       : Directory where the certificates will be located
 
-      Environmental variable PUMP_HOST and PUMP_SOCKET should be set to generate keys for each host.
+      Environmental variables HOSTS and CN should be set to generate keys for each host.
 
 EOF
 }
@@ -78,13 +78,16 @@ fi
 
 gen_key_and_cert() {
     local host=$1
-    local name=$2
-    echo '{"CN":"pump-server","hosts":[""],"key":{"algo":"rsa","size":2048}}' | cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=server -hostname="${host},127.0.0.1" - | cfssljson -bare ${name} > /dev/null 2>&1
+    local cn=$2
+    local name=$3
+    echo "{\"CN\":\"${cn}\",\"hosts\":[\"\"],\"key\":{\"algo\":\"rsa\",\"size\":2048}}" | cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=server -hostname="${host},127.0.0.1" - | cfssljson -bare ${name} > /dev/null 2>&1
 }
 
-# Node
-if [ -n "$PUMP_HOST" ] && [ -n $"PUMP_SOCKET" ]; then
-    gen_key_and_cert "${PUMP_HOST},${PUMP_SOCKET}" "pump-server-${PUMP_HOST}"
+# Nodes
+if [ -n "$HOSTS" ]; then
+    for host in $HOSTS; do
+        gen_key_and_cert "${host}" "${CN}" "${CN}-${host}"
+    done
 fi
 
 # Install certs
