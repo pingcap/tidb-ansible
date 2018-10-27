@@ -35,6 +35,6 @@ exec docker run \
   --log-file="/var/log/{{ tidb_log_filename }}" \
   --path="{{ all_pd | join(',') }}" \
 {% if enable_binlog|default(false) %}
-  --binlog-socket="/status/pump.sock" \
+  --enable-binlog \
 {% endif %}
   --config=/etc/tidb.toml

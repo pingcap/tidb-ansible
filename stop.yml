@@ -143,6 +143,11 @@
     - name: wait for TiDB down
       wait_for: host={{ ansible_host }} port={{ tidb_port }} state=stopped
 
+
+- hosts: pump_servers
+  tags:
+    - pump
+  tasks:
     - name: stop pump by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
       when:
@@ -152,7 +157,7 @@
         - pump
 
     - name: stop pump by systemd
-      systemd: name=pump.service state=stopped
+      systemd: name=pump-{{ pump_port }}.service state=stopped
       become: true
       when:
         - enable_binlog|default(false)
