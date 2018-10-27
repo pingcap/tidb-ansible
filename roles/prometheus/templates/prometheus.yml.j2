@@ -19,6 +19,8 @@ rule_files:
   - 'tikv.rules.yml'
 {% if enable_binlog|default(false) %}
   - 'binlog.rules.yml'
+{% endif %}
+{% if kafka_addrs | default("") %}
   - 'kafka.rules.yml'
 {% endif %}
 {% if groups.lightning_server | default([]) | length == 1 %}
@@ -124,7 +126,7 @@ scrape_configs:
         replacement: {{ blackbox_host }}:{{ blackbox_port }}
 {% endif %}
 
-{% if groups.lightning_server | default([]) | | length == 1 %}
+{% if groups.lightning_server | default([]) | length == 1 %}
   - job_name: "lightning"
     static_configs:
       - targets: ['{{ hostvars[groups.lightning_server[0]].ansible_host | default(hostvars[groups.lightning_server[0]].inventory_hostname) }}:{{ hostvars[groups.lightning_server[0]].tidb_lightning_pprof_port }}']
@@ -206,6 +208,14 @@ scrape_configs:
 {% endfor %}
       labels:
         group: 'kafka'
+{% endif %}
+{% if zookeeper_addrs | default("") -%}
+    - targets:
+{% for zoo_addr in (zookeeper_addrs | default("")).split(',') | unique %}
+      - '{{ zoo_addr }}'
+{% endfor %}
+      labels:
+        group: 'zookeeper'
 {% endif %}
     - targets:
 {% for pump_addr in pump_addrs %}
