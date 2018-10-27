@@ -21,6 +21,9 @@ rule_files:
   - 'binlog.rules.yml'
   - 'kafka.rules.yml'
 {% endif %}
+{% if groups.lightning_server is defined and groups.lightning_server | length == 1 %}
+  - 'lightning.rules.yml'
+{% endif %}
 
 {% set alertmanager_host = hostvars[groups.alertmanager_servers[0]].ansible_host | default(hostvars[groups.alertmanager_servers[0]].inventory_hostname)
     if groups.get('alertmanager_servers', []) else '' -%}
@@ -121,7 +124,7 @@ scrape_configs:
         replacement: {{ blackbox_host }}:{{ blackbox_port }}
 {% endif %}
 
-{% if groups.lightning_server | length == 1 %}
+{% if groups.lightning_server is defined and groups.lightning_server | length == 1 %}
   - job_name: "lightning"
     static_configs:
       - targets: ['{{ hostvars[groups.lightning_server[0]].ansible_host | default(hostvars[groups.lightning_server[0]].inventory_hostname) }}:{{ hostvars[groups.lightning_server[0]].tidb_lightning_pprof_port }}']
