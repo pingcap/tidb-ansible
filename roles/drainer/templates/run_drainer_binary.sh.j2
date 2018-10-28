@@ -22,10 +22,10 @@ cd "${DEPLOY_DIR}" || exit 1
   {% set _ = all_pd.append("%s://%s:%s" % (pd_scheme, pd_ip, pd_port)) -%}
 {% endfor -%}
 
-exec bin/pump \
-    --addr="0.0.0.0:{{ pump_port }}" \
-    --advertise-addr="{{ my_ip }}:{{ pump_port }}" \
+exec bin/drainer \
+    --addr="{{ my_ip }}:{{ drainer_port }}" \
     --pd-urls="{{ all_pd | join(',') }}" \
-    --data-dir="{{ pump_data_dir }}" \
-    --log-file="{{ pump_log_dir }}/{{ pump_log_filename }}" \
-    --config=conf/pump.toml
+    --data-dir="{{ drainer_data_dir }}" \
+    --log-file="{{ drainer_log_dir }}/{{ drainer_log_filename }}" \
+    --config=conf/drainer.toml \
+    --initial-commit-ts="{{ initial_commit_ts }}"
