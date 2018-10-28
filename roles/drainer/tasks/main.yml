@@ -1,0 +1,48 @@
+---
+# tasks file for drainer
+
+- name: Preflight check - ensure initial_commit_ts variable is set
+  fail: msg="Please set initial_commit_ts variable for drainer server in inventory.ini."
+  when: (initial_commit_ts is undefined) or (initial_commit_ts is defined and initial_commit_ts == "")
+
+- name: "check if the customized config file `{{ playbook_dir }}/conf/{{ inventory_hostname }}_drainer.toml` existed"
+  delegate_to: localhost
+  stat:
+    path: "{{ playbook_dir }}/conf/{{ inventory_hostname }}_drainer.toml"
+  register: drainer_customized_conf_st
+
+- name: "Preflight check - ensure that the customized config file `{{ playbook_dir }}/conf/{{ inventory_hostname }}_drainer.toml` exists"
+  delegate_to: localhost
+  fail:
+    msg: 'You need to create customized config file `{{ playbook_dir }}/conf/{{ inventory_hostname }}_drainer.toml`.'
+  when: drainer_customized_conf_st.stat.exists == False
+
+- name: create deploy directories
+  file: path="{{ item }}" state=directory mode=0755
+  with_items:
+  - "{{ drainer_data_dir }}"
+  - "{{ drainer_log_dir }}"
+  - "{{ status_dir }}"
+
+# - include_tasks: check_certs.yml
+#   when: enable_tls|default(false)
+#
+# - include_tasks: gen_certs.yml
+#   when: enable_tls|default(false)
+#
+# - include_tasks: install_certs.yml
+#   when: enable_tls|default(false)
+
+- name: create configuration file
+  copy: src="{{ playbook_dir }}/conf/{{ inventory_hostname }}_drainer.toml" dest="{{ deploy_dir }}/conf/drainer.toml" mode=0644 backup=yes
+  register: drainer_conf_st
+
+- name: backup conf file
+  command: mv "{{ drainer_conf_st.backup_file }}" "{{ backup_dir }}"
+  when: drainer_conf_st.changed and drainer_conf_st.backup_file is defined
+
+- include_tasks: "binary_deployment.yml"
+
+- name: prepare firewalld white list
+  set_fact:
+    firewalld_ports: "{{ [drainer_port ~ '/tcp'] + firewalld_ports }}"
