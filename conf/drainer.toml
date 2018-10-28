@@ -1,0 +1,62 @@
+# drainer Configuration.
+
+# the interval time (in seconds) of detect pumps' status
+detect-interval = 10
+
+# syncer Configuration.
+[syncer]
+
+# disable sync these schema
+ignore-schemas = "INFORMATION_SCHEMA,PERFORMANCE_SCHEMA,mysql"
+
+# number of binlog events in a transaction batch
+txn-batch = 1
+
+# work count to execute binlogs
+worker-count = 1
+
+disable-dispatch = false
+
+# safe mode will split update to delete and insert
+safe-mode = false
+
+# downstream storage, equal to --dest-db-type
+# valid values are "mysql", "pb", "tidb", "flash", "kafka"
+db-type = "mysql"
+
+##replicate-do-db priority over replicate-do-table if have same db name
+##and we support regex expression , start with '~' declare use regex expression.
+#
+#replicate-do-db = ["~^b.*","s1"]
+#[[syncer.replicate-do-table]]
+#db-name ="test"
+#tbl-name = "log"
+
+#[[syncer.replicate-do-table]]
+#db-name ="test"
+#tbl-name = "~^a.*"
+
+# the downstream mysql protocol database
+[syncer.to]
+host = "127.0.0.1"
+user = "root"
+password = ""
+port = 3306
+# Time and size limits for flash batch write
+# time-limit = "30s"
+# size-limit = "100000"
+
+
+# Uncomment this if you want to use pb or sql as db-type.
+# Compress compresses output file, like pb and sql file. Now it supports "gzip" algorithm only. 
+# Values can be "gzip". Leave it empty to disable compression. 
+#[syncer.to]
+#compression = ""
+
+
+# when db-type is kafka, you can uncomment this to config the down stream kafka, it will be the globle config kafka default
+#[syncer.to]
+# only need config one of zookeeper-addrs and kafka-addrs, will get kafka address if zookeeper-addrs is configured.
+# zookeeper-addrs = "127.0.0.1:2181"
+# kafka-addrs = "127.0.0.1:9092"
+# kafka-version = "0.8.2.0"

@@ -1,0 +1,52 @@
+---
+# Copyright 2018 PingCAP, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# The Playbook of TiDB
+
+- name: check config locally
+  hosts: localhost
+  any_errors_fatal: true
+  tags:
+    - always
+  roles:
+    - check_config_static
+
+- name: check system environment
+  hosts: monitored_servers
+  any_errors_fatal: true
+  tags:
+    - always
+  roles:
+    - check_system_dynamic
+
+- name: initializing deployment target
+  hosts: all
+  any_errors_fatal: true
+  tags:
+    - always
+  roles:
+    - check_config_dynamic
+
+- name: deploying drainer
+  hosts: drainer_servers
+  tags:
+    - drainer
+  roles:
+    - { role: drainer, when: enable_binlog|default(false) }
+
+- name: finalizing deployment target
+  hosts: all
+  become: true
+  roles:
+    - { role: firewalld, when: enable_firewalld is defined and enable_firewalld }
