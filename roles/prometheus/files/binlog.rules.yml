@@ -1,16 +1,16 @@
 groups:
 - name: alert.rules
   rules:
-  - alert: binlog_pump_loss_binlog_count
-    expr: changes(binlog_pump_loss_binlog_count[1m]) > 0
+  - alert: binlog_pump_storage_error_count
+    expr: changes(binlog_pump_storage_error_count[1m]) > 0
     labels:
       env: ENV_LABELS_ENV
       level: emergency
-      expr: changes(binlog_pump_loss_binlog_count[1m]) > 0
+      expr: changes(binlog_pump_storage_error_count[1m]) > 0
     annotations:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
-      summary: binlog pump lose some binlogs
+      summary: binlog pump storage write some binlogs failed
 
   - alert: binlog_drainer_checkpoint_high_delay
     expr: (time() - binlog_drainer_checkpoint_tso / 1000) > 3600
