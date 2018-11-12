@@ -1781,10 +1781,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tidb_session_transaction_total[1m])) by (type)",
+              "expr": "sum(rate(tidb_session_transaction_total[1m])) by (type, sql_type)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{type}}",
+              "legendFormat": "{{type}}-{{sql_type}}",
               "refId": "A",
               "step": 10
             }
@@ -1858,24 +1858,24 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tidb_session_transaction_duration_seconds_bucket[1m])) by (le))",
+              "expr": "histogram_quantile(0.99, sum(rate(tidb_session_transaction_duration_seconds_bucket[1m])) by (le, sql_type))",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "99",
+              "legendFormat": "99-{{sql_type}}",
               "refId": "A"
             },
             {
-              "expr": "histogram_quantile(0.95, sum(rate(tidb_session_transaction_duration_seconds_bucket[1m])) by (le))",
+              "expr": "histogram_quantile(0.95, sum(rate(tidb_session_transaction_duration_seconds_bucket[1m])) by (le, sql_type))",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "95",
+              "legendFormat": "95-{{sql_type}}",
               "refId": "B"
             },
             {
-              "expr": "histogram_quantile(0.80, sum(rate(tidb_session_transaction_duration_seconds_bucket[1m])) by (le))",
+              "expr": "histogram_quantile(0.80, sum(rate(tidb_session_transaction_duration_seconds_bucket[1m])) by (le, sql_type))",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "80",
+              "legendFormat": "80-{{sql_type}}",
               "refId": "C"
             }
           ],
@@ -1947,17 +1947,17 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": " histogram_quantile(0.99, sum(rate(tidb_session_transaction_statement_num_bucket[30s])) by (le))",
+              "expr": "histogram_quantile(0.99, sum(rate(tidb_session_transaction_statement_num_bucket[30s])) by (le, sql_type))",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "99",
+              "legendFormat": "99-{{sql_type}}",
               "refId": "A"
             },
             {
-              "expr": " histogram_quantile(0.80, sum(rate(tidb_session_transaction_statement_num_bucket[30s])) by (le))",
+              "expr": "histogram_quantile(0.80, sum(rate(tidb_session_transaction_statement_num_bucket[30s])) by (le, sql_type))",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "80",
+              "legendFormat": "80-{{sql_type}}",
               "refId": "B"
             }
           ],
@@ -2032,10 +2032,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tidb_session_retry_error_total[30s]))",
+              "expr": "sum(rate(tidb_session_retry_error_total[30s])) by (type, sql_type)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "retry error",
+              "legendFormat": "{{type}}-{{sql_type}}",
               "refId": "A",
               "step": 10
             }
@@ -2112,25 +2112,25 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(1.0, sum(rate(tidb_session_retry_num_bucket[30s])) by (le))",
+              "expr": "histogram_quantile(1.0, sum(rate(tidb_session_retry_num_bucket[30s])) by (le, sql_type))",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "100",
+              "legendFormat": "100-{{sql_type}}",
               "refId": "A",
               "step": 10
             },
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tidb_session_retry_num_bucket[30s])) by (le))",
+              "expr": "histogram_quantile(0.99, sum(rate(tidb_session_retry_num_bucket[30s])) by (le, sql_type))",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "99",
+              "legendFormat": "99-{{sql_type}}",
               "refId": "B"
             },
             {
-              "expr": "histogram_quantile(0.90, sum(rate(tidb_session_retry_num_bucket[30s])) by (le))",
+              "expr": "histogram_quantile(0.90, sum(rate(tidb_session_retry_num_bucket[30s])) by (le, sql_type))",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "90",
+              "legendFormat": "90-{{sql_type}}",
               "refId": "C"
             }
           ],
