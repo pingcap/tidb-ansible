@@ -4,7 +4,7 @@
   copy: src="{{ resources_dir }}/bin/pd-server" dest="{{ deploy_dir }}/bin/" mode=0755 backup=yes
   register: pd_binary
 
-- name: backup bianry file
+- name: backup binary file
   command: mv "{{ pd_binary.backup_file }}" "{{ backup_dir }}"
   when: pd_binary.changed and pd_binary.backup_file is defined
 
