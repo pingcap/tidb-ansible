@@ -4,7 +4,7 @@
   copy: src="{{ resources_dir }}/bin/tikv-importer" dest="{{ deploy_dir }}/bin/" mode=0755 backup=yes
   register: tikv_importer
 
-- name: backup tikv-importer bianry file
+- name: backup tikv-importer binary file
   command: mv "{{ tikv_importer.backup_file }}" "{{ backup_dir }}"
   when: tikv_importer.changed and tikv_importer.backup_file is defined
 

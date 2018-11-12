@@ -8,11 +8,11 @@
   copy: src="{{ resources_dir }}/bin/tidb-lightning-ctl" dest="{{ deploy_dir }}/bin/" mode=0755 backup=yes
   register: tidb_lightning_ctl
 
-- name: backup tidb-lightning bianry file
+- name: backup tidb-lightning binary file
   command: mv "{{ tidb_lightning.backup_file }}" "{{ backup_dir }}"
   when: tidb_lightning.changed and tidb_lightning.backup_file is defined
 
-- name: backup tidb-lightning-ctl bianry file
+- name: backup tidb-lightning-ctl binary file
   command: mv "{{ tidb_lightning_ctl.backup_file }}" "{{ backup_dir }}"
   when: tidb_lightning_ctl.changed and tidb_lightning_ctl.backup_file is defined
 
