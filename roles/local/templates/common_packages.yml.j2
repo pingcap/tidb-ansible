@@ -5,13 +5,13 @@ tidb_packages:
     version: {{ tidb_version }}
     url: http://download.pingcap.org/tidb-{{ tidb_version }}-linux-amd64.tar.gz
 {% if not deploy_without_tidb|default(false) %}
-  - name: tidb-binlog-cluster
-    version: latest
-    url: http://download.pingcap.org/tidb-binlog-cluster-{{ tidb_version }}-linux-amd64.tar.gz
+  - name: tidb-binlog
+    version: {{ tidb_version }}
+    url: http://download.pingcap.org/tidb-binlog-{{ tidb_version }}-linux-amd64.tar.gz
 {% endif %}
   - name: tidb-tools
-    version: latest
-    url: http://download.pingcap.org/tidb-tools-latest-linux-amd64.tar.gz
+    version: {{ tidb_version }}
+    url: http://download.pingcap.org/tidb-tools-{{ tidb_version }}-linux-amd64.tar.gz
 
 common_packages:
   - name: fio
