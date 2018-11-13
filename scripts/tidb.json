@@ -63,7 +63,7 @@
   "refresh": "30s",
   "rows": [
     {
-      "collapse": false,
+      "collapse": true,
       "height": "240",
       "panels": [
         {
@@ -1141,7 +1141,7 @@
       "titleSize": "h6"
     },
     {
-      "collapse": false,
+      "collapse": true,
       "height": "250px",
       "panels": [
         {
@@ -1645,93 +1645,93 @@
             }
           ]
         },
-	{
-		"aliasColors": {},
-		"bars": false,
-		"dashLength": 10,
-		"dashes": false,
-		"datasource": "${DS_TEST-CLUSTER}",
-		"description": "Duration (us) for getting token, it should be small until concurrency limit is reached.",
-		"fill": 1,
-		"gridPos": {
-			"h": 9,
-			"w": 12,
-			"x": 0,
-			"y": 24
-		},
-		"id": 111,
-		"legend": {
-			"avg": false,
-			"current": false,
-			"max": false,
-			"min": false,
-			"show": true,
-			"total": false,
-			"values": false
-		},
-		"lines": true,
-		"linewidth": 1,
-		"links": [],
-		"nullPointMode": "null",
-		"percentage": false,
-		"pointradius": 5,
-		"points": false,
-		"renderer": "flot",
-		"seriesOverrides": [],
-		"spaceLength": 10,
-		"stack": false,
-		"steppedLine": false,
-		"targets": [
-			{
-				"expr": "histogram_quantile(0.99, sum(rate(tidb_server_get_token_duration_seconds_bucket[1m])) by (le))",
-				"format": "time_series",
-				"intervalFactor": 1,
-				"legendFormat": "99",
-				"refId": "A"
-			}
-		],
-		"thresholds": [],
-		"timeFrom": null,
-		"timeShift": null,
-		"title": "Get Token Duration",
-		"tooltip": {
-			"shared": true,
-			"sort": 0,
-			"value_type": "individual"
-		},
-		"transparent": false,
-		"type": "graph",
-		"xaxis": {
-			"buckets": null,
-			"mode": "time",
-			"name": null,
-			"show": true,
-			"values": []
-		},
-		"yaxes": [
-			{
-				"format": "µs",
-				"label": null,
-				"logBase": 1,
-				"max": null,
-				"min": null,
-				"show": true
-			},
-			{
-				"format": "short",
-				"label": null,
-				"logBase": 1,
-				"max": null,
-				"min": null,
-				"show": true
-			}
-		],
-		"yaxis": {
-			"align": false,
-			"alignLevel": null
-		},
-		"span": 6
-	}
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "description": "Duration (us) for getting token, it should be small until concurrency limit is reached.",
+          "fill": 1,
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 0,
+            "y": 24
+          },
+          "id": 111,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.99, sum(rate(tidb_server_get_token_duration_seconds_bucket[1m])) by (le))",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "99",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Get Token Duration",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "transparent": false,
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "µs",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
       ],
       "repeat": null,
       "repeatIteration": null,
@@ -1756,12 +1756,12 @@
           "grid": {},
           "id": 69,
           "legend": {
-            "alignAsTable": false,
+            "alignAsTable": true,
             "avg": false,
             "current": true,
             "max": true,
             "min": false,
-            "rightSide": false,
+            "rightSide": true,
             "show": true,
             "total": false,
             "values": true
@@ -1835,10 +1835,12 @@
           "fill": 1,
           "id": 72,
           "legend": {
+            "alignAsTable": true,
             "avg": false,
             "current": false,
             "max": false,
             "min": false,
+            "rightSide": true,
             "show": true,
             "total": false,
             "values": false
@@ -1924,10 +1926,12 @@
           "fill": 1,
           "id": 74,
           "legend": {
+            "alignAsTable": true,
             "avg": false,
             "current": false,
             "max": false,
             "min": false,
+            "rightSide": true,
             "show": true,
             "total": false,
             "values": false
@@ -2089,10 +2093,12 @@
           "grid": {},
           "id": 67,
           "legend": {
+            "alignAsTable": true,
             "avg": false,
             "current": false,
             "max": false,
             "min": false,
+            "rightSide": true,
             "show": true,
             "total": false,
             "values": false
@@ -7014,5 +7020,5 @@
   },
   "timezone": "browser",
   "title": "Test-Cluster-TiDB",
-  "version": 5
+  "version": 3
 }
