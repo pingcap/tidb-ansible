@@ -22,7 +22,11 @@ _check=$(bin/svstat "${STATUS_DIR}" 2>/dev/null)
 if echo "${_check}" | grep 'up pid' &>/dev/null; then
     _pid=$(echo "${_check}" | cut -d' ' -f 4 | cut -d',' -f 1)
     if [ "$(readlink /proc/${_pid}/cwd)" == "${DEPLOY_DIR}" ]; then
+{% if killsignal|default(false) %}
+        kill -3 ${_pid}
+{% else %}
         kill ${_pid}
+{% endif %}
     fi
 fi
 
