@@ -4,11 +4,6 @@ tidb_packages:
   - name: tidb
     version: {{ tidb_version }}
     url: http://download.pingcap.org/tidb-{{ tidb_version }}-linux-amd64.tar.gz
-{% if not deploy_without_tidb|default(false) %}
-  - name: tidb-binlog
-    version: {{ tidb_version }}
-    url: http://download.pingcap.org/tidb-binlog-{{ tidb_version }}-linux-amd64.tar.gz
-{% endif %}
   - name: tidb-tools
     version: {{ tidb_version }}
     url: http://download.pingcap.org/tidb-tools-{{ tidb_version }}-linux-amd64.tar.gz
@@ -35,8 +30,3 @@ diagnosis_packages:
   - name: tidb-insight
     version: v0.2.5-1-g99b8fea
     url: http://download.pingcap.org/tidb-insight-v0.2.5-1-g99b8fea.tar.gz
-
-lightning_packages:
-  - name: tidb-lightning
-    version: latest
-    url: http://download.pingcap.org/tidb-lightning-latest-linux-amd64.tar.gz
