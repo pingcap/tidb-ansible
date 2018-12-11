@@ -383,9 +383,9 @@
 
     - name: import grafana dashboards - run import script
       delegate_to: localhost
-      shell: >-
-        chdir={{ playbook_dir }}/scripts
-        ./grafana-config-copy.py
+      shell: "python grafana-config-copy.py"
+      args:
+        chdir: "{{ playbook_dir }}/scripts"
       vars:
         - ansible_become: false
         - ansible_connection: local
