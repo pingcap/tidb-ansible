@@ -1,0 +1,31 @@
+#!/bin/bash
+set -e
+ulimit -n 1000000
+
+DEPLOY_DIR={{ deploy_dir }}
+
+cd "${DEPLOY_DIR}" || exit 1
+
+# WARNING: This file was auto-generated. Do not edit!
+#          All your edit might be overwritten!
+{% set my_ip = hostvars[inventory_hostname].ansible_host | default(hostvars[inventory_hostname].inventory_hostname) -%}
+
+{% if enable_tls|default(false) %}
+  {% set pd_scheme = 'https' -%}
+{% endif %}
+
+{% set all_pd = [] -%}
+{% set pd_hosts = groups.pd_servers %}
+{% for host in pd_hosts -%}
+  {% set pd_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
+  {% set pd_port = hostvars[host].pd_client_port -%}
+  {% set _ = all_pd.append("%s://%s:%s" % (pd_scheme, pd_ip, pd_port)) -%}
+{% endfor -%}
+
+exec bin/drainer \
+    --addr="{{ my_ip }}:{{ drainer_port }}" \
+    --pd-urls="{{ all_pd | join(',') }}" \
+    --data-dir="{{ drainer_data_dir }}" \
+    --log-file="{{ drainer_log_dir }}/{{ drainer_log_filename }}" \
+    --config=conf/drainer.toml \
+    --initial-commit-ts="{{ initial_commit_ts }}"

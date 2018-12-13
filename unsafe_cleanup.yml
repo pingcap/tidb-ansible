@@ -66,12 +66,16 @@
       with_items:
         - tidb-{{ tidb_port }}.service
 
+- hosts: pump_servers
+  tasks:
     - name: clean systemd config
       file: path="/etc/systemd/system/{{ item }}" state=absent
       become: true
-      when: enable_binlog|default(false) and process_supervision == 'systemd'
+      when:
+        - enable_binlog|default(false)
+        - process_supervision == 'systemd'
       with_items:
-        - pump.service
+        - pump-{{ pump_port }}.service
 
 - hosts: tikv_servers
   tasks:

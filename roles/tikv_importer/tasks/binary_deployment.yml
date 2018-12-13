@@ -1,0 +1,27 @@
+---
+
+- name: deploy tikv-importer  binary
+  copy: src="{{ resources_dir }}/bin/tikv-importer" dest="{{ deploy_dir }}/bin/" mode=0755 backup=yes
+  register: tikv_importer
+
+- name: backup tikv-importer binary file
+  command: mv "{{ tikv_importer.backup_file }}" "{{ backup_dir }}"
+  when: tikv_importer.changed and tikv_importer.backup_file is defined
+
+- name: create run script
+  template:
+    src: "{{ item }}_importer_binary.sh.j2"
+    dest: "{{ deploy_dir }}/scripts/{{ item }}_importer.sh"
+    mode: "0755"
+    backup: yes
+  with_items:
+    - start
+    - stop
+  register: importer_script
+
+- name: backup script file
+  command: mv "{{ item.backup_file }}" "{{ backup_dir }}"
+  when:
+    - item.changed
+    - item.backup_file is defined
+  with_items: "{{ importer_script.results }}"

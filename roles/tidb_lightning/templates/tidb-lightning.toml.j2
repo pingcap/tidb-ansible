@@ -1,0 +1,44 @@
+# lightning Configuration
+
+{% set all_pd = [] -%}
+{% set pd_hosts = groups.pd_servers %}
+{% for host in pd_hosts -%}
+  {% set pd_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
+  {% set pd_port = hostvars[host].pd_client_port -%}
+  {% set _ = all_pd.append("%s:%s" % (pd_ip, pd_port)) -%}
+{% endfor -%}
+
+[lightning]
+{% for item, value in tidb_lightning_conf.lightning | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+
+[checkpoint]
+{% for item, value in tidb_lightning_conf.checkpoint | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+
+[tikv-importer]
+{% for item, value in tidb_lightning_conf.tikv_importer | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+
+[mydumper]
+{% for item, value in tidb_lightning_conf.mydumper | dictsort -%}
+{{ item }} = {{ value | to_json}}
+{% endfor %}
+
+[tidb]
+{% for item, value in tidb_lightning_conf.tidb | dictsort -%}
+{% if item == "port" or item == "status-port" %}
+{{ item }} = {{ value | int}}
+{% else %}
+{{ item }} = {{ value | to_json}}
+{% endif %}
+{% endfor %}
+pd-addr = "{{ all_pd |join(',') }}"
+
+[post-restore]
+{% for item, value in tidb_lightning_conf.post_restore | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}

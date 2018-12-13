@@ -111,12 +111,18 @@
   roles:
     - tikv
 
+- name: deploying pump cluster
+  hosts: pump_servers
+  tags:
+    - pump
+  roles:
+    - { role: pump, when: enable_binlog|default(false) }
+
 - name: deploying TiDB cluster
   hosts: tidb_servers
   tags:
     - tidb
   roles:
-    - { role: pump, when: enable_binlog|default(false) }
     - tidb
     - { role: tispark, when: "(groups.get('spark_master', []) | length == 0 or groups.get('spark_slaves', []) | length == 0) and (deployment_method == 'binary')" }
 
@@ -126,6 +132,20 @@
     - tispark
   roles:
     - { role: tispark, when: "groups.get('spark_master', []) | length != 0 and groups.get('spark_slaves', []) | length != 0 and deployment_method == 'binary'" }
+
+- name: deploying tidb-lightning
+  hosts: lightning_server
+  tags:
+    - lightning
+  roles:
+    - tidb_lightning
+
+- name: deploying tikv-importer
+  hosts: importer_server
+  tags:
+    - lightning
+  roles:
+    - tikv_importer
 
 - name: finalizing deployment target
   hosts: all

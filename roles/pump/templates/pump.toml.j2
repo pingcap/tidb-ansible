@@ -1,5 +1,9 @@
 # pump Configuration
 
+{% for item, value in pump_conf.global | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+
 [security]
 {% for item, value in pump_conf.security | dictsort -%}
 {{ item }} = {{ value | to_json }}

@@ -17,3 +17,8 @@
 - name: display store id
   debug:
     var: store_id
+
+- name: check store_id is defined
+  fail:
+    msg: "The tikv node of {{ tikv_addr }} is not registered in this cluster."
+  when: store_id is not defined

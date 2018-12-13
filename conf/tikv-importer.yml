@@ -1,0 +1,54 @@
+---
+
+# TiKV Importer configuration file template
+
+global:
+  # log file.
+  log-file: "log/tikv_importer.log"
+  # log level: trace, debug, info, warn, error, off.
+  log-level: "info"
+
+server:
+  # size of thread pool for the gRPC server.
+  grpc-concurrency: 16
+
+metric:
+  # the Prometheus client push job name.
+  job: "tikv-importer"
+  # the Prometheus client push interval.
+  interval: "15s"
+  # the Prometheus Pushgateway address.
+  # address: ""
+
+rocksdb:
+  # the maximum number of concurrent background jobs.
+  max-background-jobs: 32
+
+  defaultcf:
+    # amount of data to build up in memory before flushing data to the disk.
+    write-buffer-size: "1GB"
+    # the maximum number of write buffers that are built up in memory.
+    max-write-buffer-number: 8
+    
+    # the compression algorithms used in different levels.
+    # the algorithm at level-0 is used to compress KV data.
+    # the algorithm at level-6 is used to compress SST files.
+    # the algorithms at level-1 ~ level-5 are not used now.
+    compression-per-level: ["lz4", "no", "no", "no", "no", "no", "zstd"]
+
+import:
+  # this directory is used to store the data written by `tidb-lightning`.
+  # import-dir: "/tmp/tikv/import"
+  # the number of threads to handle RPC requests.
+  num-threads: 16
+  # the number of concurrent import jobs.
+  num-import-jobs: 24
+  # the stream channel window size. Stream will be blocked when the channel is full. 
+  stream-channel-window: 128
+  # maximum duration to prepare regions.
+  # max-prepare-duration = "5m"
+  # split regions into this size according to the importing data.
+  # region-split-size = "96MB"
+  # maximum number of open engines, max-open-engines must be >= table-concurrency value in tidb-lightning.toml
+  max-open-engines: 8
+  # write-buffer-size * max-write-buffer-number * max-open-engines should less than machine's memory size
