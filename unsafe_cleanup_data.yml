@@ -45,8 +45,12 @@
       become: true
       when: process_supervision == 'systemd'
 
-    - name: wait TiDB down
-      wait_for: host={{ ansible_host }} port={{ tidb_port }} state=stopped
+    - name: wait until the TiDB port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ tidb_port }}"
+        state: stopped
+        msg: "the TiDB port {{ tidb_port }} is not down"
 
 
 - name: pump cluster
@@ -69,9 +73,12 @@
         - enable_binlog|default(false)
         - process_supervision == 'systemd'
 
-    - name: wait pump down
-      wait_for: |
-        host={{ ansible_host }} port={{ pump_port }} state=stopped
+    - name: wait until the pump port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ pump_port }}"
+        state: stopped
+        msg: "the pump port {{ pump_port }} is not down"
       when: enable_binlog|default(false)
 
     - name: clean pump data
@@ -93,8 +100,12 @@
     become: true
     when: process_supervision == 'systemd'
 
-  - name: wait TiKV down
-    wait_for: host={{ ansible_host }} port={{ tikv_port }} state=stopped
+  - name: wait until the TiKV port is down
+    wait_for:
+      host: "{{ ansible_host }}"
+      port: "{{ tikv_port }}"
+      state: stopped
+      msg: "the TiKV port {{ tikv_port }} is not down"
 
   - name: clean TiKV data
     file: path={{ tikv_data_dir }} state=absent
@@ -133,8 +144,12 @@
     become: true
     when: process_supervision == 'systemd'
 
-  - name: wait PD down
-    wait_for: host={{ ansible_host }} port={{ pd_client_port }} state=stopped
+  - name: wait until the PD port is down
+    wait_for:
+      host: "{{ ansible_host }}"
+      port: "{{ pd_client_port }}"
+      state: stopped
+      msg: "the PD port {{ pd_client_port }} is not down"
 
   - name: clean PD data
     file: path={{ pd_data_dir }} state=absent
