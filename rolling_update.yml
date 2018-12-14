@@ -106,8 +106,9 @@
     - name: wait until the PD health page is available
       uri:
         url: "http://{{ ansible_host }}:{{ pd_client_port }}/health"
+        return_content: yes
       register: pd_http_result
-      until: pd_http_result.status is defined and pd_http_result.status == 200
+      until: pd_http_result.status == 200 and 'true' in pd_http_result.content
       retries: 12
       delay: 5
       when: not enable_tls|default(false)
@@ -118,8 +119,9 @@
         validate_certs: no
         client_cert: "{{ pd_cert_dir }}/pd-server-{{ ansible_host }}.pem"
         client_key: "{{ pd_cert_dir }}/pd-server-{{ ansible_host }}-key.pem"
+        return_content: yes
       register: pd_https_result
-      until: pd_https_result.status is defined and pd_https_result.status == 200
+      until: pd_https_result.status == 200 and 'true' in pd_https_result.content
       retries: 12
       delay: 5
       when: enable_tls|default(false)
@@ -316,8 +318,9 @@
     - name: wait until the TiDB status page is available
       uri:
         url: "http://{{ ansible_host }}:{{ tidb_status_port }}/status"
+        return_content: yes
       register: tidb_http_result
-      until: tidb_http_result.status is defined and tidb_http_result.status == 200
+      until: tidb_http_result.status == 200 and 'TiDB' in tidb_http_result.content
       retries: 12
       delay: 5
       when: not enable_tls|default(false)
@@ -328,8 +331,9 @@
         validate_certs: no
         client_cert: "{{ tidb_cert_dir }}/tidb-server-{{ ansible_host }}.pem"
         client_key: "{{ tidb_cert_dir }}/tidb-server-{{ ansible_host }}-key.pem"
+        return_content: yes
       register: tidb_https_result
-      until: tidb_https_result.status is defined and tidb_https_result.status == 200
+      until: tidb_https_result.status == 200 and 'TiDB' in tidb_http_result.content
       retries: 10
       delay: 5
       when: enable_tls|default(false)

@@ -87,7 +87,7 @@
       uri:
         url: "http://{{ ansible_host }}:{{ node_exporter_port }}/metrics"
       register: node_exporter_http_result
-      until: node_exporter_http_result.status is defined and node_exporter_http_result.status == 200
+      until: node_exporter_http_result.status == 200
       retries: 12
       delay: 5
 
@@ -148,7 +148,7 @@
       uri:
         url: "http://{{ ansible_host }}:{{ blackbox_exporter_port }}/metrics"
       register: blackbox_exporter_http_result
-      until: blackbox_exporter_http_result.status is defined and blackbox_exporter_http_result.status == 200
+      until: blackbox_exporter_http_result.status == 200
       retries: 12
       delay: 5
 
@@ -261,7 +261,7 @@
       uri:
         url: "http://{{ ansible_host }}:{{ pushgateway_port }}/metrics"
       register: pushgateway_http_result
-      until: pushgateway_http_result.status is defined and pushgateway_http_result.status == 200
+      until: pushgateway_http_result.status == 200
       retries: 12
       delay: 5
 
@@ -321,7 +321,7 @@
       uri:
         url: "http://{{ ansible_host }}:{{ prometheus_port }}/metrics"
       register: prometheus_http_result
-      until: prometheus_http_result.status is defined and prometheus_http_result.status == 200
+      until: prometheus_http_result.status == 200
       retries: 12
       delay: 5
 
@@ -405,7 +405,7 @@
       uri:
         url: "http://{{ ansible_host }}:{{ grafana_port }}/login"
       register: grafana_http_result
-      until: grafana_http_result.status is defined and grafana_http_result.status == 200
+      until: grafana_http_result.status == 200
       retries: 12
       delay: 5
 
