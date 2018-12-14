@@ -8782,7 +8782,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tidb_tikvclient_gc_action_result_total{job=~\"$job\"}[1m])) by (type)",
+              "expr": "sum(rate(tidb_tikvclient_gc_action_result_total[1m])) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
@@ -8867,7 +8867,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tidb_tikvclient_gc_worker_actions_total{job=~\"$job\"}[1m])) by (type)",
+              "expr": "sum(rate(tidb_tikvclient_gc_worker_actions_total[1m])) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
@@ -8952,7 +8952,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(1.0, sum(rate(tidb_tikvclient_gc_seconds_bucket{job=~\"$job\"}[1m])) by (instance, le))",
+              "expr": "histogram_quantile(1.0, sum(rate(tidb_tikvclient_gc_seconds_bucket[1m])) by (instance, le))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
@@ -9036,7 +9036,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tidb_tikvclient_gc_failure_total{job=~\"$job\"}[1m])) by (type)",
+              "expr": "sum(rate(tidb_tikvclient_gc_failure_total[1m])) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
@@ -9141,7 +9141,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "max(tidb_tikvclient_gc_config{job=~\"$job\", type=\"tikv_gc_life_time\"})",
+              "expr": "max(tidb_tikvclient_gc_config{type=\"tikv_gc_life_time\"})",
               "interval": "",
               "intervalFactor": 2,
               "refId": "A",
@@ -9220,7 +9220,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "max(tidb_tikvclient_gc_config{job=~\"$job\", type=\"tikv_gc_run_interval\"})",
+              "expr": "max(tidb_tikvclient_gc_config{type=\"tikv_gc_run_interval\"})",
               "intervalFactor": 2,
               "refId": "A",
               "step": 60
