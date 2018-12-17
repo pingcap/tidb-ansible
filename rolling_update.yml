@@ -76,8 +76,12 @@
       become: true
       when: process_supervision == 'systemd'
 
-    - name: wait for PD down
-      wait_for: host={{ ansible_host }} port={{ pd_client_port }} state=stopped
+    - name: wait until the PD port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ pd_client_port }}"
+        state: stopped
+        msg: "the PD port {{ pd_client_port }} is not down"
 
   roles:
     - pd
@@ -92,21 +96,33 @@
       become: true
       when: process_supervision == 'systemd'
 
-    - name: wait for PD up
-      wait_for: |
-        host={{ ansible_host }} port={{ pd_client_port }} state=present
-        send='GET /pd/api/v1/members HTTP/1.0\r\n\r\n' search_regex='200 OK'
+    - name: wait until the PD port is up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ pd_client_port }}"
+        state: started
+        msg: "the PD port {{ pd_client_port }} is not up"
+
+    - name: wait until the PD health page is available
+      uri:
+        url: "http://{{ ansible_host }}:{{ pd_client_port }}/health"
+        return_content: yes
+      register: pd_http_result
+      until: pd_http_result.status == 200 and 'true' in pd_http_result.content
+      retries: 12
+      delay: 5
       when: not enable_tls|default(false)
 
-    - name: wait for PD up when enable_tls|default(false)
+    - name: wait until the PD health page is available when enable_tls
       uri:
-        url: "https://{{ ansible_host }}:{{ pd_client_port }}/pd/api/v1/members"
+        url: "https://{{ ansible_host }}:{{ pd_client_port }}/health"
         validate_certs: no
         client_cert: "{{ pd_cert_dir }}/pd-server-{{ ansible_host }}.pem"
         client_key: "{{ pd_cert_dir }}/pd-server-{{ ansible_host }}-key.pem"
-      register: result
-      until: result.status is defined and result.status == 200
-      retries: 10
+        return_content: yes
+      register: pd_https_result
+      until: pd_https_result.status == 200 and 'true' in pd_https_result.content
+      retries: 12
       delay: 5
       when: enable_tls|default(false)
 
@@ -138,11 +154,16 @@
       become: true
       when: process_supervision == 'systemd'
 
-    - name: wait for TiKV down (via Port)
-      wait_for: host={{ ansible_host }} port={{ tikv_port }} state=stopped
+    - name: wait until the TiKV port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ tikv_port }}"
+        state: stopped
+        msg: "the TiKV port {{ tikv_port }} is not down"
 
-    - name: wait for TiKV down (via PID)
+    - name: wait until TiKV process is down
       wait_for_pid: pid_file={{ deploy_dir }}/status/tikv.pid timeout=300 state=absent
+      when: deployment_method == 'binary'
 
     - command: cat {{ deploy_dir }}/status/tikv.pid
       register: old_tikv_pid
@@ -166,15 +187,18 @@
       become: true
       when: process_supervision == 'systemd'
 
-    - name: wait for TiKV up
+    - name: wait until the TiKV port is up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ tikv_port }}"
+        state: started
+        msg: "the TiKV port {{ tikv_port }} is not up"
+
+    - name: wait until TiKV process is up
       wait_for_pid: |
         pid_file={{ deploy_dir }}/status/tikv.pid timeout=300
         thread_name_regex='tikv-server' state=present
       when: deployment_method == 'binary'
-
-    - name: wait for TiKV up
-      wait_for: host={{ ansible_host }} port={{ tikv_port }} state=present
-      when: deployment_method == 'docker'
 
     - command: cat {{ deploy_dir }}/status/tikv.pid
       register: new_tikv_pid
@@ -211,9 +235,12 @@
         - enable_binlog|default(false)
         - process_supervision == 'systemd'
 
-    - name: wait for pump down
-      wait_for: |
-        host={{ ansible_host }} port={{ pump_port }} state=stopped
+    - name: wait until the pump port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ pump_port }}"
+        state: stopped
+        msg: "the pump port {{ pump_port }} is not down"
       when: enable_binlog|default(false)
 
   roles:
@@ -235,9 +262,12 @@
         - enable_binlog|default(false)
         - process_supervision == 'systemd'
 
-    - name: wait for pump up
-      wait_for: |
-        host={{ ansible_host }} port={{ pump_port }} state=present
+    - name: wait until the pump port is up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ pump_port }}"
+        state: started
+        msg: "the pump port {{ pump_port }} is not up"
       when: enable_binlog|default(false)
 
 
@@ -258,8 +288,12 @@
       become: true
       when: process_supervision == 'systemd'
 
-    - name: wait for TiDB down
-      wait_for: host={{ ansible_host }} port={{ tidb_port }} state=stopped
+    - name: wait until the TiDB port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ tidb_port }}"
+        state: stopped
+        msg: "the TiDB port {{ tidb_port }} is not down"
 
   roles:
     - tidb
@@ -274,20 +308,32 @@
       become: true
       when: process_supervision == 'systemd'
 
-    - name: wait for TiDB up
-      wait_for: |
-        host={{ ansible_host }} port={{ tidb_status_port }} state=present
-        send='GET /status HTTP/1.0\r\n\r\n' search_regex='TiDB'
+    - name: wait until the TiDB port is up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ tidb_port }}"
+        state: started
+        msg: "the TiDB port {{ tidb_port }} is not up"
+
+    - name: wait until the TiDB status page is available
+      uri:
+        url: "http://{{ ansible_host }}:{{ tidb_status_port }}/status"
+        return_content: yes
+      register: tidb_http_result
+      until: tidb_http_result.status == 200 and 'TiDB' in tidb_http_result.content
+      retries: 12
+      delay: 5
       when: not enable_tls|default(false)
 
-    - name: wait for TiDB up
+    - name: wait until the TiDB status page is available when enable_tls
       uri:
         url: "https://{{ ansible_host }}:{{ tidb_status_port }}/status"
         validate_certs: no
         client_cert: "{{ tidb_cert_dir }}/tidb-server-{{ ansible_host }}.pem"
         client_key: "{{ tidb_cert_dir }}/tidb-server-{{ ansible_host }}-key.pem"
-      register: result
-      until: result.status is defined and result.status == 200
+        return_content: yes
+      register: tidb_https_result
+      until: tidb_https_result.status == 200 and 'TiDB' in tidb_http_result.content
       retries: 10
       delay: 5
       when: enable_tls|default(false)
