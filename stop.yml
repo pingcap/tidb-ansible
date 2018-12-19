@@ -251,10 +251,6 @@
         state: stopped
         msg: "the TiKV port {{ tikv_port }} is not down"
 
-    - name: wait until TiKV process is down
-      wait_for_pid: pid_file={{ deploy_dir }}/status/tikv.pid timeout=300 state=absent
-      when: deployment_method == 'binary'
-
     - command: cat {{ deploy_dir }}/status/tikv.pid
       register: old_tikv_pid
       ignore_errors: yes

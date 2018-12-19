@@ -270,11 +270,28 @@
         state: started
         msg: "the TiKV port {{ tikv_port }} is not up"
 
-    - name: wait until TiKV process is up
-      wait_for_pid: |
-        pid_file={{ deploy_dir }}/status/tikv.pid timeout=300
-        thread_name_regex='tikv-server' state=present
-      when: deployment_method == 'binary'
+    - name: wait until the TiKV status page is available
+      uri:
+        url: "http://{{ ansible_host }}:{{ tikv_status_port }}/status"
+        return_content: yes
+      register: tikv_http_result
+      until: tikv_http_result.status == 200
+      retries: 12
+      delay: 5
+      when: not enable_tls|default(false)
+
+    - name: wait until the TiKV status page is available when enable_tls
+      uri:
+        url: "https://{{ ansible_host }}:{{ tikv_status_port }}/status"
+        validate_certs: no
+        client_cert: "{{ tikv_cert_dir }}/tikv-server-{{ ansible_host }}.pem"
+        client_key: "{{ tikv_cert_dir }}/tikv-server-{{ ansible_host }}-key.pem"
+        return_content: yes
+      register: tikv_https_result
+      until: tikv_https_result.status == 200
+      retries: 10
+      delay: 5
+      when: enable_tls|default(false)
 
     - command: cat {{ deploy_dir }}/status/tikv.pid
       register: new_tikv_pid
