@@ -1,10 +1,12 @@
 # lightning Configuration
 
 {% set all_pd = [] -%}
-{% set pd_host = groups.pd_servers[0] -%}
-{% set pd_ip = hostvars[pd_host].ansible_host | default(hostvars[pd_host].inventory_hostname) -%}
-{% set pd_port = hostvars[pd_host].pd_client_port -%}
-{% set _ = all_pd.append("%s:%s" % (pd_ip, pd_port)) -%}
+{% set pd_hosts = groups.pd_servers %}
+{% for host in pd_hosts -%}
+  {% set pd_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
+  {% set pd_port = hostvars[host].pd_client_port -%}
+  {% set _ = all_pd.append("%s:%s" % (pd_ip, pd_port)) -%}
+{% endfor -%}
 
 [lightning]
 {% for item, value in tidb_lightning_conf.lightning | dictsort -%}
