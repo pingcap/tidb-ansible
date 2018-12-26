@@ -14,6 +14,15 @@
 
 # The playbook of TiDB
 
+- hosts: all
+  tasks:
+    - name: check ansible_play_batch
+      fail:
+        msg: "Only one host can be specified at a time when performing graceful stop."
+      run_once: true
+      when: ansible_play_batch | length != 1
+
+
 - name: check config locally
   hosts: localhost
   any_errors_fatal: true
@@ -34,12 +43,35 @@
 - hosts: monitored_servers
   tags:
     - node_exporter
-    - blackbox_exporter
   tasks:
-    - name: stop node_exporter/blackbox_exporter by supervise
+    - name: stop node_exporter by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
       with_items:
         - node_exporter
+      when: process_supervision == 'supervise'
+
+    - name: stop node_exporter by systemd
+      systemd: name={{ item }} state=stopped
+      become: true
+      when: process_supervision == 'systemd'
+      with_items:
+        - node_exporter-{{ node_exporter_port }}.service
+
+    - name: wait until the node_exporter port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ node_exporter_port }}"
+        state: stopped
+        msg: "the node_exporter port {{ node_exporter_port }} is not down"
+
+
+- hosts: monitored_servers
+  tags:
+    - blackbox_exporter
+  tasks:
+    - name: stop blackbox_exporter by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      with_items:
         - blackbox_exporter
       when: process_supervision == 'supervise'
 
@@ -48,14 +80,14 @@
       become: true
       when: process_supervision == 'systemd'
       with_items:
-        - node_exporter-{{ node_exporter_port }}.service
         - blackbox_exporter-{{ blackbox_exporter_port }}.service
 
-    - name: wait for node_exporter down
-      wait_for: host={{ ansible_host }} port={{ node_exporter_port }} state=stopped
-
-    - name: wait for blackbox_exporter down
-      wait_for: host={{ ansible_host }} port={{ blackbox_exporter_port }} state=stopped
+    - name: wait until the blackbox_exporter port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ blackbox_exporter_port }}"
+        state: stopped
+        msg: "the blackbox_exporter port {{ blackbox_exporter_port }} is not down"
 
 
 - hosts: alertmanager_servers
@@ -71,35 +103,62 @@
       become: true
       when: process_supervision == 'systemd'
 
-    - name: wait for alertmanager down
-      wait_for: host={{ ansible_host }} port={{ alertmanager_port }} state=stopped
+    - name: wait until the alertmanager port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ alertmanager_port }}"
+        state: stopped
+        msg: "the alertmanager port {{ alertmanager_port }} is not down"
 
 
 - hosts: monitoring_servers
   tags:
     - pushgateway
-    - prometheus
   tasks:
-    - name: stop monitoring modules by supervise
+    - name: stop pushgateway by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
       with_items:
         - pushgateway
-        - prometheus
       when: process_supervision == 'supervise'
 
-    - name: stop monitoring modules by systemd
+    - name: stop pushgateway by systemd
       systemd: name={{ item }} state=stopped
       when: process_supervision == 'systemd'
       become: true
       with_items:
         - pushgateway-{{ pushgateway_port }}.service
+
+    - name: wait until the pushgateway port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ pushgateway_port }}"
+        state: stopped
+        msg: "the pushgateway port {{ pushgateway_port }} is not down"
+
+
+- hosts: monitoring_servers
+  tags:
+    - prometheus
+  tasks:
+    - name: stop prometheus by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      with_items:
+        - prometheus
+      when: process_supervision == 'supervise'
+
+    - name: stop prometheus by systemd
+      systemd: name={{ item }} state=stopped
+      when: process_supervision == 'systemd'
+      become: true
+      with_items:
         - prometheus-{{ prometheus_port }}.service
 
-    - name: wait for pushgateway down
-      wait_for: host={{ ansible_host }} port={{ pushgateway_port }} state=stopped
-
-    - name: wait for prometheus down
-      wait_for: host={{ ansible_host }} port={{ prometheus_port }} state=stopped
+    - name: wait until the prometheus port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ prometheus_port }}"
+        state: stopped
+        msg: "the prometheus port {{ prometheus_port }} is not down"
 
 
 - hosts: kafka_exporter_servers
@@ -119,9 +178,12 @@
         - enable_binlog|default(false)
         - process_supervision == 'systemd'
 
-    - name: wait for kafka_exporter down
-      wait_for: |
-        host={{ ansible_host }} port={{ kafka_exporter_port }} state=stopped
+    - name: wait until the kafka_exporter port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ kafka_exporter_port }}"
+        state: stopped
+        msg: "the kafka_exporter port {{ kafka_exporter_port }} is not down"
       when: enable_binlog|default(false)
 
 
@@ -140,9 +202,18 @@
       become: true
       when: process_supervision == 'systemd'
 
-    - name: wait for TiDB down
-      wait_for: host={{ ansible_host }} port={{ tidb_port }} state=stopped
+    - name: wait until the TiDB port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ tidb_port }}"
+        state: stopped
+        msg: "the TiDB port {{ tidb_port }} is not down"
 
+
+- hosts: pump_servers
+  tags:
+    - pump
+  tasks:
     - name: stop pump by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
       when:
@@ -152,15 +223,18 @@
         - pump
 
     - name: stop pump by systemd
-      systemd: name=pump.service state=stopped
+      systemd: name=pump-{{ pump_port }}.service state=stopped
       become: true
       when:
         - enable_binlog|default(false)
         - process_supervision == 'systemd'
 
-    - name: wait for pump down
-      wait_for: |
-        host={{ ansible_host }} port={{ pump_port }} state=stopped
+    - name: wait until the pump port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ pump_port }}"
+        state: stopped
+        msg: "the pump port {{ pump_port }} is not down"
       when: enable_binlog|default(false)
 
 
@@ -168,12 +242,6 @@
   tags:
     - tikv
   tasks:
-    - name: check ansible_play_batch
-      fail:
-        msg: "Only one host can be specified at a time when performing graceful stop."
-      run_once: true
-      when: ansible_play_batch | length != 1
-
     - include_tasks: "common_tasks/get_pd_tikv_addr.yml"
 
     - include_tasks: "common_tasks/get_store_id.yml"
@@ -185,21 +253,20 @@
     - include_tasks: "common_tasks/add_evict_leader_scheduler.yml"
 
     - name: stop TiKV by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      shell: cd {{ deploy_dir }}/scripts && ./stop_tikv.sh
       when: process_supervision == 'supervise'
-      with_items:
-        - tikv
 
     - name: stop TiKV by systemd
       systemd: name=tikv-{{ tikv_port }}.service state=stopped
       become: true
       when: process_supervision == 'systemd'
 
-    - name: wait for TiKV down (via Port)
-      wait_for: host={{ ansible_host }} port={{ tikv_port }} state=stopped
-
-    - name: wait for TiKV down (via PID)
-      wait_for_pid: pid_file={{ deploy_dir }}/status/tikv.pid timeout=300 state=absent
+    - name: wait until the TiKV port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ tikv_port }}"
+        state: stopped
+        msg: "the TiKV port {{ tikv_port }} is not down"
 
     - command: cat {{ deploy_dir }}/status/tikv.pid
       register: old_tikv_pid
@@ -217,12 +284,6 @@
   tags:
     - pd
   tasks:
-    - name: check ansible_play_batch
-      fail:
-        msg: "Only one host can be specified at a time when performing graceful stop."
-      run_once: true
-      when: ansible_play_batch | length != 1
-
     - set_fact:
         pd_addr: "{{ ansible_host }}:{{ pd_client_port }}"
         pd_name: "pd{{ groups.pd_servers.index(inventory_hostname) + 1 }}"
@@ -244,18 +305,20 @@
     - include_tasks: "common_tasks/transfer_pd_leader.yml"
 
     - name: stop PD by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      shell: cd {{ deploy_dir }}/scripts && ./stop_pd.sh
       when: process_supervision == 'supervise'
-      with_items:
-        - pd
 
     - name: stop PD by systemd
       systemd: name=pd.service state=stopped
       become: true
       when: process_supervision == 'systemd'
 
-    - name: wait for PD down
-      wait_for: host={{ ansible_host }} port={{ pd_client_port }} state=stopped
+    - name: wait until the PD port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ pd_client_port }}"
+        state: stopped
+        msg: "the PD port {{ pd_client_port }} is not down"
 
 
 - hosts: grafana_servers
@@ -273,8 +336,12 @@
       become: true
       when: process_supervision == 'systemd'
 
-    - name: wait for grafana down
-      wait_for: host={{ ansible_host }} port={{ grafana_port }} state=stopped
+    - name: wait until the grafana port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ grafana_port }}"
+        state: stopped
+        msg: "the grafana port {{ grafana_port }} is not down"
 
     - name: stop grafana_collector by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
@@ -287,5 +354,9 @@
       become: true
       when: process_supervision == 'systemd'
 
-    - name: wait for grafana_collector down
-      wait_for: host={{ ansible_host }} port={{ grafana_collector_port }} state=stopped
+    - name: wait until the grafana_collector port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ grafana_collector_port }}"
+        state: stopped
+        msg: "the grafana_collector port {{ grafana_collector_port }} is not down"
