@@ -1,0 +1,55 @@
+---
+# tasks file for pump
+
+- name: create deploy directories
+  file: path="{{ item }}" state=directory mode=0755
+  with_items:
+  - "{{ pump_data_dir }}"
+  - "{{ pump_log_dir }}"
+  - "{{ status_dir }}"
+
+- include_tasks: check_certs.yml
+  when: enable_tls|default(false)
+
+- include_tasks: gen_certs.yml
+  when: enable_tls|default(false)
+
+- include_tasks: install_certs.yml
+  when: enable_tls|default(false)
+
+- name: load customized config
+  include_vars: file={{ playbook_dir }}/conf/pump-kafka.yml name=pump_conf_custom
+
+- name: load default config
+  include_vars: file=default.yml name=pump_conf_default
+
+- name: generate dynamic config
+  set_fact:
+    pump_conf_generated:
+      security:
+        ssl-ca: >-
+          {%- if enable_tls|default(false) -%}{{ pump_cert_dir }}/ca.pem{%- else -%}{%- endif -%}
+        ssl-cert: >-
+          {%- if enable_tls|default(false) -%}{{ pump_cert_dir }}/pump-server-{{ pump_host }}.pem{%- else -%}{%- endif -%}
+        ssl-key: >-
+          {%- if enable_tls|default(false) -%}{{ pump_cert_dir }}/pump-server-{{ pump_host }}-key.pem{%- else -%}{%- endif -%}
+
+- name: generate final config
+  set_fact:
+    pump_conf: "{{ pump_conf_custom | with_default_dicts(pump_conf_generated, pump_conf_default) }}"
+
+- debug: var=pump_conf
+
+- name: create configuration file
+  template: src=pump.toml.j2 dest={{ deploy_dir }}/conf/pump.toml mode=0644 backup=yes
+  register: pump_conf_st
+
+- name: backup conf file
+  command: mv "{{ pump_conf_st.backup_file }}" "{{ backup_dir }}"
+  when: pump_conf_st.changed and pump_conf_st.backup_file is defined
+
+- include_tasks: "{{ deployment_method }}_deployment.yml"
+
+- name: prepare firewalld white list
+  set_fact:
+    firewalld_ports: "{{ [pump_port ~ '/tcp'] + firewalld_ports }}"
