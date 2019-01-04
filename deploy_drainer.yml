@@ -38,12 +38,19 @@
   roles:
     - check_config_dynamic
 
-- name: deploying drainer
+- name: deploying drainer(binlog cluster)
   hosts: drainer_servers
   tags:
     - drainer
   roles:
-    - { role: drainer, when: enable_binlog|default(false) }
+    - { role: drainer_cluster, when: enable_binlog|default(false) and binlog_version == "cluster" }
+
+- name: deploying drainer(binlog kafka)
+  hosts: drainer_servers
+  tags:
+    - drainer
+  roles:
+    - { role: drainer_kafka, when: enable_binlog|default(false) and binlog_version == "kafka" }
 
 - name: finalizing deployment target
   hosts: all
