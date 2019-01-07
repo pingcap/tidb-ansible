@@ -278,7 +278,7 @@
       until: tikv_http_result.status == 200
       retries: 12
       delay: 5
-      when: not enable_tls|default(false)
+      when: not enable_tls|default(false) and (tikv_metric_method is defined and tikv_metric_method != "push")
 
     - name: wait until the TiKV status page is available when enable_tls
       uri:
@@ -291,7 +291,13 @@
       until: tikv_https_result.status == 200
       retries: 10
       delay: 5
-      when: enable_tls|default(false)
+      when: enable_tls|default(false) and (tikv_metric_method is defined and tikv_metric_method != "push")
+
+    - name: wait until TiKV process is up
+      wait_for_pid: |
+        pid_file={{ deploy_dir }}/status/tikv.pid timeout=300
+        thread_name_regex='tikv-server' state=present
+      when: deployment_method == 'binary' and (tikv_metric_method is defined and tikv_metric_method == "push")
 
     - command: cat {{ deploy_dir }}/status/tikv.pid
       register: new_tikv_pid
@@ -453,6 +459,7 @@
             password: "{{ grafana_admin_password }}"
             apikey: "{{ lookup('file', grafana_api_keys_dir + '/grafana_apikey.key') }}"
             datasource: "{{ cluster_name }}"
+            method: "{{ tikv_metric_method }}"
             titles:
               node: "{{ cluster_name | title }}-Node_exporter"
               pd:   "{{ cluster_name | title }}-PD"
