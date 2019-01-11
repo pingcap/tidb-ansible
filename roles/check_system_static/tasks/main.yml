@@ -13,8 +13,8 @@
 
 - name: Preflight check - Linux OS family and distribution version
   fail:
-    msg: "Red Hat Enterprise Linux/CentOS 6 is deprecated. Please use CentOS 7.3 and above. See https://github.com/pingcap/docs/blob/master/op-guide/recommendation.md"
-  when: "ansible_os_family == 'RedHat' and ansible_distribution_major_version == '6'"
+    msg: "Versions lower than Red Hat Enterprise Linux / CentOS 7.3 have been deprecated. Please use CentOS 7.3 and above. See https://github.com/pingcap/docs/blob/master/op-guide/recommendation.md"
+  when: "ansible_os_family == 'RedHat' and ansible_distribution_version|string < '7.3'"
 
 - name: Deploy check_cpufreq script
   copy: src="{{ script_dir }}/check/check_cpufreq.py" dest="{{ deploy_dir }}/check_cpufreq.py" mode=0755
