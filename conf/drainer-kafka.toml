@@ -10,10 +10,12 @@ detect-interval = 10
 ignore-schemas = "INFORMATION_SCHEMA,PERFORMANCE_SCHEMA,mysql"
 
 # number of binlog events in a transaction batch
-txn-batch = 1
+txn-batch = 20
 
 # work count to execute binlogs
-worker-count = 1
+# if the latency between drainer and downstream(mysql or tidb) are too high, you might want to increase this
+# to get higher throughput by higher concurrent write to the downstream
+worker-count = 16
 
 disable-dispatch = false
 
@@ -42,11 +44,6 @@ host = "127.0.0.1"
 user = "root"
 password = ""
 port = 3306
-# Time and size limits for flash batch write
-# time-limit = "30s"
-# size-limit = "100000"
-[syncer.to.checkpoint]
-#schema = "tidb_binlog"
 
 # Uncomment this if you want to use pb or sql as db-type.
 # Compress compresses output file, like pb and sql file. Now it supports "gzip" algorithm only. 
@@ -55,13 +52,14 @@ port = 3306
 #dir = "data.drainer"
 #compression = "gzip"
 
-
 # when db-type is kafka, you can uncomment this to config the down stream kafka, it will be the globle config kafka default
 #[syncer.to]
+# only need config one of zookeeper-addrs and kafka-addrs, will get kafka address if zookeeper-addrs is configed.
+# zookeeper-addrs = "127.0.0.1:2181"
 # kafka-addrs = "127.0.0.1:9092"
 # kafka-version = "0.8.2.0"
 # kafka-max-messages = 1024
-#
+
 # the topic name drainer will push msg, the default name is <cluster-id>_obinlog
 # be careful don't use the same name if run multi drainer instances
 # topic-name = ""
