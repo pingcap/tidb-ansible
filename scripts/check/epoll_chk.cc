@@ -1,4 +1,4 @@
-i/*
+/*
  *
  * Copyright 2017 gRPC authors.
  *
