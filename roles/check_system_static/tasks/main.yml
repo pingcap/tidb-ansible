@@ -13,8 +13,23 @@
 
 - name: Preflight check - Linux OS family and distribution version
   fail:
-    msg: "Red Hat Enterprise Linux/CentOS 6 is deprecated. Please use CentOS 7.3 and above. See https://github.com/pingcap/docs/blob/master/op-guide/recommendation.md"
-  when: "ansible_os_family == 'RedHat' and ansible_distribution_major_version == '6'"
+    msg: "System versions lower than Red Hat Enterprise Linux / CentOS 7.3 have been deprecated. Please use CentOS 7.3 and above. See https://github.com/pingcap/docs/blob/master/op-guide/recommendation.md"
+  when: "ansible_os_family == 'RedHat' and ansible_distribution_version < '7.3'"
+
+- name: Deploy epollexclusive script
+  copy: src="{{ script_dir }}/check/epollexclusive" dest="{{ deploy_dir }}/epollexclusive" mode=0755
+
+- name: Preflight check - Check if the operating system supports EPOLLEXCLUSIVE
+  shell: "{{ deploy_dir }}/epollexclusive"
+  register: epollexclusive_check
+
+- name: Clean epollexclusive script
+  file: path={{ deploy_dir }}/epollexclusive state=absent
+
+- name: Preflight check - Fail when epollexclusive is unavailable
+  fail:
+    msg: "The current machine may be a docker virtual machine, and the corresponding physical machine operating system does not support epollexclusive"
+  when: epollexclusive_check.stdout.find("True") == -1
 
 - name: Deploy check_cpufreq script
   copy: src="{{ script_dir }}/check/check_cpufreq.py" dest="{{ deploy_dir }}/check_cpufreq.py" mode=0755
@@ -29,7 +44,7 @@
 
 - name: Preflight check - Fail when CPU frequency governor is not set to performance mode
   fail:
-    msg: To achieve maximum performance, it is recommended to set The CPU frequency governor to performance mode, see https://github.com/pingcap/docs/blob/master/op-guide/ansible-deployment.md#step-7-configure-the-cpufreq-governor-mode-on-the-target-machine
+    msg: "To achieve maximum performance, it is recommended to set The CPU frequency governor to performance mode, see https://github.com/pingcap/docs/blob/master/op-guide/ansible-deployment.md#step-7-configure-the-cpufreq-governor-mode-on-the-target-machine"
   when:
     - cpufreq_available_governors.stdout.find("performance") != -1
     - cpufreq_current_governor.stdout.find("performance") == -1
