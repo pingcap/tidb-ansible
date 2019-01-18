@@ -12,6 +12,7 @@
   - "{{ downloads_dir }}"
   - "{{ resources_dir }}"
   - "{{ resources_dir }}/bin"
+  - "{{ resources_dir }}/bin/binlog_kafka"
 
 - name: create cert directory
   file: path="{{ cert_dir }}" state=directory mode=0755
@@ -65,6 +66,20 @@
   retries: 4
   delay: "{{ retry_stagger | random + 3 }}"
   with_items: "{{ tidb_packages }}"
+  when: has_outbound_network
+
+- name: download tidb binlog(kafka) binary
+  get_url:
+    url: "{{ item.url }}"
+    dest: "{{ downloads_dir }}/{{ item.name }}-{{ item.version }}.tar.gz"
+    checksum: "{{ item.checksum | default(omit) }}"
+    force: yes
+    validate_certs: no
+  register: get_url_result
+  until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
+  retries: 4
+  delay: "{{ retry_stagger | random + 3 }}"
+  with_items: "{{ tidb_binlog_kafka }}"
   when: has_outbound_network
 
 - name: download common binary
@@ -134,6 +149,13 @@
     warn: no
   with_items: "{{ tidb_packages }}"
 
+- name: unarchive tidb binlog(kafka) binary
+  shell: ls -1 {{ item.name }}-{{ item.version }}.tar.gz | xargs -n1 tar xzf
+  args:
+    chdir: "{{ downloads_dir }}"
+    warn: no
+  with_items: "{{ tidb_binlog_kafka }}"
+
 - name: unarchive common binary
   shell: ls -1 {{ item.name }}-{{ item.version }}.tar.gz | xargs -n1 tar xzf
   args:
@@ -145,6 +167,11 @@
   shell: >
     cp -v {{ downloads_dir }}/{{ item.name }}-{{ item.version}}*/bin/* "{{ resources_dir }}/bin/"
   with_items: "{{ tidb_packages }}"
+
+- name: cp tidb kafka binlog binary
+  shell: >
+    cp -v {{ downloads_dir }}/{{ item.name }}-{{ item.version}}*/bin/* "{{ resources_dir }}/bin/binlog_kafka/"
+  with_items: "{{ tidb_binlog_kafka }}"
 
 - name: cp fio binary
   shell: >

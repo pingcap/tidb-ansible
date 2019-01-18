@@ -1,0 +1,91 @@
+---
+
+- name: "Check_certs | check if the certs have already been generated on control machine"
+  find:
+    paths: "{{ cert_dir }}"
+    patterns: "*.pem"
+    get_checksum: true
+  delegate_to: localhost
+  register: cert_control_node
+  run_once: true
+
+- debug:
+    var: cert_control_node
+
+- name: "Check_certs | Set default value for 'sync_certs', 'gen_certs' to false"
+  set_fact:
+    sync_certs: false
+    gen_certs: false
+
+- set_fact:
+    pump_host: "{{ hostvars[inventory_hostname].ansible_host | default(inventory_hostname) }}"
+
+- name: "Check certs | check if a cert already exists on node"
+  stat:
+    path: "{{ pump_cert_dir }}/{{ item }}"
+  register: cert_pump_node
+  with_items:
+    - ca.pem
+    - pump-server-{{ pump_host }}-key.pem
+    - pump-server-{{ pump_host }}.pem
+
+- debug:
+    var: cert_pump_node
+
+- name: "Check_certs | Set 'gen_certs' to true"
+  set_fact:
+    gen_certs: true
+  when: not item in cert_control_node.files|map(attribute='path') | list
+  delegate_to: localhost
+  run_once: true
+  with_items: >-
+       ['{{cert_dir}}/ca.pem',
+       {% set all_pump_hosts = groups['pump_servers']|unique|sort %}
+       {% for host in all_pump_hosts %}
+         {% set pump_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
+         '{{cert_dir}}/pump-server-{{ pump_ip }}-key.pem'
+       {% if not loop.last %}{{','}}{% endif %}
+       {% endfor %}]
+
+- debug:
+    var: gen_certs
+
+- name: "Check_certs | Set 'gen_node_certs' to true"
+  set_fact:
+    gen_node_certs: |-
+      {
+      {% set all_pump_hosts = groups['pump_servers']|unique|sort -%}
+      {% set existing_certs = cert_control_node.files|map(attribute='path')|list|sort %}
+      {% for host in all_pump_hosts -%}
+        {% set pump_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
+        {% set host_cert = "%s/pump-server-%s-key.pem"|format(cert_dir, pump_ip) %}
+        {% if host_cert in existing_certs -%}
+        "{{ host }}": False,
+        {% else -%}
+        "{{ host }}": True,
+        {% endif -%}
+      {% endfor %}
+      }
+  run_once: true
+
+- debug:
+    var: gen_node_certs
+
+- name: "Check_certs | Set pump_cert_key"
+  set_fact:
+    pump_cert_key_path:
+      "{{ cert_dir }}/pump-server-{{ hostvars[inventory_hostname].pump_host }}-key.pem"
+
+- debug:
+    var: pump_cert_key_path
+
+- name: "Check_certs | Set 'sync_certs' to true"
+  set_fact:
+    sync_certs: true
+  when: gen_node_certs[inventory_hostname] or
+        (not cert_pump_node.results[0].stat.exists|default(False)) or
+          (not cert_pump_node.results[1].stat.exists|default(False)) or
+            (cert_pump_node.results[1].stat.checksum|default('') != cert_control_node.files|selectattr("path","equalto",pump_cert_key_path)|map(attribute="checksum")|first|default(''))
+
+- debug:
+    var: sync_certs
