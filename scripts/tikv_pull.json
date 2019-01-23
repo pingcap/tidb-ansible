@@ -457,7 +457,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(process_resident_memory_bytes{job=~\"tikv\"}) by (instance)",
+              "expr": "avg(process_resident_memory_bytes{job=~\"tikv.*\"}) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
@@ -914,17 +914,16 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(tikv_pd_heartbeat_tick_total{type=\"leader\"}) by (instance)",
+              "expr": "sum(tikv_raftstore_region_count{type=\"leader\"}) by (instance)",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
-              "metric": "tikv_pd_heartbeat_tick_total",
               "refId": "A",
               "step": 10
             },
             {
-              "expr": "delta(tikv_pd_heartbeat_tick_total{type=\"leader\"}[30s]) < -10",
+              "expr": "delta(tikv_raftstore_region_count{type=\"leader\"}[30s]) < -10",
               "format": "time_series",
               "hide": true,
               "intervalFactor": 2,
@@ -1008,7 +1007,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(tikv_pd_heartbeat_tick_total{type=\"region\"}) by (instance)",
+              "expr": "sum(tikv_raftstore_region_count{type=\"region\"}) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
@@ -1712,7 +1711,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(delta(tikv_pd_heartbeat_tick_total{type=\"leader\"}[1m])) by (instance)",
+              "expr": "sum(delta(tikv_raftstore_region_count{type=\"leader\"}[1m])) by (instance)",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
@@ -1908,17 +1907,16 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(tikv_pd_heartbeat_tick_total{type=\"leader\"}) by (instance)",
+              "expr": "sum(tikv_raftstore_region_count{type=\"leader\"}) by (instance)",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
-              "metric": "tikv_pd_heartbeat_tick_total",
               "refId": "A",
               "step": 10
             },
             {
-              "expr": "delta(tikv_pd_heartbeat_tick_total{type=\"leader\"}[30s]) < -10",
+              "expr": "delta(tikv_raftstore_region_count{type=\"leader\"}[30s]) < -10",
               "format": "time_series",
               "hide": true,
               "intervalFactor": 2,
@@ -2002,7 +2000,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(tikv_pd_heartbeat_tick_total{type=\"region\"}) by (instance)",
+              "expr": "sum(tikv_raftstore_region_count{type=\"region\"}) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
@@ -3361,99 +3359,6 @@
           "timeFrom": null,
           "timeShift": null,
           "title": "Process ready duration per server",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "sort": 0,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "s",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": "0",
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
-          "decimals": 1,
-          "editable": true,
-          "error": false,
-          "fill": 0,
-          "grid": {},
-          "id": 1165,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": true,
-            "max": true,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "sideWidth": 300,
-            "sort": "max",
-            "sortDesc": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_raft_process_duration_secs_bucket{type='tick'}[1m])) by (le, instance))",
-              "intervalFactor": 2,
-              "legendFormat": "{{instance}}",
-              "refId": "C",
-              "step": 4
-            }
-          ],
-          "thresholds": [
-            {
-              "colorMode": "critical",
-              "fill": true,
-              "line": true,
-              "op": "gt",
-              "value": 1
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Process tick duration per server",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -9810,7 +9715,6 @@
               "expr": "sum(rate(tikv_worker_handled_task_total[1m])) by (name)",
               "intervalFactor": 2,
               "legendFormat": "{{name}}",
-              "metric": "tikv_pd_heartbeat_tick_total",
               "refId": "A",
               "step": 4
             }
@@ -9896,7 +9800,6 @@
               "expr": "sum(rate(tikv_worker_pending_task_total[1m])) by (name)",
               "intervalFactor": 2,
               "legendFormat": "{{name}}",
-              "metric": "tikv_pd_heartbeat_tick_total",
               "refId": "A",
               "step": 4
             }
@@ -9983,7 +9886,6 @@
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{name}}",
-              "metric": "tikv_pd_heartbeat_tick_total",
               "refId": "A",
               "step": 4
             }
@@ -10070,7 +9972,6 @@
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{name}}",
-              "metric": "tikv_pd_heartbeat_tick_total",
               "refId": "A",
               "step": 4
             }
@@ -10130,7 +10031,7 @@
               {
                 "evaluator": {
                   "params": [
-                    0.8
+                    1.6
                   ],
                   "type": "gt"
                 },
@@ -10140,7 +10041,7 @@
                 "query": {
                   "datasourceId": 1,
                   "model": {
-                    "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"raftstore_.*\"}[1m])) by (instance, name)",
+                    "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"raftstore_.*\"}[1m])) by (instance)",
                     "intervalFactor": 2,
                     "legendFormat": "{{instance}}",
                     "metric": "tikv_thread_cpu_seconds_total",
@@ -10208,7 +10109,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"raftstore_.*\"}[1m])) by (instance, name)",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"raftstore_.*\"}[1m])) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
