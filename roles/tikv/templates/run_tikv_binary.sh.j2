@@ -32,6 +32,9 @@ echo $$ > "status/{{ role_name }}.pid"
 exec bin/tikv-server \
     --addr "0.0.0.0:{{ tikv_port }}" \
     --advertise-addr "{{ my_ip }}:{{ tikv_port }}" \
+{% if tikv_metric_method|default("pull") and tikv_metric_method != "push" %}
+    --status-addr "{{ my_ip }}:{{ tikv_status_port }}" \
+{% endif %}
     --pd "{{ all_pd | join(',') }}" \
     --data-dir "{{ tikv_data_dir }}" \
     --config conf/tikv.toml \

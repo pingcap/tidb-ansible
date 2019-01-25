@@ -56,8 +56,12 @@
         - process_supervision == 'systemd'
         - node_exporter_binary_file.stat.exists == True
 
-    - name: wait for node_exporter down
-      wait_for: host={{ ansible_host }} port={{ node_exporter_port }} state=stopped
+    - name: wait until the node_exporter port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ node_exporter_port }}"
+        state: stopped
+        msg: "the node_exporter port {{ node_exporter_port }} is not down"
 
   roles:
     - node_exporter
@@ -72,10 +76,20 @@
       become: true
       when: process_supervision == 'systemd'
 
-    - name: wait for node_exporter up
-      wait_for: |
-        host={{ ansible_host }} port={{ node_exporter_port }} state=present
-        send='GET /metrics HTTP/1.0\r\n\r\n' search_regex='200 OK'
+    - name: wait until the node_exporter port is up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ node_exporter_port }}"
+        state: started
+        msg: "the node_exporter port {{ node_exporter_port }} is not up"
+
+    - name: wait until the node_exporter metrics page is available
+      uri:
+        url: "http://{{ ansible_host }}:{{ node_exporter_port }}/metrics"
+      register: node_exporter_http_result
+      until: node_exporter_http_result.status == 200
+      retries: 12
+      delay: 5
 
 
 - name: rolling update blackbox_exporter
@@ -103,8 +117,12 @@
         - process_supervision == 'systemd'
         - blackbox_exporter_configure_file.stat.exists == True
 
-    - name: wait for blackbox_exporter down
-      wait_for: host={{ ansible_host }} port={{ blackbox_exporter_port }} state=stopped
+    - name: wait until the blackbox_exporter port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ blackbox_exporter_port }}"
+        state: stopped
+        msg: "the blackbox_exporter port {{ blackbox_exporter_port }} is not down"
 
   roles:
     - blackbox_exporter
@@ -119,10 +137,20 @@
       become: true
       when: process_supervision == 'systemd'
 
-    - name: wait for blackbox_exporter up
-      wait_for: |
-        host={{ ansible_host }} port={{ blackbox_exporter_port }} state=present
-        send='GET / HTTP/1.0\r\n\r\n' search_regex='200 OK'
+    - name: wait until the blackbox_exporter port is up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ blackbox_exporter_port }}"
+        state: started
+        msg: "the blackbox_exporter port {{ blackbox_exporter_port }} is not up"
+
+    - name: wait until the blackbox_exporter metrics page is available
+      uri:
+        url: "http://{{ ansible_host }}:{{ blackbox_exporter_port }}/metrics"
+      register: blackbox_exporter_http_result
+      until: blackbox_exporter_http_result.status == 200
+      retries: 12
+      delay: 5
 
 
 - name: rolling update alertmanager
@@ -150,8 +178,12 @@
         - process_supervision == 'systemd'
         - alertmanager_configure_file.stat.exists == True
 
-    - name: wait for alertmanager down
-      wait_for: host={{ ansible_host }} port={{ alertmanager_port }} state=stopped
+    - name: wait until the alertmanager port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ alertmanager_port }}"
+        state: stopped
+        msg: "the alertmanager port {{ alertmanager_port }} is not down"
 
   roles:
     - alertmanager
@@ -166,9 +198,12 @@
       become: true
       when: process_supervision == 'systemd'
 
-    - name: wait for alertmanager up
-      wait_for: |
-        host={{ ansible_host }} port={{ alertmanager_port }} state=present
+    - name: wait until the alertmanager port is up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ alertmanager_port }}"
+        state: started
+        msg: "the alertmanager port {{ alertmanager_port }} is not up"
 
 
 - name: rolling update pushgateway
@@ -191,8 +226,12 @@
       with_items:
         - pushgateway-{{ pushgateway_port }}.service
 
-    - name: wait for pushgateway down
-      wait_for: host={{ ansible_host }} port={{ pushgateway_port }} state=stopped
+    - name: wait until the pushgateway port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ pushgateway_port }}"
+        state: stopped
+        msg: "the pushgateway port {{ pushgateway_port }} is not down"
 
   roles:
     - pushgateway
@@ -211,10 +250,20 @@
       with_items:
         - pushgateway-{{ pushgateway_port }}.service
 
-    - name: wait for pushgateway up
-      wait_for: |
-        host={{ ansible_host }} port={{ pushgateway_port }} state=present
-        send='GET /metrics HTTP/1.0\r\n\r\n' search_regex='200 OK'
+    - name: wait until the pushgateway port is up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ pushgateway_port }}"
+        state: started
+        msg: "the pushgateway port {{ pushgateway_port }} is not up"
+
+    - name: wait until the pushgateway metrics page is available
+      uri:
+        url: "http://{{ ansible_host }}:{{ pushgateway_port }}/metrics"
+      register: pushgateway_http_result
+      until: pushgateway_http_result.status == 200
+      retries: 12
+      delay: 5
 
 
 - name: rolling update prometheus
@@ -237,8 +286,12 @@
       with_items:
         - prometheus-{{ prometheus_port }}.service
 
-    - name: wait for prometheus down
-      wait_for: host={{ ansible_host }} port={{ prometheus_port }} state=stopped
+    - name: wait until the prometheus port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ prometheus_port }}"
+        state: stopped
+        msg: "the prometheus port {{ prometheus_port }} is not down"
 
   roles:
     - prometheus
@@ -257,10 +310,20 @@
       with_items:
         - prometheus-{{ prometheus_port }}.service
 
-    - name: wait for prometheus up
-      wait_for: |
-        host={{ ansible_host }} port={{ prometheus_port }} state=present
-        send='GET /metrics HTTP/1.0\r\n\r\n' search_regex='200 OK'
+    - name: wait until the prometheus port is up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ prometheus_port }}"
+        state: started
+        msg: "the prometheus port {{ prometheus_port }} is not up"
+
+    - name: wait until the prometheus metrics page is available
+      uri:
+        url: "http://{{ ansible_host }}:{{ prometheus_port }}/metrics"
+      register: prometheus_http_result
+      until: prometheus_http_result.status == 200
+      retries: 12
+      delay: 5
 
 
 - name: rolling update grafana
@@ -281,8 +344,12 @@
       become: true
       when: process_supervision == 'systemd'
 
-    - name: wait for grafana down
-      wait_for: host={{ ansible_host }} port={{ grafana_port }} state=stopped
+    - name: wait until the grafana port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ grafana_port }}"
+        state: stopped
+        msg: "the grafana port {{ grafana_port }} is not down"
 
     - name: check grafana_collector existed
       stat:
@@ -304,8 +371,12 @@
         - process_supervision == 'systemd'
         - grafana_collector_config_file.stat.exists == True
 
-    - name: wait for grafana_collector down
-      wait_for: host={{ ansible_host }} port={{ grafana_collector_port }} state=stopped
+    - name: wait until the grafana_collector port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ grafana_collector_port }}"
+        state: stopped
+        msg: "the grafana_collector port {{ grafana_collector_port }} is not down"
 
   roles:
     - grafana
@@ -323,10 +394,20 @@
       when: process_supervision == 'systemd'
       become: true
 
-    - name: wait for grafana up
-      wait_for: |
-        host={{ ansible_host }} port={{ grafana_port }} state=present
-        send='GET /login HTTP/1.0\r\n\r\n' search_regex='200 OK'
+    - name: wait until the grafana port is up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ grafana_port }}"
+        state: started
+        msg: "the grafana port {{ grafana_port }} is not up"
+
+    - name: wait until the grafana login page is available
+      uri:
+        url: "http://{{ ansible_host }}:{{ grafana_port }}/login"
+      register: grafana_http_result
+      until: grafana_http_result.status == 200
+      retries: 12
+      delay: 5
 
     - name: start grafana_collector by supervise
       shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
@@ -339,9 +420,12 @@
       when: process_supervision == 'systemd'
       become: true
 
-    - name: wait for grafana_collector up
-      wait_for: |
-        host={{ ansible_host }} port={{ grafana_collector_port }} state=present
+    - name: wait until the grafana_collector port is up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ grafana_collector_port }}"
+        state: started
+        msg: "the grafana_collector port {{ grafana_collector_port }} is not up"
 
     - set_fact:
         grafana_host: "{{ ansible_host }}"
@@ -369,6 +453,7 @@
             password: "{{ grafana_admin_password }}"
             apikey: "{{ lookup('file', grafana_api_keys_dir + '/grafana_apikey.key') }}"
             datasource: "{{ cluster_name }}"
+            method: "{{ tikv_metric_method }}"
             titles:
               node: "{{ cluster_name | title }}-Node_exporter"
               pd:   "{{ cluster_name | title }}-PD"
@@ -419,9 +504,12 @@
         - process_supervision == 'systemd'
         - kafka_exporter_binary_file.stat.exists == True
 
-    - name: wait for kafka_exporter down
-      wait_for: |
-        host={{ ansible_host }} port={{ kafka_exporter_port }} state=stopped
+    - name: wait until the kafka_exporter port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ kafka_exporter_port }}"
+        state: stopped
+        msg: "the kafka_exporter port {{ kafka_exporter_port }} is not down"
       when: enable_binlog|default(false)
 
   roles:
@@ -441,7 +529,10 @@
         - enable_binlog|default(false)
         - process_supervision == 'systemd'
 
-    - name: wait for kafka_exporter up
-      wait_for: |
-        host={{ ansible_host }} port={{ kafka_exporter_port }} state=present
+    - name: wait until the kafka_exporter port is up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ kafka_exporter_port }}"
+        state: started
+        msg: "the kafka_exporter port {{ kafka_exporter_port }} is not up"
       when: enable_binlog|default(false)

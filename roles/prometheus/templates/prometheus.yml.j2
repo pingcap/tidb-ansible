@@ -16,7 +16,11 @@ rule_files:
   - 'bypass.rules.yml'
   - 'pd.rules.yml'
   - 'tidb.rules.yml'
-  - 'tikv.rules.yml'
+{% if tikv_metric_method|default("pull") and tikv_metric_method == "push" %}
+  - 'tikv-push.rules.yml'
+{% else %}
+  - 'tikv-pull.rules.yml'
+{% endif %}
 {% if enable_binlog|default(false) %}
   - 'binlog.rules.yml'
 {% endif %}
@@ -88,10 +92,13 @@ alerting:
 {% endfor -%}
 
 {% set tikv_addrs = [] -%}
+{% set tikv_status_addrs = [] -%}
 {% for host in groups.tikv_servers -%}
   {% set tikv_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
   {% set tikv_port = hostvars[host].tikv_port -%}
+  {% set tikv_status_port = hostvars[host].tikv_status_port -%}
   {% set _ = tikv_addrs.append("%s:%s" % (tikv_ip, tikv_port)) -%}
+  {% set _ = tikv_status_addrs.append("%s:%s" % (tikv_ip, tikv_status_port)) -%}
 {% endfor -%}
 
 {% set pd_addrs = [] -%}
@@ -147,6 +154,16 @@ scrape_configs:
 {% for tidb_status_addr in tidb_status_addrs %}
       - '{{ tidb_status_addr }}'
 {% endfor %}
+
+{% if (tikv_metric_method is defined and tikv_metric_method != 'push') or (tikv_metric_method is undefined) %}
+  - job_name: "tikv"
+    honor_labels: true # don't overwrite job & instance labels
+    static_configs:
+    - targets:
+{% for tikv_status_addr in tikv_status_addrs %}
+      - '{{ tikv_status_addr }}'
+{% endfor %}
+{% endif %}
 
   - job_name: "pd"
     honor_labels: true # don't overwrite job & instance labels
