@@ -53,8 +53,14 @@ log:
     #log-rotate: true
 
 metric:
+  # prometheus client push interval, set "0s" to disable prometheus.
+  interval: "15s"
+  # prometheus pushgateway address, leaves it empty will disable prometheus.
+  address: ""
 
 schedule:
+  max-merge-region-size: 20
+  max-merge-region-keys: 200000
   split-merge-interval: "1h"
   max-snapshot-count: 3
   max-pending-peer-count: 16
@@ -65,6 +71,12 @@ schedule:
   merge-schedule-limit: 8
   tolerant-size-ratio: 5.0
 
+  # customized schedulers, the format is as below
+  # if empty, it will use balance-leader, balance-region, hot-region as default
+  # [[schedule.schedulers]]
+  # type: "evict-leader"
+  # args: ["1"]
+
 replication:
   # The number of replicas for each region.
   max-replicas: 3
@@ -73,3 +85,9 @@ replication:
   # For example, ["zone", "rack"] means that we should place replicas to
   # different zones first, then to different racks if we don't have enough zones.
   location-labels: []
+
+label-property:
+  # Do not assign region leaders to stores that have these tags.
+  #  [[label-property.reject-leader]]
+  #  key: "zone"
+  #  value: "cn1
