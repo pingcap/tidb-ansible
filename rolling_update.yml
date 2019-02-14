@@ -263,7 +263,8 @@
       when: enable_binlog|default(false)
 
   roles:
-    - { role: pump, when: enable_binlog|default(false) }
+    - { role: pump_cluster, when: enable_binlog|default(false) and binlog_version == "cluster" }
+    - { role: pump_kafka, when: enable_binlog|default(false) and binlog_version == "kafka" }
 
   post_tasks:
     - name: start pump by supervise
