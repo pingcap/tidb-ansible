@@ -3006,16 +3006,16 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(tikv_pd_heartbeat_tick_total{type=\"leader\"}) by (job)",
+              "expr": "sum(tikv_raftstore_region_count{type=\"leader\"}) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{job}}",
-              "metric": "tikv_pd_heartbeat_tick_total",
+              "legendFormat": "{{instance}}",
+              "metric": "tikv_raftstore_region_count",
               "refId": "A",
               "step": 10
             },
             {
-              "expr": "delta(tikv_pd_heartbeat_tick_total{type=\"leader\"}[30s]) < -10",
+              "expr": "delta(tikv_raftstore_region_count{type=\"leader\"}[30s]) < -10",
               "format": "time_series",
               "hide": true,
               "intervalFactor": 2,
@@ -3099,10 +3099,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(tikv_pd_heartbeat_tick_total{type=\"region\"}) by (job)",
+              "expr": "sum(tikv_raftstore_region_count{type=\"region\"}) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{job}}",
+              "legendFormat": "{{instance}}",
               "refId": "A",
               "step": 10
             }
@@ -3179,10 +3179,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total[1m])) by (instance,job)",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total[1m])) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{instance}}-{{job}}",
+              "legendFormat": "{{instance}}",
               "refId": "A"
             }
           ],
@@ -3256,10 +3256,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(process_resident_memory_bytes{job=~\"tikv.*\"}) by (job)",
+              "expr": "avg(process_resident_memory_bytes{instance=~\"$instance\"}) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{job}}",
+              "legendFormat": "{{instance}}",
               "refId": "A"
             }
           ],
@@ -3335,10 +3335,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(tikv_engine_size_bytes) by (job)",
+              "expr": "sum(tikv_engine_size_bytes) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{job}}",
+              "legendFormat": "{{instance}}",
               "refId": "A",
               "step": 10
             }
@@ -3498,10 +3498,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_channel_full_total[1m])) by (job, type)",
+              "expr": "sum(rate(tikv_channel_full_total[1m])) by (instance, type)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - {{type}}",
+              "legendFormat": "{{instance}} - {{type}}",
               "metric": "",
               "refId": "A",
               "step": 10
@@ -3587,10 +3587,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_server_report_failure_msg_total[1m])) by (type,instance,job,store_id)",
+              "expr": "sum(rate(tikv_server_report_failure_msg_total[1m])) by (type,instance,store_id)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{job}} - {{type}} - to - {{store_id}}",
+              "legendFormat": "{{instance}} - {{type}} - to - {{store_id}}",
               "metric": "tikv_server_raft_store_msg_total",
               "refId": "A",
               "step": 10
@@ -3668,10 +3668,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(tikv_scheduler_contex_total) by (job)",
+              "expr": "sum(tikv_scheduler_contex_total) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{job}}",
+              "legendFormat": "{{instance}}",
               "refId": "A",
               "step": 10
             }
@@ -4023,10 +4023,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"raftstore_.*\"}[1m])) by (job, name)",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"raftstore_.*\"}[1m])) by (instance, name)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{job}}",
+              "legendFormat": "{{instance}}",
               "refId": "A",
               "step": 10
             }
@@ -4103,10 +4103,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"cop_.*\"}[1m])) by (job)",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"cop_.*\"}[1m])) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{job}}",
+              "legendFormat": "{{instance}}",
               "metric": "tikv_coprocessor_request_duration_seconds_bucket",
               "refId": "A",
               "step": 10
