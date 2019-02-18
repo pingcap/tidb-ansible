@@ -3006,16 +3006,16 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(tikv_raftstore_region_count{type=\"leader\"}) by (instance)",
+              "expr": "sum(tikv_pd_heartbeat_tick_total{type=\"leader\"}) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
-              "metric": "tikv_raftstore_region_count",
+              "metric": "tikv_pd_heartbeat_tick_total",
               "refId": "A",
               "step": 10
             },
             {
-              "expr": "delta(tikv_raftstore_region_count{type=\"leader\"}[30s]) < -10",
+              "expr": "delta(tikv_pd_heartbeat_tick_total{type=\"leader\"}[30s]) < -10",
               "format": "time_series",
               "hide": true,
               "intervalFactor": 2,
@@ -3099,7 +3099,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(tikv_raftstore_region_count{type=\"region\"}) by (instance)",
+              "expr": "sum(tikv_pd_heartbeat_tick_total{type=\"region\"}) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
