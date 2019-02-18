@@ -113,7 +113,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(tikv_engine_size_bytes) by (instance)",
+              "expr": "sum(tikv_engine_size_bytes{instance=~\"$instance\"}) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
@@ -199,7 +199,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(tikv_store_size_bytes{type=\"available\"}) by (instance)",
+              "expr": "sum(tikv_store_size_bytes{instance=~\"$instance\", type=\"available\"}) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
@@ -285,7 +285,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(tikv_store_size_bytes{type=\"capacity\"}) by (instance)",
+              "expr": "sum(tikv_store_size_bytes{instance=~\"$instance\", type=\"capacity\"}) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
@@ -371,7 +371,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total[1m])) by (instance)",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{instance=~\"$instance\"}[1m])) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
@@ -457,7 +457,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(process_resident_memory_bytes{job=~\"tikv\"}) by (instance)",
+              "expr": "avg(process_resident_memory_bytes{instance=~\"$instance\"}) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
@@ -629,7 +629,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_flow_bytes{db=\"kv\", type=\"wal_file_bytes\"}[1m])) by (instance)",
+              "expr": "sum(rate(tikv_engine_flow_bytes{instance=~\"$instance\", db=\"kv\", type=\"wal_file_bytes\"}[1m])) by (instance)",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
@@ -638,7 +638,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_flow_bytes{db=\"kv\", type=~\"bytes_read|iter_bytes_read\"}[1m])) by (instance)",
+              "expr": "sum(rate(tikv_engine_flow_bytes{instance=~\"$instance\", db=\"kv\", type=~\"bytes_read|iter_bytes_read\"}[1m])) by (instance)",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
@@ -726,7 +726,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_grpc_msg_duration_seconds_count{type!=\"kv_gc\"}[1m])) by (instance,type)",
+              "expr": "sum(rate(tikv_grpc_msg_duration_seconds_count{instance=~\"$instance\", type!=\"kv_gc\"}[1m])) by (instance,type)",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
@@ -815,7 +815,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_grpc_msg_fail_total{type!=\"kv_gc\"}[1m])) by (instance)",
+              "expr": "sum(rate(tikv_grpc_msg_fail_total{instance=~\"$instance\", type!=\"kv_gc\"}[1m])) by (instance)",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
@@ -824,7 +824,7 @@
               "step": 10
             },
             {
-              "expr": "sum(delta(tikv_pd_heartbeat_message_total{type=\"noop\"}[1m])) by (instance) < 1",
+              "expr": "sum(delta(tikv_pd_heartbeat_message_total{instance=~\"$instance\", type=\"noop\"}[1m])) by (instance) < 1",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}-pd-heartbeat",
@@ -914,7 +914,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(tikv_pd_heartbeat_tick_total{type=\"leader\"}) by (instance)",
+              "expr": "sum(tikv_pd_heartbeat_tick_total{instance=~\"$instance\", type=\"leader\"}) by (instance)",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
@@ -924,7 +924,7 @@
               "step": 10
             },
             {
-              "expr": "delta(tikv_pd_heartbeat_tick_total{type=\"leader\"}[30s]) < -10",
+              "expr": "delta(tikv_pd_heartbeat_tick_total{instance=~\"$instance\", type=\"leader\"}[30s]) < -10",
               "format": "time_series",
               "hide": true,
               "intervalFactor": 2,
@@ -1008,7 +1008,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(tikv_pd_heartbeat_tick_total{type=\"region\"}) by (instance)",
+              "expr": "sum(tikv_pd_heartbeat_tick_total{instance=~\"$instance\", type=\"region\"}) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
@@ -1106,7 +1106,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_scheduler_too_busy_total[1m])) by (instance)",
+              "expr": "sum(rate(tikv_scheduler_too_busy_total{instance=~\"$instance\"}[1m])) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "scheduler-{{instance}}",
@@ -1115,7 +1115,7 @@
               "step": 4
             },
             {
-              "expr": "sum(rate(tikv_channel_full_total[1m])) by (instance, type)",
+              "expr": "sum(rate(tikv_channel_full_total{instance=~\"$instance\"}[1m])) by (instance, type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "channelfull-{{instance}}-{{type}}",
@@ -1124,7 +1124,7 @@
               "step": 4
             },
             {
-              "expr": "sum(rate(tikv_coprocessor_request_error{type='full'}[1m])) by (instance)",
+              "expr": "sum(rate(tikv_coprocessor_request_error{instance=~\"$instance\", type='full'}[1m])) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "coprocessor-{{instance}}",
@@ -1133,7 +1133,7 @@
               "step": 4
             },
             {
-              "expr": "avg(tikv_engine_write_stall{type=\"write_stall_percentile99\"}) by (instance)",
+              "expr": "avg(tikv_engine_write_stall{instance=~\"$instance\", type=\"write_stall_percentile99\"}) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "stall-{{instance}}",
@@ -1254,7 +1254,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_server_report_failure_msg_total[1m])) by (type,instance,store_id)",
+              "expr": "sum(rate(tikv_server_report_failure_msg_total{instance=~\"$instance\"}[1m])) by (type,instance,store_id)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}} - {{type}} - to - {{store_id}}",
@@ -1351,7 +1351,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_storage_engine_async_request_total{status!~\"success|all\"}[1m])) by (instance, status)",
+              "expr": "sum(rate(tikv_storage_engine_async_request_total{instance=~\"$instance\", status!~\"success|all\"}[1m])) by (instance, status)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}-{{status}}",
@@ -1440,7 +1440,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_scheduler_stage_total{stage=~\"snapshot_err|prepare_write_err\"}[1m])) by (instance, stage)",
+              "expr": "sum(rate(tikv_scheduler_stage_total{instance=~\"$instance\", stage=~\"snapshot_err|prepare_write_err\"}[1m])) by (instance, stage)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}-{{stage}}",
@@ -1529,7 +1529,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_coprocessor_request_error[1m])) by (instance, reason)",
+              "expr": "sum(rate(tikv_coprocessor_request_error{instance=~\"$instance\"}[1m])) by (instance, reason)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}-{{reason}}",
@@ -1618,7 +1618,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_grpc_msg_fail_total[1m])) by (instance, type)",
+              "expr": "sum(rate(tikv_grpc_msg_fail_total{instance=~\"$instance\"}[1m])) by (instance, type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}-{{type}}",
@@ -1712,7 +1712,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(delta(tikv_pd_heartbeat_tick_total{type=\"leader\"}[1m])) by (instance)",
+              "expr": "sum(delta(tikv_pd_heartbeat_tick_total{instance=~\"$instance\", type=\"leader\"}[1m])) by (instance)",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
@@ -1805,7 +1805,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(tikv_raftstore_leader_missing) by (instance)",
+              "expr": "sum(tikv_raftstore_leader_missing{instance=~\"$instance\"}) by (instance)",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
@@ -1908,7 +1908,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(tikv_pd_heartbeat_tick_total{type=\"leader\"}) by (instance)",
+              "expr": "sum(tikv_pd_heartbeat_tick_total{instance=~\"$instance\", type=\"leader\"}) by (instance)",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
@@ -1918,7 +1918,7 @@
               "step": 10
             },
             {
-              "expr": "delta(tikv_pd_heartbeat_tick_total{type=\"leader\"}[30s]) < -10",
+              "expr": "delta(tikv_pd_heartbeat_tick_total{instance=~\"$instance\", type=\"leader\"}[30s]) < -10",
               "format": "time_series",
               "hide": true,
               "intervalFactor": 2,
@@ -2002,7 +2002,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(tikv_pd_heartbeat_tick_total{type=\"region\"}) by (instance)",
+              "expr": "sum(tikv_pd_heartbeat_tick_total{instance=~\"$instance\", type=\"region\"}) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
@@ -2087,7 +2087,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(tikv_engine_size_bytes) by (type)",
+              "expr": "sum(tikv_engine_size_bytes{instance=~\"$instance\"}) by (type)",
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
               "refId": "A",
@@ -2172,7 +2172,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(tikv_engine_size_bytes) by (instance)",
+              "expr": "sum(tikv_engine_size_bytes{instance=~\"$instance\"}) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
@@ -2233,7 +2233,7 @@
                 "query": {
                   "datasourceId": 1,
                   "model": {
-                    "expr": "sum(rate(tikv_channel_full_total[1m])) by (instance, type)",
+                    "expr": "sum(rate(tikv_channel_full_total{instance=~\"$instance\"}[1m])) by (instance, type)",
                     "intervalFactor": 2,
                     "legendFormat": "{{instance}} - {{type}}",
                     "metric": "",
@@ -2301,7 +2301,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_channel_full_total[1m])) by (instance, type)",
+              "expr": "sum(rate(tikv_channel_full_total{instance=~\"$instance\"}[1m])) by (instance, type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}} - {{type}}",
@@ -2398,7 +2398,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_server_report_failure_msg_total[1m])) by (type,instance,store_id)",
+              "expr": "sum(rate(tikv_server_report_failure_msg_total{instance=~\"$instance\"}[1m])) by (type,instance,store_id)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}} - {{type}} - to - {{store_id}}",
@@ -2483,7 +2483,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_region_written_keys_sum[1m])) by (instance) / sum(rate(tikv_region_written_keys_count[1m])) by (instance)",
+              "expr": "sum(rate(tikv_region_written_keys_sum{instance=~\"$instance\"}[1m])) by (instance) / sum(rate(tikv_region_written_keys_count{instance=~\"$instance\"}[1m])) by (instance)",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
               "metric": "tikv_region_written_keys_bucket",
@@ -2568,7 +2568,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_region_written_bytes_sum[1m])) by (instance) / sum(rate(tikv_region_written_bytes_count[1m])) by (instance)",
+              "expr": "sum(rate(tikv_region_written_bytes_sum{instance=~\"$instance\"}[1m])) by (instance) / sum(rate(tikv_region_written_bytes_count{instance=~\"$instance\"}[1m])) by (instance)",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
               "metric": "tikv_regi",
@@ -2653,7 +2653,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_region_written_keys_count[1m])) by (instance)",
+              "expr": "sum(rate(tikv_region_written_keys_count{instance=~\"$instance\"}[1m])) by (instance)",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
               "metric": "tikv_region_written_keys_bucket",
@@ -2771,7 +2771,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_region_size_bucket[1m])) by (le))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_region_size_bucket{instance=~\"$instance\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "99%",
               "metric": "",
@@ -2779,7 +2779,7 @@
               "step": 10
             },
             {
-              "expr": "histogram_quantile(0.95, sum(rate(tikv_raftstore_region_size_bucket[1m])) by (le))",
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_raftstore_region_size_bucket{instance=~\"$instance\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "metric": "",
@@ -2787,7 +2787,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_raftstore_region_size_sum[1m])) / sum(rate(tikv_raftstore_region_size_count[1m])) ",
+              "expr": "sum(rate(tikv_raftstore_region_size_sum{instance=~\"$instance\"}[1m])) / sum(rate(tikv_raftstore_region_size_count{instance=~\"$instance\"}[1m])) ",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "metric": "",
@@ -2881,7 +2881,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_apply_log_duration_seconds_bucket[1m])) by (le))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_apply_log_duration_seconds_bucket{instance=~\"$instance\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": " 99%",
               "metric": "",
@@ -2889,14 +2889,14 @@
               "step": 4
             },
             {
-              "expr": "histogram_quantile(0.95, sum(rate(tikv_raftstore_apply_log_duration_seconds_bucket[1m])) by (le))",
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_raftstore_apply_log_duration_seconds_bucket{instance=~\"$instance\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "B",
               "step": 4
             },
             {
-              "expr": "sum(rate(tikv_raftstore_apply_log_duration_seconds_sum[1m])) / sum(rate(tikv_raftstore_apply_log_duration_seconds_count[1m])) ",
+              "expr": "sum(rate(tikv_raftstore_apply_log_duration_seconds_sum{instance=~\"$instance\"}[1m])) / sum(rate(tikv_raftstore_apply_log_duration_seconds_count{instance=~\"$instance\"}[1m])) ",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "C",
@@ -2977,7 +2977,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_apply_log_duration_seconds_bucket[1m])) by (le, instance))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_apply_log_duration_seconds_bucket{instance=~\"$instance\"}[1m])) by (le, instance))",
               "intervalFactor": 2,
               "legendFormat": " {{instance}}",
               "refId": "A",
@@ -3058,7 +3058,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_append_log_duration_seconds_bucket[1m])) by (le))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_append_log_duration_seconds_bucket{instance=~\"$instance\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": " 99%",
               "metric": "",
@@ -3066,14 +3066,14 @@
               "step": 4
             },
             {
-              "expr": "histogram_quantile(0.95, sum(rate(tikv_raftstore_append_log_duration_seconds_bucket[1m])) by (le))",
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_raftstore_append_log_duration_seconds_bucket{instance=~\"$instance\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "B",
               "step": 4
             },
             {
-              "expr": "sum(rate(tikv_raftstore_append_log_duration_seconds_sum[1m])) / sum(rate(tikv_raftstore_append_log_duration_seconds_count[1m]))",
+              "expr": "sum(rate(tikv_raftstore_append_log_duration_seconds_sum{instance=~\"$instance\"}[1m])) / sum(rate(tikv_raftstore_append_log_duration_seconds_count{instance=~\"$instance\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "C",
@@ -3154,7 +3154,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_append_log_duration_seconds_bucket[1m])) by (le, instance))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_append_log_duration_seconds_bucket{instance=~\"$instance\"}[1m])) by (le, instance))",
               "intervalFactor": 2,
               "legendFormat": "{{instance}} ",
               "refId": "A",
@@ -3249,7 +3249,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_raftstore_raft_ready_handled_total[1m])) by (type)",
+              "expr": "sum(rate(tikv_raftstore_raft_ready_handled_total{instance=~\"$instance\"}[1m])) by (type)",
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
               "metric": "tikv_raftstore_raft_ready_handled_total",
@@ -3257,7 +3257,7 @@
               "step": 4
             },
             {
-              "expr": "sum(rate(tikv_raftstore_raft_process_duration_secs_count{type=\"ready\"}[1m]))",
+              "expr": "sum(rate(tikv_raftstore_raft_process_duration_secs_count{instance=~\"$instance\", type=\"ready\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "count",
               "refId": "B",
@@ -3342,7 +3342,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_raft_process_duration_secs_bucket{type='ready'}[1m])) by (le, instance))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_raft_process_duration_secs_bucket{instance=~\"$instance\", type='ready'}[1m])) by (le, instance))",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
               "refId": "C",
@@ -3435,7 +3435,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_raft_process_duration_secs_bucket{type='tick'}[1m])) by (le, instance))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_raft_process_duration_secs_bucket{instance=~\"$instance\", type='tick'}[1m])) by (le, instance))",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
               "refId": "C",
@@ -3528,7 +3528,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_event_duration_bucket[1m])) by (le, type))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_event_duration_bucket{instance=~\"$instance\"}[1m])) by (le, type))",
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
               "refId": "C",
@@ -3631,7 +3631,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_raftstore_raft_sent_message_total[1m])) by (instance)",
+              "expr": "sum(rate(tikv_raftstore_raft_sent_message_total{instance=~\"$instance\"}[1m])) by (instance)",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
               "refId": "A",
@@ -3714,7 +3714,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_server_raft_message_flush_total[1m])) by (instance)",
+              "expr": "sum(rate(tikv_server_raft_message_flush_total{instance=~\"$instance\"}[1m])) by (instance)",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
               "metric": "tikv_server_raft_message_flush_total",
@@ -3795,7 +3795,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_server_raft_message_recv_total[1m])) by (instance)",
+              "expr": "sum(rate(tikv_server_raft_message_recv_total{instance=~\"$instance\"}[1m])) by (instance)",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
               "refId": "A",
@@ -3877,7 +3877,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_raftstore_raft_sent_message_total[1m])) by (type)",
+              "expr": "sum(rate(tikv_raftstore_raft_sent_message_total{instance=~\"$instance\"}[1m])) by (type)",
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
               "refId": "A",
@@ -3960,7 +3960,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_raftstore_raft_sent_message_total{type=\"vote\"}[1m])) by (instance)",
+              "expr": "sum(rate(tikv_raftstore_raft_sent_message_total{instance=~\"$instance\", type=\"vote\"}[1m])) by (instance)",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
               "refId": "A",
@@ -4043,7 +4043,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_raftstore_raft_dropped_message_total[1m])) by (type)",
+              "expr": "sum(rate(tikv_raftstore_raft_dropped_message_total{instance=~\"$instance\"}[1m])) by (type)",
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
               "refId": "A",
@@ -4135,7 +4135,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_apply_proposal_bucket[1m])) by (le, instance))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_apply_proposal_bucket{instance=~\"$instance\"}[1m])) by (le, instance))",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
               "metric": "",
@@ -4218,7 +4218,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_raftstore_proposal_total{type=~\"local_read|normal|read_index\"}[1m])) by (type)",
+              "expr": "sum(rate(tikv_raftstore_proposal_total{instance=~\"$instance\", type=~\"local_read|normal|read_index\"}[1m])) by (type)",
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
               "metric": "tikv_raftstore_proposal_total",
@@ -4302,7 +4302,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_raftstore_proposal_total{type=~\"local_read|read_index\"}[1m])) by (instance)",
+              "expr": "sum(rate(tikv_raftstore_proposal_total{instance=~\"$instance\", type=~\"local_read|read_index\"}[1m])) by (instance)",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
               "metric": "",
@@ -4386,7 +4386,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_raftstore_proposal_total{type=\"normal\"}[1m])) by (instance)",
+              "expr": "sum(rate(tikv_raftstore_proposal_total{instance=~\"$instance\", type=\"normal\"}[1m])) by (instance)",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
               "metric": "tikv_raftstore_proposal_total",
@@ -4468,7 +4468,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_request_wait_time_duration_secs_bucket[1m])) by (le))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_request_wait_time_duration_secs_bucket{instance=~\"$instance\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "99%",
               "metric": "tikv_raftstore_request_wait_time_duration_secs_bucket",
@@ -4476,14 +4476,14 @@
               "step": 4
             },
             {
-              "expr": "histogram_quantile(0.95, sum(rate(tikv_raftstore_request_wait_time_duration_secs_bucket[1m])) by (le))",
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_raftstore_request_wait_time_duration_secs_bucket{instance=~\"$instance\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "B",
               "step": 4
             },
             {
-              "expr": "sum(rate(tikv_raftstore_request_wait_time_duration_secs_sum[1m])) / sum(rate(tikv_raftstore_request_wait_time_duration_secs_count[1m]))",
+              "expr": "sum(rate(tikv_raftstore_request_wait_time_duration_secs_sum{instance=~\"$instance\"}[1m])) / sum(rate(tikv_raftstore_request_wait_time_duration_secs_count{instance=~\"$instance\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "C",
@@ -4564,7 +4564,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.95, sum(rate(tikv_raftstore_request_wait_time_duration_secs_bucket[1m])) by (le, instance))",
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_raftstore_request_wait_time_duration_secs_bucket{instance=~\"$instance\"}[1m])) by (le, instance))",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
               "refId": "A",
@@ -4642,7 +4642,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(rate(tikv_raftstore_propose_log_size_sum[1m])) by (instance)",
+              "expr": "avg(rate(tikv_raftstore_propose_log_size_sum{instance=~\"$instance\"}[1m])) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
@@ -4737,7 +4737,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_raftstore_proposal_total{type=~\"conf_change|transfer_leader\"}[1m])) by (type)",
+              "expr": "sum(rate(tikv_raftstore_proposal_total{instance=~\"$instance\", type=~\"conf_change|transfer_leader\"}[1m])) by (type)",
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
               "metric": "tikv_raftstore_proposal_total",
@@ -4821,7 +4821,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_raftstore_admin_cmd_total{status=\"success\", type!=\"compact\"}[1m]))  by (type)",
+              "expr": "sum(rate(tikv_raftstore_admin_cmd_total{instance=~\"$instance\", status=\"success\", type!=\"compact\"}[1m]))  by (type)",
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
               "metric": "tikv_raftstore_admin_cmd_total",
@@ -4905,7 +4905,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_raftstore_check_split_total{type!=\"ignore\"}[1m])) by (type)",
+              "expr": "sum(rate(tikv_raftstore_check_split_total{instance=~\"$instance\", type!=\"ignore\"}[1m])) by (type)",
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
               "metric": "tikv_raftstore_check_split_total",
@@ -4990,7 +4990,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.9999, sum(rate(tikv_raftstore_check_split_duration_seconds_bucket[1m])) by (le, instance))",
+              "expr": "histogram_quantile(0.9999, sum(rate(tikv_raftstore_check_split_duration_seconds_bucket{instance=~\"$instance\"}[1m])) by (le, instance))",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
               "metric": "tikv_raftstore_check_split_duration_seconds_bucket",
@@ -5086,14 +5086,14 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_raftstore_local_read_reject_total[1m])) by (instance, reason)",
+              "expr": "sum(rate(tikv_raftstore_local_read_reject_total{instance=~\"$instance\"}[1m])) by (instance, reason)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}-reject-by-{{reason}}",
               "refId": "A"
             },
             {
-              "expr": "sum(rate(tikv_raftstore_local_read_batch_requests_total_sum[1m])) by (instance)",
+              "expr": "sum(rate(tikv_raftstore_local_read_batch_requests_total_sum{instance=~\"$instance\"}[1m])) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}-total",
@@ -5170,21 +5170,21 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_local_read_requests_wait_duration_bucket[1m])) by (le))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_local_read_requests_wait_duration_bucket{instance=~\"$instance\"}[1m])) by (le))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "99%",
               "refId": "A"
             },
             {
-              "expr": "histogram_quantile(0.95, sum(rate(tikv_raftstore_local_read_requests_wait_duration_bucket[1m])) by (le))",
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_raftstore_local_read_requests_wait_duration_bucket{instance=~\"$instance\"}[1m])) by (le))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "B"
             },
             {
-              "expr": "sum(rate(tikv_raftstore_local_read_requests_wait_duration_sum[1m])) / sum(rate(tikv_raftstore_local_read_requests_wait_duration_count[1m]))",
+              "expr": "sum(rate(tikv_raftstore_local_read_requests_wait_duration_sum{instance=~\"$instance\"}[1m])) / sum(rate(tikv_raftstore_local_read_requests_wait_duration_count{instance=~\"$instance\"}[1m]))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "avg",
@@ -5261,21 +5261,21 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_local_read_batch_requests_total_bucket[1m])) by (le))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_local_read_batch_requests_total_bucket{instance=~\"$instance\"}[1m])) by (le))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "99%",
               "refId": "A"
             },
             {
-              "expr": "histogram_quantile(0.95, sum(rate(tikv_raftstore_local_read_batch_requests_total_bucket[1m])) by (le))",
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_raftstore_local_read_batch_requests_total_bucket{instance=~\"$instance\"}[1m])) by (le))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "B"
             },
             {
-              "expr": "sum(rate(tikv_raftstore_local_read_batch_requests_total_sum[1m])) / sum(rate(tikv_raftstore_local_read_batch_requests_total_count[1m])) ",
+              "expr": "sum(rate(tikv_raftstore_local_read_batch_requests_total_sum{instance=~\"$instance\"}[1m])) / sum(rate(tikv_raftstore_local_read_batch_requests_total_count{instance=~\"$instance\"}[1m])) ",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "avg",
@@ -5371,7 +5371,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_storage_command_total[1m])) by (type)",
+              "expr": "sum(rate(tikv_storage_command_total{instance=~\"$instance\"}[1m])) by (type)",
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
               "refId": "A",
@@ -5457,7 +5457,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_storage_engine_async_request_total{status!~\"all|success\"}[1m])) by (status)",
+              "expr": "sum(rate(tikv_storage_engine_async_request_total{instance=~\"$instance\", status!~\"all|success\"}[1m])) by (status)",
               "intervalFactor": 2,
               "legendFormat": "{{status}}",
               "metric": "tikv_raftstore_raft_process_duration_secs_bucket",
@@ -5542,21 +5542,21 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_storage_engine_async_request_duration_seconds_bucket{type=\"snapshot\"}[1m])) by (le))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_storage_engine_async_request_duration_seconds_bucket{instance=~\"$instance\", type=\"snapshot\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "99%",
               "refId": "A",
               "step": 4
             },
             {
-              "expr": "histogram_quantile(0.95, sum(rate(tikv_storage_engine_async_request_duration_seconds_bucket{type=\"snapshot\"}[1m])) by (le))",
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_storage_engine_async_request_duration_seconds_bucket{instance=~\"$instance\", type=\"snapshot\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "B",
               "step": 4
             },
             {
-              "expr": "sum(rate(tikv_storage_engine_async_request_duration_seconds_sum{type=\"snapshot\"}[1m])) / sum(rate(tikv_storage_engine_async_request_duration_seconds_count{type=\"snapshot\"}[1m]))",
+              "expr": "sum(rate(tikv_storage_engine_async_request_duration_seconds_sum{instance=~\"$instance\", type=\"snapshot\"}[1m])) / sum(rate(tikv_storage_engine_async_request_duration_seconds_count{instance=~\"$instance\", type=\"snapshot\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "C",
@@ -5640,21 +5640,21 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_storage_engine_async_request_duration_seconds_bucket{type=\"write\"}[1m])) by (le))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_storage_engine_async_request_duration_seconds_bucket{instance=~\"$instance\", type=\"write\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "99%",
               "refId": "A",
               "step": 4
             },
             {
-              "expr": "histogram_quantile(0.95, sum(rate(tikv_storage_engine_async_request_duration_seconds_bucket{type=\"write\"}[1m])) by (le))",
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_storage_engine_async_request_duration_seconds_bucket{instance=~\"$instance\", type=\"write\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "B",
               "step": 4
             },
             {
-              "expr": "sum(rate(tikv_storage_engine_async_request_duration_seconds_sum{type=\"write\"}[1m])) / sum(rate(tikv_storage_engine_async_request_duration_seconds_count{type=\"write\"}[1m]))",
+              "expr": "sum(rate(tikv_storage_engine_async_request_duration_seconds_sum{instance=~\"$instance\", type=\"write\"}[1m])) / sum(rate(tikv_storage_engine_async_request_duration_seconds_count{instance=~\"$instance\", type=\"write\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "C",
@@ -5743,28 +5743,28 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_storage_batch_commands_total_bucket{job=~\"$job\"}[30s])) by (le))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_storage_batch_commands_total_bucket{instance=~\"$instance\"}[30s])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "99%",
               "refId": "A",
               "step": 4
             },
             {
-              "expr": "histogram_quantile(0.95, sum(rate(tikv_storage_batch_commands_total_bucket{job=~\"$job\"}[30s])) by (le))",
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_storage_batch_commands_total_bucket{instance=~\"$instance\"}[30s])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "B",
               "step": 4
             },
             {
-              "expr": "sum(rate(tikv_storage_batch_commands_total_sum{job=~\"$job\"}[30s])) / sum(rate(tikv_storage_batch_commands_total_count{job=~\"$job\"}[30s]))",
+              "expr": "sum(rate(tikv_storage_batch_commands_total_sum{instance=~\"$instance\"}[30s])) / sum(rate(tikv_storage_batch_commands_total_count{instance=~\"$instance\"}[30s]))",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "C",
               "step": 4
             },
             {
-              "expr": "histogram_quantile(0.95, sum(rate(tikv_raftstore_batch_snapshot_commands_total_bucket{job=~\"$job\"}[30s])) by (le))",
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_raftstore_batch_snapshot_commands_total_bucket{instance=~\"$instance\"}[30s])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "raft-95%",
               "refId": "D",
@@ -5858,14 +5858,14 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_scheduler_too_busy_total[1m])) by (stage)",
+              "expr": "sum(rate(tikv_scheduler_too_busy_total{instance=~\"$instance\"}[1m])) by (stage)",
               "intervalFactor": 2,
               "legendFormat": "busy",
               "refId": "A",
               "step": 20
             },
             {
-              "expr": "sum(rate(tikv_scheduler_stage_total[1m])) by (stage)",
+              "expr": "sum(rate(tikv_scheduler_stage_total{instance=~\"$instance\"}[1m])) by (stage)",
               "intervalFactor": 2,
               "legendFormat": "{{stage}}",
               "refId": "B",
@@ -5949,7 +5949,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_scheduler_commands_pri_total[1m])) by (priority)",
+              "expr": "sum(rate(tikv_scheduler_commands_pri_total{instance=~\"$instance\"}[1m])) by (priority)",
               "intervalFactor": 2,
               "legendFormat": "{{priority}}",
               "metric": "",
@@ -6070,7 +6070,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(tikv_scheduler_contex_total) by (instance)",
+              "expr": "sum(tikv_scheduler_contex_total{instance=~\"$instance\"}) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
@@ -6175,14 +6175,14 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_scheduler_too_busy_total{type=\"$command\"}[1m]))",
+              "expr": "sum(rate(tikv_scheduler_too_busy_total{instance=~\"$instance\", type=\"$command\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "busy",
               "refId": "A",
               "step": 4
             },
             {
-              "expr": "sum(rate(tikv_scheduler_stage_total{type=\"$command\"}[1m])) by (stage)",
+              "expr": "sum(rate(tikv_scheduler_stage_total{instance=~\"$instance\", type=\"$command\"}[1m])) by (stage)",
               "intervalFactor": 2,
               "legendFormat": "{{stage}}",
               "refId": "B",
@@ -6267,7 +6267,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_scheduler_command_duration_seconds_bucket{type=\"$command\"}[1m])) by (le))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_scheduler_command_duration_seconds_bucket{instance=~\"$instance\", type=\"$command\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "99%",
               "metric": "",
@@ -6275,7 +6275,7 @@
               "step": 10
             },
             {
-              "expr": "histogram_quantile(0.95, sum(rate(tikv_scheduler_command_duration_seconds_bucket{type=\"$command\"}[1m])) by (le))",
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_scheduler_command_duration_seconds_bucket{instance=~\"$instance\", type=\"$command\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "metric": "",
@@ -6283,7 +6283,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_scheduler_command_duration_seconds_sum{type=\"$command\"}[1m])) / sum(rate(tikv_scheduler_command_duration_seconds_count{type=\"$command\"}[1m])) ",
+              "expr": "sum(rate(tikv_scheduler_command_duration_seconds_sum{instance=~\"$instance\", type=\"$command\"}[1m])) / sum(rate(tikv_scheduler_command_duration_seconds_count{instance=~\"$instance\", type=\"$command\"}[1m])) ",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "metric": "",
@@ -6370,7 +6370,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_scheduler_latch_wait_duration_seconds_bucket{type=\"$command\"}[1m])) by (le))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_scheduler_latch_wait_duration_seconds_bucket{instance=~\"$instance\", type=\"$command\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "99%",
               "metric": "",
@@ -6378,7 +6378,7 @@
               "step": 10
             },
             {
-              "expr": "histogram_quantile(0.95, sum(rate(tikv_scheduler_latch_wait_duration_seconds_bucket{type=\"$command\"}[1m])) by (le))",
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_scheduler_latch_wait_duration_seconds_bucket{instance=~\"$instance\", type=\"$command\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "metric": "",
@@ -6386,7 +6386,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_scheduler_latch_wait_duration_seconds_sum{type=\"$command\"}[1m])) / sum(rate(tikv_scheduler_latch_wait_duration_seconds_count{type=\"$command\"}[1m])) ",
+              "expr": "sum(rate(tikv_scheduler_latch_wait_duration_seconds_sum{instance=~\"$instance\", type=\"$command\"}[1m])) / sum(rate(tikv_scheduler_latch_wait_duration_seconds_count{instance=~\"$instance\", type=\"$command\"}[1m])) ",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "metric": "",
@@ -6473,7 +6473,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_scheduler_kv_command_key_read_bucket{type=\"$command\"}[1m])) by (le))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_scheduler_kv_command_key_read_bucket{instance=~\"$instance\", type=\"$command\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "99%",
               "metric": "kv_command_key",
@@ -6481,7 +6481,7 @@
               "step": 10
             },
             {
-              "expr": "histogram_quantile(0.95, sum(rate(tikv_scheduler_kv_command_key_read_bucket{type=\"$command\"}[1m])) by (le))",
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_scheduler_kv_command_key_read_bucket{instance=~\"$instance\", type=\"$command\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "metric": "",
@@ -6489,7 +6489,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_scheduler_kv_command_key_read_sum{type=\"$command\"}[1m])) / sum(rate(tikv_scheduler_kv_command_key_read_count{type=\"$command\"}[1m])) ",
+              "expr": "sum(rate(tikv_scheduler_kv_command_key_read_sum{instance=~\"$instance\", type=\"$command\"}[1m])) / sum(rate(tikv_scheduler_kv_command_key_read_count{instance=~\"$instance\", type=\"$command\"}[1m])) ",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "metric": "",
@@ -6576,7 +6576,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_scheduler_kv_command_key_write_bucket{type=\"$command\"}[1m])) by (le))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_scheduler_kv_command_key_write_bucket{instance=~\"$instance\", type=\"$command\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "99%",
               "metric": "kv_command_key",
@@ -6584,7 +6584,7 @@
               "step": 10
             },
             {
-              "expr": "histogram_quantile(0.95, sum(rate(tikv_scheduler_kv_command_key_write_bucket{type=\"$command\"}[1m])) by (le))",
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_scheduler_kv_command_key_write_bucket{instance=~\"$instance\", type=\"$command\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "metric": "",
@@ -6592,7 +6592,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_scheduler_kv_command_key_write_sum{type=\"$command\"}[1m])) / sum(rate(tikv_scheduler_kv_command_key_write_count{type=\"$command\"}[1m])) ",
+              "expr": "sum(rate(tikv_scheduler_kv_command_key_write_sum{instance=~\"$instance\", type=\"$command\"}[1m])) / sum(rate(tikv_scheduler_kv_command_key_write_count{instance=~\"$instance\", type=\"$command\"}[1m])) ",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "metric": "",
@@ -6679,7 +6679,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_scheduler_kv_scan_details{req=\"$command\"}[1m])) by (tag)",
+              "expr": "sum(rate(tikv_scheduler_kv_scan_details{instance=~\"$instance\", req=\"$command\"}[1m])) by (tag)",
               "intervalFactor": 2,
               "legendFormat": "{{tag}}",
               "metric": "",
@@ -6766,7 +6766,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_scheduler_kv_scan_details{req=\"$command\", cf=\"lock\"}[1m])) by (tag)",
+              "expr": "sum(rate(tikv_scheduler_kv_scan_details{instance=~\"$instance\", req=\"$command\", cf=\"lock\"}[1m])) by (tag)",
               "intervalFactor": 2,
               "legendFormat": "{{tag}}",
               "metric": "",
@@ -6853,7 +6853,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_scheduler_kv_scan_details{req=\"$command\", cf=\"write\"}[1m])) by (tag)",
+              "expr": "sum(rate(tikv_scheduler_kv_scan_details{instance=~\"$instance\", req=\"$command\", cf=\"write\"}[1m])) by (tag)",
               "intervalFactor": 2,
               "legendFormat": "{{tag}}",
               "metric": "",
@@ -6940,7 +6940,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_scheduler_kv_scan_details{req=\"$command\", cf=\"default\"}[1m])) by (tag)",
+              "expr": "sum(rate(tikv_scheduler_kv_scan_details{instance=~\"$instance\", req=\"$command\", cf=\"default\"}[1m])) by (tag)",
               "intervalFactor": 2,
               "legendFormat": "{{tag}}",
               "metric": "",
@@ -7037,14 +7037,14 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.9999, sum(rate(tikv_coprocessor_request_duration_seconds_bucket[1m])) by (le,req))",
+              "expr": "histogram_quantile(0.9999, sum(rate(tikv_coprocessor_request_duration_seconds_bucket{instance=~\"$instance\"}[1m])) by (le,req))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{req}}-99.99%",
               "refId": "E"
             },
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_coprocessor_request_duration_seconds_bucket[1m])) by (le,req))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_coprocessor_request_duration_seconds_bucket{instance=~\"$instance\"}[1m])) by (le,req))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{req}}-99%",
@@ -7060,7 +7060,7 @@
               "step": 4
             },
             {
-              "expr": " sum(rate(tikv_coprocessor_request_duration_seconds_sum[1m])) by (req) / sum(rate(tikv_coprocessor_request_duration_seconds_count[1m])) by (req)",
+              "expr": " sum(rate(tikv_coprocessor_request_duration_seconds_sum{instance=~\"$instance\"}[1m])) by (req) / sum(rate(tikv_coprocessor_request_duration_seconds_count{instance=~\"$instance\"}[1m])) by (req)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{req}}-avg",
@@ -7145,14 +7145,14 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.9999, sum(rate(tikv_coprocessor_request_wait_seconds_bucket[1m])) by (le,req))",
+              "expr": "histogram_quantile(0.9999, sum(rate(tikv_coprocessor_request_wait_seconds_bucket{instance=~\"$instance\"}[1m])) by (le,req))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{req}}-99.99%",
               "refId": "D"
             },
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_coprocessor_request_wait_seconds_bucket[1m])) by (le,req))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_coprocessor_request_wait_seconds_bucket{instance=~\"$instance\"}[1m])) by (le,req))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{req}}-99%",
@@ -7168,7 +7168,7 @@
               "step": 4
             },
             {
-              "expr": " sum(rate(tikv_coprocessor_request_wait_seconds_sum[1m])) by (req) / sum(rate(tikv_coprocessor_request_wait_seconds_count[1m])) by (req)",
+              "expr": " sum(rate(tikv_coprocessor_request_wait_seconds_sum{instance=~\"$instance\"}[1m])) by (req) / sum(rate(tikv_coprocessor_request_wait_seconds_count{instance=~\"$instance\"}[1m])) by (req)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{req}}-avg",
@@ -7253,14 +7253,14 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.9999, sum(rate(tikv_coprocessor_request_handle_seconds_bucket[1m])) by (le,req))",
+              "expr": "histogram_quantile(0.9999, sum(rate(tikv_coprocessor_request_handle_seconds_bucket{instance=~\"$instance\"}[1m])) by (le,req))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{req}}-99.99%",
               "refId": "E"
             },
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_coprocessor_request_handle_seconds_bucket[1m])) by (le,req))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_coprocessor_request_handle_seconds_bucket{instance=~\"$instance\"}[1m])) by (le,req))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{req}}-99%",
@@ -7268,7 +7268,7 @@
               "step": 4
             },
             {
-              "expr": "histogram_quantile(0.95, sum(rate(tikv_coprocessor_request_handle_seconds_bucket[1m])) by (le,req))",
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_coprocessor_request_handle_seconds_bucket{instance=~\"$instance\"}[1m])) by (le,req))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{req}}-95%",
@@ -7276,7 +7276,7 @@
               "step": 4
             },
             {
-              "expr": " sum(rate(tikv_coprocessor_request_handle_seconds_sum[1m])) by (req) / sum(rate(tikv_coprocessor_request_handle_seconds_count[1m])) by (req)",
+              "expr": " sum(rate(tikv_coprocessor_request_handle_seconds_sum{instance=~\"$instance\"}[1m])) by (req) / sum(rate(tikv_coprocessor_request_handle_seconds_count{instance=~\"$instance\"}[1m])) by (req)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{req}}-avg",
@@ -7361,7 +7361,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.95, sum(rate(tikv_coprocessor_request_duration_seconds_bucket[1m])) by (le, instance, req))",
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_coprocessor_request_duration_seconds_bucket{instance=~\"$instance\"}[1m])) by (le, instance, req))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}-{{req}}",
@@ -7447,7 +7447,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.95, sum(rate(tikv_coprocessor_request_wait_seconds_bucket[1m])) by (le, instance,req))",
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_coprocessor_request_wait_seconds_bucket{instance=~\"$instance\"}[1m])) by (le, instance,req))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}-{{req}}",
@@ -7532,7 +7532,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.95, sum(rate(tikv_coprocessor_request_handle_seconds_bucket[1m])) by (le, instance,req))",
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_coprocessor_request_handle_seconds_bucket{instance=~\"$instance\"}[1m])) by (le, instance,req))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}-{{req}}",
@@ -7618,7 +7618,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_coprocessor_request_error[1m])) by (reason)",
+              "expr": "sum(rate(tikv_coprocessor_request_error{instance=~\"$instance\"}[1m])) by (reason)",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 2,
@@ -7707,7 +7707,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_coprocessor_executor_count[1m])) by (type)",
+              "expr": "sum(rate(tikv_coprocessor_executor_count{instance=~\"$instance\"}[1m])) by (type)",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 2,
@@ -7793,14 +7793,14 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.9999, avg(rate(tikv_coprocessor_scan_keys_bucket[1m])) by (le, req))  ",
+              "expr": "histogram_quantile(0.9999, avg(rate(tikv_coprocessor_scan_keys_bucket{instance=~\"$instance\"}[1m])) by (le, req))  ",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{req}}-99.99%",
               "refId": "D"
             },
             {
-              "expr": "histogram_quantile(0.99, avg(rate(tikv_coprocessor_scan_keys_bucket[1m])) by (le, req))  ",
+              "expr": "histogram_quantile(0.99, avg(rate(tikv_coprocessor_scan_keys_bucket{instance=~\"$instance\"}[1m])) by (le, req))  ",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 2,
@@ -7810,7 +7810,7 @@
               "step": 10
             },
             {
-              "expr": "histogram_quantile(0.95, avg(rate(tikv_coprocessor_scan_keys_bucket[1m])) by (le, req))  ",
+              "expr": "histogram_quantile(0.95, avg(rate(tikv_coprocessor_scan_keys_bucket{instance=~\"$instance\"}[1m])) by (le, req))  ",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{req}}-95%",
@@ -7819,7 +7819,7 @@
               "step": 10
             },
             {
-              "expr": "histogram_quantile(0.90, avg(rate(tikv_coprocessor_scan_keys_bucket[1m])) by (le, req))  ",
+              "expr": "histogram_quantile(0.90, avg(rate(tikv_coprocessor_scan_keys_bucket{instance=~\"$instance\"}[1m])) by (le, req))  ",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{req}}-90%",
@@ -7906,7 +7906,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_coprocessor_scan_details[1m])) by (tag,req)",
+              "expr": "sum(rate(tikv_coprocessor_scan_details{instance=~\"$instance\"}[1m])) by (tag,req)",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 2,
@@ -7995,7 +7995,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_coprocessor_scan_details{req=\"select\"}[1m])) by (tag,cf)",
+              "expr": "sum(rate(tikv_coprocessor_scan_details{instance=~\"$instance\", req=\"select\"}[1m])) by (tag,cf)",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 2,
@@ -8084,7 +8084,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_coprocessor_scan_details{req=\"index\"}[1m])) by (tag,cf)",
+              "expr": "sum(rate(tikv_coprocessor_scan_details{instance=~\"$instance\", req=\"index\"}[1m])) by (tag,cf)",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 2,
@@ -8178,7 +8178,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_coprocessor_rocksdb_perf{req=\"select\",metric=\"internal_delete_skipped_count\"}[1m])) by (metric)",
+              "expr": "sum(rate(tikv_coprocessor_rocksdb_perf{instance=~\"$instance\", req=\"select\",metric=\"internal_delete_skipped_count\"}[1m])) by (metric)",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 2,
@@ -8188,7 +8188,7 @@
               "step": 4
             },
             {
-              "expr": "sum(rate(tikv_coprocessor_rocksdb_perf{req=\"select\",metric=\"internal_key_skipped_count\"}[1m])) by (metric)",
+              "expr": "sum(rate(tikv_coprocessor_rocksdb_perf{instance=~\"$instance\", req=\"select\",metric=\"internal_key_skipped_count\"}[1m])) by (metric)",
               "format": "time_series",
               "instant": false,
               "intervalFactor": 2,
@@ -8281,7 +8281,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_coprocessor_rocksdb_perf{req=\"index\",metric=\"internal_delete_skipped_count\"}[1m])) by (metric)",
+              "expr": "sum(rate(tikv_coprocessor_rocksdb_perf{instance=~\"$instance\", req=\"index\",metric=\"internal_delete_skipped_count\"}[1m])) by (metric)",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 2,
@@ -8291,7 +8291,7 @@
               "step": 4
             },
             {
-              "expr": "sum(rate(tikv_coprocessor_rocksdb_perf{req=\"index\",metric=\"internal_key_skipped_count\"}[1m])) by (metric)",
+              "expr": "sum(rate(tikv_coprocessor_rocksdb_perf{instance=~\"$instance\", req=\"index\",metric=\"internal_key_skipped_count\"}[1m])) by (metric)",
               "format": "time_series",
               "instant": false,
               "intervalFactor": 2,
@@ -8388,7 +8388,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(1.0, sum(rate(tikv_storage_mvcc_versions_bucket[1m])) by (le))",
+              "expr": "histogram_quantile(1.0, sum(rate(tikv_storage_mvcc_versions_bucket{instance=~\"$instance\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": " max",
               "metric": "",
@@ -8396,7 +8396,7 @@
               "step": 4
             },
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_storage_mvcc_versions_bucket[1m])) by (le))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_storage_mvcc_versions_bucket{instance=~\"$instance\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "99%",
               "metric": "",
@@ -8404,7 +8404,7 @@
               "step": 4
             },
             {
-              "expr": "histogram_quantile(0.95, sum(rate(tikv_storage_mvcc_versions_bucket[1m])) by (le))",
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_storage_mvcc_versions_bucket{instance=~\"$instance\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": " 95%",
               "metric": "",
@@ -8412,7 +8412,7 @@
               "step": 4
             },
             {
-              "expr": "sum(rate(tikv_storage_mvcc_versions_sum[1m])) / sum(rate(tikv_storage_mvcc_versions_count[1m])) ",
+              "expr": "sum(rate(tikv_storage_mvcc_versions_sum{instance=~\"$instance\"}[1m])) / sum(rate(tikv_storage_mvcc_versions_count{instance=~\"$instance\"}[1m])) ",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "metric": "",
@@ -8496,7 +8496,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(1.0, sum(rate(tikv_storage_mvcc_gc_delete_versions_bucket[1m])) by (le))",
+              "expr": "histogram_quantile(1.0, sum(rate(tikv_storage_mvcc_gc_delete_versions_bucket{instance=~\"$instance\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": " max",
               "metric": "",
@@ -8504,7 +8504,7 @@
               "step": 4
             },
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_storage_mvcc_gc_delete_versions_bucket[1m])) by (le))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_storage_mvcc_gc_delete_versions_bucket{instance=~\"$instance\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "99%",
               "metric": "",
@@ -8512,7 +8512,7 @@
               "step": 4
             },
             {
-              "expr": "histogram_quantile(0.95, sum(rate(tikv_storage_mvcc_gc_delete_versions_bucket[1m])) by (le))",
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_storage_mvcc_gc_delete_versions_bucket{instance=~\"$instance\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": " 95%",
               "metric": "",
@@ -8520,7 +8520,7 @@
               "step": 4
             },
             {
-              "expr": "sum(rate(tikv_storage_mvcc_gc_delete_versions_sum[1m])) / sum(rate(tikv_storage_mvcc_gc_delete_versions_count[1m])) ",
+              "expr": "sum(rate(tikv_storage_mvcc_gc_delete_versions_sum{instance=~\"$instance\"}[1m])) / sum(rate(tikv_storage_mvcc_gc_delete_versions_count{instance=~\"$instance\"}[1m])) ",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "metric": "",
@@ -8601,7 +8601,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_gcworker_gc_tasks_vec[1m])) by (task)",
+              "expr": "sum(rate(tikv_gcworker_gc_tasks_vec{instance=~\"$instance\"}[1m])) by (task)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "total-{{task}}",
@@ -8610,7 +8610,7 @@
               "step": 4
             },
             {
-              "expr": "sum(rate(tikv_storage_gc_skipped_counter[1m])) by (task)",
+              "expr": "sum(rate(tikv_storage_gc_skipped_counter{instance=~\"$instance\"}[1m])) by (task)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "skipped-{{task}}",
@@ -8619,14 +8619,14 @@
               "step": 4
             },
             {
-              "expr": "sum(rate(tikv_gcworker_gc_task_fail_vec[1m])) by (task)",
+              "expr": "sum(rate(tikv_gcworker_gc_task_fail_vec{instance=~\"$instance\"}[1m])) by (task)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "failed-{{task}}",
               "refId": "C"
             },
             {
-              "expr": "sum(rate(tikv_gc_worker_too_busy[1m]))",
+              "expr": "sum(rate(tikv_gc_worker_too_busy{instance=~\"$instance\"}[1m]))",
               "format": "time_series",
               "intervalFactor": 2,
               "refId": "D"
@@ -8704,7 +8704,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(1, sum(rate(tikv_gcworker_gc_task_duration_vec_bucket[1m])) by (le, task))",
+              "expr": "histogram_quantile(1, sum(rate(tikv_gcworker_gc_task_duration_vec_bucket{instance=~\"$instance\"}[1m])) by (le, task))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "max-{{task}}",
@@ -8713,7 +8713,7 @@
               "step": 4
             },
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_gcworker_gc_task_duration_vec_bucket[1m])) by (le, task))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_gcworker_gc_task_duration_vec_bucket{instance=~\"$instance\"}[1m])) by (le, task))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "99%-{{task}}",
@@ -8722,14 +8722,14 @@
               "step": 4
             },
             {
-              "expr": "histogram_quantile(0.95, sum(rate(tikv_gcworker_gc_task_duration_vec_bucket[1m])) by (le, task))",
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_gcworker_gc_task_duration_vec_bucket{instance=~\"$instance\"}[1m])) by (le, task))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "95%-{{task}}",
               "refId": "C"
             },
             {
-              "expr": "sum(rate(tikv_gcworker_gc_task_duration_vec_sum[1m])) by (task) / sum(rate(tikv_gcworker_gc_task_duration_vec_count[1m])) by (task)",
+              "expr": "sum(rate(tikv_gcworker_gc_task_duration_vec_sum{instance=~\"$instance\"}[1m])) by (task) / sum(rate(tikv_gcworker_gc_task_duration_vec_count{instance=~\"$instance\"}[1m])) by (task)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "average-{{task}}",
@@ -8808,7 +8808,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_gcworker_gc_keys{cf=\"write\"}[1m])) by (tag)",
+              "expr": "sum(rate(tikv_gcworker_gc_keys{instance=~\"$instance\", cf=\"write\"}[1m])) by (tag)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{tag}}",
@@ -8892,7 +8892,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tidb_tikvclient_gc_action_result_total{job=~\"$job\"}[1m])) by (type)",
+              "expr": "sum(rate(tidb_tikvclient_gc_action_result_total[1m])) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
@@ -8977,7 +8977,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tidb_tikvclient_gc_worker_actions_total{job=~\"$job\"}[1m])) by (type)",
+              "expr": "sum(rate(tidb_tikvclient_gc_worker_actions_total[1m])) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
@@ -9062,7 +9062,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(1.0, sum(rate(tidb_tikvclient_gc_seconds_bucket{job=~\"$job\"}[1m])) by (instance, le))",
+              "expr": "histogram_quantile(1.0, sum(rate(tidb_tikvclient_gc_seconds_bucket[1m])) by (instance, le))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
@@ -9146,7 +9146,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tidb_tikvclient_gc_failure_total{job=~\"$job\"}[1m])) by (type)",
+              "expr": "sum(rate(tidb_tikvclient_gc_failure_total[1m])) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
@@ -9251,7 +9251,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "max(tidb_tikvclient_gc_config{job=~\"$job\", type=\"tikv_gc_life_time\"})",
+              "expr": "max(tidb_tikvclient_gc_config{type=\"tikv_gc_life_time\"})",
               "interval": "",
               "intervalFactor": 2,
               "refId": "A",
@@ -9330,7 +9330,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "max(tidb_tikvclient_gc_config{job=~\"$job\", type=\"tikv_gc_run_interval\"})",
+              "expr": "max(tidb_tikvclient_gc_config{type=\"tikv_gc_run_interval\"})",
               "intervalFactor": 2,
               "refId": "A",
               "step": 60
@@ -9396,7 +9396,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(delta(tikv_raftstore_raft_sent_message_total{type=\"snapshot\"}[1m]))",
+              "expr": "sum(delta(tikv_raftstore_raft_sent_message_total{instance=~\"$instance\", type=\"snapshot\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": " ",
               "refId": "A",
@@ -9474,21 +9474,21 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_server_send_snapshot_duration_seconds_bucket[1m])) by (le))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_server_send_snapshot_duration_seconds_bucket{instance=~\"$instance\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "send",
               "refId": "A",
               "step": 60
             },
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_snapshot_duration_seconds_bucket{type=\"apply\"}[1m])) by (le))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_snapshot_duration_seconds_bucket{instance=~\"$instance\", type=\"apply\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "apply",
               "refId": "B",
               "step": 60
             },
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_snapshot_duration_seconds_bucket{type=\"generate\"}[1m])) by (le))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_snapshot_duration_seconds_bucket{instance=~\"$instance\", type=\"generate\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "generate",
               "refId": "C",
@@ -9566,7 +9566,7 @@
           "steppedLine": true,
           "targets": [
             {
-              "expr": "sum(tikv_raftstore_snapshot_traffic_total) by (type)",
+              "expr": "sum(tikv_raftstore_snapshot_traffic_total{instance=~\"$instance\"}) by (type)",
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
               "metric": "",
@@ -9645,7 +9645,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.9999, sum(rate(tikv_snapshot_size_bucket[1m])) by (le))",
+              "expr": "histogram_quantile(0.9999, sum(rate(tikv_snapshot_size_bucket{instance=~\"$instance\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "size",
               "metric": "tikv_snapshot_size_bucket",
@@ -9724,7 +9724,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.9999, sum(rate(tikv_snapshot_kv_count_bucket[1m])) by (le))",
+              "expr": "histogram_quantile(0.9999, sum(rate(tikv_snapshot_kv_count_bucket{instance=~\"$instance\"}[1m])) by (le))",
               "intervalFactor": 2,
               "legendFormat": "count",
               "metric": "tikv_snapshot_kv_count_bucket",
@@ -9821,7 +9821,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_worker_handled_task_total[1m])) by (name)",
+              "expr": "sum(rate(tikv_worker_handled_task_total{instance=~\"$instance\"}[1m])) by (name)",
               "intervalFactor": 2,
               "legendFormat": "{{name}}",
               "metric": "tikv_pd_heartbeat_tick_total",
@@ -9907,7 +9907,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_worker_pending_task_total[1m])) by (name)",
+              "expr": "sum(rate(tikv_worker_pending_task_total{instance=~\"$instance\"}[1m])) by (name)",
               "intervalFactor": 2,
               "legendFormat": "{{name}}",
               "metric": "tikv_pd_heartbeat_tick_total",
@@ -9993,7 +9993,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_futurepool_handled_task_total[1m])) by (name)",
+              "expr": "sum(rate(tikv_futurepool_handled_task_total{instance=~\"$instance\"}[1m])) by (name)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{name}}",
@@ -10080,7 +10080,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_futurepool_pending_task_total[1m])) by (name)",
+              "expr": "sum(rate(tikv_futurepool_pending_task_total{instance=~\"$instance\"}[1m])) by (name)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{name}}",
@@ -10199,7 +10199,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_coprocessor_pending_request{job=~\"$job\"}[1m])) by (req, priority)",
+              "expr": "sum(rate(tikv_coprocessor_pending_request{instance=~\"$instance\"}[1m])) by (req, priority)",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 2,
@@ -10209,7 +10209,7 @@
               "step": 4
             },
             {
-              "expr": "sum(rate(tikv_coprocessor_pending_request{job=~\"$job\"}[1m])) BY (type, instance)",
+              "expr": "sum(rate(tikv_coprocessor_pending_request{instance=~\"$instance\"}[1m])) by (type, instance)",
               "format": "time_series",
               "hide": true,
               "intervalFactor": 2,
@@ -10289,7 +10289,7 @@
                 "query": {
                   "datasourceId": 1,
                   "model": {
-                    "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"raftstore_.*\"}[1m])) by (instance, name)",
+                    "expr": "sum(rate(tikv_thread_cpu_seconds_total{instance=~\"$instance\", name=~\"raftstore_.*\"}[1m])) by (instance, name)",
                     "intervalFactor": 2,
                     "legendFormat": "{{instance}}",
                     "metric": "tikv_thread_cpu_seconds_total",
@@ -10357,7 +10357,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"raftstore_.*\"}[1m])) by (instance, name)",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{instance=~\"$instance\", name=~\"raftstore_.*\"}[1m])) by (instance, name)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
@@ -10450,7 +10450,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"apply_worker\"}[1m])) by (instance)",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{instance=~\"$instance\", name=~\"apply_worker\"}[1m])) by (instance)",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
               "metric": "tikv_thread_cpu_seconds_total",
@@ -10536,7 +10536,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"local_reader\"}[1m])) by (instance, name)",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{instance=~\"$instance\", name=~\"local_reader\"}[1m])) by (instance, name)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
@@ -10619,7 +10619,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"storage_schedul.*\"}[1m])) by (instance)",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{instance=~\"$instance\", name=~\"storage_schedul.*\"}[1m])) by (instance)",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
               "metric": "tikv_thread_cpu_seconds_total",
@@ -10705,7 +10705,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"sched_.*\"}[1m])) by (instance)",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{instance=~\"$instance\", name=~\"sched_.*\"}[1m])) by (instance)",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
               "metric": "tikv_thread_cpu_seconds_total",
@@ -10791,7 +10791,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"store_read.*\"}[1m])) by (instance)",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{instance=~\"$instance\", name=~\"store_read.*\"}[1m])) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
@@ -10877,7 +10877,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"cop_.*\"}[1m])) by (instance)",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{instance=~\"$instance\", name=~\"cop_.*\"}[1m])) by (instance)",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 2,
@@ -10964,7 +10964,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"snapshot_worker\"}[1m])) by (instance)",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{instance=~\"$instance\", name=~\"snapshot_worker\"}[1m])) by (instance)",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
               "metric": "tikv_thread_cpu_seconds_total",
@@ -11048,7 +11048,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"split_check\"}[1m])) by (instance)",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{instance=~\"$instance\", name=~\"split_check\"}[1m])) by (instance)",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
               "metric": "tikv_thread_cpu_seconds_total",
@@ -11134,7 +11134,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"rocksdb.*\"}[1m])) by (instance)",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{instance=~\"$instance\", name=~\"rocksdb.*\"}[1m])) by (instance)",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
               "metric": "tikv_thread_cpu_seconds_total",
@@ -11230,7 +11230,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{name=~\"grpc.*\"}[1m])) by (instance)",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{instance=~\"$instance\", name=~\"grpc.*\"}[1m])) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
@@ -11324,7 +11324,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(tikv_threads_state) by (instance, state)",
+              "expr": "sum(tikv_threads_state{instance=~\"$instance\"}) by (instance, state)",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "{{instance}}-{{state}}",
@@ -11332,7 +11332,7 @@
               "step": 4
             },
             {
-              "expr": "sum(tikv_threads_state) by (instance)",
+              "expr": "sum(tikv_threads_state{instance=~\"$instance\"}) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}-total",
@@ -11413,7 +11413,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_threads_io_bytes_total[30s])) by (name, io) > 1024",
+              "expr": "sum(rate(tikv_threads_io_bytes_total{instance=~\"$instance\"}[30s])) by (name, io) > 1024",
               "format": "time_series",
               "hide": false,
               "interval": "",
@@ -11507,7 +11507,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_memtable_efficiency{db=\"$db\", type=\"memtable_hit\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_memtable_efficiency{instance=~\"$instance\", db=\"$db\", type=\"memtable_hit\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "memtable",
               "metric": "",
@@ -11515,7 +11515,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=~\"block_cache_data_hit|block_cache_filter_hit\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_cache_efficiency{instance=~\"$instance\", db=\"$db\", type=~\"block_cache_data_hit|block_cache_filter_hit\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "block_cache",
               "metric": "",
@@ -11523,21 +11523,21 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_get_served{db=\"$db\", type=\"get_hit_l0\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_get_served{instance=~\"$instance\", db=\"$db\", type=\"get_hit_l0\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "l0",
               "refId": "A",
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_get_served{db=\"$db\", type=\"get_hit_l1\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_get_served{instance=~\"$instance\", db=\"$db\", type=\"get_hit_l1\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "l1",
               "refId": "C",
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_get_served{db=\"$db\", type=\"get_hit_l2_and_up\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_get_served{instance=~\"$instance\", db=\"$db\", type=\"get_hit_l2_and_up\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "l2_and_up",
               "refId": "F",
@@ -11617,28 +11617,28 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(tikv_engine_get_micro_seconds{db=\"$db\",type=\"get_max\"})",
+              "expr": "avg(tikv_engine_get_micro_seconds{instance=~\"$instance\", db=\"$db\",type=\"get_max\"})",
               "intervalFactor": 2,
               "legendFormat": "max",
               "refId": "A",
               "step": 10
             },
             {
-              "expr": "avg(tikv_engine_get_micro_seconds{db=\"$db\",type=\"get_percentile99\"})",
+              "expr": "avg(tikv_engine_get_micro_seconds{instance=~\"$instance\", db=\"$db\",type=\"get_percentile99\"})",
               "intervalFactor": 2,
               "legendFormat": "99%",
               "refId": "B",
               "step": 10
             },
             {
-              "expr": "avg(tikv_engine_get_micro_seconds{db=\"$db\",type=\"get_percentile95\"})",
+              "expr": "avg(tikv_engine_get_micro_seconds{instance=~\"$instance\", db=\"$db\",type=\"get_percentile95\"})",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "C",
               "step": 10
             },
             {
-              "expr": "avg(tikv_engine_get_micro_seconds{db=\"$db\",type=\"get_average\"})",
+              "expr": "avg(tikv_engine_get_micro_seconds{instance=~\"$instance\", db=\"$db\",type=\"get_average\"})",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "D",
@@ -11717,7 +11717,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_locate{db=\"$db\", type=\"number_db_seek\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_locate{instance=~\"$instance\", db=\"$db\", type=\"number_db_seek\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "seek",
               "metric": "",
@@ -11725,7 +11725,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_locate{db=\"$db\", type=\"number_db_seek_found\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_locate{instance=~\"$instance\", db=\"$db\", type=\"number_db_seek_found\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "seek_found",
               "metric": "",
@@ -11733,7 +11733,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_locate{db=\"$db\", type=\"number_db_next\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_locate{instance=~\"$instance\", db=\"$db\", type=\"number_db_next\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "next",
               "metric": "",
@@ -11741,7 +11741,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_locate{db=\"$db\", type=\"number_db_next_found\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_locate{instance=~\"$instance\", db=\"$db\", type=\"number_db_next_found\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "next_found",
               "metric": "",
@@ -11749,7 +11749,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_locate{db=\"$db\", type=\"number_db_prev\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_locate{instance=~\"$instance\", db=\"$db\", type=\"number_db_prev\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "prev",
               "metric": "",
@@ -11757,7 +11757,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_locate{db=\"$db\", type=\"number_db_prev_found\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_locate{instance=~\"$instance\", db=\"$db\", type=\"number_db_prev_found\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "prev_found",
               "metric": "",
@@ -11838,28 +11838,28 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(tikv_engine_seek_micro_seconds{db=\"$db\",type=\"seek_max\"})",
+              "expr": "avg(tikv_engine_seek_micro_seconds{instance=~\"$instance\", db=\"$db\",type=\"seek_max\"})",
               "intervalFactor": 2,
               "legendFormat": "max",
               "refId": "A",
               "step": 10
             },
             {
-              "expr": "avg(tikv_engine_seek_micro_seconds{db=\"$db\",type=\"seek_percentile99\"})",
+              "expr": "avg(tikv_engine_seek_micro_seconds{instance=~\"$instance\", db=\"$db\",type=\"seek_percentile99\"})",
               "intervalFactor": 2,
               "legendFormat": "99%",
               "refId": "B",
               "step": 10
             },
             {
-              "expr": "avg(tikv_engine_seek_micro_seconds{db=\"$db\",type=\"seek_percentile95\"})",
+              "expr": "avg(tikv_engine_seek_micro_seconds{instance=~\"$instance\", db=\"$db\",type=\"seek_percentile95\"})",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "C",
               "step": 10
             },
             {
-              "expr": "avg(tikv_engine_seek_micro_seconds{db=\"$db\",type=\"seek_average\"})",
+              "expr": "avg(tikv_engine_seek_micro_seconds{instance=~\"$instance\", db=\"$db\",type=\"seek_average\"})",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "D",
@@ -11938,21 +11938,21 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_write_served{db=\"$db\", type=~\"write_done_by_self|write_done_by_other\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_write_served{instance=~\"$instance\", db=\"$db\", type=~\"write_done_by_self|write_done_by_other\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "done",
               "refId": "A",
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_write_served{db=\"$db\", type=\"write_timeout\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_write_served{instance=~\"$instance\", db=\"$db\", type=\"write_timeout\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "timeout",
               "refId": "B",
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_write_served{db=\"$db\", type=\"write_with_wal\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_write_served{instance=~\"$instance\", db=\"$db\", type=\"write_with_wal\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "with_wal",
               "refId": "C",
@@ -12032,28 +12032,28 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(tikv_engine_write_micro_seconds{db=\"$db\",type=\"write_max\"})",
+              "expr": "avg(tikv_engine_write_micro_seconds{instance=~\"$instance\", db=\"$db\",type=\"write_max\"})",
               "intervalFactor": 2,
               "legendFormat": "max",
               "refId": "A",
               "step": 10
             },
             {
-              "expr": "avg(tikv_engine_write_micro_seconds{db=\"$db\",type=\"write_percentile99\"})",
+              "expr": "avg(tikv_engine_write_micro_seconds{instance=~\"$instance\", db=\"$db\",type=\"write_percentile99\"})",
               "intervalFactor": 2,
               "legendFormat": "99%",
               "refId": "B",
               "step": 10
             },
             {
-              "expr": "avg(tikv_engine_write_micro_seconds{db=\"$db\",type=\"write_percentile95\"})",
+              "expr": "avg(tikv_engine_write_micro_seconds{instance=~\"$instance\", db=\"$db\",type=\"write_percentile95\"})",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "C",
               "step": 10
             },
             {
-              "expr": "avg(tikv_engine_write_micro_seconds{db=\"$db\",type=\"write_average\"})",
+              "expr": "avg(tikv_engine_write_micro_seconds{instance=~\"$instance\", db=\"$db\",type=\"write_average\"})",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "D",
@@ -12132,7 +12132,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_wal_file_synced{db=\"$db\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_wal_file_synced{instance=~\"$instance\", db=\"$db\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "sync",
               "metric": "",
@@ -12213,28 +12213,28 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(tikv_engine_wal_file_sync_micro_seconds{db=\"$db\",type=\"wal_file_sync_max\"})",
+              "expr": "avg(tikv_engine_wal_file_sync_micro_seconds{instance=~\"$instance\", db=\"$db\",type=\"wal_file_sync_max\"})",
               "intervalFactor": 2,
               "legendFormat": "max",
               "refId": "A",
               "step": 10
             },
             {
-              "expr": "avg(tikv_engine_wal_file_sync_micro_seconds{db=\"$db\",type=\"wal_file_sync_percentile99\"})",
+              "expr": "avg(tikv_engine_wal_file_sync_micro_seconds{instance=~\"$instance\", db=\"$db\",type=\"wal_file_sync_percentile99\"})",
               "intervalFactor": 2,
               "legendFormat": "99%",
               "refId": "B",
               "step": 10
             },
             {
-              "expr": "avg(tikv_engine_wal_file_sync_micro_seconds{db=\"$db\",type=\"wal_file_sync_percentile95\"})",
+              "expr": "avg(tikv_engine_wal_file_sync_micro_seconds{instance=~\"$instance\", db=\"$db\",type=\"wal_file_sync_percentile95\"})",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "C",
               "step": 10
             },
             {
-              "expr": "avg(tikv_engine_wal_file_sync_micro_seconds{db=\"$db\",type=\"wal_file_sync_average\"})",
+              "expr": "avg(tikv_engine_wal_file_sync_micro_seconds{instance=~\"$instance\", db=\"$db\",type=\"wal_file_sync_average\"})",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "D",
@@ -12313,7 +12313,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_event_total{db=\"$db\"}[1m])) by (type)",
+              "expr": "sum(rate(tikv_engine_event_total{instance=~\"$instance\", db=\"$db\"}[1m])) by (type)",
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
               "metric": "tikv_engine_event_total",
@@ -12394,7 +12394,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(tikv_engine_compaction_time{db=\"$db\",type=\"compaction_time_max\"})",
+              "expr": "avg(tikv_engine_compaction_time{instance=~\"$instance\", db=\"$db\",type=\"compaction_time_max\"})",
               "intervalFactor": 2,
               "legendFormat": "max",
               "metric": "",
@@ -12402,21 +12402,21 @@
               "step": 10
             },
             {
-              "expr": "avg(tikv_engine_compaction_time{db=\"$db\",type=\"compaction_time_percentile99\"})",
+              "expr": "avg(tikv_engine_compaction_time{instance=~\"$instance\", db=\"$db\",type=\"compaction_time_percentile99\"})",
               "intervalFactor": 2,
               "legendFormat": "99%",
               "refId": "B",
               "step": 10
             },
             {
-              "expr": "avg(tikv_engine_compaction_time{db=\"$db\",type=\"compaction_time_percentile95\"})",
+              "expr": "avg(tikv_engine_compaction_time{instance=~\"$instance\", db=\"$db\",type=\"compaction_time_percentile95\"})",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "C",
               "step": 10
             },
             {
-              "expr": "avg(tikv_engine_compaction_time{db=\"$db\",type=\"compaction_time_average\"})",
+              "expr": "avg(tikv_engine_compaction_time{instance=~\"$instance\", db=\"$db\",type=\"compaction_time_average\"})",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "D",
@@ -12495,7 +12495,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(tikv_engine_sst_read_micros{db=\"$db\", type=\"sst_read_micros_max\"})",
+              "expr": "avg(tikv_engine_sst_read_micros{instance=~\"$instance\", db=\"$db\", type=\"sst_read_micros_max\"})",
               "intervalFactor": 2,
               "legendFormat": "max",
               "metric": "",
@@ -12503,7 +12503,7 @@
               "step": 10
             },
             {
-              "expr": "avg(tikv_engine_sst_read_micros{db=\"$db\", type=\"sst_read_micros_percentile99\"})",
+              "expr": "avg(tikv_engine_sst_read_micros{instance=~\"$instance\", db=\"$db\", type=\"sst_read_micros_percentile99\"})",
               "intervalFactor": 2,
               "legendFormat": "99%",
               "metric": "",
@@ -12511,7 +12511,7 @@
               "step": 10
             },
             {
-              "expr": "avg(tikv_engine_sst_read_micros{db=\"$db\", type=\"sst_read_micros_percentile95\"})",
+              "expr": "avg(tikv_engine_sst_read_micros{instance=~\"$instance\", db=\"$db\", type=\"sst_read_micros_percentile95\"})",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "metric": "",
@@ -12519,7 +12519,7 @@
               "step": 10
             },
             {
-              "expr": "avg(tikv_engine_sst_read_micros{db=\"$db\", type=\"sst_read_micros_average\"})",
+              "expr": "avg(tikv_engine_sst_read_micros{instance=~\"$instance\", db=\"$db\", type=\"sst_read_micros_average\"})",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "metric": "",
@@ -12599,7 +12599,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(tikv_engine_write_stall{db=\"$db\", type=\"write_stall_max\"})",
+              "expr": "avg(tikv_engine_write_stall{instance=~\"$instance\", db=\"$db\", type=\"write_stall_max\"})",
               "intervalFactor": 2,
               "legendFormat": "max",
               "metric": "",
@@ -12607,7 +12607,7 @@
               "step": 10
             },
             {
-              "expr": "avg(tikv_engine_write_stall{db=\"$db\", type=\"write_stall_percentile99\"})",
+              "expr": "avg(tikv_engine_write_stall{instance=~\"$instance\", db=\"$db\", type=\"write_stall_percentile99\"})",
               "intervalFactor": 2,
               "legendFormat": "99%",
               "metric": "",
@@ -12615,7 +12615,7 @@
               "step": 10
             },
             {
-              "expr": "avg(tikv_engine_write_stall{db=\"$db\", type=\"write_stall_percentile95\"})",
+              "expr": "avg(tikv_engine_write_stall{instance=~\"$instance\", db=\"$db\", type=\"write_stall_percentile95\"})",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "metric": "",
@@ -12623,7 +12623,7 @@
               "step": 10
             },
             {
-              "expr": "avg(tikv_engine_write_stall{db=\"$db\", type=\"write_stall_average\"})",
+              "expr": "avg(tikv_engine_write_stall{instance=~\"$instance\", db=\"$db\", type=\"write_stall_average\"})",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "metric": "",
@@ -12703,7 +12703,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(tikv_engine_memory_bytes{db=\"$db\", type=\"mem-tables\"}) by (cf)",
+              "expr": "avg(tikv_engine_memory_bytes{instance=~\"$instance\", db=\"$db\", type=\"mem-tables\"}) by (cf)",
               "intervalFactor": 2,
               "legendFormat": "{{cf}}",
               "refId": "A",
@@ -12783,7 +12783,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_memtable_efficiency{db=\"$db\", type=\"memtable_hit\"}[1m])) / (sum(rate(tikv_engine_memtable_efficiency{db=\"$db\", type=\"memtable_hit\"}[1m])) + sum(rate(tikv_engine_memtable_efficiency{db=\"$db\", type=\"memtable_miss\"}[1m])))",
+              "expr": "sum(rate(tikv_engine_memtable_efficiency{instance=~\"$instance\", db=\"$db\", type=\"memtable_hit\"}[1m])) / (sum(rate(tikv_engine_memtable_efficiency{db=\"$db\", type=\"memtable_hit\"}[1m])) + sum(rate(tikv_engine_memtable_efficiency{db=\"$db\", type=\"memtable_miss\"}[1m])))",
               "intervalFactor": 2,
               "legendFormat": "hit",
               "refId": "A",
@@ -12863,7 +12863,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(tikv_engine_block_cache_size_bytes{db=\"$db\"}) by(cf)",
+              "expr": "avg(tikv_engine_block_cache_size_bytes{instance=~\"$instance\", db=\"$db\"}) by(cf)",
               "intervalFactor": 2,
               "legendFormat": "{{cf}}",
               "refId": "A",
@@ -12943,7 +12943,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_hit\"}[1m])) / (sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_hit\"}[1m])) + sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_miss\"}[1m])))",
+              "expr": "sum(rate(tikv_engine_cache_efficiency{instance=~\"$instance\", db=\"$db\", type=\"block_cache_hit\"}[1m])) / (sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_hit\"}[1m])) + sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_miss\"}[1m])))",
               "intervalFactor": 2,
               "legendFormat": "all",
               "metric": "",
@@ -12951,7 +12951,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_data_hit\"}[1m])) / (sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_data_hit\"}[1m])) + sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_data_miss\"}[1m])))",
+              "expr": "sum(rate(tikv_engine_cache_efficiency{instance=~\"$instance\", db=\"$db\", type=\"block_cache_data_hit\"}[1m])) / (sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_data_hit\"}[1m])) + sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_data_miss\"}[1m])))",
               "intervalFactor": 2,
               "legendFormat": "data",
               "metric": "",
@@ -12959,7 +12959,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_filter_hit\"}[1m])) / (sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_filter_hit\"}[1m])) + sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_filter_miss\"}[1m])))",
+              "expr": "sum(rate(tikv_engine_cache_efficiency{instance=~\"$instance\", db=\"$db\", type=\"block_cache_filter_hit\"}[1m])) / (sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_filter_hit\"}[1m])) + sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_filter_miss\"}[1m])))",
               "intervalFactor": 2,
               "legendFormat": "filter",
               "metric": "",
@@ -12967,7 +12967,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_index_hit\"}[1m])) / (sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_index_hit\"}[1m])) + sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_index_miss\"}[1m])))",
+              "expr": "sum(rate(tikv_engine_cache_efficiency{instance=~\"$instance\", db=\"$db\", type=\"block_cache_index_hit\"}[1m])) / (sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_index_hit\"}[1m])) + sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_index_miss\"}[1m])))",
               "intervalFactor": 2,
               "legendFormat": "index",
               "metric": "",
@@ -12975,7 +12975,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_bloom_efficiency{db=\"$db\", type=\"bloom_prefix_useful\"}[1m])) / sum(rate(tikv_engine_bloom_efficiency{db=\"$db\", type=\"bloom_prefix_checked\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_bloom_efficiency{instance=~\"$instance\", db=\"$db\", type=\"bloom_prefix_useful\"}[1m])) / sum(rate(tikv_engine_bloom_efficiency{db=\"$db\", type=\"bloom_prefix_checked\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "bloom prefix",
               "metric": "",
@@ -13057,7 +13057,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_flow_bytes{db=\"$db\", type=\"block_cache_byte_read\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_flow_bytes{instance=~\"$instance\", db=\"$db\", type=\"block_cache_byte_read\"}[1m]))",
               "hide": false,
               "interval": "",
               "intervalFactor": 2,
@@ -13066,7 +13066,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_flow_bytes{db=\"$db\", type=\"block_cache_byte_write\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_flow_bytes{instance=~\"$instance\", db=\"$db\", type=\"block_cache_byte_write\"}[1m]))",
               "hide": false,
               "interval": "",
               "intervalFactor": 2,
@@ -13075,7 +13075,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_data_bytes_insert\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_cache_efficiency{instance=~\"$instance\", db=\"$db\", type=\"block_cache_data_bytes_insert\"}[1m]))",
               "hide": false,
               "interval": "",
               "intervalFactor": 2,
@@ -13085,7 +13085,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_filter_bytes_insert\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_cache_efficiency{instance=~\"$instance\", db=\"$db\", type=\"block_cache_filter_bytes_insert\"}[1m]))",
               "hide": false,
               "interval": "",
               "intervalFactor": 2,
@@ -13095,7 +13095,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_filter_bytes_evict\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_cache_efficiency{instance=~\"$instance\", db=\"$db\", type=\"block_cache_filter_bytes_evict\"}[1m]))",
               "hide": false,
               "interval": "",
               "intervalFactor": 2,
@@ -13105,7 +13105,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_index_bytes_insert\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_cache_efficiency{instance=~\"$instance\", db=\"$db\", type=\"block_cache_index_bytes_insert\"}[1m]))",
               "hide": false,
               "interval": "",
               "intervalFactor": 2,
@@ -13115,7 +13115,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_index_bytes_evict\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_cache_efficiency{instance=~\"$instance\", db=\"$db\", type=\"block_cache_index_bytes_evict\"}[1m]))",
               "hide": false,
               "interval": "",
               "intervalFactor": 2,
@@ -13197,7 +13197,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_add\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_cache_efficiency{instance=~\"$instance\", db=\"$db\", type=\"block_cache_add\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "total_add",
               "metric": "",
@@ -13205,7 +13205,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_data_add\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_cache_efficiency{instance=~\"$instance\", db=\"$db\", type=\"block_cache_data_add\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "data_add",
               "metric": "",
@@ -13213,7 +13213,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_filter_add\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_cache_efficiency{instance=~\"$instance\", db=\"$db\", type=\"block_cache_filter_add\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "filter_add",
               "metric": "",
@@ -13221,7 +13221,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_index_add\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_cache_efficiency{instance=~\"$instance\", db=\"$db\", type=\"block_cache_index_add\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "index_add",
               "metric": "",
@@ -13229,7 +13229,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_cache_efficiency{db=\"$db\", type=\"block_cache_add_failures\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_cache_efficiency{instance=~\"$instance\", db=\"$db\", type=\"block_cache_add_failures\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": "add_failures",
               "metric": "",
@@ -13310,7 +13310,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_flow_bytes{db=\"$db\", type=\"keys_read\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_flow_bytes{instance=~\"$instance\", db=\"$db\", type=\"keys_read\"}[1m]))",
               "hide": false,
               "interval": "",
               "intervalFactor": 2,
@@ -13319,7 +13319,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_flow_bytes{db=\"$db\", type=\"keys_written\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_flow_bytes{instance=~\"$instance\", db=\"$db\", type=\"keys_written\"}[1m]))",
               "hide": false,
               "interval": "",
               "intervalFactor": 2,
@@ -13328,7 +13328,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_compaction_num_corrupt_keys{db=\"$db\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_compaction_num_corrupt_keys{instance=~\"$instance\", db=\"$db\"}[1m]))",
               "hide": false,
               "interval": "",
               "intervalFactor": 2,
@@ -13410,7 +13410,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(tikv_engine_estimate_num_keys{db=\"$db\"}) by (cf)",
+              "expr": "sum(tikv_engine_estimate_num_keys{instance=~\"$instance\", db=\"$db\"}) by (cf)",
               "hide": false,
               "intervalFactor": 2,
               "legendFormat": "{{cf}}",
@@ -13492,7 +13492,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_flow_bytes{db=\"$db\", type=\"bytes_read\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_flow_bytes{instance=~\"$instance\", db=\"$db\", type=\"bytes_read\"}[1m]))",
               "hide": false,
               "interval": "",
               "intervalFactor": 2,
@@ -13501,7 +13501,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_flow_bytes{db=\"$db\", type=\"iter_bytes_read\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_flow_bytes{instance=~\"$instance\", db=\"$db\", type=\"iter_bytes_read\"}[1m]))",
               "hide": false,
               "interval": "",
               "intervalFactor": 2,
@@ -13583,28 +13583,28 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(tikv_engine_bytes_per_read{db=\"$db\",type=\"bytes_per_read_max\"})",
+              "expr": "avg(tikv_engine_bytes_per_read{instance=~\"$instance\", db=\"$db\",type=\"bytes_per_read_max\"})",
               "intervalFactor": 2,
               "legendFormat": "max",
               "refId": "A",
               "step": 10
             },
             {
-              "expr": "avg(tikv_engine_bytes_per_read{db=\"$db\",type=\"bytes_per_read_percentile99\"})",
+              "expr": "avg(tikv_engine_bytes_per_read{instance=~\"$instance\", db=\"$db\",type=\"bytes_per_read_percentile99\"})",
               "intervalFactor": 2,
               "legendFormat": "99%",
               "refId": "B",
               "step": 10
             },
             {
-              "expr": "avg(tikv_engine_bytes_per_read{db=\"$db\",type=\"bytes_per_read_percentile95\"})",
+              "expr": "avg(tikv_engine_bytes_per_read{instance=~\"$instance\", db=\"$db\",type=\"bytes_per_read_percentile95\"})",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "C",
               "step": 10
             },
             {
-              "expr": "avg(tikv_engine_bytes_per_read{db=\"$db\",type=\"bytes_per_read_average\"})",
+              "expr": "avg(tikv_engine_bytes_per_read{instance=~\"$instance\", db=\"$db\",type=\"bytes_per_read_average\"})",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "D",
@@ -13684,7 +13684,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_flow_bytes{db=\"$db\", type=\"wal_file_bytes\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_flow_bytes{instance=~\"$instance\", db=\"$db\", type=\"wal_file_bytes\"}[1m]))",
               "hide": false,
               "intervalFactor": 2,
               "legendFormat": "wal",
@@ -13692,7 +13692,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_flow_bytes{db=\"$db\", type=\"bytes_written\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_flow_bytes{instance=~\"$instance\", db=\"$db\", type=\"bytes_written\"}[1m]))",
               "hide": false,
               "intervalFactor": 2,
               "legendFormat": "write",
@@ -13773,28 +13773,28 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(tikv_engine_bytes_per_write{db=\"$db\",type=\"bytes_per_write_max\"})",
+              "expr": "avg(tikv_engine_bytes_per_write{instance=~\"$instance\", db=\"$db\",type=\"bytes_per_write_max\"})",
               "intervalFactor": 2,
               "legendFormat": "max",
               "refId": "A",
               "step": 10
             },
             {
-              "expr": "avg(tikv_engine_bytes_per_write{db=\"$db\",type=\"bytes_per_write_percentile99\"})",
+              "expr": "avg(tikv_engine_bytes_per_write{instance=~\"$instance\", db=\"$db\",type=\"bytes_per_write_percentile99\"})",
               "intervalFactor": 2,
               "legendFormat": "99%",
               "refId": "B",
               "step": 10
             },
             {
-              "expr": "avg(tikv_engine_bytes_per_write{db=\"$db\",type=\"bytes_per_write_percentile95\"})",
+              "expr": "avg(tikv_engine_bytes_per_write{instance=~\"$instance\", db=\"$db\",type=\"bytes_per_write_percentile95\"})",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "C",
               "step": 10
             },
             {
-              "expr": "avg(tikv_engine_bytes_per_write{db=\"$db\",type=\"bytes_per_write_average\"})",
+              "expr": "avg(tikv_engine_bytes_per_write{instance=~\"$instance\", db=\"$db\",type=\"bytes_per_write_average\"})",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "D",
@@ -13873,7 +13873,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_compaction_flow_bytes{db=\"$db\", type=\"bytes_read\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_compaction_flow_bytes{instance=~\"$instance\", db=\"$db\", type=\"bytes_read\"}[1m]))",
               "hide": false,
               "intervalFactor": 2,
               "legendFormat": "read",
@@ -13881,7 +13881,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_compaction_flow_bytes{db=\"$db\", type=\"bytes_written\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_compaction_flow_bytes{instance=~\"$instance\", db=\"$db\", type=\"bytes_written\"}[1m]))",
               "hide": false,
               "intervalFactor": 2,
               "legendFormat": "written",
@@ -13889,7 +13889,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_engine_flow_bytes{db=\"$db\", type=\"flush_write_bytes\"}[1m]))",
+              "expr": "sum(rate(tikv_engine_flow_bytes{instance=~\"$instance\", db=\"$db\", type=\"flush_write_bytes\"}[1m]))",
               "hide": false,
               "intervalFactor": 2,
               "legendFormat": "flushed",
@@ -13969,7 +13969,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_pending_compaction_bytes{db=\"$db\"}[1m])) by (cf)",
+              "expr": "sum(rate(tikv_engine_pending_compaction_bytes{instance=~\"$instance\", db=\"$db\"}[1m])) by (cf)",
               "hide": false,
               "intervalFactor": 2,
               "legendFormat": "{{cf}}",
@@ -14050,7 +14050,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_read_amp_flow_bytes{db=\"$db\", type=\"read_amp_total_read_bytes\"}[1m])) by (instance) / sum(rate(tikv_engine_read_amp_flow_bytes{db=\"$db\", type=\"read_amp_estimate_useful_bytes\"}[1m])) by (instance)",
+              "expr": "sum(rate(tikv_engine_read_amp_flow_bytes{instance=~\"$instance\", db=\"$db\", type=\"read_amp_total_read_bytes\"}[1m])) by (instance) / sum(rate(tikv_engine_read_amp_flow_bytes{db=\"$db\", type=\"read_amp_estimate_useful_bytes\"}[1m])) by (instance)",
               "hide": false,
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
@@ -14131,7 +14131,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(tikv_engine_compression_ratio{db=\"$db\"}) by (level)",
+              "expr": "avg(tikv_engine_compression_ratio{instance=~\"$instance\", db=\"$db\"}) by (level)",
               "hide": false,
               "intervalFactor": 2,
               "legendFormat": "level - {{level}}",
@@ -14212,7 +14212,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "tikv_engine_num_snapshots{db=\"$db\"}",
+              "expr": "tikv_engine_num_snapshots{instance=~\"$instance\", db=\"$db\"}",
               "hide": false,
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
@@ -14293,7 +14293,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "tikv_engine_oldest_snapshot_duration{db=\"$db\"}",
+              "expr": "tikv_engine_oldest_snapshot_duration{instance=~\"$instance\", db=\"$db\"}",
               "hide": false,
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
@@ -14372,7 +14372,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(tikv_engine_num_files_at_level{db=\"$db\"}) by (cf, level)",
+              "expr": "avg(tikv_engine_num_files_at_level{instance=~\"$instance\", db=\"$db\"}) by (cf, level)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "cf-{{cf}}, level-{{level}}",
@@ -14449,14 +14449,14 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_snapshot_ingest_sst_duration_seconds_bucket[1m])) by (le))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_snapshot_ingest_sst_duration_seconds_bucket{instance=~\"$instance\"}[1m])) by (le))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "99%",
               "refId": "A"
             },
             {
-              "expr": "sum(rate(tikv_snapshot_ingest_sst_duration_seconds_sum[1m])) / sum(rate(tikv_snapshot_ingest_sst_duration_seconds_count[1m]))",
+              "expr": "sum(rate(tikv_snapshot_ingest_sst_duration_seconds_sum{instance=~\"$instance\"}[1m])) / sum(rate(tikv_snapshot_ingest_sst_duration_seconds_count{instance=~\"$instance\"}[1m]))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "average",
@@ -14534,7 +14534,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "tikv_engine_stall_conditions_changed{db=\"$db\"}",
+              "expr": "tikv_engine_stall_conditions_changed{instance=~\"$instance\", db=\"$db\"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}-{{cf}}-{{type}}",
@@ -14613,7 +14613,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_compaction_reason{job=~\"$job\",db=\"$db\"}[1m])) by (cf, reason)",
+              "expr": "sum(rate(tikv_engine_compaction_reason{instance=~\"$instance\", db=\"$db\"}[1m])) by (cf, reason)",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
@@ -14709,7 +14709,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_grpc_msg_duration_seconds_count{type!=\"kv_gc\"}[1m])) by (type)",
+              "expr": "sum(rate(tikv_grpc_msg_duration_seconds_count{instance=~\"$instance\", type!=\"kv_gc\"}[1m])) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
@@ -14790,7 +14790,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_grpc_msg_fail_total{type!=\"kv_gc\"}[1m])) by (type)",
+              "expr": "sum(rate(tikv_grpc_msg_fail_total{instance=~\"$instance\", type!=\"kv_gc\"}[1m])) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
@@ -14875,7 +14875,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_grpc_msg_duration_seconds_bucket{type!=\"kv_gc\"}[1m])) by (le, type))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_grpc_msg_duration_seconds_bucket{instance=~\"$instance\", type!=\"kv_gc\"}[1m])) by (le, type))",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 2,
@@ -14956,7 +14956,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_grpc_msg_duration_seconds_count{type=\"kv_gc\"}[1m])) by (type)",
+              "expr": "sum(rate(tikv_grpc_msg_duration_seconds_count{instance=~\"$instance\", type=\"kv_gc\"}[1m])) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "gc message cnt",
@@ -14965,7 +14965,7 @@
               "step": 10
             },
             {
-              "expr": "sum(rate(tikv_grpc_msg_fail_total{type=\"kv_gc\"}[1m])) by (type)",
+              "expr": "sum(rate(tikv_grpc_msg_fail_total{instance=~\"$instance\", type=\"kv_gc\"}[1m])) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "gc failed cnt",
@@ -15044,7 +15044,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_grpc_msg_duration_seconds_bucket{type=\"kv_gc\"}[1m])) by (le, type))",
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_grpc_msg_duration_seconds_bucket{instance=~\"$instance\", type=\"kv_gc\"}[1m])) by (le, type))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
@@ -15136,7 +15136,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_pd_request_duration_seconds_count[1m])) by (type)",
+              "expr": "sum(rate(tikv_pd_request_duration_seconds_count{instance=~\"$instance\"}[1m])) by (type)",
               "intervalFactor": 2,
               "legendFormat": "{{ type }}",
               "refId": "A",
@@ -15215,7 +15215,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_pd_request_duration_seconds_sum[1m])) by (type) / sum(rate(tikv_pd_request_duration_seconds_count[1m])) by (type)",
+              "expr": "sum(rate(tikv_pd_request_duration_seconds_sum{instance=~\"$instance\"}[1m])) by (type) / sum(rate(tikv_pd_request_duration_seconds_count{instance=~\"$instance\"}[1m])) by (type)",
               "intervalFactor": 2,
               "legendFormat": "{{ type }}",
               "refId": "A",
@@ -15294,7 +15294,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_pd_heartbeat_message_total[1m])) by (type)",
+              "expr": "sum(rate(tikv_pd_heartbeat_message_total{instance=~\"$instance\"}[1m])) by (type)",
               "intervalFactor": 2,
               "legendFormat": "{{ type }}",
               "refId": "A",
@@ -15373,7 +15373,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_pd_validate_peer_total[1m])) by (type)",
+              "expr": "sum(rate(tikv_pd_validate_peer_total{instance=~\"$instance\"}[1m])) by (type)",
               "intervalFactor": 2,
               "legendFormat": "{{ type }}",
               "metric": "",
@@ -15477,7 +15477,7 @@
         "datasource": "${DS_TEST-CLUSTER}",
         "hide": 0,
         "includeAll": true,
-        "label": "Instantce",
+        "label": "Instance",
         "multi": false,
         "name": "instance",
         "options": [],
