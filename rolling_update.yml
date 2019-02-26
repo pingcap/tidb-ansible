@@ -49,7 +49,8 @@
   pre_tasks:
     - set_fact:
         pd_addr: "{{ ansible_host }}:{{ pd_client_port }}"
-        pd_name: "pd{{ groups.pd_servers.index(inventory_hostname) + 1 }}"
+
+    - include_tasks: "common_tasks/get_pd_name.yml"
 
     - name: display PD name
       debug:
