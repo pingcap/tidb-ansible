@@ -231,6 +231,12 @@ raftstore:
   ## Interval to clean up import SST files.
   # cleanup-import-sst-interval: "10m"
 
+  ## Use how many threads to handle log apply
+  # apply-pool-size: 2
+
+  ## Use how many threads to handle raft messages
+  # store-pool-size: 2
+
 coprocessor:
   ## When it is set to `true`, TiKV will try to split a Region with table prefix if that Region
   ## crosses tables.
@@ -276,7 +282,7 @@ rocksdb:
 
   ## Max size of RocksDB's MANIFEST file.
   ## For detailed explanation, please refer to https://github.com/facebook/rocksdb/wiki/MANIFEST
-  # max-manifest-file-size: "20MB"
+  # max-manifest-file-size: "128MB"
 
   ## If the value is `true`, the database will be created if it is missing.
   # create-if-missing: true
@@ -518,6 +524,13 @@ rocksdb:
     ## Pick target size of each level dynamically.
     # dynamic-level-bytes: true
 
+    ## Optimizes bloom filters. If true, RocksDB won't create bloom filters for the max level of
+    ## the LSM to reduce metadata that should fit in RAM.
+    ## This value is setted to true for `default` cf by default because its kv data could be determined
+    ## whether really exists by upper logic instead of bloom filters. But we suggest to set it to false
+    ## while using `Raw` mode.
+    # optimize-filters-for-hits: true
+
     ## Options for "Titan" for "Default" Column Family
     titan:
       ## The smallest value to store in blob files. Value smaller than
@@ -595,6 +608,7 @@ rocksdb:
     # compaction-pri: 3
     # read-amp-bytes-per-bit: 0
     # dynamic-level-bytes: true
+    # optimize-filters-for-hits: false
 
   lockcf:
     # compression-per-level: ["no", "no", "no", "no", "no", "no", "no"]
@@ -613,8 +627,10 @@ rocksdb:
     # compaction-pri: 0
     # read-amp-bytes-per-bit: 0
     # dynamic-level-bytes: true
+    # optimize-filters-for-hits: false
 
 raftdb:
+  # max-background-jobs: 2
   # max-sub-compactions: 1
   # max-open-files: 40960
   # max-manifest-file-size: "20MB"
@@ -635,6 +651,7 @@ raftdb:
   # info-log-roll-time: "0"
   # info-log-keep-log-file-num: 10
   # info-log-dir: ""
+  # optimize-filters-for-hits: true
 
   defaultcf:
     ## Recommend to set it the same as `rocksdb.defaultcf.compression-per-level`.
@@ -662,6 +679,7 @@ raftdb:
     # compaction-pri: 0
     # read-amp-bytes-per-bit: 0
     # dynamic-level-bytes: true
+    # optimize-filters-for-hits: true
 
 security:
   ## The path for TLS certificates. Empty string means disabling secure connections.
