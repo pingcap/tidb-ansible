@@ -9,7 +9,9 @@ DEPLOY_DIR={{ deploy_dir }}
 cd "${DEPLOY_DIR}" || exit 1
 
 {% set my_ip = hostvars[inventory_hostname].ansible_host | default(hostvars[inventory_hostname].inventory_hostname) -%}
-{% set my_peer_id = groups.pd_servers.index(inventory_hostname) + 1 -%}
+{% set my_separator = "_" %}
+{% set my_hostname = hostvars[inventory_hostname]['ansible_hostname'] | default(hostvars[inventory_hostname].inventory_hostname) -%}
+{% set my_peer_id = my_separator ~ my_hostname %}
 
 {% if enable_tls|default(false) %}
   {% set pd_scheme = 'https' -%}
@@ -19,8 +21,8 @@ cd "${DEPLOY_DIR}" || exit 1
 {% for host in groups.pd_servers -%}
   {% set other_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
   {% set other_port = hostvars[host]['pd_peer_port'] -%}
-  {% set other_pd_name_surfix = groups.pd_servers.index(host) + 1 -%}
-  {% set other_pd_name = pd_name_prefix ~ other_pd_name_surfix -%}
+  {% set other_pd_name_surfix = hostvars[host]['ansible_hostname'] | default(hostvars[host].inventory_hostname) -%}
+  {% set other_pd_name = pd_name_prefix ~ my_separator ~ other_pd_name_surfix -%}
   {% set _ = all_pd.append("%s=%s://%s:%s" % (other_pd_name, pd_scheme, other_ip, other_port)) -%}
 {% endfor -%}
 
