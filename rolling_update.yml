@@ -263,7 +263,9 @@
         port: "{{ pump_port }}"
         state: stopped
         msg: "the pump port {{ pump_port }} is not down"
-      when: enable_binlog|default(false)
+      when: 
+        - enable_binlog|default(false)
+        - binlog_version == "cluster"
 
   roles:
     - { role: pump_cluster, when: enable_binlog|default(false) and binlog_version == "cluster" }
