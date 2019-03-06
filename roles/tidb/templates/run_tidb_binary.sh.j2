@@ -27,7 +27,7 @@ exec bin/tidb-server \
     --advertise-address="{{ my_ip }}" \
     --path="{{ all_pd | join(',') }}" \
     --config=conf/tidb.toml \
-{% if enable_binlog|default(false) and binlog_version == "cluster" %}
+{% if enable_binlog|default(false) %}
     --enable-binlog \
 {% endif %}
 {% if enable_slow_query_log %}
