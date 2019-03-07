@@ -112,6 +112,13 @@
               "intervalFactor": 2,
               "legendFormat": "upload to tikv",
               "refId": "C"
+            },
+            {
+              "expr": "sum(rate(tikv_import_batch_write_chunk_bytes_sum[1m]))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "batch_write",
+              "refId": "A"
             }
           ],
           "thresholds": [],
@@ -910,7 +917,7 @@
     },
     {
       "collapse": false,
-      "height": 250,
+      "height": 223,
       "panels": [
         {
           "aliasColors": {},
@@ -939,7 +946,7 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "spaceLength": 10,
-          "span": 12,
+          "span": 6,
           "stack": false,
           "steppedLine": false,
           "targets": [
@@ -947,12 +954,14 @@
               "expr": "rate(lightning_chunk_parser_read_block_seconds_sum[30s]) / rate(lightning_chunk_parser_read_block_seconds_count[30s])",
               "format": "time_series",
               "intervalFactor": 2,
+              "legendFormat": "read block",
               "refId": "A"
             },
             {
               "expr": "rate(lightning_apply_worker_seconds_sum{name = \"io\"}[30s]) /rate(lightning_apply_worker_seconds_count{name = \"io\"}[30s]) ",
               "format": "time_series",
               "intervalFactor": 2,
+              "legendFormat": "apply worker",
               "refId": "B"
             }
           ],
@@ -991,105 +1000,7 @@
               "show": true
             }
           ]
-        }
-      ],
-      "repeat": null,
-      "repeatIteration": null,
-      "repeatRowId": null,
-      "showTitle": false,
-      "title": "Dashboard Row",
-      "titleSize": "h6"
-    },
-    {
-      "collapse": false,
-      "height": 250,
-      "panels": [
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_LIGHTNING}",
-          "fill": 1,
-          "id": 14,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "span": 12,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "rate(lightning_chunk_parser_read_row_seconds_sum[30s]) / rate(lightning_chunk_parser_read_row_seconds_count[30s])",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "refId": "A"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Chunk parser read row duration",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "s",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        }
-      ],
-      "repeat": null,
-      "repeatIteration": null,
-      "repeatRowId": null,
-      "showTitle": false,
-      "title": "Dashboard Row",
-      "titleSize": "h6"
-    },
-    {
-      "collapse": false,
-      "height": 250,
-      "panels": [
+        },
         {
           "aliasColors": {},
           "bars": false,
@@ -1117,16 +1028,16 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "spaceLength": 10,
-          "span": 12,
+          "span": 6,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
-              "expr": "rate(lightning_block_encode_seconds_sum[30s]) / rate(lightning_block_encode_seconds_count[30s])",
+              "expr": "rate(lightning_chunk_parser_read_row_seconds_sum[30s]) / rate(lightning_chunk_parser_read_row_seconds_count[30s])",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "block encode",
-              "refId": "A"
+              "legendFormat": "read row",
+              "refId": "D"
             },
             {
               "expr": "rate(lightning_block_read_seconds_sum[30s]) / rate(lightning_block_read_seconds_count[30s])",
@@ -1134,6 +1045,13 @@
               "intervalFactor": 2,
               "legendFormat": "block read",
               "refId": "B"
+            },
+            {
+              "expr": "rate(lightning_block_encode_seconds_sum[30s]) / rate(lightning_block_encode_seconds_count[30s])",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "block encode",
+              "refId": "A"
             },
             {
               "expr": "rate(lightning_block_deliver_seconds_sum[30s]) / rate(lightning_block_deliver_seconds_count[30s])",
@@ -1189,7 +1107,7 @@
     },
     {
       "collapse": false,
-      "height": 250,
+      "height": 235,
       "panels": [
         {
           "aliasColors": {},
@@ -1218,7 +1136,7 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "spaceLength": 10,
-          "span": 12,
+          "span": 6,
           "stack": false,
           "steppedLine": false,
           "targets": [
@@ -1272,19 +1190,7 @@
               "show": true
             }
           ]
-        }
-      ],
-      "repeat": null,
-      "repeatIteration": null,
-      "repeatRowId": null,
-      "showTitle": false,
-      "title": "Dashboard Row",
-      "titleSize": "h6"
-    },
-    {
-      "collapse": false,
-      "height": 250,
-      "panels": [
+        },
         {
           "aliasColors": {},
           "bars": false,
@@ -1312,7 +1218,7 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "spaceLength": 10,
-          "span": 12,
+          "span": 6,
           "stack": false,
           "steppedLine": false,
           "targets": [
@@ -1329,6 +1235,13 @@
               "intervalFactor": 2,
               "legendFormat": "deliver",
               "refId": "B"
+            },
+            {
+              "expr": "pd_cluster_status{type=\"storage_size\"} / 3",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "storage_size / 3",
+              "refId": "C"
             }
           ],
           "thresholds": [],
@@ -1374,6 +1287,204 @@
       "showTitle": false,
       "title": "Dashboard Row",
       "titleSize": "h6"
+    },
+    {
+      "collapse": false,
+      "height": 243,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_LIGHTNING}",
+          "fill": 1,
+          "id": 18,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "rate(tikv_import_range_delivery_duration_sum[30s]) / rate(tikv_import_range_delivery_duration_count[30s])",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "Range delivery",
+              "refId": "A"
+            },
+            {
+              "expr": "rate(tikv_import_sst_delivery_duration_sum[30s]) / rate(tikv_import_sst_delivery_duration_count[30s])",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "SST delivery",
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Delivery duration",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "s",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_LIGHTNING}",
+          "fill": 1,
+          "id": 19,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "SST size",
+              "yaxis": 2
+            }
+          ],
+          "spaceLength": 10,
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "rate(tikv_import_split_sst_duration_sum[30s]) / rate(tikv_import_split_sst_duration_count[30s])",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "Split SST",
+              "refId": "C"
+            },
+            {
+              "expr": "rate(tikv_import_sst_upload_duration_sum[30s]) / rate(tikv_import_sst_upload_duration_count[30s])",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "SST upload",
+              "refId": "D"
+            },
+            {
+              "expr": "rate(tikv_import_sst_ingest_duration_sum[30s]) / rate(tikv_import_sst_ingest_duration_count[30s])",
+              "format": "time_series",
+              "instant": false,
+              "intervalFactor": 2,
+              "legendFormat": "SST ingest",
+              "refId": "E"
+            },
+            {
+              "expr": "rate(tikv_import_sst_chunk_bytes_sum[30s])",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "SST size",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "SST process duration",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "s",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "decbytes",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "Dashboard Row",
+      "titleSize": "h6"
     }
   ],
   "schemaVersion": 14,
@@ -1383,7 +1494,7 @@
     "list": []
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {
@@ -1413,5 +1524,5 @@
   },
   "timezone": "browser",
   "title": "Test-Cluster-Lightning",
-  "version": 2
+  "version": 3
 }
