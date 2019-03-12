@@ -353,7 +353,7 @@
         client_key: "{{ tidb_cert_dir }}/tidb-server-{{ ansible_host }}-key.pem"
         return_content: yes
       register: tidb_https_result
-      until: tidb_https_result.status == 200 and 'TiDB' in tidb_http_result.content
+      until: tidb_https_result.status == 200 and 'TiDB' in tidb_https_result.content
       retries: 10
       delay: 5
       when: enable_tls|default(false)
