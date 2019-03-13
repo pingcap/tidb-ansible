@@ -8,6 +8,7 @@ DEPLOY_DIR={{ deploy_dir }}
 cd "${DEPLOY_DIR}" || exit 1
 
 exec docker run -p {{ alertmanager_port }}:9093 \
+  -p {{ alertmanager_mesh_port }}:9094
   -v /etc/localtime:/etc/localtime:ro \
   -v "{{ alertmanager_data_dir }}:/alertmanager" \
   -v "{{ deploy_dir }}/conf/alertmanager.yml:/etc/alertmanager/config.yml" \
@@ -18,3 +19,4 @@ exec docker run -p {{ alertmanager_port }}:9093 \
   --storage.path="/alertmanager" \
   --data.retention=120h \
   --log.level="{{ alertmanager_log_level }}"
+  --mesh.listen-address=":9094"
