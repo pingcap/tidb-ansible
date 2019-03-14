@@ -443,7 +443,7 @@
         chdir={{ grafana_data_dir }}
         warn=no
         curl -q -X POST -d @data_source.json --header 'Content-Type: application/json'
-        "http://{{ grafana_admin_user }}:{{ grafana_admin_password }}@127.0.0.1:{{ grafana_port }}/api/datasources"
+        "http://{{ grafana_admin_user }}:{{ grafana_admin_password | urlencode | regex_replace('/','%2F') }}@127.0.0.1:{{ grafana_port }}/api/datasources"
 
     - name: import grafana dashboards - prepare config
       delegate_to: localhost
