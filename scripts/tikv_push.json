@@ -10291,10 +10291,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{job=~\"$job\", name=~\"local_reader\"}[1m])) by (job, name)",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{job=~\"$job\", name=~\"local_reader.*\"}[1m])) by (job, name)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{job}}",
+              "legendFormat": "{{job}} - {{name}}",
               "metric": "tikv_thread_cpu_seconds_total",
               "refId": "A",
               "step": 4

@@ -10495,10 +10495,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{instance=~\"$instance\", name=~\"local_reader\"}[1m])) by (instance, name)",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{instance=~\"$instance\", name=~\"local_reader.*\"}[1m])) by (instance, name)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{instance}}",
+              "legendFormat": "{{instance}} - {{name}}",
               "metric": "tikv_thread_cpu_seconds_total",
               "refId": "A",
               "step": 4
