@@ -73,7 +73,7 @@
       when: process_supervision == 'supervise'
 
     - name: stop PD by systemd
-      systemd: name=pd.service state=stopped
+      systemd: name=pd-{{ pd_client_port }}.service state=stopped
       become: true
       when: process_supervision == 'systemd'
 
@@ -93,7 +93,7 @@
       when: process_supervision == 'supervise'
 
     - name: start PD by systemd
-      systemd: name=pd.service state=started
+      systemd: name=pd-{{ pd_client_port }}.service state=started
       become: true
       when: process_supervision == 'systemd'
 
@@ -263,7 +263,7 @@
         port: "{{ pump_port }}"
         state: stopped
         msg: "the pump port {{ pump_port }} is not down"
-      when: 
+      when:
         - enable_binlog|default(false)
         - binlog_version == "cluster"
 
@@ -416,7 +416,7 @@
         client_key: "{{ tidb_cert_dir }}/tidb-server-{{ ansible_host }}-key.pem"
         return_content: yes
       register: tidb_https_result
-      until: tidb_https_result.status == 200 and 'TiDB' in tidb_http_result.content
+      until: tidb_https_result.status == 200 and 'TiDB' in tidb_https_result.content
       retries: 10
       delay: 5
       when: enable_tls|default(false)
