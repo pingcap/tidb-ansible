@@ -28,34 +28,19 @@ if not dests:
 
 method = dests[0]['method']
 
-if method == "pull":
-    src = dict(
-        dashboards={"node": 'node.json',
-                    "pd"  : 'pd.json',
-                    "tidb": 'tidb.json',
-                    "tikv_summary": 'tikv_pull_summary.json',
-                    "tikv_details": 'tikv_pull_details.json',
-                    "tikv_trouble_shot": 'tikv_pull_trouble_shot.json',
-                    "binlog": "binlog.json",
-                    "overview": 'overview.json',
-                    "disk_performance": 'disk_performance.json',
-                    "blackbox_exporter": "blackbox_exporter.json",
-                    "kafka_overview": "kafka.json",
-                    "lightning": "lightning.json"})
-else:
-    src = dict(
-        dashboards={"node": 'node.json',
-                    "pd"  : 'pd.json',
-                    "tidb": 'tidb.json',
-                    "tikv_summary": 'tikv_pull_summary.json',
-                    "tikv_details": 'tikv_pull_details.json',
-                    "tikv_touble_shot": 'tikv_pull_trouble_shot.json',
-                    "binlog": "binlog.json",
-                    "overview": 'overview.json',
-                    "disk_performance": 'disk_performance.json',
-                    "blackbox_exporter": "blackbox_exporter.json",
-                    "kafka_overview": "kafka.json",
-                    "lightning": "lightning.json"})
+src = dict(
+    dashboards={"node": 'node.json',
+                "pd"  : 'pd.json',
+                "tidb": 'tidb.json',
+                "tikv_summary": 'tikv_pull_summary.json',
+                "tikv_details": 'tikv_pull_details.json',
+                "tikv_trouble_shot": 'tikv_pull_trouble_shot.json',
+                "binlog": "binlog.json",
+                "overview": 'overview.json',
+                "disk_performance": 'disk_performance.json',
+                "blackbox_exporter": "blackbox_exporter.json",
+                "kafka_overview": "kafka.json",
+                "lightning": "lightning.json"})
 
 ############################################################
 ################## CONFIGURATION ENDS ######################
