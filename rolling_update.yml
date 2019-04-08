@@ -38,6 +38,22 @@
   roles:
     - check_config_dynamic
 
+- name: Pre-check for rolling update
+  hosts: tidb_servers
+  any_errors_fatal: true
+  serial: 1
+  tags:
+    - always
+  tasks:
+    - shell: "{{ deploy_dir }}/bin/tidb-server -V"
+      register: current_version
+
+     - name: Check whether can perform rolling update
+      fail:
+        msg: "Rolling update from {{ current_version.stdout_lines[0].replace(' ','').split(':')[1] }} to {{ tidb_version }} is forbidden"
+      when:
+        - current_version.stdout_lines[0].replace(' ','').split(':')[1] <= "v2.0.1"
+        - tidb_version >= "v2.1.0" or tidb_version == "latest"
 
 - name: rolling update PD cluster
   hosts: pd_servers
