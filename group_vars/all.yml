@@ -40,25 +40,6 @@ dev_mode: False
 # systemd: Specifies whether to send SIGKILL to remaining processes after a timeout.
 disable_send_sigkill: False
 
-## MemoryLimit is a global variable in group_vars/all.yml that will take effect on all nodes in inventory.ini.
-## If you need to configure different values, you can add MemoryLimit="64G" to the host in inventory.ini. 
-## CPUQuota/IOReadBandwidthMax/IOWriteBandwidthMax are the same settings.
-
-# systemd: Specify the limit on maximum memory usage of the executed processes.
-# Support K, M, G, T and infinity. Default no memory limit.
-# MemoryLimit: "64G"
-
-# systemd: Assign the specified CPU time quota to the processes executed
-# For example, 200% means that the executed processes will never get more than 200% CPU time on two CPU.
-# CPUQuota: "1000%"
-
-# systemd: Set block I/O bandwidth maximum limit for the executed processes. Support K, M, G, T.
-# IOReadBandwidthMax: "{{ deploy_dir }} 10G"
-# IOWriteBandwidthMax: "{{ deploy_dir }} 10G"
-
-# The way to collect tikv monitor data: "pull" or "push".
-tikv_metric_method: "pull"
-
 # pump
 pump_port: 8250
 pump_data_dir: "{{ deploy_dir }}/data.pump"

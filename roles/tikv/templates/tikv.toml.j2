@@ -40,11 +40,6 @@
 {% endfor %}
 
 [metric]
-{% if tikv_metric_method is defined and tikv_metric_method == 'push' %}
-{% for item, value in tikv_conf.metric | dictsort -%}
-{{ item }} = {{ value | to_json }}
-{% endfor %}
-{% endif %}
 
 [raftstore]
 {% for item, value in tikv_conf.raftstore | dictsort -%}
