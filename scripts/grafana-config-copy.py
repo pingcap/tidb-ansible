@@ -26,32 +26,19 @@ if not dests:
     with open("./dests.json") as fp:
         dests = json.load(fp)
 
-method = dests[0]['method']
-
-if method == "pull":
-    src = dict(
-        dashboards={"node": 'node.json',
-                    "pd"  : 'pd.json',
-                    "tidb": 'tidb.json',
-                    "tikv": 'tikv_pull.json',
-                    "binlog": "binlog.json",
-                    "overview": 'overview.json',
-                    "disk_performance": 'disk_performance.json',
-                    "blackbox_exporter": "blackbox_exporter.json",
-                    "kafka_overview": "kafka.json",
-                    "lightning": "lightning.json"})
-else:
-    src = dict(
-        dashboards={"node": 'node.json',
-                    "pd"  : 'pd.json',
-                    "tidb": 'tidb.json',
-                    "tikv": 'tikv_push.json',
-                    "binlog": "binlog.json",
-                    "overview": 'overview.json',
-                    "disk_performance": 'disk_performance.json',
-                    "blackbox_exporter": "blackbox_exporter.json",
-                    "kafka_overview": "kafka.json",
-                    "lightning": "lightning.json"})
+src = dict(
+    dashboards={"node": 'node.json',
+                "pd"  : 'pd.json',
+                "tidb": 'tidb.json',
+                "tikv_summary": 'tikv_summary.json',
+                "tikv_details": 'tikv_details.json',
+                "tikv_trouble_shot": 'tikv_trouble_shooting.json',
+                "binlog": "binlog.json",
+                "overview": 'overview.json',
+                "disk_performance": 'disk_performance.json',
+                "blackbox_exporter": 'blackbox_exporter.json',
+                "kafka_overview": 'kafka.json',
+                "lightning": 'lightning.json'})
 
 ############################################################
 ################## CONFIGURATION ENDS ######################

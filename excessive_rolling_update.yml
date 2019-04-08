@@ -38,6 +38,22 @@
   roles:
     - check_config_dynamic
 
+- name: Pre-check for rolling update
+  hosts: tidb_servers
+  any_errors_fatal: true
+  serial: 1
+  tags:
+    - always
+  tasks:
+    - shell: "{{ deploy_dir }}/bin/tidb-server -V"
+      register: current_version
+
+    - name: Check whether can perform rolling update
+      fail:
+        msg: "Rolling update from {{ current_version.stdout_lines[0].replace(' ','').split(':')[1] }} to {{ tidb_version }} is forbidden"
+      when:
+        - current_version.stdout_lines[0].replace(' ','').split(':')[1] <= "v2.0.1"
+        - tidb_version >= "v2.1.0" or tidb_version == "latest"
 
 - name: rolling update PD cluster
   hosts: pd_servers
@@ -199,7 +215,7 @@
       until: tikv_http_result.status == 200
       retries: 12
       delay: 5
-      when: not enable_tls|default(false) and (tikv_metric_method is defined and tikv_metric_method != "push")
+      when: not enable_tls|default(false)
 
     - name: wait until the TiKV status page is available when enable_tls
       uri:
@@ -212,13 +228,7 @@
       until: tikv_https_result.status == 200
       retries: 10
       delay: 5
-      when: enable_tls|default(false) and (tikv_metric_method is defined and tikv_metric_method != "push")
-
-    - name: wait until TiKV process is up
-      wait_for_pid: |
-        pid_file={{ deploy_dir }}/status/tikv.pid timeout=300
-        thread_name_regex='tikv-server' state=present
-      when: deployment_method == 'binary' and (tikv_metric_method is defined and tikv_metric_method == "push")
+      when: enable_tls|default(false)
 
     - command: cat {{ deploy_dir }}/status/tikv.pid
       register: new_tikv_pid
