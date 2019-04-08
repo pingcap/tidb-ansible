@@ -14,7 +14,10 @@
 - name: Preflight check - Linux OS family and distribution version
   fail:
     msg: "System versions lower than Red Hat Enterprise Linux / CentOS 7.3 have been deprecated. Please use CentOS 7.3 and above. See https://github.com/pingcap/docs/blob/master/op-guide/recommendation.md"
-  when: "ansible_os_family == 'RedHat' and ansible_distribution_version < '7.3'"
+  when: 
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution != 'Amazon'
+    - ansible_distribution_version < '7.3'
 
 - name: Deploy epollexclusive script
   copy: src="{{ script_dir }}/check/epollexclusive" dest="{{ deploy_dir }}/epollexclusive" mode=0755
