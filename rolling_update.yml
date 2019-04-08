@@ -48,7 +48,7 @@
     - shell: "{{ deploy_dir }}/bin/tidb-server -V"
       register: current_version
 
-     - name: Check whether can perform rolling update
+    - name: Check whether can perform rolling update
       fail:
         msg: "Rolling update from {{ current_version.stdout_lines[0].replace(' ','').split(':')[1] }} to {{ tidb_version }} is forbidden"
       when:
