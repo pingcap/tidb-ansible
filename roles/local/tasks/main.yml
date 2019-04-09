@@ -80,7 +80,9 @@
   retries: 4
   delay: "{{ retry_stagger | random + 3 }}"
   with_items: "{{ tidb_binlog_kafka }}"
-  when: has_outbound_network
+  when: 
+    - has_outbound_network
+    - not deploy_without_tidb|default(false)
 
 - name: download common binary
   get_url:
@@ -155,6 +157,8 @@
     chdir: "{{ downloads_dir }}"
     warn: no
   with_items: "{{ tidb_binlog_kafka }}"
+  when:
+    - not deploy_without_tidb|default(false)
 
 - name: unarchive common binary
   shell: ls -1 {{ item.name }}-{{ item.version }}.tar.gz | xargs -n1 tar xzf
@@ -172,6 +176,8 @@
   shell: >
     cp -v {{ downloads_dir }}/{{ item.name }}-{{ item.version}}*/bin/* "{{ resources_dir }}/bin/binlog_kafka/"
   with_items: "{{ tidb_binlog_kafka }}"
+  when:
+    - not deploy_without_tidb|default(false) 
 
 - name: cp fio binary
   shell: >
