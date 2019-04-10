@@ -16,7 +16,7 @@
     msg: "System versions lower than Red Hat Enterprise Linux / CentOS 7.3 have been deprecated. Please use CentOS 7.3 and above. See https://github.com/pingcap/docs/blob/master/op-guide/recommendation.md"
   when:
     - ansible_os_family == 'RedHat'
-    - ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+    - ansible_distribution in ['CentOS', 'RedHat']
     - ansible_distribution_major_version != '7'
 
 - name: Deploy epollexclusive script
