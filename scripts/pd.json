@@ -1399,7 +1399,7 @@
               "hide": false,
               "instant": false,
               "intervalFactor": 2,
-              "legendFormat": "{{address}}",
+              "legendFormat": "{{address}}-store-{{store}}",
               "refId": "B"
             }
           ],
@@ -1478,7 +1478,7 @@
               "expr": "{instance=\"$instance\", namespace=~\"$namespace\", type=\"store_available\"}",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{address}}",
+              "legendFormat": "{{address}}-store-{{store}}",
               "refId": "A"
             }
           ],
@@ -1557,7 +1557,7 @@
               "expr": "pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"store_used\"}",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{address}}",
+              "legendFormat": "{{address}}-store-{{store}}",
               "refId": "A"
             }
           ],
@@ -1633,10 +1633,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"region_size\"}) by (address) / sum(pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"store_used\"}) by (address) * 2^20",
+              "expr": "sum(pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"region_size\"}) by (address, store) / sum(pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"store_used\"}) by (address, store) * 2^20",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{address}}",
+              "legendFormat": "{{address}}-store-{{store}}",
               "refId": "A"
             }
           ],
@@ -1713,10 +1713,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"store_available\"}) by (address) / sum(pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"store_capacity\"}) by (address)",
+              "expr": "sum(pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"store_available\"}) by (address, store) / sum(pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"store_capacity\"}) by (address, store)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{address}}",
+              "legendFormat": "{{address}}-store-{{store}}",
               "refId": "A"
             }
           ],
@@ -1801,7 +1801,7 @@
               "expr": "pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"leader_score\"}",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{address}}",
+              "legendFormat": "{{address}}-store-{{store}}",
               "refId": "A",
               "step": 4
             }
@@ -1897,7 +1897,7 @@
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
-              "legendFormat": "{{address}}",
+              "legendFormat": "{{address}}-store-{{store}}",
               "refId": "A",
               "step": 4
             }
@@ -1987,7 +1987,7 @@
             {
               "expr": "pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"leader_size\"}",
               "intervalFactor": 2,
-              "legendFormat": "{{address}}",
+              "legendFormat": "{{address}}-store-{{store}}",
               "refId": "A",
               "step": 4
             }
@@ -2068,7 +2068,7 @@
             {
               "expr": "pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"region_size\"}",
               "intervalFactor": 2,
-              "legendFormat": "{{address}}",
+              "legendFormat": "{{address}}-store-{{store}}",
               "refId": "A",
               "step": 4
             }
@@ -2149,7 +2149,7 @@
             {
               "expr": "pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"leader_count\"}",
               "intervalFactor": 2,
-              "legendFormat": "{{address}}",
+              "legendFormat": "{{address}}-store-{{store}}",
               "refId": "A",
               "step": 4
             }
@@ -2230,7 +2230,7 @@
             {
               "expr": "pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"region_count\"}",
               "intervalFactor": 2,
-              "legendFormat": "{{address}}",
+              "legendFormat": "{{address}}-store-{{store}}",
               "refId": "A",
               "step": 4
             }
@@ -2325,7 +2325,7 @@
               "expr": "pd_hotspot_status{instance=\"$instance\",type=\"hot_write_region_as_leader\"}",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{address}}",
+              "legendFormat": "{{address}}-store-{{store}}",
               "refId": "A",
               "step": 4
             }
@@ -2408,7 +2408,7 @@
               "expr": "pd_hotspot_status{instance=\"$instance\",type=\"hot_write_region_as_peer\"}",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{address}}",
+              "legendFormat": "{{address}}-store-{{store}}",
               "refId": "A",
               "step": 4
             }
@@ -2491,7 +2491,7 @@
               "expr": "pd_hotspot_status{instance=\"$instance\",type=\"total_written_bytes_as_leader\"}",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{address}}",
+              "legendFormat": "{{address}}-store-{{store}}",
               "metric": "pd_hotspot_status",
               "refId": "A",
               "step": 4
@@ -2575,7 +2575,7 @@
               "expr": "pd_hotspot_status{instance=\"$instance\",type=\"total_written_bytes_as_peer\"}",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{address}}",
+              "legendFormat": "{{address}}-store-{{store}}",
               "refId": "A",
               "step": 4
             }
@@ -2658,7 +2658,7 @@
               "expr": "pd_hotspot_status{instance=\"$instance\",type=\"hot_read_region_as_leader\"}",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{address}}",
+              "legendFormat": "{{address}}-store-{{store}}",
               "refId": "A",
               "step": 4
             }
@@ -2741,7 +2741,7 @@
               "expr": "pd_hotspot_status{instance=\"$instance\",type=\"hot_read_region_as_peer\"}",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{address}}",
+              "legendFormat": "{{address}}-store-{{store}}",
               "refId": "A",
               "step": 4
             }
@@ -2823,7 +2823,7 @@
               "expr": "pd_hotspot_status{instance=\"$instance\",type=\"total_read_bytes_as_leader\"}",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{address}}",
+              "legendFormat": "{{address}}-store-{{store}}",
               "metric": "pd_hotspot_status",
               "refId": "A",
               "step": 4
@@ -2906,7 +2906,7 @@
               "expr": "pd_hotspot_status{instance=\"$instance\",type=\"total_read_bytes_as_peer\"}",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{address}}",
+              "legendFormat": "{{address}}-store-{{store}}",
               "refId": "A",
               "step": 4
             }
@@ -3078,10 +3078,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(delta(pd_scheduler_balance_leader{instance=\"$instance\", type=\"move_leader\"}[30s])) by (address)",
+              "expr": "sum(delta(pd_scheduler_balance_leader{instance=\"$instance\", type=\"move_leader\"}[30s])) by (address, store)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{address}}",
+              "legendFormat": "{{address}}-store-{{store}}",
               "refId": "A"
             }
           ],
@@ -3160,10 +3160,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(delta(pd_scheduler_balance_region{instance=\"$instance\", type=\"move_peer\"}[1m])) by (address)",
+              "expr": "sum(delta(pd_scheduler_balance_region{instance=\"$instance\", type=\"move_peer\"}[1m])) by (address, store)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{address}}",
+              "legendFormat": "{{address}}-store-{{store}}",
               "refId": "A"
             }
           ],
@@ -3239,10 +3239,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(delta(pd_scheduler_balance_leader{instance=\"$instance\", type!=\"move_leader\"}[30s])) by (type, address)",
+              "expr": "sum(delta(pd_scheduler_balance_leader{instance=\"$instance\", type!=\"move_leader\"}[30s])) by (type, address, store)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{type}}_{{address}}",
+              "legendFormat": "{{type}}_{{address}}-store-{{store}}",
               "refId": "A"
             }
           ],
@@ -3319,10 +3319,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(delta(pd_scheduler_balance_region{instance=\"$instance\", type!=\"move_peer\"}[30s])) by (type, address)",
+              "expr": "sum(delta(pd_scheduler_balance_region{instance=\"$instance\", type!=\"move_peer\"}[30s])) by (type, address, store)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{type}}_{{address}}",
+              "legendFormat": "{{type}}_{{address}}-store-{{store}}",
               "refId": "A"
             }
           ],
@@ -5706,11 +5706,11 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(delta(pd_scheduler_region_heartbeat{instance=\"$instance\", type=\"report\", status=\"ok\"}[1m])) by (address)",
+              "expr": "sum(delta(pd_scheduler_region_heartbeat{instance=\"$instance\", type=\"report\", status=\"ok\"}[1m])) by (address, store)",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
-              "legendFormat": "{{address}}",
+              "legendFormat": "{{address}}-store-{{store}}",
               "refId": "A",
               "step": 4
             }
@@ -5791,11 +5791,11 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(delta(pd_scheduler_region_heartbeat{instance=\"$instance\", type=\"report\", status=\"err\"}[1m])) by (address)",
+              "expr": "sum(delta(pd_scheduler_region_heartbeat{instance=\"$instance\", type=\"report\", status=\"err\"}[1m])) by (address, store)",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
-              "legendFormat": "{{address}}",
+              "legendFormat": "{{address}}-store-{{store}}",
               "refId": "A",
               "step": 4
             }
@@ -5876,11 +5876,11 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(delta(pd_scheduler_region_heartbeat{instance=\"$instance\", type=\"report\", status=\"bind\"}[1m])) by (address)",
+              "expr": "sum(delta(pd_scheduler_region_heartbeat{instance=\"$instance\", type=\"report\", status=\"bind\"}[1m])) by (address, store)",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
-              "legendFormat": "{{address}}",
+              "legendFormat": "{{address}}-store-{{store}}",
               "refId": "A",
               "step": 4
             }
@@ -5961,11 +5961,11 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(pd_scheduler_region_heartbeat{type=\"push\",instance=\"$instance\"}[5m])*60) by (address, status)",
+              "expr": "sum(rate(pd_scheduler_region_heartbeat{type=\"push\",instance=\"$instance\"}[5m])*60) by (address, store, status)",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
-              "legendFormat": "{{address}}-{{status}}",
+              "legendFormat": "{{address}}-{{status}}-store-{{store}}",
               "refId": "A",
               "step": 4
             }
@@ -6046,11 +6046,11 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "round(histogram_quantile(0.99, sum(rate(pd_scheduler_region_heartbeat_latency_seconds_bucket[5m])) by (address, le)), 1000)",
+              "expr": "round(histogram_quantile(0.99, sum(rate(pd_scheduler_region_heartbeat_latency_seconds_bucket[5m])) by (address, store, le)), 1000)",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
-              "legendFormat": "{{address}}",
+              "legendFormat": "{{address}}-store-{{store}}",
               "refId": "A",
               "step": 4
             }
