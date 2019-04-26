@@ -12,25 +12,25 @@ def main():
     webContent = subprocess.check_output(["curl", "-sl", httpAPI])
     region_info = json.loads(webContent)
 
-    table_region_leader = parse_regions(region_info["record_regions"])
+    table_region_leaders = parse_regions(region_info["record_regions"])
     table_region_peers = parse_region_peers(region_info["record_regions"])
-    indices_region_leader = []
+    indices_region_leaders = []
     indices_region_peers = []
     for index_info in region_info["indices"]:
         index_name = index_info["name"]
-        index_region_leader = parse_regions(index_info["regions"])
-        indices_region_leader.append({"name": index_name, "leader": index_region_leader})
+        index_region_leaders = parse_regions(index_info["regions"])
+        indices_region_leaders.append({"name": index_name, "leader": index_region_leaders})
         index_region_peers = parse_region_peers(index_info["regions"])
         indices_region_peers.append({"name": index_name, "peers": index_region_peers})
     # print record
     print("[RECORD - {}.{}] - Leaders Distribution:".format(args.database, args.table))
-    print_leader(table_region_leader)
+    print_leaders(table_region_leaders)
     print("[RECORD - {}.{}] - Peers Distribution:".format(args.database, args.table))
     print_peers(table_region_peers)
     # print indices
-    for index_region_info in indices_region_leader:
+    for index_region_info in indices_region_leaders:
         print("[INDEX - {}] - Leaders Distribution:".format(index_region_info["name"]))
-        print_leader(index_region_info["leader"])
+        print_leaders(index_region_info["leader"])
     for index_region_info in indices_region_peers:
         print("[INDEX - {}] - Peers Distribution:".format(index_region_info["name"]))
         print_peers(index_region_info["peers"])
@@ -62,13 +62,13 @@ def parse_region_peers(regions):
                 info[store_id] = 1 + info.get(store_id, 0)
     return info
 
-def print_leader(info, indent = "  "):
+def print_leaders(info, indent = "  "):
     total_leaders = 0
     for store_id, num_leaders in info.items():
         total_leaders += num_leaders
     print("{}total leader count: {}".format(indent, total_leaders))
     for store_id, num_leaders in info.items():
-        print("{}store: {}, num_leaders: {}, percentage: {}%".format(indent, store_id, num_leaders, (num_leaders*100.0)/total_leaders))
+        print("{}store: {}, num_leaders: {}, percentage: {}%".format(indent, store_id, num_leaders,format((num_leaders*100.0)/total_leaders,'.2f')))
 
 def print_peers(info, indent = "  "):
     total_peers = 0
@@ -76,7 +76,7 @@ def print_peers(info, indent = "  "):
         total_peers += num_peers
     print("{}total peers count: {}".format(indent, total_peers))
     for store_id, num_peers in info.items():
-        print("{}store: {}, num_peers: {}, percentage: {}%".format(indent, store_id, num_peers, (num_peers*100.0)/total_peers))
+        print("{}store: {}, num_peers: {}, percentage: {}%".format(indent, store_id, num_peers, format((num_peers*100.0)/total_peers,'.2f')))
 
 
 if __name__ == "__main__":
