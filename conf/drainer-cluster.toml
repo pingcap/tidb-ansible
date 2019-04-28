@@ -3,14 +3,13 @@
 # the interval time (in seconds) of detect pumps' status
 detect-interval = 10
 
-# Use the specified compressor to compress payload between pump and drainer
+# Use the specified compressor algorithm to compress payload between pump and drainer
 # compressor = "gzip"
 
 # syncer Configuration.
 [syncer]
 # Assume the upstream sql-mode.
-# If this is setted , will use the same sql-mode to parse DDL statment, and set the same sql-mode at downstream when db-type is mysql.
-# If this is not setted, it will not set any sql-mode.
+# If this is setted , drainer will use the sql-mode to parse DDL statment
 # sql-mode = "STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION
 
 # disable sync these schema
@@ -24,8 +23,8 @@ txn-batch = 20
 # to get higher throughput by higher concurrent write to the downstream
 worker-count = 16
 
-# whether to disable the SQL feature of splitting a single binlog file. If it is set to "true",
-# each binlog file is restored to a single transaction for synchronization based on the order of binlogs.
+# whether to disable the SQL feature of splitting a single binlog event.
+# If it is set to "true", binlog events are restored to a single transaction for synchronization based on the order of binlogs.
 # If the downstream service is MySQL, set it to "False".
 disable-dispatch = false
 
