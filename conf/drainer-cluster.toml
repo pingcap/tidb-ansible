@@ -3,8 +3,15 @@
 # the interval time (in seconds) of detect pumps' status
 detect-interval = 10
 
+# Use the specified compressor to compress payload between pump and drainer
+# compressor = "gzip"
+
 # syncer Configuration.
 [syncer]
+# Assume the upstream sql-mode.
+# If this is setted , will use the same sql-mode to parse DDL statment, and set the same sql-mode at downstream when db-type is mysql.
+# If this is not setted, it will not set any sql-mode.
+# sql-mode = "STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION
 
 # disable sync these schema
 ignore-schemas = "INFORMATION_SCHEMA,PERFORMANCE_SCHEMA,mysql"
@@ -17,6 +24,9 @@ txn-batch = 20
 # to get higher throughput by higher concurrent write to the downstream
 worker-count = 16
 
+# whether to disable the SQL feature of splitting a single binlog file. If it is set to "true",
+# each binlog file is restored to a single transaction for synchronization based on the order of binlogs.
+# If the downstream service is MySQL, set it to "False".
 disable-dispatch = false
 
 # safe mode will split update to delete and insert
@@ -26,17 +36,21 @@ safe-mode = false
 # valid values are "mysql", "file", "tidb", "flash", "kafka"
 db-type = "mysql"
 
-##replicate-do-db priority over replicate-do-table if have same db name
-##and we support regex expression , start with '~' declare use regex expression.
-#
-#replicate-do-db = ["~^b.*","s1"]
-#[[syncer.replicate-do-table]]
-#db-name ="test"
-#tbl-name = "log"
+# replicate-do-db priority over replicate-do-table if have same db name
+# and we support regex expression , start with '~' declare use regex expression.
+# replicate-do-db = ["~^b.*","s1"]
+# [[syncer.replicate-do-table]]
+# db-name ="test"
+# tbl-name = "log"
 
-#[[syncer.replicate-do-table]]
-#db-name ="test"
-#tbl-name = "~^a.*"
+# [[syncer.replicate-do-table]]
+# db-name ="test"
+# tbl-name = "~^a.*"
+
+# disable sync these table
+# [[syncer.ignore-table]]
+# db-name = "test"
+# tbl-name = "log"
 
 # the downstream mysql protocol database
 [syncer.to]
@@ -46,11 +60,11 @@ password = ""
 port = 3306
 
 # Uncomment this if you want to use file as db-type.
-#[syncer.to]
-#dir = "data.drainer"
+# [syncer.to]
+# dir = "data.drainer"
 
 # when db-type is kafka, you can uncomment this to config the down stream kafka, it will be the globle config kafka default
-#[syncer.to]
+# [syncer.to]
 # only need config one of zookeeper-addrs and kafka-addrs, will get kafka address if zookeeper-addrs is configed.
 # zookeeper-addrs = "127.0.0.1:2181"
 # kafka-addrs = "127.0.0.1:9092"
