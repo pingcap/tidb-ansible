@@ -57,7 +57,11 @@ def fill_dashboard_with_dest_config(dashboard, dest, type_='node'):
     dashboard['title'] = dest['titles'][type_]
     dashboard['id'] = None
     # pprint(dashboard)
-    for row in dashboard['rows']:
+    if 'rows' in dashboard:
+        panels = dashboard['rows']
+    else:
+        panels = dashboard['panels']
+    for row in panels:
         for panel in row['panels']:
             panel['datasource'] = dest['datasource']
 
