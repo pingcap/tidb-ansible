@@ -3,14 +3,21 @@
 lightning:
   # check if the cluster satisfies the minimum requirement before starting
   # check-requirements = true
-  # table-concurrency controls the maximum handled tables concurrently while reading Mydumper SQL files. It can affect the tikv-importer memory usage amount.
-  # table-concurrency must be <= max-open-engines value in tikv-importer.tmol
-  table-concurrency: 8
+
+  # table-concurrency controls the maximum handled tables concurrently while reading Mydumper SQL files.
+  # index-concurrency controls the maximum handled index concurrently while reading Mydumper SQL files.
+  # They can affect the tikv-importer memory and disk usage.
+  # table-concurrency + index-concurrency must be <= max-open-engines value in tikv-importer.tmol
+  index-concurrency: 2
+  table-concurrency: 6
   # region-concurrency changes the concurrency number of data. It is set to the number of logical CPU cores by default and needs no configuration.
   # in mixed configuration, you can set it to 75% of the size of logical CPU cores.
   # region-concurrency default to runtime.NumCPU()
-  # region-concurrency =  
-  
+  # region-concurrency:
+
+  # io-concurrency controls the maximum IO concurrency
+  io-concurrency: 5
+
   # logging
   level: "info"
   file: "log/tidb_lightning.log"
@@ -25,10 +32,15 @@ checkpoint:
   enable: true
   # The schema name (database name) to store the checkpoints
   schema: "tidb_lightning_checkpoint"
-  # The data source name (DSN) in the form "USER:PASS@tcp(HOST:PORT)/".
-  # If not specified, the TiDB server from the [tidb] section will be used to store the checkpoints. You could also
-  # specify a different MySQL-compatible database server if you like.
-  #dsn: "root@tcp(127.0.0.1:4000)/"
+  # Where to store the checkpoints.
+  # Set to "file" to store as a local file.
+  # Set to "mysql" to store into a remote MySQL-compatible database
+  #driver: "file"
+  # The data source name (DSN) indicating the location of the checkpoint storage.
+  # For "file" driver, the DSN is a path. If not specified, Lightning would default to "/tmp/CHKPTSCHEMA.pb".
+  # For "mysql" driver, the DSN is a URL in the form "USER:PASS@tcp(HOST:PORT)/".
+  # If not specified, the TiDB server from the [tidb] section will be used to store the checkpoints.
+  #dsn: "/tmp/tidb_lightning_checkpoint.pb"
   # Whether to keep the checkpoints after all data are imported. If false, the checkpoints will be deleted. The schema
   # needs to be dropped manually, however.
   #keep-after-success: false
@@ -36,20 +48,50 @@ checkpoint:
 tikv_importer:
   # the listening address of tikv-importer. Change it to the actual address in tikv-importer.toml.
   # addr: "0.0.0.0:20170"
-  # size of batch to import KV data into TiKV: xxx (GB)
-  batch-size: 500 # GB
 
 mydumper:
   # block size of file reading
-  read-block-size: 4096 # Byte (default = 4 KB)
-  # divide source data file into multiple Region/chunk to execute restoring in parallel
-  region-min-size: 268435456 # Byte (default = 256 MB)
+  read-block-size: 65536 # Byte (default = 64 KB)
+
+  # minimum size (in terms of source data file) of each batch of import.
+  # Lightning will split a large table into multiple engine files according to this size.
+  #batch-size: 107374182400 # Byte (default = 100 GiB)
+
+  # Engine file needs to be imported sequentially. Due to table-concurrency, multiple engines will be
+  # imported nearly the same time, and this will create a queue and this wastes resources. Therefore,
+  # Lightning will slightly increase the size of the first few batches to properly distribute
+  # resources. The scale up is controlled by this parameter, which expresses the ratio of duration
+  # between the "import" and "write" steps with full concurrency. This can be calculated as the ratio
+  # (import duration / write duration) of a single table of size around 1 GB. The exact timing can be
+  # found in the log. If "import" is faster, the batch size anomaly is smaller, and a ratio of
+  # zero means uniform batch size. This value should be in the range (0 <= batch-import-ratio < 1).
+  #batch-import-ratio: 0.75
+
   # the source data directory of Mydumper. tidb-lightning will automatically create the corresponding database and tables based on the schema file in the directory.
   # data-source-dir: "/data/mydumper"
   # If no-schema is set to true, tidb-lightning will obtain the table schema information from tidb-server,
   # instead of creating the database or tables based on the schema file of data-source-dir.
   # This applies to manually creating tables or the situation where the table schema exits in TiDB.
   no-schema: false
+
+  # the character set of the schema files; only supports one of:
+  #  - utf8mb4: the schema files must be encoded as UTF-8, otherwise will emit errors
+  #  - gb18030: the schema files must be encoded as GB-18030, otherwise will emit errors
+  #  - auto:    (default) automatically detect if the schema is UTF-8 or GB-18030, error if the encoding is neither
+  #  - binary:  do not try to decode the schema files
+  # note that the *data* files are always parsed as binary regardless of schema encoding.
+  #character-set: "auto"
+
+  # CSV files are imported according to MySQL's LOAD DATA INFILE rules.
+  # See https://pingcap.com/docs/tools/lightning/csv/ for details of these settings
+  csv:
+    separator: ','
+    delimiter: '"'
+    header: true
+    not-null: false
+    'null': \N
+    backslash-escape: true
+    trim-last-separator: false
 
 # configuration for TiDB (pick one of them if it has many TiDB servers) and the PD server.
 tidb:
@@ -63,15 +105,28 @@ tidb:
   # status-port: 10080
   # Lightning uses some code of TiDB (used as a library) and the flag controls its log level.
   log-level: "error"
-  # set TiDB session variable to speed up performing the Checksum or Analyze operation on the table.
-  distsql-scan-concurrency: 16
-  
+
+  # Set tidb session variables to speed up checksum/analyze table.
+  # See https://pingcap.com/docs/sql/statistics/#control-analyze-concurrency for the meaning of each setting
+  build-stats-concurrency: 20
+  distsql-scan-concurrency: 100
+  index-serial-scan-concurrency: 20
+  checksum-table-concurrency: 16
+
+# cron performs some periodic actions in background
+cron:
+  # duration between which Lightning will automatically refresh the import mode status.
+  # should be shorter than the corresponding TiKV setting
+  switch-mode: '5m'
+  # the duration which the an import progress will be printed to the log.
+  log-progress: '5m'
+
 post_restore:
   # if it is set to true, tidb-lightning will perform the ADMIN CHECKSUM TABLE <table> operation on the tables one by one.
   checksum: true
-  # if it is set to true, tidb-lightning will perform a full Compact operation on all the data.
-  # If the Compact operation fails, you can use ./bin/tidb-lightning -compact or the command of tikv-ctl to compact the data manually.
-  compact: true
+  # compaction is performed automatically starting v2.1.6. These settings should be left as `false`.
+  # level-1-compact: false
+  # compact: false
   # if it is set to true, tidb-lightning will perform the ANALYZE TABLE <table> operation on the tables one by one.
   # If the Analyze operation fails, you can analyze data manually on the Mysql client.
   analyze: true

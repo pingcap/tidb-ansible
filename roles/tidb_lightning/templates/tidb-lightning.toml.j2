@@ -23,8 +23,17 @@
 
 [mydumper]
 {% for item, value in tidb_lightning_conf.mydumper | dictsort -%}
+{% if item != 'csv' -%}
+{{ item }} = {{ value | to_json}}
+{% endif -%}
+{% endfor %}
+
+{% if tidb_lightning_conf.mydumper.csv -%}
+[mydumper.csv]
+{% for item, value in tidb_lightning_conf.mydumper.csv | dictsort -%}
 {{ item }} = {{ value | to_json}}
 {% endfor %}
+{% endif -%}
 
 [tidb]
 {% for item, value in tidb_lightning_conf.tidb | dictsort -%}
@@ -38,5 +47,10 @@ pd-addr = "{{ all_pd |join(',') }}"
 
 [post-restore]
 {% for item, value in tidb_lightning_conf.post_restore | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+
+[cron]
+{% for item, value in tidb_lightning_conf.cron | dictsort -%}
 {{ item }} = {{ value | to_json }}
 {% endfor %}
