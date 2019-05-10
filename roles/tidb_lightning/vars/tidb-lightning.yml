@@ -35,15 +35,15 @@ checkpoint:
   # Where to store the checkpoints.
   # Set to "file" to store as a local file.
   # Set to "mysql" to store into a remote MySQL-compatible database
-  #driver: "file"
+  # driver: "file"
   # The data source name (DSN) indicating the location of the checkpoint storage.
   # For "file" driver, the DSN is a path. If not specified, Lightning would default to "/tmp/CHKPTSCHEMA.pb".
   # For "mysql" driver, the DSN is a URL in the form "USER:PASS@tcp(HOST:PORT)/".
   # If not specified, the TiDB server from the [tidb] section will be used to store the checkpoints.
-  #dsn: "/tmp/tidb_lightning_checkpoint.pb"
+  # dsn: "/tmp/tidb_lightning_checkpoint.pb"
   # Whether to keep the checkpoints after all data are imported. If false, the checkpoints will be deleted. The schema
   # needs to be dropped manually, however.
-  #keep-after-success: false
+  # keep-after-success: false
 
 tikv_importer:
   # the listening address of tikv-importer. Change it to the actual address in tikv-importer.toml.
@@ -55,7 +55,7 @@ mydumper:
 
   # minimum size (in terms of source data file) of each batch of import.
   # Lightning will split a large table into multiple engine files according to this size.
-  #batch-size: 107374182400 # Byte (default = 100 GiB)
+  # batch-size: 107374182400 # Byte (default = 100 GiB)
 
   # Engine file needs to be imported sequentially. Due to table-concurrency, multiple engines will be
   # imported nearly the same time, and this will create a queue and this wastes resources. Therefore,
@@ -65,7 +65,7 @@ mydumper:
   # (import duration / write duration) of a single table of size around 1 GB. The exact timing can be
   # found in the log. If "import" is faster, the batch size anomaly is smaller, and a ratio of
   # zero means uniform batch size. This value should be in the range (0 <= batch-import-ratio < 1).
-  #batch-import-ratio: 0.75
+  # batch-import-ratio: 0.75
 
   # the source data directory of Mydumper. tidb-lightning will automatically create the corresponding database and tables based on the schema file in the directory.
   # data-source-dir: "/data/mydumper"
@@ -80,7 +80,7 @@ mydumper:
   #  - auto:    (default) automatically detect if the schema is UTF-8 or GB-18030, error if the encoding is neither
   #  - binary:  do not try to decode the schema files
   # note that the *data* files are always parsed as binary regardless of schema encoding.
-  #character-set: "auto"
+  # character-set: "auto"
 
   # CSV files are imported according to MySQL's LOAD DATA INFILE rules.
   # See https://pingcap.com/docs/tools/lightning/csv/ for details of these settings
