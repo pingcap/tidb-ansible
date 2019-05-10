@@ -23,20 +23,34 @@
 
 [mydumper]
 {% for item, value in tidb_lightning_conf.mydumper | dictsort -%}
-{{ item }} = {{ value | to_json}}
+{% if item != 'csv' -%}
+{{ item }} = {{ value | to_json }}
+{% endif -%}
 {% endfor %}
+
+{% if tidb_lightning_conf.mydumper.csv -%}
+[mydumper.csv]
+{% for item, value in tidb_lightning_conf.mydumper.csv | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+{% endif -%}
 
 [tidb]
 {% for item, value in tidb_lightning_conf.tidb | dictsort -%}
 {% if item == "port" or item == "status-port" %}
-{{ item }} = {{ value | int}}
+{{ item }} = {{ value | int }}
 {% else %}
-{{ item }} = {{ value | to_json}}
+{{ item }} = {{ value | to_json }}
 {% endif %}
 {% endfor %}
 pd-addr = "{{ all_pd |join(',') }}"
 
 [post-restore]
 {% for item, value in tidb_lightning_conf.post_restore | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+
+[cron]
+{% for item, value in tidb_lightning_conf.cron | dictsort -%}
 {{ item }} = {{ value | to_json }}
 {% endfor %}
