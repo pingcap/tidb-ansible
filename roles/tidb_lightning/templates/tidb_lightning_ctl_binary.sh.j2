@@ -1,0 +1,8 @@
+#!/bin/bash
+set -e
+ulimit -n 1000000
+cd "{{ deploy_dir }}" || exit 1
+
+export TZ={{ timezone }}
+
+./bin/tidb-lightning-ctl -config ./conf/tidb-lightning.toml "$@"

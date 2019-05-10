@@ -29,12 +29,15 @@ rocksdb:
     write-buffer-size: "1GB"
     # the maximum number of write buffers that are built up in memory.
     max-write-buffer-number: 8
-    
+
     # the compression algorithms used in different levels.
     # the algorithm at level-0 is used to compress KV data.
     # the algorithm at level-6 is used to compress SST files.
     # the algorithms at level-1 ~ level-5 are not used now.
-    compression-per-level: ["lz4", "no", "no", "no", "no", "no", "zstd"]
+    compression-per-level: ["lz4", "no", "no", "no", "no", "no", "lz4"]
+
+  writecf:
+    compression-per-level: ["lz4", "no", "no", "no", "no", "no", "lz4"]
 
 import:
   # this directory is used to store the data written by `tidb-lightning`.
@@ -43,13 +46,21 @@ import:
   num-threads: 16
   # the number of concurrent import jobs.
   num-import-jobs: 24
-  # the stream channel window size. Stream will be blocked when the channel is full. 
+  # the stream channel window size. Stream will be blocked when the channel is full.
   stream-channel-window: 128
   # maximum duration to prepare regions.
   # max-prepare-duration = "5m"
   # split regions into this size according to the importing data.
-  # region-split-size = "96MB"
+  # region-split-size: "512MB"
   # maximum number of open engines
-  # max-open-engines must be >= table-concurrency value in tidb-lightning.toml
+  # max-open-engines must be >= index-concurrency + table-concurrency value in tidb-lightning.toml
   max-open-engines: 8
-  # write-buffer-size * max-write-buffer-number * max-open-engines should less than machine's memory size
+  # speed limit of uploading SST to TiKV (unit: byte/s)
+  # upload-speed-limit: "512MB"
+  # minimum ratio of target store available space: store_available_space / store_capacity
+  # Importer will pause to upload SST to target store if its available ratio less than
+  # this value, and give the store some time window to balance regions.
+  min-available-ratio: 0.05
+
+  # Note: the machine's memory size should be more than
+  # (write-buffer-size * max-write-buffer-number * 2) + (num-import-jobs * region-split-size * 2)
