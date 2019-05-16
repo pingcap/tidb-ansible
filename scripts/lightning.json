@@ -112,13 +112,6 @@
               "intervalFactor": 2,
               "legendFormat": "upload to tikv",
               "refId": "C"
-            },
-            {
-              "expr": "sum(rate(tikv_import_batch_write_chunk_bytes_sum[1m]))",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "batch_write",
-              "refId": "A"
             }
           ],
           "thresholds": [],
@@ -1033,24 +1026,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "rate(lightning_chunk_parser_read_row_seconds_sum[30s]) / rate(lightning_chunk_parser_read_row_seconds_count[30s])",
+              "expr": "rate(lightning_row_encode_seconds_sum[30s]) / rate(lightning_row_encode_seconds_count[30s])",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "read row",
-              "refId": "D"
-            },
-            {
-              "expr": "rate(lightning_block_read_seconds_sum[30s]) / rate(lightning_block_read_seconds_count[30s])",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "block read",
-              "refId": "B"
-            },
-            {
-              "expr": "rate(lightning_block_encode_seconds_sum[30s]) / rate(lightning_block_encode_seconds_count[30s])",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "block encode",
+              "legendFormat": "row encode",
               "refId": "A"
             },
             {
@@ -1082,7 +1061,7 @@
             {
               "format": "s",
               "label": null,
-              "logBase": 1,
+              "logBase": 2,
               "max": null,
               "min": null,
               "show": true
@@ -1141,18 +1120,18 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "rate(lightning_block_read_bytes_sum[30s])",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "block read",
-              "refId": "A"
-            },
-            {
               "expr": "rate(lightning_block_deliver_bytes_sum[30s])",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "block deliver",
+              "legendFormat": "{{kind}} deliver rate",
               "refId": "B"
+            },
+            {
+              "expr": "sum(rate(lightning_block_deliver_bytes_sum[30s]))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "total deliver rate",
+              "refId": "A"
             }
           ],
           "thresholds": [],
@@ -1223,24 +1202,23 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "lightning_block_read_bytes_sum",
+              "expr": "lightning_row_read_bytes_sum",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "read",
+              "legendFormat": "parser read size",
               "refId": "A"
             },
             {
               "expr": "lightning_block_deliver_bytes_sum",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "deliver",
+              "legendFormat": "{{kind}} deliver size",
               "refId": "B"
             },
             {
               "expr": "pd_cluster_status{type=\"storage_size\"} / 3",
               "format": "time_series",
               "intervalFactor": 2,
-              "hide": true,
               "legendFormat": "storage_size / 3",
               "refId": "C"
             }
@@ -1328,21 +1306,21 @@
               "expr": "rate(tikv_import_range_delivery_duration_sum[30s]) / rate(tikv_import_range_delivery_duration_count[30s])",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "Range delivery",
+              "legendFormat": "range deliver",
               "refId": "A"
             },
             {
               "expr": "rate(tikv_import_sst_delivery_duration_sum[30s]) / rate(tikv_import_sst_delivery_duration_count[30s])",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "SST delivery",
+              "legendFormat": "SST file deliver",
               "refId": "B"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Delivery duration",
+          "title": "Deliver duration",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -1525,5 +1503,5 @@
   },
   "timezone": "browser",
   "title": "Test-Cluster-Lightning",
-  "version": 3
+  "version": 4
 }
