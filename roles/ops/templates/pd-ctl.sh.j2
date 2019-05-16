@@ -1,6 +1,0 @@
-#!/bin/bash
-{% if enable_tls|default(false) %}
-{{ resources_dir }}/bin/pd-ctl -u https://{{ groups.pd_servers[0] }}:{{ hostvars[groups.pd_servers[0]].pd_client_port }} --cacert {{ cert_dir }}/ca.pem --cert {{ cert_dir }}/client.pem --key {{ cert_dir }}/client-key.pem
-{%- else -%}
-{{ resources_dir }}/bin/pd-ctl -u http://{{ groups.pd_servers[0] }}:{{ hostvars[groups.pd_servers[0]].pd_client_port }}
-{% endif %}

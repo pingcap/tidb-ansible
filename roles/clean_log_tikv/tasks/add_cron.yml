@@ -1,9 +1,0 @@
----
-
-- name: add crontab
-  cron:
-    name: "tikv-{{ tikv_port }}"
-    user: "{{ ansible_user }}"
-    minute: 0
-    state: present
-    job: 'find {{ tikv_log_dir }} -type f -name "tikv.log*" -mtime +{{ log_retain_days }} -exec rm -f {} \;'

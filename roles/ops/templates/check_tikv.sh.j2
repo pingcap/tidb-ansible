@@ -1,6 +1,0 @@
-#!/bin/bash
-{% if enable_tls|default(false) %}
-{{ resources_dir }}/bin/pd-ctl store -d -u https://{{ groups.pd_servers[0] }}:{{ hostvars[groups.pd_servers[0]].pd_client_port }} --cacert {{ cert_dir }}/ca.pem --cert {{ cert_dir }}/client.pem --key {{ cert_dir }}/client-key.pem | egrep '(id|address|state_name)' | awk '{if(NR%3!=0)ORS=" "; else ORS="\n"}1' | sed 's/^[ \t]*//g'
-{%- else -%}
-{{ resources_dir }}/bin/pd-ctl store -d -u http://{{ groups.pd_servers[0] }}:{{ hostvars[groups.pd_servers[0]].pd_client_port }} | egrep '(id|address|state_name)' | awk '{if(NR%3!=0)ORS=" "; else ORS="\n"}1' | sed 's/^[ \t]*//g'
-{% endif %}

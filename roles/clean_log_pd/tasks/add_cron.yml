@@ -1,9 +1,0 @@
----
-
-- name: add crontab
-  cron:
-    name: "pd-{{ pd_client_port }}"
-    user: "{{ ansible_user }}"
-    minute: 0
-    state: present
-    job: 'find {{ pd_log_dir }} -type f -name "pd*.log" -mtime +{{ log_retain_days }} -exec rm -f {} \;'
