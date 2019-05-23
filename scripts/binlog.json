@@ -1363,7 +1363,7 @@
               "expr": "histogram_quantile(0.99, rate(binlog_drainer_query_duration_time_bucket{instance = \"$drainer_instance\"}[1m]))",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{job}}",
+              "legendFormat": "{{type}}",
               "metric": "binlog_drainer_txn_duration_time_bucket",
               "refId": "A",
               "step": 2
@@ -1697,7 +1697,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "go_goroutines{job=\"binlog\"}",
+              "expr": "go_goroutines{job=~\"binlog|pump|drainer\"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
@@ -1780,7 +1780,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "go_memstats_heap_inuse_bytes{job=\"binlog\"}",
+              "expr": "go_memstats_heap_inuse_bytes{job=~\"binlog|pump|drainer\"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
