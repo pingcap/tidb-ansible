@@ -42,17 +42,17 @@ variable "single_nat_gateway" {
 
 variable "tidb_instance_type" {
  type    = "string"
- default = "c4.4xlarge"
+ default = "c5.4xlarge"
 }
 
 variable "tikv_instance_type" {
   type    = "string"
-  default = "i3.2xlarge"
+  default = "c5d.2xlarge"
 }
 
 variable "pd_instance_type" {
   type    = "string"
-  default = "i3.xlarge"
+  default = "c5.2xlarge"
 }
 
 variable "monitor_instance_type" {
@@ -68,7 +68,7 @@ variable "bastion_instance_type" {
 variable "tidb_count" {
 	type = "string"
 	description = "The numble of the tidb instances to be deployed"
-	default = "3"
+	default = "2"
 }
 
 variable "tikv_count" {
