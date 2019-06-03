@@ -222,6 +222,16 @@
               "legendFormat": "yesterday",
               "refId": "B",
               "step": 90
+            },
+            {
+              "expr": "sum(tidb_server_connections) * sum(rate(tidb_server_handle_query_duration_seconds_count[1m])) / sum(rate(tidb_server_handle_query_duration_seconds_sum[1m]))",
+              "format": "time_series",
+              "hide": true,
+              "instant": false,
+              "intervalFactor": 3,
+              "legendFormat": "ideal QPS",
+              "refId": "C",
+              "step": 60
             }
           ],
           "thresholds": [],
