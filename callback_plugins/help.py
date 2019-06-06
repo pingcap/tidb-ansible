@@ -33,6 +33,10 @@ class CallbackModule(CallbackBase):
 
     def __init__(self):
 
+        self._play = None
+        self._last_task_banner = None
+        self._last_task_name = None
+        self._task_type_cache = {}
         super(CallbackModule, self).__init__()
 
         if not os.path.exists(os.path.dirname(C.DEFAULT_LOG_PATH)):
@@ -44,30 +48,15 @@ class CallbackModule(CallbackBase):
         self.logger.addHandler(self.handler)
 
     def format_results(self, result):
-        results = result._result['results'][0]
-        item = results['item']
-        changed = results['changed']
-        cmd = results['cmd']
-        delta = results['delta']
-        end = results['end']
-        msg = results['msg']
-        start = results['start']
-        stderr = results['stderr']
-        lines = results['stderr_lines']
-        for i in range(len(lines)):
-            lines[i] = '  - ' + lines[i]
-        stderr_lines = '\n'.join(lines)
-        return '[%s]: Ansible Failed! => (server=%s)  changed=%s\n  playbook: %s;  %s\n' \
-               '  stderr: %s\n  stderr_lines:\n%s\n  cmd: %s\n  start: %s\n  end: %s\n' \
-               '  delta: %s\n  msg: %s\n'\
-               % (result._host.name, item, changed, self.playbook, result._task, stderr, stderr_lines,
-                  cmd, start, end, delta, msg)
-
-    def format_other(self, result):
         messages = '[' + str(result._host.name) + ']: Ansible Failed! => changed=' + \
                    str(result._result['changed']) + '\n'
         for k, v in result._result.iteritems():
-            if not isinstance(v, dict) and k != 'changed' and '_ansible' not in k:
+            if isinstance(v, list):
+                messages += '  ' + str(k) + ':' + '\n'
+                for key, value in v[0].iteritems():
+                    if 'ansible' not in key and key != 'invocation':
+                        messages += '    - ' + str(key) + ': ' + str(value) + '\n'
+            elif k != 'changed' and 'ansible' not in k and k != 'invocation' and k != 'exception':
                 messages += '  ' + str(k) + ': ' + str(v) + '\n'
         return messages
 
@@ -142,12 +131,8 @@ class CallbackModule(CallbackBase):
 
     def v2_runner_on_failed(self, result, ignore_errors=False):
         if not ignore_errors:
-            if 'results' in result._result:
-                messages = self.format_results(result)
-                self.logger.error(messages)
-            else:
-                messages = self.format_other(result)
-                self.logger.error(messages)
+            messages = self.format_results(result)
+            self.logger.error(messages)
 
     def v2_runner_on_unreachable(self, result):
         # self.print_help_message()
