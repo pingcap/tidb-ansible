@@ -1388,10 +1388,10 @@
               "step": 4
             },
             {
-              "expr": "avg(tikv_engine_write_stall{instance=~\"$instance\", type=\"write_stall_percentile99\"}) by (instance)",
+              "expr": "avg(tikv_engine_write_stall{instance=~\"$instance\", type=\"write_stall_percentile99\", db=~\"$db\"}) by (instance, db)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "stall-{{instance}}",
+              "legendFormat": "stall-{{instance}}-{{db}}",
               "refId": "D"
             }
           ],
