@@ -17298,7 +17298,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 9
+            "y": 35
           },
           "id": 2995,
           "legend": {
@@ -17311,7 +17311,7 @@
             "min": false,
             "rightSide": true,
             "show": true,
-            "sideWidth": 300,
+            "sideWidth": 350,
             "sort": "max",
             "sortDesc": true,
             "total": false,
@@ -17331,11 +17331,11 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_lock_manager_detect_duration_sum{instance=~\"$instance\"}[1m])) by (instance) / sum(rate(tikv_lock_manager_detect_duration_count[1m])) by (instance)",
+              "expr": "sum(rate(tikv_lock_manager_detector_histogram_sum{instance=~\"$instance\"}[1m])) by (instance,type) / sum(rate(tikv_lock_manager_detector_histogram_count[1m])) by (instance,type)",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 2,
-              "legendFormat": "{{instance}}",
+              "legendFormat": "{{instance}}-{{type}}",
               "refId": "A",
               "step": 10
             }
@@ -17344,7 +17344,7 @@
           "timeFrom": null,
           "timeRegions": [],
           "timeShift": null,
-          "title": "Average detect duration",
+          "title": "Average detector event duration",
           "tooltip": {
             "shared": true,
             "sort": 0,
