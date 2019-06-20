@@ -34,4 +34,4 @@ exec docker run \
   --advertise-addr="{{ my_ip }}:{{ pump_port }}" \
   --pd-urls="{{ all_pd | join(',') }}" \
   --data-dir=/data \
-  --log-file="/var/log/{{ pump_log_filename }}"
+  --log-file="/var/log/{{ pump_log_filename }}" 2>> "{{ pump_log_dir }}/{{ pump_stderr.log }}"
