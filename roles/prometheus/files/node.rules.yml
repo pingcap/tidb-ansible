@@ -2,12 +2,12 @@ groups:
 - name: alert.rules
   rules:
   - alert: NODE_disk_used_more_than_80%
-    expr: node_filesystem_avail{fstype=~"(ext.|xfs)", mountpoint!~"/boot"} / node_filesystem_size{fstype=~"(ext.|xfs)", mountpoint!~"/boot"} * 100 <= 20
+    expr: node_filesystem_avail_bytes{fstype=~"(ext.|xfs)", mountpoint!~"/boot"} / node_filesystem_size_bytes{fstype=~"(ext.|xfs)", mountpoint!~"/boot"} * 100 <= 20
     for: 3m
     labels:
       env: ENV_LABELS_ENV
       level: emergency
-      expr: node_filesystem_avail{fstype=~"(ext.|xfs)", mountpoint!~"/boot"} / node_filesystem_size{fstype=~"(ext.|xfs)", mountpoint!~"/boot"} * 100 <= 20
+      expr: node_filesystem_avail_bytes{fstype=~"(ext.|xfs)", mountpoint!~"/boot"} / node_filesystem_size_bytes{fstype=~"(ext.|xfs)", mountpoint!~"/boot"} * 100 <= 20
     annotations:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
@@ -38,36 +38,36 @@ groups:
       summary: disk readonly
 
   - alert: NODE_memory_used_more_than_80%
-    expr: (((node_memory_MemTotal-node_memory_MemFree-node_memory_Cached)/(node_memory_MemTotal)*100)) >= 80
+    expr: (((node_memory_MemTotal_bytes-node_memory_MemFree_bytes-node_memory_Cached_bytes)/(node_memory_MemTotal_bytes)*100)) >= 80
     for: 3m
     labels:
       env: ENV_LABELS_ENV
       level: critical
-      expr: (((node_memory_MemTotal-node_memory_MemFree-node_memory_Cached)/(node_memory_MemTotal)*100)) >= 80
+      expr: (((node_memory_MemTotal_bytes-node_memory_MemFree_bytes-node_memory_Cached_bytes)/(node_memory_MemTotal_bytes)*100)) >= 80
     annotations:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: memory used more than 80%
 
   - alert: NODE_node_overload
-    expr: (node_load5 / count without (cpu, mode) (node_cpu{mode="system"}))  > 1
+    expr: (node_load5 / count without (cpu, mode) (node_cpu_seconds_total{mode="system"}))  > 1
     for: 3m
     labels:
       env: ENV_LABELS_ENV
       level: warning
-      expr: (node_load5 / count without (cpu, mode) (node_cpu{mode="system"}))  > 1
+      expr: (node_load5 / count without (cpu, mode) (node_cpu_seconds_total{mode="system"}))  > 1
     annotations:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: node overload
 
   - alert: NODE_cpu_used_more_than_80%
-    expr: avg(irate(node_cpu{mode="idle"}[5m])) by(instance) * 100 <= 20
+    expr: avg(irate(node_cpu_seconds_total{mode="idle"}[5m])) by(instance) * 100 <= 20
     for: 3m
     labels:
       env: ENV_LABELS_ENV
       level: warning
-      expr: avg(irate(node_cpu{mode="idle"}[5m])) by(instance) * 100 <= 20
+      expr: avg(irate(irate(node_cpu_seconds_total{mode="idle"}[5m])) by(instance) * 100 <= 20
     annotations:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
@@ -86,24 +86,24 @@ groups:
       summary: tcp establish connection more than 50000
 
   - alert: NODE_disk_read_latency_more_than_32ms
-    expr: ( (rate(node_disk_read_time_ms{device=~".+"}[5m]) / rate(node_disk_reads_completed{device=~".+"}[5m])) or (irate(node_disk_read_time_ms{device=~".+"}[5m]) / irate(node_disk_reads_completed{device=~".+"}[5m])) ) > 32
+    expr: ( (rate(node_disk_read_time_seconds_total{device=~".+"}[5m]) / rate(node_disk_reads_completed_total{device=~".+"}[5m])) or (irate(node_disk_read_time_seconds_total{device=~".+"}[5m]) / irate(node_disk_reads_completed_total{device=~".+"}[5m])) ) > 32
     for: 3m
     labels:
       env: ENV_LABELS_ENV
       level: warning
-      expr: ( (rate(node_disk_read_time_ms{device=~".+"}[5m]) / rate(node_disk_reads_completed{device=~".+"}[5m])) or (irate(node_disk_read_time_ms{device=~".+"}[5m]) / irate(node_disk_reads_completed{device=~".+"}[5m])) ) > 32
+      expr: ( (rate(node_disk_read_time_seconds_total{device=~".+"}[5m]) / rate(node_disk_reads_completed_total{device=~".+"}[5m])) or (irate(node_disk_read_time_seconds_total{device=~".+"}[5m]) / irate(node_disk_reads_completed_total{device=~".+"}[5m])) ) > 32
     annotations:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: disk_read_latency_more_than_32ms
 
   - alert: NODE_disk_write_latency_more_than_16ms
-    expr: ( (rate(node_disk_write_time_ms{device=~".+"}[5m]) / rate(node_disk_writes_completed{device=~".+"}[5m])) or (irate(node_disk_write_time_ms{device=~".+"}[5m]) / irate(node_disk_writes_completed{device=~".+"}[5m]))  )> 16
+    expr: ( (rate(node_disk_write_time_seconds_total{device=~".+"}[5m]) / rate(node_disk_writes_completed_total{device=~".+"}[5m])) or (irate(node_disk_write_time_seconds_total{device=~".+"}[5m]) / irate(node_disk_writes_completed_total{device=~".+"}[5m]))  )> 16
     for: 3m
     labels:
       env: ENV_LABELS_ENV
       level: warning
-      expr: ( (rate(node_disk_write_time_ms{device=~".+"}[5m]) / rate(node_disk_writes_completed{device=~".+"}[5m])) or (irate(node_disk_write_time_ms{device=~".+"}[5m]) / irate(node_disk_writes_completed{device=~".+"}[5m]))  )> 16
+      expr: ( (rate(node_disk_write_time_seconds_total{device=~".+"}[5m]) / rate(node_disk_writes_completed_total{device=~".+"}[5m])) or (irate(node_disk_write_time_seconds_total{device=~".+"}[5m]) / irate(node_disk_writes_completed_total{device=~".+"}[5m]))  )> 16
     annotations:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
