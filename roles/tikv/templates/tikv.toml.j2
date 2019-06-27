@@ -66,7 +66,7 @@
 {% else %}
 
 [rocksdb.{{ item }}]
-{% for sub_item, sub_value in value | dictsort -%}
+{% for sub_item, sub_value in value | dictsort_by_value_type -%}
 {% if sub_value is not mapping -%}
 {{ sub_item }} = {{ sub_value | to_json }}
 {% else %}
