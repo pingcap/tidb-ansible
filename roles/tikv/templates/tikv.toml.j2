@@ -29,8 +29,16 @@
 {% endfor %}
 
 [storage]
-{% for item, value in tikv_conf.storage | dictsort -%}
+{% for item, value in tikv_conf.storage | dictsort_by_value_type -%}
+{% if value is not mapping -%}
 {{ item }} = {{ value | to_json }}
+{% else %}
+
+[storage.{{ item }}]
+{% for sub_item, sub_value in value | dictsort -%}
+{{ sub_item }} = {{ sub_value | to_json }}
+{% endfor %}
+{% endif %}
 {% endfor %}
 
 [pd]
