@@ -247,7 +247,6 @@
       delay: 5
       when: enable_tls|default(false)
 
-
 - hosts: tikv_servers
   tags:
     - tikv
@@ -302,6 +301,38 @@
       debug:
         msg: "tikv binary or docker pid: {{ new_tikv_pid.stdout }}"
 
+- hosts: pd_servers[0]
+  tasks:
+    - name: wait for region replication complete
+      uri:
+        url: "http://{{ ansible_host }}:{{ pd_client_port }}/pd/api/v1/cluster/status"
+        return content: yes
+        body_format: json
+      register: cluster_status_http
+      until: cluster_status_http.json.is_initialized is defined and cluster_status_http.json.is_initialized == true
+      retries: 20
+      delay: 10
+      when:
+        - not enable_tls|default(false)
+        - wait_replication|default(false)
+
+- hosts: pd_servers[0]
+  tasks:
+    - name: wait for region replication complete with tls enabled
+      uri:
+        url: "https://{{ ansible_host }}:{{ pd_client_port }}/pd/api/v1/cluster/status"
+        validate_certs: no
+        client_cert: "{{ pd_cert_dir }}/pd-server-{{ ansible_host }}.pem"
+        client_key: "{{ pd_cert_dir }}/pd-server-{{ ansible_host }}-key.pem"
+        return content: yes
+        body_format: json
+      register: cluster_status_https
+      until: cluster_status_https.json.is_initialized is defined and cluster_status_https.json.is_initialized == true
+      retries: 20
+      delay: 10
+      when:
+        - enable_tls|default(false)
+        - wait_replication|default(false)
 
 - hosts: pump_servers
   tags:
