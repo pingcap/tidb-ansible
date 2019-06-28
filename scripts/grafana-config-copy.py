@@ -62,8 +62,11 @@ def fill_dashboard_with_dest_config(dashboard, dest, type_='node'):
     else:
         panels = dashboard['panels']
     for row in panels:
-        for panel in row['panels']:
-            panel['datasource'] = dest['datasource']
+        if 'panels' in row:
+            for panel in row['panels']:
+                panel['datasource'] = dest['datasource']
+        else:
+            row['datasource'] = dest['datasource']
 
     if 'templating' in dashboard:
         for templating in dashboard['templating']['list']:
