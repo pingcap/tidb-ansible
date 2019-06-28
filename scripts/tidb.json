@@ -2372,7 +2372,209 @@
               "show": true
             }
           ]
-        }
+        },
+	{
+	  "type": "graph",
+	  "title": "Compile Duration",
+	  "gridPos": {
+	    "x": 0,
+	    "y": 13,
+	    "w": 12,
+	    "h": 8
+	  },
+	  "aliasColors": {},
+	  "bars": false,
+	  "dashLength": 10,
+	  "dashes": false,
+	  "datasource": "${DS_TEST-CLUSTER}",
+	  "decimals": null,
+	  "editable": true,
+	  "error": false,
+	  "fill": 1,
+	  "grid": {},
+	  "id": 154,
+	  "legend": {
+	    "alignAsTable": true,
+	    "avg": true,
+	    "current": true,
+	    "hideEmpty": true,
+	    "hideZero": true,
+	    "max": true,
+	    "min": false,
+	    "rightSide": true,
+	    "show": true,
+	    "sort": null,
+	    "sortDesc": null,
+	    "total": false,
+	    "values": true
+	  },
+	  "lines": true,
+	  "linewidth": 1,
+	  "links": [],
+	  "nullPointMode": "null as zero",
+	  "percentage": false,
+	  "pointradius": 5,
+	  "points": false,
+	  "renderer": "flot",
+	  "seriesOverrides": [],
+	  "spaceLength": 10,
+	  "stack": false,
+	  "steppedLine": false,
+	  "targets": [
+	    {
+	      "expr": "histogram_quantile(0.95, sum(rate(tidb_session_compile_duration_seconds_bucket[1m])) by (le, instance))",
+	      "format": "time_series",
+	      "intervalFactor": 2,
+	      "legendFormat": "{{instance}}",
+	      "refId": "A",
+	      "step": 30,
+	      "instant": false
+	    }
+	  ],
+	  "thresholds": [],
+	  "timeFrom": null,
+	  "timeRegions": [],
+	  "timeShift": null,
+	  "tooltip": {
+	    "msResolution": false,
+	    "shared": true,
+	    "sort": 0,
+	    "value_type": "cumulative"
+	  },
+	  "xaxis": {
+	    "buckets": null,
+	    "mode": "time",
+	    "name": null,
+	    "show": true,
+	    "values": []
+	  },
+	  "yaxes": [
+	    {
+	      "format": "s",
+	      "label": null,
+	      "logBase": 1,
+	      "max": null,
+	      "min": "0",
+	      "show": true,
+	      "decimals": null
+	    },
+	    {
+	      "format": "short",
+	      "label": null,
+	      "logBase": 1,
+	      "max": null,
+	      "min": null,
+	      "show": false
+	    }
+	  ],
+	  "yaxis": {
+	    "align": false,
+	    "alignLevel": null
+	  },
+	  "description": "The time cost of building the query plan",
+	  "interval": ""
+	},
+	{
+	  "type": "graph",
+	  "title": "Parse Duration",
+	  "gridPos": {
+	    "x": 12,
+	    "y": 13,
+	    "w": 12,
+	    "h": 8
+	  },
+	  "aliasColors": {},
+	  "bars": false,
+	  "dashLength": 10,
+	  "dashes": false,
+	  "datasource": "${DS_TEST-CLUSTER}",
+	  "decimals": null,
+	  "editable": true,
+	  "error": false,
+	  "fill": 1,
+	  "grid": {},
+	  "id": 156,
+	  "legend": {
+	    "alignAsTable": true,
+	    "avg": true,
+	    "current": true,
+	    "hideEmpty": true,
+	    "hideZero": true,
+	    "max": true,
+	    "min": false,
+	    "rightSide": true,
+	    "show": true,
+	    "sort": null,
+	    "sortDesc": null,
+	    "total": false,
+	    "values": true
+	  },
+	  "lines": true,
+	  "linewidth": 1,
+	  "links": [],
+	  "nullPointMode": "null as zero",
+	  "percentage": false,
+	  "pointradius": 5,
+	  "points": false,
+	  "renderer": "flot",
+	  "seriesOverrides": [],
+	  "spaceLength": 10,
+	  "stack": false,
+	  "steppedLine": false,
+	  "targets": [
+	    {
+	      "expr": "histogram_quantile(0.95, sum(rate(tidb_session_parse_duration_seconds_bucket[1m])) by (le, instance))",
+	      "format": "time_series",
+	      "intervalFactor": 2,
+	      "legendFormat": "{{instance}}",
+	      "refId": "A",
+	      "step": 30,
+	      "instant": false
+	    }
+	  ],
+	  "thresholds": [],
+	  "timeFrom": null,
+	  "timeRegions": [],
+	  "timeShift": null,
+	  "tooltip": {
+	    "msResolution": false,
+	    "shared": true,
+	    "sort": 0,
+	    "value_type": "cumulative"
+	  },
+	  "xaxis": {
+	    "buckets": null,
+	    "mode": "time",
+	    "name": null,
+	    "show": true,
+	    "values": []
+	  },
+	  "yaxes": [
+	    {
+	      "format": "s",
+	      "label": null,
+	      "logBase": 1,
+	      "max": null,
+	      "min": "0",
+	      "show": true,
+	      "decimals": null
+	    },
+	    {
+	      "format": "short",
+	      "label": null,
+	      "logBase": 1,
+	      "max": null,
+	      "min": null,
+	      "show": false
+	    }
+	  ],
+	  "yaxis": {
+	    "align": false,
+	    "alignLevel": null
+	  },
+	  "description": "The time cost of parsing SQL to AST",
+	  "interval": ""
+	}
       ],
       "repeat": null,
       "repeatIteration": null,
