@@ -12,15 +12,16 @@ DOCUMENTATION = '''
       - This plugin will print help message when tasks fail.
 '''
 
-from ansible.plugins.callback import CallbackBase, strip_internal_keys
-from ansible.module_utils._text import to_bytes, to_text
-from ansible.utils.color import stringc
-from ansible import constants as C
 import locale
 import os
 import sys
 import io
 import logging
+
+from ansible.plugins.callback import CallbackBase, strip_internal_keys
+from ansible.module_utils._text import to_bytes, to_text
+from ansible.utils.color import stringc
+from ansible import constants as C
 
 FAIL_LOGFILE = os.path.dirname(C.DEFAULT_LOG_PATH) + "/fail.log"
 
@@ -75,7 +76,6 @@ class CallbackModule(CallbackBase):
 
         Note: msg *must* be a unicode string to prevent UnicodeError tracebacks.
         """
-        logger = None
         nocolor = msg
         if color:
             msg = stringc(msg, color)
@@ -107,7 +107,7 @@ class CallbackModule(CallbackBase):
                 if e.errno != errno.EPIPE:
                     raise
 
-        if logger and not screen_only:
+        if self.logger and not screen_only:
             msg2 = nocolor.lstrip(u'\n')
 
             msg2 = to_bytes(msg2)
@@ -118,9 +118,9 @@ class CallbackModule(CallbackBase):
                 msg2 = to_text(msg2, self._output_encoding(stderr=stderr))
 
             if color == C.COLOR_ERROR:
-                logger.error(msg2)
+                self.logger.error(msg2)
             else:
-                logger.info(msg2)
+                self.logger.info(msg2)
 
     def print_help_message(self):
         self._display.display("Ask for help:", color=C.COLOR_WARN)

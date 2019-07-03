@@ -24,6 +24,7 @@ import json
 import re
 import string
 import sys
+
 from ansible.plugins.callback import CallbackBase, strip_internal_keys
 from ansible.plugins.callback.default import CallbackModule as Default
 from ansible.parsing.yaml.dumper import AnsibleDumper
