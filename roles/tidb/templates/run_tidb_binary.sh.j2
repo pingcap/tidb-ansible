@@ -30,5 +30,8 @@ exec bin/tidb-server \
 {% if enable_binlog|default(false) %}
     --enable-binlog \
 {% endif %}
+{% if tidb_affinity_cpu|default(false) %}
+    --affinity-cpus="{{tidb_affinity_cpu | join(',')}}" \
+{% endif %}
     --log-slow-query="{{ tidb_log_dir }}/{{ tidb_slow_query_filename }}" \
     --log-file="{{ tidb_log_dir }}/{{ tidb_log_filename }}" 2>> "{{ tidb_log_dir }}/{{ tidb_stderr_filename }}"
