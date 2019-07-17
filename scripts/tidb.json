@@ -1618,6 +1618,7 @@
         {
           "aliasColors": {},
           "bars": false,
+          "cacheTimeout": null,
           "dashLength": 10,
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
@@ -1629,6 +1630,106 @@
             "h": 7,
             "w": 12,
             "x": 0,
+            "y": 3
+          },
+          "id": 184,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null as zero",
+          "percentage": false,
+          "pluginVersion": "6.1.6",
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "total",
+              "fill": 0,
+              "lines": false
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": true,
+          "targets": [
+            {
+              "expr": "(time() - process_start_time_seconds{job=\"tidb\"})",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 2,
+              "legendFormat": "{{instance}}",
+              "refId": "A",
+              "step": 40
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Uptime",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "dtdurations",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {},
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
             "y": 3
           },
           "id": 168,
@@ -1659,12 +1760,13 @@
             }
           ],
           "spaceLength": 10,
-          "stack": true,
+          "stack": false,
           "steppedLine": true,
           "targets": [
             {
-              "expr": "tidb_server_cpu_usage",
+              "expr": "rate(process_cpu_seconds_total{job=\"tidb\"}[1m])",
               "format": "time_series",
+              "hide": false,
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
               "refId": "A",
@@ -1692,7 +1794,7 @@
           },
           "yaxes": [
             {
-              "format": "percent",
+              "format": "percentunit",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -1726,8 +1828,8 @@
           "gridPos": {
             "h": 7,
             "w": 12,
-            "x": 12,
-            "y": 3
+            "x": 0,
+            "y": 10
           },
           "id": 3,
           "legend": {
@@ -1762,17 +1864,24 @@
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
-              "legendFormat": "{{instance}}",
+              "legendFormat": "goheap-{{instance}}",
               "metric": "go_memstats_heap_inuse_bytes",
               "refId": "B",
               "step": 40
+            },
+            {
+              "expr": "process_resident_memory_bytes{job=\"tidb\"}",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "process-{{instance}}",
+              "refId": "A"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeRegions": [],
           "timeShift": null,
-          "title": "Heap Memory Usage",
+          "title": "Memory Usage",
           "tooltip": {
             "msResolution": true,
             "shared": true,
@@ -1823,7 +1932,7 @@
           "gridPos": {
             "h": 7,
             "w": 12,
-            "x": 0,
+            "x": 12,
             "y": 10
           },
           "id": 8,
@@ -1926,8 +2035,8 @@
           "gridPos": {
             "h": 7,
             "w": 12,
-            "x": 12,
-            "y": 10
+            "x": 0,
+            "y": 17
           },
           "id": 61,
           "legend": {
@@ -2009,13 +2118,286 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
+          "fill": 1,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
+            "y": 17
+          },
+          "id": 186,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": " go_threads{job=\"tidb\"}",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "{{instance}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Go Threads",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {},
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 24
+          },
+          "id": 183,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null as zero",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "total",
+              "fill": 0,
+              "lines": false
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": true,
+          "targets": [
+            {
+              "expr": "rate(go_gc_duration_seconds_sum{job=\"tidb\"}[1m])",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 2,
+              "legendFormat": "{{instance}}",
+              "refId": "A",
+              "step": 40
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Go GC Duration",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "dtdurations",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "fill": 1,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
+            "y": 24
+          },
+          "id": 185,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": " rate(go_gc_duration_seconds_count{job=\"tidb\"}[1m])",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "{{instance}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Go GC Count",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
           "description": "TiDB Server events.",
           "fill": 1,
           "gridPos": {
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 17
+            "y": 31
           },
           "id": 49,
           "legend": {
@@ -2102,7 +2484,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 17
+            "y": 31
           },
           "id": 82,
           "legend": {
@@ -2192,7 +2574,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 24
+            "y": 38
           },
           "id": 165,
           "legend": {
@@ -2222,7 +2604,7 @@
             }
           ],
           "spaceLength": 10,
-          "stack": true,
+          "stack": false,
           "steppedLine": true,
           "targets": [
             {
@@ -2295,7 +2677,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 24
+            "y": 38
           },
           "id": 166,
           "legend": {
@@ -2382,7 +2764,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 31
+            "y": 45
           },
           "id": 54,
           "legend": {
@@ -2479,7 +2861,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 31
+            "y": 45
           },
           "id": 111,
           "legend": {
@@ -2564,7 +2946,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 38
+            "y": 52
           },
           "id": 167,
           "legend": {
@@ -9353,7 +9735,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 16
+            "y": 72
           },
           "id": 85,
           "legend": {
@@ -9441,7 +9823,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 16
+            "y": 72
           },
           "id": 86,
           "legend": {
@@ -9529,7 +9911,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 16
+            "y": 72
           },
           "id": 87,
           "legend": {
@@ -9615,7 +9997,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 23
+            "y": 79
           },
           "id": 88,
           "legend": {
@@ -9700,7 +10082,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 23
+            "y": 79
           },
           "id": 158,
           "legend": {
@@ -9787,7 +10169,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 23
+            "y": 79
           },
           "id": 90,
           "legend": {
@@ -9872,7 +10254,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 30
+            "y": 86
           },
           "id": 89,
           "legend": {
@@ -9960,7 +10342,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 30
+            "y": 86
           },
           "id": 181,
           "legend": {
@@ -9990,7 +10372,7 @@
             }
           ],
           "spaceLength": 10,
-          "stack": true,
+          "stack": false,
           "steppedLine": true,
           "targets": [
             {
@@ -10058,7 +10440,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 30
+            "y": 86
           },
           "id": 182,
           "legend": {
@@ -10165,7 +10547,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 109
+            "y": 73
           },
           "id": 176,
           "legend": {
@@ -10195,7 +10577,7 @@
             }
           ],
           "spaceLength": 10,
-          "stack": true,
+          "stack": false,
           "steppedLine": true,
           "targets": [
             {
@@ -10263,7 +10645,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 109
+            "y": 73
           },
           "id": 179,
           "legend": {
@@ -10355,7 +10737,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 109
+            "y": 73
           },
           "id": 180,
           "legend": {
@@ -10477,5 +10859,5 @@
   "timezone": "browser",
   "title": "Test-Cluster-TiDB",
   "uid": "000000011",
-  "version": 13
+  "version": 3
 }
