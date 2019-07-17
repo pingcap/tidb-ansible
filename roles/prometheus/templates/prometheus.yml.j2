@@ -212,7 +212,7 @@ scrape_configs:
     params:
       module: [tcp_connect]
     static_configs:
-{% if kafka_addrs | default("") -%}
+{% if kafka_addrs | default("") %}
     - targets:
 {% for kafka_addr in (kafka_addrs | default("")).split(',') | unique %}
       - '{{ kafka_addr }}'
@@ -220,7 +220,7 @@ scrape_configs:
       labels:
         group: 'kafka'
 {% endif %}
-{% if zookeeper_addrs | default("") -%}
+{% if zookeeper_addrs | default("") %}
     - targets:
 {% for zoo_addr in (zookeeper_addrs | default("")).split(',') | unique %}
       - '{{ zoo_addr }}'
@@ -240,7 +240,7 @@ scrape_configs:
 {% endfor %}
       labels:
         group: 'drainer'
-{% if kafka_exporter_host -%}
+{% if kafka_exporter_host %}
     - targets:
       - '{{ kafka_exporter_host }}:{{ kafka_exporter_port }}'
       labels:
