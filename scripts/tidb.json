@@ -1724,13 +1724,115 @@
           "datasource": "${DS_TEST-CLUSTER}",
           "editable": true,
           "error": false,
-          "fill": 1,
+          "fill": 0,
           "grid": {},
           "gridPos": {
             "h": 7,
             "w": 12,
             "x": 12,
             "y": 3
+          },
+          "id": 3,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "hideEmpty": true,
+            "hideZero": false,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": null,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null as zero",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "process_resident_memory_bytes{job=\"tidb\"}",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 1,
+              "legendFormat": "process-{{instance}}",
+              "refId": "A"
+            },
+            {
+              "expr": "go_memstats_heap_alloc_bytes{job=\"tidb\"}",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "heap-{{instance}}",
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Memory Usage",
+          "tooltip": {
+            "msResolution": true,
+            "shared": true,
+            "sort": 0,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "bytes",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {},
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 10
           },
           "id": 168,
           "legend": {
@@ -1808,110 +1910,6 @@
               "max": null,
               "min": null,
               "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
-          "editable": true,
-          "error": false,
-          "fill": 0,
-          "grid": {},
-          "gridPos": {
-            "h": 7,
-            "w": 12,
-            "x": 0,
-            "y": 10
-          },
-          "id": 3,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": true,
-            "hideEmpty": true,
-            "hideZero": false,
-            "max": true,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "sideWidth": null,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null as zero",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "go_memstats_heap_inuse_bytes{job=~\"tidb.*\"}",
-              "format": "time_series",
-              "hide": false,
-              "intervalFactor": 2,
-              "legendFormat": "goheap-{{instance}}",
-              "metric": "go_memstats_heap_inuse_bytes",
-              "refId": "B",
-              "step": 40
-            },
-            {
-              "expr": "process_resident_memory_bytes{job=\"tidb\"}",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "legendFormat": "process-{{instance}}",
-              "refId": "A"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Memory Usage",
-          "tooltip": {
-            "msResolution": true,
-            "shared": true,
-            "sort": 0,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "bytes",
-              "label": "",
-              "logBase": 1,
-              "max": null,
-              "min": "0",
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": "",
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": false
             }
           ],
           "yaxis": {
@@ -2038,17 +2036,17 @@
             "x": 0,
             "y": 17
           },
-          "id": 61,
+          "id": 188,
           "legend": {
             "alignAsTable": true,
             "avg": false,
-            "current": true,
-            "max": true,
+            "current": false,
+            "max": false,
             "min": false,
             "rightSide": true,
             "show": true,
             "total": false,
-            "values": true
+            "values": false
           },
           "lines": true,
           "linewidth": 1,
@@ -2064,7 +2062,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": " go_goroutines{job=~\"tidb.*\"}",
+              "expr": "process_open_fds{job=\"tidb\"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
@@ -2075,7 +2073,7 @@
           "timeFrom": null,
           "timeRegions": [],
           "timeShift": null,
-          "title": "Goroutine Count",
+          "title": "Open FD Count",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -2125,7 +2123,7 @@
             "x": 12,
             "y": 17
           },
-          "id": 186,
+          "id": 61,
           "legend": {
             "alignAsTable": true,
             "avg": false,
@@ -2151,7 +2149,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": " go_threads{job=\"tidb\"}",
+              "expr": " go_goroutines{job=~\"tidb.*\"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
@@ -2162,7 +2160,7 @@
           "timeFrom": null,
           "timeRegions": [],
           "timeShift": null,
-          "title": "Go Threads",
+          "title": "Goroutine Count",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -2311,6 +2309,93 @@
             "x": 12,
             "y": 24
           },
+          "id": 186,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": " go_threads{job=\"tidb\"}",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "{{instance}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Go Threads",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "fill": 1,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 31
+          },
           "id": 185,
           "legend": {
             "alignAsTable": true,
@@ -2391,13 +2476,113 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
+          "description": "The fraction of this program's available CPU time used by the GC since the program started.",
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {},
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
+            "y": 31
+          },
+          "id": 187,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null as zero",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "total",
+              "fill": 0,
+              "lines": false
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": true,
+          "targets": [
+            {
+              "expr": "go_memstats_gc_cpu_fraction{job=\"tidb\"}",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 2,
+              "legendFormat": "{{instance}}",
+              "refId": "A",
+              "step": 40
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Go GC CPU Usage",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "percentunit",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
           "description": "TiDB Server events.",
           "fill": 1,
           "gridPos": {
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 31
+            "y": 38
           },
           "id": 49,
           "legend": {
@@ -2484,7 +2669,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 31
+            "y": 38
           },
           "id": 82,
           "legend": {
@@ -2574,7 +2759,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 38
+            "y": 45
           },
           "id": 165,
           "legend": {
@@ -2677,7 +2862,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 38
+            "y": 45
           },
           "id": 166,
           "legend": {
@@ -2764,7 +2949,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 45
+            "y": 52
           },
           "id": 54,
           "legend": {
@@ -2855,97 +3040,11 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
-          "description": "Duration (us) for getting token, it should be small until concurrency limit is reached.",
           "fill": 1,
           "gridPos": {
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 45
-          },
-          "id": 111,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "histogram_quantile(0.99, sum(rate(tidb_server_get_token_duration_seconds_bucket[1m])) by (le))",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "legendFormat": "99",
-              "refId": "A"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Get Token Duration",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "µs",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
-          "fill": 1,
-          "gridPos": {
-            "h": 7,
-            "w": 12,
-            "x": 0,
             "y": 52
           },
           "id": 167,
@@ -3002,6 +3101,92 @@
           "yaxes": [
             {
               "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "description": "Duration (us) for getting token, it should be small until concurrency limit is reached.",
+          "fill": 1,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 59
+          },
+          "id": 111,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.99, sum(rate(tidb_server_get_token_duration_seconds_bucket[1m])) by (le))",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "99",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Get Token Duration",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "µs",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -4872,7 +5057,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 144
+            "y": 7
           },
           "id": 6,
           "legend": {
@@ -4981,7 +5166,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 144
+            "y": 7
           },
           "id": 11,
           "legend": {
@@ -5081,7 +5266,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 151
+            "y": 14
           },
           "id": 53,
           "legend": {
@@ -5173,7 +5358,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 151
+            "y": 14
           },
           "id": 32,
           "legend": {
@@ -5268,7 +5453,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 158
+            "y": 21
           },
           "id": 84,
           "legend": {
@@ -6439,7 +6624,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 203
+            "y": 10
           },
           "id": 20,
           "legend": {
@@ -6532,7 +6717,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 203
+            "y": 10
           },
           "id": 35,
           "legend": {
@@ -6638,7 +6823,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 203
+            "y": 10
           },
           "id": 43,
           "legend": {
@@ -6731,7 +6916,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 210
+            "y": 17
           },
           "id": 79,
           "legend": {
@@ -6828,7 +7013,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 210
+            "y": 17
           },
           "id": 77,
           "legend": {
@@ -6854,7 +7039,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.999, sum(rate(pd_client_cmd_handle_cmds_duration_seconds_bucket{type=\"tso\"}[1m])) by (le))",
+              "expr": "histogram_quantile(0.999, sum(rate(pd_client_cmd_handle_cmds_duration_seconds_bucket{type=\"wait\"}[1m])) by (le))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "999",
@@ -6862,14 +7047,14 @@
               "step": 10
             },
             {
-              "expr": "histogram_quantile(0.99, sum(rate(pd_client_cmd_handle_cmds_duration_seconds_bucket{type=\"tso\"}[1m])) by (le))",
+              "expr": "histogram_quantile(0.99, sum(rate(pd_client_cmd_handle_cmds_duration_seconds_bucket{type=\"wait\"}[1m])) by (le))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "99",
               "refId": "B"
             },
             {
-              "expr": "histogram_quantile(0.90, sum(rate(pd_client_cmd_handle_cmds_duration_seconds_bucket{type=\"tso\"}[1m])) by (le))",
+              "expr": "histogram_quantile(0.90, sum(rate(pd_client_cmd_handle_cmds_duration_seconds_bucket{type=\"wait\"}[1m])) by (le))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "90",
@@ -6933,7 +7118,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 210
+            "y": 17
           },
           "id": 78,
           "legend": {
@@ -7038,7 +7223,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 217
+            "y": 24
           },
           "id": 159,
           "legend": {
@@ -7557,7 +7742,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 62
+            "y": 111
           },
           "id": 9,
           "legend": {
@@ -7646,7 +7831,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 62
+            "y": 111
           },
           "id": 63,
           "legend": {
@@ -7735,7 +7920,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 62
+            "y": 111
           },
           "id": 62,
           "legend": {
@@ -7824,7 +8009,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 69
+            "y": 118
           },
           "id": 55,
           "legend": {
@@ -7911,7 +8096,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 69
+            "y": 118
           },
           "id": 56,
           "legend": {
@@ -8000,7 +8185,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 76
+            "y": 125
           },
           "id": 64,
           "legend": {
@@ -8087,7 +8272,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 76
+            "y": 125
           },
           "id": 65,
           "legend": {
@@ -8174,7 +8359,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 76
+            "y": 125
           },
           "id": 66,
           "legend": {
@@ -8276,7 +8461,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 13
+            "y": 69
           },
           "id": 46,
           "legend": {
@@ -8362,7 +8547,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 13
+            "y": 69
           },
           "id": 47,
           "legend": {
@@ -8448,7 +8633,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 13
+            "y": 69
           },
           "id": 70,
           "legend": {
@@ -8548,7 +8733,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 20
+            "y": 76
           },
           "id": 71,
           "legend": {
@@ -8634,7 +8819,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 20
+            "y": 76
           },
           "id": 92,
           "legend": {
@@ -8720,7 +8905,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 20
+            "y": 76
           },
           "id": 170,
           "legend": {
@@ -8807,7 +8992,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 27
+            "y": 83
           },
           "id": 113,
           "legend": {
@@ -8893,7 +9078,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 27
+            "y": 83
           },
           "id": 93,
           "legend": {
@@ -8982,7 +9167,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 27
+            "y": 83
           },
           "id": 173,
           "legend": {
@@ -9091,7 +9276,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 14
+            "y": 70
           },
           "id": 162,
           "legend": {
@@ -9180,7 +9365,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 14
+            "y": 70
           },
           "id": 163,
           "legend": {
@@ -9266,7 +9451,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 14
+            "y": 70
           },
           "id": 174,
           "legend": {
@@ -9735,7 +9920,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 72
+            "y": 16
           },
           "id": 85,
           "legend": {
@@ -9823,7 +10008,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 72
+            "y": 16
           },
           "id": 86,
           "legend": {
@@ -9911,7 +10096,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 72
+            "y": 16
           },
           "id": 87,
           "legend": {
@@ -9997,7 +10182,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 79
+            "y": 23
           },
           "id": 88,
           "legend": {
@@ -10082,7 +10267,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 79
+            "y": 23
           },
           "id": 158,
           "legend": {
@@ -10169,7 +10354,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 79
+            "y": 23
           },
           "id": 90,
           "legend": {
@@ -10254,7 +10439,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 86
+            "y": 30
           },
           "id": 89,
           "legend": {
@@ -10342,7 +10527,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 86
+            "y": 30
           },
           "id": 181,
           "legend": {
@@ -10440,7 +10625,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 86
+            "y": 30
           },
           "id": 182,
           "legend": {
@@ -10547,7 +10732,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 73
+            "y": 17
           },
           "id": 176,
           "legend": {
@@ -10581,10 +10766,10 @@
           "steppedLine": true,
           "targets": [
             {
-              "expr": "sum(tidb_tikvclient_pending_batch_requests) by (instance)",
+              "expr": "sum(tidb_tikvclient_pending_batch_requests) by (store)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{instance}}",
+              "legendFormat": "{{store}}",
               "refId": "A",
               "step": 40
             }
@@ -10593,7 +10778,7 @@
           "timeFrom": null,
           "timeRegions": [],
           "timeShift": null,
-          "title": "Pending Request Count",
+          "title": "Pending Request Count by TiKV",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -10645,7 +10830,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 73
+            "y": 17
           },
           "id": 179,
           "legend": {
@@ -10737,7 +10922,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 73
+            "y": 17
           },
           "id": 180,
           "legend": {
@@ -10820,7 +11005,7 @@
       "type": "row"
     }
   ],
-  "refresh": "30s",
+  "refresh": false,
   "schemaVersion": 18,
   "style": "dark",
   "tags": [],
@@ -10828,8 +11013,8 @@
     "list": []
   },
   "time": {
-    "from": "now-1h",
-    "to": "now"
+    "from": "2019-07-17T13:17:56.370Z",
+    "to": "2019-07-17T16:14:05.177Z"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -10859,5 +11044,5 @@
   "timezone": "browser",
   "title": "Test-Cluster-TiDB",
   "uid": "000000011",
-  "version": 3
+  "version": 5
 }
