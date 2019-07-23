@@ -61,67 +61,6 @@ class CallbackModule(CallbackBase):
                 messages += '  ' + str(k) + ': ' + str(v) + '\n'
         return messages
 
-    @staticmethod
-    def _output_encoding(stderr=False):
-        encoding = locale.getpreferredencoding()
-        # https://bugs.python.org/issue6202
-        # Python2 hardcodes an obsolete value on Mac.  Use MacOSX defaults
-        # instead.
-        if encoding in ('mac-roman',):
-            encoding = 'utf-8'
-        return encoding
-
-    def sumarry_display(self, msg, color=None, stderr=False, screen_only=False, log_only=False):
-        """ Display a message to the user
-
-        Note: msg *must* be a unicode string to prevent UnicodeError tracebacks.
-        """
-        nocolor = msg
-        if color:
-            msg = stringc(msg, color)
-
-        if not log_only:
-            msg2 = msg
-
-            msg2 = to_bytes(msg2, encoding=self._output_encoding(stderr=stderr))
-            if sys.version_info >= (3,):
-                # Convert back to text string on python3
-                # We first convert to a byte string so that we get rid of
-                # characters that are invalid in the user's locale
-                msg2 = to_text(msg2, self._output_encoding(stderr=stderr), errors='replace')
-
-            # Note: After Display() class is refactored need to update the log capture
-            # code in 'bin/ansible-connection' (and other relevant places).
-            if not stderr:
-                fileobj = sys.stdout
-            else:
-                fileobj = sys.stderr
-
-            fileobj.write(msg2)
-
-            try:
-                fileobj.flush()
-            except IOError as e:
-                # Ignore EPIPE in case fileobj has been prematurely closed, eg.
-                # when piping to "head -n1"
-                if e.errno != errno.EPIPE:
-                    raise
-
-        if self.logger and not screen_only:
-            msg2 = nocolor.lstrip(u'\n')
-
-            msg2 = to_bytes(msg2)
-            if sys.version_info >= (3,):
-                # Convert back to text string on python3
-                # We first convert to a byte string so that we get rid of
-                # characters that are invalid in the user's locale
-                msg2 = to_text(msg2, self._output_encoding(stderr=stderr))
-
-            if color == C.COLOR_ERROR:
-                self.logger.error(msg2)
-            else:
-                self.logger.info(msg2)
-
     def print_help_message(self):
         self._display.display("Ask for help:", color=C.COLOR_WARN)
         self._display.display("Contact us: support@pingcap.com", color=C.COLOR_HIGHLIGHT)
@@ -156,7 +95,7 @@ class CallbackModule(CallbackBase):
                 self._display.banner("ERROR MESSAGE SUMMARY")
                 with io.open(FAIL_LOGFILE, 'r', encoding="utf-8") as f:
                     for _, line in enumerate(f):
-                        self.sumarry_display(line, color=C.COLOR_ERROR)
+                        self._display.display(line.strip('\n'), color=C.COLOR_ERROR)
                     self.print_help_message()
             else:
                 self._display.display("Congrats! All goes well. :-)", color=C.COLOR_OK)
