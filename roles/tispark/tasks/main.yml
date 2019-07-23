@@ -42,3 +42,10 @@
     mode: 0755
     backup: yes
   when: "'spark_slaves' in group_names"
+
+- name: create log4j.properties file
+  template:
+    src: log4j.properties.j2
+    dest: "{{ deploy_dir }}/spark/conf/log4j.properties"
+    mode: 0644
+    backup: yes
