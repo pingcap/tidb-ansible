@@ -72,3 +72,8 @@ binlog-socket = "{{ pump_socket }}"
 {% for item, value in tidb_conf.binlog | dictsort -%}
 {{ item }} = {{ value | to_json }}
 {% endfor %}
+
+[pessimistic-txn]
+{% for item, value in tidb_conf.pessimistic_txn | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
