@@ -30,6 +30,7 @@ src = dict(
     dashboards={"node": 'node.json',
                 "pd"  : 'pd.json',
                 "tidb": 'tidb.json',
+                "tidb_summary": 'tidb_summary.json',
                 "tikv_summary": 'tikv_summary.json',
                 "tikv_details": 'tikv_details.json',
                 "tikv_trouble_shot": 'tikv_trouble_shooting.json',
