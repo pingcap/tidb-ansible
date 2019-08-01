@@ -56,7 +56,7 @@
       "title": "Report",
       "tooltip": "Open a pdf report for the current dashboard",
       "type": "link",
-      "url": "http://172.16.10.49:8686/api/report/test-cluster-tidb?apitoken=eyJrIjoiQkU2bmFQdjZMeTRmWVJ3UFo0bmV3Ym5zRG04Y2hmMHYiLCJuIjoiZ3JhZmFuYV9hcGlrZXkiLCJpZCI6MX0="
+      "url": "http://10.0.1.8:38686/api/report/test-cluster-tidb?apitoken=eyJrIjoiU2E3ck9LeTZYSDAxZGtKRjVteUd6ZFJ4TDd3VUozbkwiLCJuIjoiZ3JhZmFuYV9hcGlrZXkiLCJpZCI6MX0="
     }
   ],
   "panels": [
@@ -7809,7 +7809,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 111
+            "y": 12
           },
           "id": 9,
           "legend": {
@@ -7899,7 +7899,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 111
+            "y": 12
           },
           "id": 63,
           "legend": {
@@ -7989,7 +7989,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 111
+            "y": 12
           },
           "id": 62,
           "legend": {
@@ -8079,7 +8079,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 118
+            "y": 19
           },
           "id": 55,
           "legend": {
@@ -8167,7 +8167,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 118
+            "y": 19
           },
           "id": 56,
           "legend": {
@@ -8257,7 +8257,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 125
+            "y": 26
           },
           "id": 64,
           "legend": {
@@ -8345,7 +8345,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 125
+            "y": 26
           },
           "id": 65,
           "legend": {
@@ -8433,7 +8433,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 125
+            "y": 26
           },
           "id": 66,
           "legend": {
@@ -8489,6 +8489,99 @@
           "yaxes": [
             {
               "format": "s",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "description": "executed DDL jobs per minute",
+          "fill": 1,
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 33
+          },
+          "id": 190,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(tidb_ddl_handle_job_duration_seconds_count[1m])) by (type)",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "{{ type }}",
+              "refId": "A"
+            },
+            {
+              "expr": "sum(rate(tidb_ddl_handle_job_duration_seconds_count[1m]))",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "total",
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "DDL OPM",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -11144,5 +11237,5 @@
   "timezone": "browser",
   "title": "Test-Cluster-TiDB",
   "uid": "000000011",
-  "version": 2
+  "version": 4
 }
