@@ -186,6 +186,9 @@
       debug:
         msg: "tikv binary or docker pid: {{ old_tikv_pid.stdout }}"
 
+    - name: sleep after tikv port is down
+      shell: sleep 100
+
   roles:
     - tikv
 
@@ -205,6 +208,9 @@
         port: "{{ tikv_port }}"
         state: started
         msg: "the TiKV port {{ tikv_port }} is not up"
+
+    - name: sleep after tikv port is up and before  add leader
+      shell: sleep 500
 
     - name: wait until the TiKV status page is available
       uri:
@@ -239,6 +245,9 @@
         msg: "tikv binary or docker pid: {{ new_tikv_pid.stdout }}"
 
     - include_tasks: "common_tasks/remove_evict_leader_scheduler.yml"
+
+    - name: after add leader
+      shell: sleep 500
 
 
 - name: rolling update pump cluster

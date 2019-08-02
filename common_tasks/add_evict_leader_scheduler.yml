@@ -52,6 +52,9 @@
       store_id: "{{ store_id_tls }}"
   when: enable_tls|default(false)
 
+- name: sleep after evict leader
+  shell: sleep 300
+
 - name: check tikv's leader count
   uri:
     url: "http://{{ pd_addr }}/pd/api/v1/store/{{ store_id }}"
