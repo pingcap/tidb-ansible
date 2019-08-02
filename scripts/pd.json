@@ -58,7 +58,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": null,
-  "iteration": 1564734868954,
+  "iteration": 1564738811479,
   "links": [],
   "panels": [
     {
@@ -98,7 +98,7 @@
           "id": 55,
           "interval": null,
           "links": [],
-          "mappingType": 2,
+          "mappingType": 1,
           "mappingTypes": [
             {
               "name": "value to text",
@@ -137,7 +137,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "delta(pd_server_tso{type=\"save\",instance=\"$instance\"}[1m])",
+              "expr": "count(delta(pd_tso_events{type=\"save\",instance=\"$instance\"}[1m]))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "",
@@ -153,8 +153,13 @@
           "valueMaps": [
             {
               "op": "=",
-              "text": "N/A",
+              "text": "Follower",
               "value": "null"
+            },
+            {
+              "op": "=",
+              "text": "Leader",
+              "value": "1"
             }
           ],
           "valueName": "current"
@@ -7237,5 +7242,5 @@
   "timezone": "browser",
   "title": "Test-Cluster-PD",
   "uid": "Q6RuHYIWk",
-  "version": 2
+  "version": 5
 }
