@@ -66,9 +66,6 @@
 {% endfor %}
 
 [binlog]
-{% if binlog_version == 'kafka' and enable_binlog == True %}
-binlog-socket = "{{ pump_socket }}"
-{% endif %}
 {% for item, value in tidb_conf.binlog | dictsort -%}
 {{ item }} = {{ value | to_json }}
 {% endfor %}
