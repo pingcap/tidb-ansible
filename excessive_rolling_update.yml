@@ -54,8 +54,58 @@
         - current_version.stdout_lines[0].replace(' ','').split(':')[1] < "v2.0.1"
         - tidb_version >= "v2.1.0" or tidb_version == "latest"
 
+- hosts: pd_servers
+  any_errors_fatal: true
+  serial: 1
+  tags:
+    - pd
+  tasks:
+    - name: Check pd cluster status
+      uri:
+        url: "http://{{ ansible_host }}:{{ pd_client_port }}/pd/health"
+        method: GET
+        return_content: yes
+        status_code: 200
+      register: pd_status
+    - name: Failed when one node of pd is unhealthy
+      fail:
+        msg: "Some pd node is unhealth"
+      when: "'false' in pd_status.content"
+
+- hosts: pd_servers
+  any_errors_fatal: true
+  serial: 1
+  tags:
+    - pd
+  tasks:
+    - name: Get pd leader
+      uri:
+        url: "http://{{ ansible_host }}:{{ pd_client_port }}/pd/api/v1/leader"
+        method: GET
+        return_content: yes
+        status_code: 200
+      register: pd_leader_info
+    - set_fact:
+        pd_leader: "{{ pd_leader_info.json | json_query('client_urls') | regex_replace('^.*//(\\d+.\\d+.\\d+.\\d+:\\d+).*$', '\\1') }}"
+    - name: Get pd follower list
+      add_host:
+        name: "{{ ansible_host }}"
+        groups: pd_servers_followers
+        pd_client_port: "{{ pd_client_port }}"
+        deploy_dir: "{{ deploy_dir }}"
+        pd_peer_port: "{{ pd_peer_port }}"
+      when: ansible_host not in pd_leader
+    - name: Get pd leader list
+      add_host:
+        name: "{{ ansible_host }}"
+        groups: pd_servers_leader
+        pd_client_port: "{{ pd_client_port }}"
+        deploy_dir: "{{ deploy_dir }}"
+        pd_peer_port: "{{ pd_peer_port }}"
+      when: ansible_host in pd_leader
+
 - name: rolling update PD cluster
-  hosts: pd_servers
+  hosts: pd_servers_followers, pd_servers_leader
   any_errors_fatal: true
   serial: 1
   tags:
