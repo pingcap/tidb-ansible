@@ -253,17 +253,17 @@ groups:
       value: '{{ $value }}'
       summary: TiKV storage scheduler cpu seconds more than 80%
 
-  - alert: TiKV_coprocessor_outdated_request_wait_seconds
-    expr: delta( tikv_coprocessor_outdated_request_wait_seconds_count[10m] )  > 0
+  - alert: tikv_coprocessor_request_wait_seconds
+    expr: delta( tikv_coprocessor_request_wait_seconds_count[10m] )  > 0
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: warning
-      expr:  delta( tikv_coprocessor_outdated_request_wait_seconds_count[10m] )  > 0
+      expr:  delta( tikv_coprocessor_request_wait_seconds_count[10m] )  > 0
     annotations:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
-      summary: TiKV coprocessor outdated request wait seconds
+      summary: TiKV coprocessor request wait seconds
 
   - alert: TiKV_coprocessor_request_error
     expr: increase(tikv_coprocessor_request_error{reason!="lock"}[10m]) > 100
@@ -343,7 +343,7 @@ groups:
     labels:
       env: ENV_LABELS_ENV
       level: warning
-      expr: histogram_quantile(0.99, sum(rate(tikv_raftstore_region_size_bucket[1m])) by (le)) > 1073741824 
+      expr: histogram_quantile(0.99, sum(rate(tikv_raftstore_region_size_bucket[1m])) by (le)) > 1073741824
     annotations:
       description: 'cluster: ENV_LABELS_ENV, type: {{ $labels.type }}, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
