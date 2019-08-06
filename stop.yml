@@ -305,21 +305,3 @@
         port: "{{ grafana_port }}"
         state: stopped
         msg: "the grafana port {{ grafana_port }} is not down"
-
-    - name: stop grafana_collector by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - grafana_collector
-
-    - name: stop grafana_collector by systemd
-      systemd: name=grafana_collector-{{ grafana_collector_port }}.service state=stopped
-      become: true
-      when: process_supervision == 'systemd'
-
-    - name: wait until the grafana_collector port is down
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ grafana_collector_port }}"
-        state: stopped
-        msg: "the grafana_collector port {{ grafana_collector_port }} is not down"
