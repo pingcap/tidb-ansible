@@ -86,7 +86,7 @@
         status_code: 200
       register: pd_leader_info
     - set_fact:
-        pd_leader: "{{ pd_leader_info.json | json_query('client_urls') | regex_replace('^.*//(\\d+.\\d+.\\d+.\\d+:\\d+).*$', '\\1') }}"
+        pd_leader: "{{ pd_leader_info.json | json_query('client_urls') | regex_replace('^.*//(.*:\\d+).*$', '\\1') }}"
     - name: Get pd follower list
       add_host:
         name: "{{ ansible_host }}"
