@@ -115,14 +115,7 @@
   tags:
     - pump
   roles:
-    - { role: pump_cluster, when: enable_binlog|default(false) and binlog_version == "cluster" }
-
-- name: deploying pump kafka
-  hosts: tidb_servers
-  tags:
-    - pump
-  roles:
-    - { role: pump_kafka, when: enable_binlog|default(false) and binlog_version == "kafka" }
+    - { role: pump, when: enable_binlog|default(false) }
 
 - name: deploying TiDB cluster
   hosts: tidb_servers
