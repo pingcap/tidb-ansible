@@ -86,23 +86,23 @@
         status_code: 200
       register: pd_leader_info
     - set_fact:
-        pd_leader: "{{ pd_leader_info.json | json_query('client_urls') | regex_replace('^.*//(.*:\\d+).*$', '\\1') }}"
-    - name: Get pd follower list
+        pd_leader: "{{ pd_leader_info.json | json_query('client_urls') }}"
+    - name: Set pd follower list
       add_host:
         name: "{{ ansible_host }}"
         groups: pd_servers_followers
         pd_client_port: "{{ pd_client_port }}"
         deploy_dir: "{{ deploy_dir }}"
         pd_peer_port: "{{ pd_peer_port }}"
-      when: ansible_host not in pd_leader
-    - name: Get pd leader list
+      when: ansible_host not in pd_leader[0]
+    - name: Set pd leader list
       add_host:
         name: "{{ ansible_host }}"
         groups: pd_servers_leader
         pd_client_port: "{{ pd_client_port }}"
         deploy_dir: "{{ deploy_dir }}"
         pd_peer_port: "{{ pd_peer_port }}"
-      when: ansible_host in pd_leader
+      when: ansible_host in pd_leader[0]
 
 - name: rolling update PD cluster
   hosts: pd_servers_followers, pd_servers_leader
