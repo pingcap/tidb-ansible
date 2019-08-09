@@ -67,10 +67,33 @@
         return_content: yes
         status_code: 200
       register: pd_status
+      when: not enable_tls|default(false)
+
+    - name: Check pd cluster status when enable_tls
+      uri:
+        url: "https://{{ ansible_host }}:{{ pd_client_port }}/pd/health"
+        validate_certs: no
+        client_cert: "{{ pd_cert_dir }}/pd-server-{{ ansible_host }}.pem"
+        client_key: "{{ pd_cert_dir }}/pd-server-{{ ansible_host }}-key.pem"
+        method: GET
+        return_content: yes
+        status_code: 200
+      register: pd_status_tls
+      when: enable_tls|default(false)
+
     - name: Failed when one node of pd is unhealthy
       fail:
-        msg: "Some pd node is unhealth"
-      when: "'false' in pd_status.content"
+        msg: "Some pd nodes are unhealthy"
+      when: 
+        - not enable_tls|default(false)
+        - "'false' in pd_status.content"
+
+    - name: Failed when one node of pd is unhealthy when enable_tls
+      fail:
+        msg: "Some pd nodes are unhealthy"
+      when:
+        - enable_tls|default(false)
+        - "'false' in pd_status_tls.content"
 
 - hosts: pd_servers
   any_errors_fatal: true
@@ -78,31 +101,51 @@
   tags:
     - pd
   tasks:
-    - name: Get pd leader
-      uri:
-        url: "http://{{ ansible_host }}:{{ pd_client_port }}/pd/api/v1/leader"
-        method: GET
-        return_content: yes
-        status_code: 200
-      register: pd_leader_info
     - set_fact:
-        pd_leader: "{{ pd_leader_info.json | json_query('client_urls') }}"
+        pd_addr: "{{ ansible_host }}:{{ pd_client_port }}"
+
+    - include_tasks: "common_tasks/get_pd_leader.yml"
+      when: not enable_tls|default(false)
+
+    - include_tasks: "common_tasks/get_pd_leader_tls.yml"
+      when: enable_tls|default(false)
+
+    - set_fact:
+        pd_leader_name: "{{ pd_leader_info.json.name }}"
+
+    - include_tasks: "common_tasks/get_pd_name.yml"
+      when: not enable_tls|default(false)
+
+    - include_tasks: "common_tasks/get_pd_name_tls.yml"
+      when: enable_tls|default(false)
+
     - name: Set pd follower list
       add_host:
-        name: "{{ ansible_host }}"
+        name: "{{ inventory_hostname }}"
+        ansible_host: "{{ ansible_host }}"
+        ansible_ssh_host: "{{ ansible_ssh_host }}"
         groups: pd_servers_followers
-        pd_client_port: "{{ pd_client_port }}"
         deploy_dir: "{{ deploy_dir }}"
+        pd_client_port: "{{ pd_client_port }}"
         pd_peer_port: "{{ pd_peer_port }}"
-      when: ansible_host not in pd_leader[0]
+        pd_data_dir: "{{ pd_data_dir }}"
+        pd_log_dir: "{{ pd_log_dir }}"
+        pd_cert_dir: "{{ pd_cert_dir }}"
+      when: pd_leader_name != pd_name
+
     - name: Set pd leader list
       add_host:
-        name: "{{ ansible_host }}"
+        name: "{{ inventory_hostname }}"
+        ansible_host: "{{ ansible_host }}"
+        ansible_ssh_host: "{{ ansible_ssh_host }}"
         groups: pd_servers_leader
-        pd_client_port: "{{ pd_client_port }}"
         deploy_dir: "{{ deploy_dir }}"
+        pd_client_port: "{{ pd_client_port }}"
         pd_peer_port: "{{ pd_peer_port }}"
-      when: ansible_host in pd_leader[0]
+        pd_data_dir: "{{ pd_data_dir }}"
+        pd_log_dir: "{{ pd_log_dir }}"
+        pd_cert_dir: "{{ pd_cert_dir }}"
+      when: pd_leader_name == pd_name
 
 - name: rolling update PD cluster
   hosts: pd_servers_followers, pd_servers_leader
@@ -116,6 +159,10 @@
         pd_addr: "{{ ansible_host }}:{{ pd_client_port }}"
 
     - include_tasks: "common_tasks/get_pd_name.yml"
+      when: not enable_tls|default(false)
+
+    - include_tasks: "common_tasks/get_pd_name_tls.yml"
+      when: enable_tls|default(false)
 
     - name: display PD name
       debug:
@@ -188,6 +235,29 @@
         return_content: yes
       register: pd_https_result
       until: pd_https_result.status == 200 and 'true' in pd_https_result.content
+      retries: 12
+      delay: 5
+      when: enable_tls|default(false)
+
+    - name: wait until the PD cluster is available
+      uri:
+        url: "http://{{ ansible_host }}:{{ pd_client_port }}/pd/health"
+        return_content: yes
+      register: pd_cluster_status
+      until: pd_cluster_status.status == 200 and 'false' not in pd_cluster_status.content
+      retries: 12
+      delay: 5
+      when: not enable_tls|default(false)
+
+    - name: wait until the PD cluster is available when enable_tls
+      uri:
+        url: "http://{{ ansible_host }}:{{ pd_client_port }}/pd/health"
+        validate_certs: no
+        client_cert: "{{ pd_cert_dir }}/pd-server-{{ ansible_host }}.pem"
+        client_key: "{{ pd_cert_dir }}/pd-server-{{ ansible_host }}-key.pem"
+        return_content: yes
+      register: pd_cluster_status
+      until: pd_cluster_status.status == 200 and 'false' not in pd_cluster_status.content
       retries: 12
       delay: 5
       when: enable_tls|default(false)

@@ -3,6 +3,9 @@
 - name: get PD name
   uri:
     url: "http://{{ pd_addr }}/pd/api/v1/members"
+    validate_certs: no
+    client_cert: "{{ pd_cert_dir }}/pd-server-{{ ansible_host }}.pem"
+    client_key: "{{ pd_cert_dir }}/pd-server-{{ ansible_host }}-key.pem"
     method: GET
     return_content: yes
     status_code: 200
