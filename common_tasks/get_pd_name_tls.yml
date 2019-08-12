@@ -1,0 +1,20 @@
+---
+
+- name: get PD name
+  uri:
+    url: "https://{{ pd_addr }}/pd/api/v1/members"
+    validate_certs: no
+    client_cert: "{{ pd_cert_dir }}/pd-server-{{ ansible_host }}.pem"
+    client_key: "{{ pd_cert_dir }}/pd-server-{{ ansible_host }}-key.pem"
+    method: GET
+    return_content: yes
+    status_code: 200
+  register: pd_info
+
+- set_fact:
+    pd_name_list: "{{ pd_info.json.members | json_query(query) }}"
+  vars:
+    query: '[?client_urls==[`http://{{ pd_addr }}`]].name'
+
+- set_fact:
+    pd_name: "{{ pd_name_list[0] }}"
