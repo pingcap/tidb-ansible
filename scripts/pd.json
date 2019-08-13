@@ -58,20 +58,8 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": null,
-  "iteration": 1562917071041,
-  "links": [
-    {
-      "icon": "doc",
-      "includeVars": true,
-      "keepTime": true,
-      "tags": [],
-      "targetBlank": true,
-      "title": "Report",
-      "tooltip": "Open a pdf report for the current dashboard",
-      "type": "link",
-      "url": "grafana token"
-    }
-  ],
+  "iteration": 1564738811479,
+  "links": [],
   "panels": [
     {
       "collapsed": true,
@@ -110,7 +98,7 @@
           "id": 55,
           "interval": null,
           "links": [],
-          "mappingType": 2,
+          "mappingType": 1,
           "mappingTypes": [
             {
               "name": "value to text",
@@ -149,7 +137,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "delta(pd_server_tso{type=\"save\",instance=\"$instance\"}[1m])",
+              "expr": "count(delta(pd_tso_events{type=\"save\",instance=\"$instance\"}[1m]))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "",
@@ -165,8 +153,13 @@
           "valueMaps": [
             {
               "op": "=",
-              "text": "N/A",
+              "text": "Follower",
               "value": "null"
+            },
+            {
+              "op": "=",
+              "text": "Leader",
+              "value": "1"
             }
           ],
           "valueName": "current"
@@ -7249,5 +7242,5 @@
   "timezone": "browser",
   "title": "Test-Cluster-PD",
   "uid": "Q6RuHYIWk",
-  "version": 4
+  "version": 5
 }

@@ -14,7 +14,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "4.6.3"
+      "version": "6.1.6"
     },
     {
       "type": "panel",
@@ -51,464 +51,474 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "hideControls": false,
   "id": null,
-  "links": [
+  "iteration": 1564734554417,
+  "links": [],
+  "panels": [
     {
-      "icon": "doc",
-      "includeVars": true,
-      "keepTime": true,
-      "tags": [],
-      "targetBlank": true,
-      "title": "Report",
-      "tooltip": "Open a pdf report for the current dashboard",
-      "type": "link",
-      "url": "grafana token"
-    }
-  ],
-  "rows": [
-    {
-      "collapse": false,
-      "height": "250px",
-      "panels": [
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
-          "fill": 1,
-          "id": 1,
-          "legend": {
-            "alignAsTable": true,
-            "avg": true,
-            "current": true,
-            "max": true,
-            "min": true,
-            "rightSide": false,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "span": 12,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "probe_duration_seconds{job=\"$PingJobHost\"}",
-              "format": "time_series",
-              "hide": false,
-              "intervalFactor": 2,
-              "legendFormat": "",
-              "refId": "A",
-              "step": 20
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Ping Latency",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "s",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        }
-      ],
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 30,
+      "panels": [],
       "repeat": null,
-      "repeatIteration": null,
-      "repeatRowId": null,
-      "showTitle": true,
       "title": "Network Status",
-      "titleSize": "h6"
+      "type": "row"
     },
     {
-      "collapse": false,
-      "height": 308,
-      "panels": [
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_TEST-CLUSTER}",
+      "fill": 1,
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 1,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
         {
-          "columns": [
-            {
-              "text": "Current",
-              "value": "current"
-            }
-          ],
-          "datasource": "${DS_TEST-CLUSTER}",
-          "fontSize": "100%",
-          "hideTimeOverride": true,
-          "id": 28,
-          "links": [],
-          "pageSize": null,
-          "scroll": true,
-          "showHeader": true,
-          "sort": {
-            "col": null,
-            "desc": false
-          },
-          "span": 6,
-          "styles": [
-            {
-              "alias": "Time",
-              "dateFormat": "YYYY-MM-DD HH:mm:ss",
-              "pattern": "Time",
-              "type": "date"
-            },
-            {
-              "alias": "Service",
-              "colorMode": null,
-              "colors": [
-                "rgba(245, 54, 54, 0.9)",
-                "rgba(237, 129, 40, 0.89)",
-                "rgba(50, 172, 45, 0.97)"
-              ],
-              "dateFormat": "YYYY-MM-DD HH:mm:ss",
-              "decimals": 2,
-              "pattern": "Metric",
-              "thresholds": [],
-              "type": "string",
-              "unit": "short"
-            },
-            {
-              "alias": "Up",
-              "colorMode": "cell",
-              "colors": [
-                "rgba(245, 54, 54, 0.9)",
-                "rgba(237, 129, 40, 0.89)",
-                "rgba(50, 172, 45, 0.97)"
-              ],
-              "dateFormat": "YYYY-MM-DD HH:mm:ss",
-              "decimals": 0,
-              "pattern": "Current",
-              "thresholds": [
-                "0",
-                "1"
-              ],
-              "type": "number",
-              "unit": "short"
-            },
-            {
-              "alias": "",
-              "colorMode": null,
-              "colors": [
-                "rgba(245, 54, 54, 0.9)",
-                "rgba(237, 129, 40, 0.89)",
-                "rgba(50, 172, 45, 0.97)"
-              ],
-              "decimals": 2,
-              "pattern": "/.*/",
-              "thresholds": [],
-              "type": "number",
-              "unit": "short"
-            }
-          ],
-          "targets": [
-            {
-              "expr": "count(probe_success{group=\"tidb\"} == 1)",
-              "format": "time_series",
-              "hide": false,
-              "intervalFactor": 2,
-              "legendFormat": "TiDB",
-              "refId": "A"
-            },
-            {
-              "expr": "count(probe_success{group=\"pd\"} == 1)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "PD",
-              "refId": "B"
-            },
-            {
-              "expr": "count(probe_success{group=\"tikv\"} == 1)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "TiKV",
-              "refId": "C"
-            },
-            {
-              "expr": "count(probe_success{group=\"pump\"} == 1)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "Pump",
-              "refId": "D"
-            },
-            {
-              "expr": "count(probe_success{group=\"drainer\"} == 1)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "Drainer",
-              "refId": "E"
-            },
-            {
-              "expr": "count(probe_success{group=\"kafka\"} == 1)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "Kafka",
-              "refId": "F"
-            },
-            {
-              "expr": "count(probe_success{group=\"zookeeper\"} == 1)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "Zookeeper",
-              "refId": "G"
-            },
-            {
-              "expr": "count(probe_success{group=\"node_exporter\"} == 1)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "Node_exporter",
-              "refId": "H"
-            },
-            {
-              "expr": "count(probe_success{group=\"blackbox_exporter\"} == 1)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "Blackbox_exporter",
-              "refId": "I"
-            },
-            {
-              "expr": "count(probe_success{group=\"grafana\"} == 1)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "Grafana",
-              "refId": "J"
-            },
-            {
-              "expr": "count(probe_success{job=\"blackbox_exporter_http\"} == 1)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "Pushgateway",
-              "refId": "K"
-            },
-            {
-              "expr": "count(probe_success{group=\"kafka_exporter\"} == 1)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "Kafka_exporter",
-              "refId": "L"
-            }
-          ],
-          "timeFrom": "1s",
-          "title": "",
-          "transform": "timeseries_aggregations",
-          "transparent": false,
-          "type": "table"
-        },
-        {
-          "columns": [
-            {
-              "text": "Current",
-              "value": "current"
-            }
-          ],
-          "datasource": "${DS_TEST-CLUSTER}",
-          "fontSize": "100%",
-          "hideTimeOverride": true,
-          "id": 29,
-          "links": [],
-          "pageSize": null,
-          "scroll": true,
-          "showHeader": true,
-          "sort": {
-            "col": null,
-            "desc": false
-          },
-          "span": 6,
-          "styles": [
-            {
-              "alias": "Time",
-              "dateFormat": "YYYY-MM-DD HH:mm:ss",
-              "pattern": "Time",
-              "type": "date"
-            },
-            {
-              "alias": "Service",
-              "colorMode": null,
-              "colors": [
-                "rgba(245, 54, 54, 0.9)",
-                "rgba(237, 129, 40, 0.89)",
-                "rgba(50, 172, 45, 0.97)"
-              ],
-              "dateFormat": "YYYY-MM-DD HH:mm:ss",
-              "decimals": 2,
-              "pattern": "Metric",
-              "thresholds": [],
-              "type": "string",
-              "unit": "short"
-            },
-            {
-              "alias": "Down",
-              "colorMode": "cell",
-              "colors": [
-                "rgba(245, 54, 54, 0.9)",
-                "rgba(237, 129, 40, 0.89)",
-                "rgba(50, 172, 45, 0.97)"
-              ],
-              "dateFormat": "YYYY-MM-DD HH:mm:ss",
-              "decimals": 0,
-              "pattern": "Current",
-              "thresholds": [
-                "100",
-                "200"
-              ],
-              "type": "number",
-              "unit": "short"
-            },
-            {
-              "alias": "",
-              "colorMode": null,
-              "colors": [
-                "rgba(245, 54, 54, 0.9)",
-                "rgba(237, 129, 40, 0.89)",
-                "rgba(50, 172, 45, 0.97)"
-              ],
-              "decimals": 2,
-              "pattern": "/.*/",
-              "thresholds": [],
-              "type": "number",
-              "unit": "short"
-            }
-          ],
-          "targets": [
-            {
-              "expr": "count(probe_success{group=\"tidb\"} == 0)",
-              "format": "time_series",
-              "hide": false,
-              "intervalFactor": 2,
-              "legendFormat": "TiDB",
-              "refId": "A"
-            },
-            {
-              "expr": "count(probe_success{group=\"pd\"} == 0)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "PD",
-              "refId": "B"
-            },
-            {
-              "expr": "count(probe_success{group=\"tikv\"} == 0)",
-              "format": "time_series",
-              "hide": false,
-              "intervalFactor": 2,
-              "legendFormat": "TiKV",
-              "refId": "C"
-            },
-            {
-              "expr": "count(probe_success{group=\"pump\"} == 0)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "Pump",
-              "refId": "D"
-            },
-            {
-              "expr": "count(probe_success{group=\"drainer\"} == 0)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "Drainer",
-              "refId": "E"
-            },
-            {
-              "expr": "count(probe_success{group=\"kafka\"} == 0)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "Kafka",
-              "refId": "F"
-            },
-            {
-              "expr": "count(probe_success{group=\"zookeeper\"} == 0)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "Zookeeper",
-              "refId": "G"
-            },
-            {
-              "expr": "count(probe_success{group=\"node_exporter\"} == 0)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "Node_exporter",
-              "refId": "H"
-            },
-            {
-              "expr": "count(probe_success{group=\"blackbox_exporter\"} == 0)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "Blackbox_exporter",
-              "refId": "I"
-            },
-            {
-              "expr": "count(probe_success{group=\"grafana\"} == 0)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "Grafana",
-              "refId": "J"
-            },
-            {
-              "expr": "count(probe_success{job=\"blackbox_exporter_http\"} == 0)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "Pushgateway",
-              "refId": "K"
-            },
-            {
-              "expr": "count(probe_success{group=\"kafka_exporter\"} == 0)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "Kafka_exporter",
-              "refId": "L"
-            }
-          ],
-          "timeFrom": "1s",
-          "title": "",
-          "transform": "timeseries_aggregations",
-          "transparent": false,
-          "type": "table"
+          "expr": "probe_duration_seconds{job=\"$PingJobHost\"}",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 2,
+          "legendFormat": "",
+          "refId": "A",
+          "step": 20
         }
       ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Ping Latency",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "s",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
+      "id": 31,
+      "panels": [],
       "repeat": null,
-      "repeatIteration": null,
-      "repeatRowId": null,
-      "showTitle": true,
       "title": "Services Port Status",
-      "titleSize": "h6"
+      "type": "row"
+    },
+    {
+      "columns": [
+        {
+          "text": "Current",
+          "value": "current"
+        }
+      ],
+      "datasource": "${DS_TEST-CLUSTER}",
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 9
+      },
+      "hideTimeOverride": true,
+      "id": 28,
+      "links": [],
+      "pageSize": null,
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": null,
+        "desc": false
+      },
+      "styles": [
+        {
+          "alias": "Time",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "alias": "Service",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "pattern": "Metric",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        },
+        {
+          "alias": "Up",
+          "colorMode": "cell",
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "pattern": "Current",
+          "thresholds": [
+            "0",
+            "1"
+          ],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 2,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        }
+      ],
+      "targets": [
+        {
+          "expr": "count(probe_success{group=\"tidb\"} == 1)",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 2,
+          "legendFormat": "TiDB",
+          "refId": "A"
+        },
+        {
+          "expr": "count(probe_success{group=\"pd\"} == 1)",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "PD",
+          "refId": "B"
+        },
+        {
+          "expr": "count(probe_success{group=\"tikv\"} == 1)",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "TiKV",
+          "refId": "C"
+        },
+        {
+          "expr": "count(probe_success{group=\"pump\"} == 1)",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Pump",
+          "refId": "D"
+        },
+        {
+          "expr": "count(probe_success{group=\"drainer\"} == 1)",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Drainer",
+          "refId": "E"
+        },
+        {
+          "expr": "count(probe_success{group=\"kafka\"} == 1)",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Kafka",
+          "refId": "F"
+        },
+        {
+          "expr": "count(probe_success{group=\"zookeeper\"} == 1)",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Zookeeper",
+          "refId": "G"
+        },
+        {
+          "expr": "count(probe_success{group=\"node_exporter\"} == 1)",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Node_exporter",
+          "refId": "H"
+        },
+        {
+          "expr": "count(probe_success{group=\"blackbox_exporter\"} == 1)",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Blackbox_exporter",
+          "refId": "I"
+        },
+        {
+          "expr": "count(probe_success{group=\"grafana\"} == 1)",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Grafana",
+          "refId": "J"
+        },
+        {
+          "expr": "count(probe_success{job=\"blackbox_exporter_http\"} == 1)",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Pushgateway",
+          "refId": "K"
+        },
+        {
+          "expr": "count(probe_success{group=\"kafka_exporter\"} == 1)",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Kafka_exporter",
+          "refId": "L"
+        }
+      ],
+      "timeFrom": "1s",
+      "title": "",
+      "transform": "timeseries_aggregations",
+      "type": "table"
+    },
+    {
+      "columns": [
+        {
+          "text": "Current",
+          "value": "current"
+        }
+      ],
+      "datasource": "${DS_TEST-CLUSTER}",
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 9
+      },
+      "hideTimeOverride": true,
+      "id": 29,
+      "links": [],
+      "pageSize": null,
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": null,
+        "desc": false
+      },
+      "styles": [
+        {
+          "alias": "Time",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "alias": "Service",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "pattern": "Metric",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        },
+        {
+          "alias": "Down",
+          "colorMode": "cell",
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "pattern": "Current",
+          "thresholds": [
+            "100",
+            "200"
+          ],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 2,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        }
+      ],
+      "targets": [
+        {
+          "expr": "count(probe_success{group=\"tidb\"} == 0)",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 2,
+          "legendFormat": "TiDB",
+          "refId": "A"
+        },
+        {
+          "expr": "count(probe_success{group=\"pd\"} == 0)",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "PD",
+          "refId": "B"
+        },
+        {
+          "expr": "count(probe_success{group=\"tikv\"} == 0)",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 2,
+          "legendFormat": "TiKV",
+          "refId": "C"
+        },
+        {
+          "expr": "count(probe_success{group=\"pump\"} == 0)",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Pump",
+          "refId": "D"
+        },
+        {
+          "expr": "count(probe_success{group=\"drainer\"} == 0)",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Drainer",
+          "refId": "E"
+        },
+        {
+          "expr": "count(probe_success{group=\"kafka\"} == 0)",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Kafka",
+          "refId": "F"
+        },
+        {
+          "expr": "count(probe_success{group=\"zookeeper\"} == 0)",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Zookeeper",
+          "refId": "G"
+        },
+        {
+          "expr": "count(probe_success{group=\"node_exporter\"} == 0)",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Node_exporter",
+          "refId": "H"
+        },
+        {
+          "expr": "count(probe_success{group=\"blackbox_exporter\"} == 0)",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Blackbox_exporter",
+          "refId": "I"
+        },
+        {
+          "expr": "count(probe_success{group=\"grafana\"} == 0)",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Grafana",
+          "refId": "J"
+        },
+        {
+          "expr": "count(probe_success{job=\"blackbox_exporter_http\"} == 0)",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Pushgateway",
+          "refId": "K"
+        },
+        {
+          "expr": "count(probe_success{group=\"kafka_exporter\"} == 0)",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Kafka_exporter",
+          "refId": "L"
+        }
+      ],
+      "timeFrom": "1s",
+      "title": "",
+      "transform": "timeseries_aggregations",
+      "type": "table"
     }
   ],
-  "schemaVersion": 14,
+  "schemaVersion": 18,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -517,6 +527,7 @@
         "allValue": null,
         "current": {},
         "datasource": "${DS_TEST-CLUSTER}",
+        "definition": "",
         "hide": 0,
         "includeAll": false,
         "label": "PingJobHost",
@@ -526,6 +537,7 @@
         "query": "label_values(probe_duration_seconds,job)",
         "refresh": 1,
         "regex": "/blackbox_exporter.*icmp/",
+        "skipUrlSync": false,
         "sort": 1,
         "tagValuesQuery": "",
         "tags": [],
@@ -566,5 +578,6 @@
   },
   "timezone": "",
   "title": "Test-Cluster-Blackbox_exporter",
-  "version": 4
+  "uid": "DaODoKDZk",
+  "version": 2
 }

@@ -351,36 +351,8 @@
         state: stopped
         msg: "the grafana port {{ grafana_port }} is not down"
 
-    - name: check grafana_collector existed
-      stat:
-        path: "{{ deploy_dir }}/conf/grafana_collector.toml"
-      register: grafana_collector_config_file
-
-    - name: stop grafana_collector by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      when:
-        - process_supervision == 'supervise'
-        - grafana_collector_config_file.stat.exists == True
-      with_items:
-        - grafana_collector
-
-    - name: stop grafana_collector by systemd
-      systemd: name=grafana_collector-{{ grafana_collector_port }}.service state=stopped
-      become: true
-      when:
-        - process_supervision == 'systemd'
-        - grafana_collector_config_file.stat.exists == True
-
-    - name: wait until the grafana_collector port is down
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ grafana_collector_port }}"
-        state: stopped
-        msg: "the grafana_collector port {{ grafana_collector_port }} is not down"
-
   roles:
     - grafana
-    - grafana_collector
 
   post_tasks:
     - name: start grafana by supervise
@@ -409,24 +381,6 @@
       retries: 12
       delay: 5
 
-    - name: start grafana_collector by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - grafana_collector
-
-    - name: start grafana_collector by systemd
-      systemd: name=grafana_collector-{{ grafana_collector_port }}.service state=started enabled=no
-      when: process_supervision == 'systemd'
-      become: true
-
-    - name: wait until the grafana_collector port is up
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ grafana_collector_port }}"
-        state: started
-        msg: "the grafana_collector port {{ grafana_collector_port }} is not up"
-
     - set_fact:
         grafana_host: "{{ ansible_host }}"
 
@@ -448,7 +402,6 @@
         - grafana_dest_config:
             name: "{{ cluster_name | title }}"
             url: "http://{{ grafana_host }}:{{ grafana_port }}/"
-            report_url: "http://{{ grafana_host }}:{{ grafana_collector_port }}/"
             user: "{{ grafana_admin_user }}"
             password: "{{ grafana_admin_password }}"
             apikey: "{{ lookup('file', grafana_api_keys_dir + '/grafana_apikey.key') }}"
