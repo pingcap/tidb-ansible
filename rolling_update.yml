@@ -270,7 +270,10 @@
   tags:
     - tikv
 
-  pre_tasks:
+  roles:
+    - tikv
+
+  post_tasks:
     - include_tasks: "common_tasks/get_pd_tikv_addr.yml"
 
     - include_tasks: "common_tasks/get_store_id.yml"
@@ -306,10 +309,6 @@
       debug:
         msg: "tikv binary or docker pid: {{ old_tikv_pid.stdout }}"
 
-  roles:
-    - tikv
-
-  post_tasks:
     - name: start TiKV by supervise
       shell: cd {{ deploy_dir }}/scripts && ./start_tikv.sh
       when: process_supervision == 'supervise'
