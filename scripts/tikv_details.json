@@ -2553,8 +2553,8 @@
           "gridPos": {
             "h": 8,
             "w": 12,
-            "x": 12,
-            "y": 11
+            "x": 0,
+            "y": 35
           },
           "id": 57,
           "legend": {
@@ -2650,7 +2650,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 19
+            "y": 27
           },
           "id": 58,
           "legend": {
@@ -2747,7 +2747,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 19
+            "y": 11
           },
           "id": 75,
           "legend": {
@@ -2877,7 +2877,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 27
+            "y": 19
           },
           "id": 1481,
           "legend": {
@@ -2974,6 +2974,233 @@
             "align": false,
             "alignLevel": null
           }
+        },
+        {
+          "aliasColors": {},
+          "bars": true,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "decimals": 1,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {},
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 19
+          },
+          "id": 3638,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "hideEmpty": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": false,
+            "sideWidth": null,
+            "sort": "current",
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": false,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null as zero",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(tikv_raftstore_region_size_bucket{instance=~\"$instance\"}[1m]))",
+              "intervalFactor": 2,
+              "legendFormat": "99%",
+              "metric": "",
+              "refId": "B",
+              "step": 10,
+              "format": "time_series"
+            }
+          ],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Approximate Region size Histogram",
+          "tooltip": {
+            "msResolution": false,
+            "shared": false,
+            "sort": 2,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "histogram",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "bytes",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          },
+          "paceLength": 10,
+          "thresholds": []
+        },
+        {
+          "datasource": "${DS_TEST-CLUSTER}",
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 27
+          },
+          "id": 3636,
+          "links": [],
+          "targets": [
+            {
+              "expr": "sum(rate(tikv_region_written_bytes_bucket[1m]))",
+              "intervalFactor": 2,
+              "legendFormat": "{{instance}}",
+              "metric": "tikv_regi",
+              "refId": "A",
+              "step": 10,
+              "format": "time_series"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Region written bytes",
+          "type": "heatmap",
+          "heatmap": {},
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "mode": "spectrum",
+            "cardColor": "#b4ff00",
+            "colorScale": "sqrt",
+            "exponent": 0.5,
+            "colorScheme": "interpolateOranges"
+          },
+          "legend": {
+            "show": false
+          },
+          "dataFormat": "timeseries",
+          "yBucketBound": "auto",
+          "xAxis": {
+            "show": true
+          },
+          "yAxis": {
+            "show": true,
+            "format": "decbytes",
+            "decimals": null,
+            "logBase": 1,
+            "splitFactor": null,
+            "min": null,
+            "max": null
+          },
+          "xBucketSize": null,
+          "xBucketNumber": null,
+          "yBucketSize": null,
+          "yBucketNumber": null,
+          "tooltip": {
+            "show": true,
+            "showHistogram": false
+          },
+          "highlightCards": true
+        },
+        {
+          "datasource": "${DS_TEST-CLUSTER}",
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 35
+          },
+          "id": 3637,
+          "links": [],
+          "targets": [
+            {
+              "expr": "sum(rate(tikv_region_written_keys_bucket{instance=~\"$instance\"}[1m]))",
+              "intervalFactor": 2,
+              "legendFormat": "{{instance}}",
+              "metric": "tikv_region_written_keys_bucket",
+              "refId": "A",
+              "step": 10,
+              "format": "time_series"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Region written keys",
+          "type": "heatmap",
+          "heatmap": {},
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "mode": "spectrum",
+            "cardColor": "#b4ff00",
+            "colorScale": "sqrt",
+            "exponent": 0.5,
+            "colorScheme": "interpolateOranges"
+          },
+          "legend": {
+            "show": false
+          },
+          "dataFormat": "timeseries",
+          "yBucketBound": "auto",
+          "xAxis": {
+            "show": true
+          },
+          "yAxis": {
+            "show": true,
+            "format": "short",
+            "decimals": null,
+            "logBase": 1,
+            "splitFactor": null,
+            "min": null,
+            "max": null
+          },
+          "xBucketSize": null,
+          "xBucketNumber": null,
+          "yBucketSize": null,
+          "yBucketNumber": null,
+          "tooltip": {
+            "show": true,
+            "showHistogram": false
+          },
+          "highlightCards": true
         }
       ],
       "repeat": null,
@@ -9349,7 +9576,7 @@
       "panels": [
         {
           "aliasColors": {},
-          "bars": false,
+          "bars": true,
           "dashLength": 10,
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
@@ -9372,14 +9599,14 @@
             "max": true,
             "min": false,
             "rightSide": true,
-            "show": true,
+            "show": false,
             "sideWidth": null,
             "sort": "current",
             "sortDesc": true,
             "total": false,
             "values": true
           },
-          "lines": true,
+          "lines": false,
           "linewidth": 2,
           "links": [],
           "nullPointMode": "null as zero",
@@ -9393,36 +9620,13 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(1.0, sum(rate(tikv_storage_mvcc_versions_bucket{instance=~\"$instance\"}[1m])) by (le))",
+              "expr": "sum(rate(tikv_storage_mvcc_versions_bucket{instance=~\"$instance\"}[5m]))",
               "intervalFactor": 2,
               "legendFormat": " max",
               "metric": "",
               "refId": "A",
-              "step": 4
-            },
-            {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_storage_mvcc_versions_bucket{instance=~\"$instance\"}[1m])) by (le))",
-              "intervalFactor": 2,
-              "legendFormat": "99%",
-              "metric": "",
-              "refId": "B",
-              "step": 4
-            },
-            {
-              "expr": "histogram_quantile(0.95, sum(rate(tikv_storage_mvcc_versions_bucket{instance=~\"$instance\"}[1m])) by (le))",
-              "intervalFactor": 2,
-              "legendFormat": " 95%",
-              "metric": "",
-              "refId": "C",
-              "step": 4
-            },
-            {
-              "expr": "sum(rate(tikv_storage_mvcc_versions_sum{instance=~\"$instance\"}[1m])) / sum(rate(tikv_storage_mvcc_versions_count{instance=~\"$instance\"}[1m])) ",
-              "intervalFactor": 2,
-              "legendFormat": "avg",
-              "metric": "",
-              "refId": "D",
-              "step": 4
+              "step": 4,
+              "format": "time_series"
             }
           ],
           "thresholds": [],
@@ -9432,14 +9636,14 @@
           "title": "MVCC versions",
           "tooltip": {
             "msResolution": false,
-            "shared": true,
+            "shared": false,
             "sort": 2,
             "value_type": "cumulative"
           },
           "type": "graph",
           "xaxis": {
             "buckets": null,
-            "mode": "time",
+            "mode": "histogram",
             "name": null,
             "show": true,
             "values": []
@@ -9465,19 +9669,11 @@
           "yaxis": {
             "align": false,
             "alignLevel": null
-          }
+          },
+          "paceLength": 10
         },
         {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
-          "decimals": 1,
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "grid": {},
           "gridPos": {
             "h": 7,
             "w": 12,
@@ -9485,107 +9681,60 @@
             "y": 19
           },
           "id": 559,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": true,
-            "max": true,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "sideWidth": null,
-            "sort": "current",
-            "sortDesc": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 2,
           "links": [],
-          "nullPointMode": "null as zero",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(1.0, sum(rate(tikv_storage_mvcc_gc_delete_versions_bucket{instance=~\"$instance\"}[1m])) by (le))",
+              "expr": "sum(rate(tikv_storage_mvcc_gc_delete_versions_bucket{instance=~\"$instance\"}[1m]))",
               "intervalFactor": 2,
               "legendFormat": " max",
               "metric": "",
               "refId": "A",
-              "step": 4
-            },
-            {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_storage_mvcc_gc_delete_versions_bucket{instance=~\"$instance\"}[1m])) by (le))",
-              "intervalFactor": 2,
-              "legendFormat": "99%",
-              "metric": "",
-              "refId": "B",
-              "step": 4
-            },
-            {
-              "expr": "histogram_quantile(0.95, sum(rate(tikv_storage_mvcc_gc_delete_versions_bucket{instance=~\"$instance\"}[1m])) by (le))",
-              "intervalFactor": 2,
-              "legendFormat": " 95%",
-              "metric": "",
-              "refId": "C",
-              "step": 4
-            },
-            {
-              "expr": "sum(rate(tikv_storage_mvcc_gc_delete_versions_sum{instance=~\"$instance\"}[1m])) / sum(rate(tikv_storage_mvcc_gc_delete_versions_count{instance=~\"$instance\"}[1m])) ",
-              "intervalFactor": 2,
-              "legendFormat": "avg",
-              "metric": "",
-              "refId": "D",
-              "step": 4
+              "step": 4,
+              "format": "time_series"
             }
           ],
-          "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "MVCC delete versions",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "sort": 2,
-            "value_type": "cumulative"
+          "type": "heatmap",
+          "heatmap": {},
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
           },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
+          "color": {
+            "mode": "spectrum",
+            "cardColor": "#b4ff00",
+            "colorScale": "sqrt",
+            "exponent": 0.5,
+            "colorScheme": "interpolateOranges"
+          },
+          "legend": {
+            "show": false
+          },
+          "dataFormat": "timeseries",
+          "yBucketBound": "auto",
+          "xAxis": {
+            "show": true
+          },
+          "yAxis": {
             "show": true,
-            "values": []
+            "format": "short",
+            "decimals": null,
+            "logBase": 1,
+            "splitFactor": null,
+            "min": null,
+            "max": null
           },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": "",
-              "logBase": 1,
-              "max": null,
-              "min": "0",
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          "xBucketSize": null,
+          "xBucketNumber": null,
+          "yBucketSize": null,
+          "yBucketNumber": null,
+          "tooltip": {
+            "show": true,
+            "showHistogram": false
+          },
+          "highlightCards": true
         },
         {
           "aliasColors": {},
