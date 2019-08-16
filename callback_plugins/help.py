@@ -12,16 +12,15 @@ DOCUMENTATION = '''
       - This plugin will print help message when tasks fail.
 '''
 
-import locale
 import os
-import sys
 import io
 import logging
+import yaml
 
 from ansible.plugins.callback import CallbackBase, strip_internal_keys
-from ansible.module_utils._text import to_bytes, to_text
-from ansible.utils.color import stringc
+from ansible.parsing.yaml.dumper import AnsibleDumper
 from ansible import constants as C
+
 
 FAIL_LOGFILE = os.path.dirname(C.DEFAULT_LOG_PATH) + "/fail.log"
 
@@ -48,18 +47,57 @@ class CallbackModule(CallbackBase):
         self.handler = logging.FileHandler(FAIL_LOGFILE)
         self.logger.addHandler(self.handler)
 
-    def format_results(self, result):
-        messages = '[' + str(result._host.name) + ']: Ansible Failed! => changed=' + \
-                   str(result._result['changed']) + '\n'
-        for k, v in result._result.iteritems():
-            if isinstance(v, list):
-                messages += '  ' + str(k) + ':' + '\n'
-                for key, value in v[0].iteritems():
-                    if 'ansible' not in key and key != 'invocation':
-                        messages += '    - ' + str(key) + ': ' + str(value) + '\n'
-            elif k != 'changed' and 'ansible' not in k and k != 'invocation' and k != 'exception':
-                messages += '  ' + str(k) + ': ' + str(v) + '\n'
-        return messages
+    def _format_results(self, result, indent=None, sort_keys=True, keep_invocation=False):
+        # All result keys stating with _ansible_ are internal, so remove them from the result before we output anything.
+        abridged_result = strip_internal_keys(result._result)
+
+        # remove invocation unless specifically wanting it
+        if not keep_invocation and self._display.verbosity < 3 and 'invocation' in abridged_result:
+            del abridged_result['invocation']
+
+        # remove diff information from screen output
+        if self._display.verbosity < 3 and 'diff' in abridged_result:
+            del abridged_result['diff']
+
+        if 'access_control_allow_headers' in abridged_result:
+            del abridged_result['access_control_allow_headers']
+
+        if 'access_control_allow_methods' in abridged_result:
+            del abridged_result['access_control_allow_methods']
+
+        if 'access_control_allow_origin' in abridged_result:
+            del abridged_result['access_control_allow_origin']
+
+        if 'x_content_type_options' in abridged_result:
+            del abridged_result['x_content_type_options']
+
+        # remove exception from screen output
+        if 'exception' in abridged_result:
+            del abridged_result['exception']
+
+        dumped = ''
+
+        dumpd_tile = '[' + str(result._host.name) + ']: Ansible Failed! ==>\n  '
+        # put changed and skipped into a header line
+        if 'changed' in abridged_result:
+            dumped += 'changed=' + str(abridged_result['changed']).lower() + ' '
+            del abridged_result['changed']
+
+        if 'skipped' in abridged_result:
+            dumped += 'skipped=' + str(abridged_result['skipped']).lower() + ' '
+            del abridged_result['skipped']
+
+        # if we already have stdout, we don't need stdout_lines
+        if 'stdout' in abridged_result and 'stdout_lines' in abridged_result:
+            abridged_result['stdout_lines'] = '<omitted>'
+
+        if abridged_result:
+            dumped += '\n'
+            dumped += yaml.dump(abridged_result, width=1000, Dumper=AnsibleDumper, default_flow_style=False)
+
+        # indent by a couple of spaces
+        dumped = '\n  '.join(dumped.split('\n')).rstrip()
+        return dumpd_tile + dumped + '\n'
 
     def print_help_message(self):
         self._display.display("Ask for help:", color=C.COLOR_WARN)
@@ -70,7 +108,7 @@ class CallbackModule(CallbackBase):
 
     def v2_runner_on_failed(self, result, ignore_errors=False):
         if not ignore_errors:
-            messages = self.format_results(result)
+            messages = self._format_results(result)
             self.logger.error(messages)
 
     def v2_runner_on_unreachable(self, result):
