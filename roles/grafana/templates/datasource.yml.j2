@@ -1,0 +1,14 @@
+apiVersion: 1
+deleteDatasources:
+  - name: {{ cluster_name }}
+datasources:
+  - name: {{ cluster_name }}
+    type: prometheus
+    access: proxy
+    url: http://{{ hostvars[groups.monitoring_servers[0]].ansible_host | default(hostvars[groups.monitoring_servers[0]].inventory_hostname) }}:{{ hostvars[groups.monitoring_servers[0]].prometheus_port }}
+    withCredentials: false
+    isDefault: false
+    tlsAuth: false
+    tlsAuthWithCACert: false
+    version: 1
+    editable: true

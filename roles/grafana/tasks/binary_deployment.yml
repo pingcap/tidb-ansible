@@ -23,12 +23,80 @@
 - name: create binary deploy directories (2/2)
   file: path="{{ item }}" state=directory mode=0755
   with_items:
+  - "{{ grafana_provisioning_dir }}/datasources"
+  - "{{ grafana_provisioning_dir }}/dashboards"
+  - "{{ grafana_datasources_dir }}"
   - "{{ grafana_dashboards_dir }}"
   - "{{ grafana_plugins_dir }}"
 
 - name: create grafana configuration file
   template: >
     src=grafana.ini.j2 dest={{ deploy_dir }}/opt/grafana/conf/grafana.ini mode=0644
+
+- name: push datasource configuration file
+  template: src=datasource.yml.j2 dest={{ deploy_dir }}/opt/grafana/provisioning/datasources/datasource.yml mode=0644
+
+- name: push dashboard configuration file
+  template: src=dashboard.yml.j2 dest={{ deploy_dir }}/opt/grafana/provisioning/dashboards/dashboard.yml mode=0644
+
+- name: push databoard json
+  copy:
+    src: "{{ playbook_dir }}/scripts/{{ item }}"
+    dest: "{{ grafana_dashboards_dir }}"
+  with_items:
+    - "node_exporter.json"
+    - "pd.json"
+    - "tidb.json"
+    - "tidb_summary.json"
+    - "tikv_summary.json"
+    - "tikv_details.json"
+    - "tikv_trouble_shooting.json"
+    - "binlog.json"
+    - "overview.json"
+    - "disk_performance.json"
+    - "blackbox_exporter.json"
+    - "kafka_overview.json"
+    - "lightning.json"
+
+- name: Set title for dashboard
+  replace:
+    path: "{{ grafana_dashboards_dir }}/{{ item }}"
+    regexp: "^  \"title\": .*,"
+    replace: "  \"title\": \"{{ cluster_name }}-{{ item.split('.')[0] | replace('_', '-') | title | replace('Tidb', 'TiDB') | replace('TiKV', 'TiKV') | replace('Pd', 'PD')}}\","
+  with_items:
+    - "node_exporter.json"
+    - "pd.json"
+    - "tidb.json"
+    - "tidb_summary.json"
+    - "tikv_summary.json"
+    - "tikv_details.json"
+    - "tikv_trouble_shooting.json"
+    - "binlog.json"
+    - "overview.json"
+    - "disk_performance.json"
+    - "blackbox_exporter.json"
+    - "kafka_overview.json"
+    - "lightning.json"
+
+- name: Set datasource for dashboard
+  replace:
+    path: "{{ grafana_dashboards_dir }}/{{ item }}"
+    regexp: "\"datasource\": .*,"
+    replace: "\"datasource\": \"{{ cluster_name }}\","
+  with_items:
+    - "node_exporter.json"
+    - "pd.json"
+    - "tidb.json"
+    - "tidb_summary.json"
+    - "tikv_summary.json"
+    - "tikv_details.json"
+    - "tikv_trouble_shooting.json"
+    - "binlog.json"
+    - "overview.json"
+    - "disk_performance.json"
+    - "blackbox_exporter.json"
+    - "kafka_overview.json"
+    - "lightning.json"
 
 - name: create run script
   template:

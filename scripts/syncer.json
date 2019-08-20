@@ -311,43 +311,6 @@
           ]
         },
         {
-          "alert": {
-            "conditions": [
-              {
-                "evaluator": {
-                  "params": [
-                    1000
-                  ],
-                  "type": "lt"
-                },
-                "operator": {
-                  "type": "and"
-                },
-                "query": {
-                  "params": [
-                    "A",
-                    "1m",
-                    "now"
-                  ]
-                },
-                "reducer": {
-                  "params": [],
-                  "type": "avg"
-                },
-                "type": "query"
-              }
-            ],
-            "executionErrorState": "alerting",
-            "frequency": "60s",
-            "handler": 1,
-            "name": "transaction tps alert",
-            "noDataState": "no_data",
-            "notifications": [
-              {
-                "id": 1
-              }
-            ]
-          },
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
@@ -438,51 +401,6 @@
           ]
         },
         {
-          "alert": {
-            "conditions": [
-              {
-                "evaluator": {
-                  "params": [
-                    2
-                  ],
-                  "type": "gt"
-                },
-                "operator": {
-                  "type": "and"
-                },
-                "query": {
-                  "datasourceId": 1,
-                  "model": {
-                    "expr": " syncer_binlog_file{node=\"master\"} - ON(instance, job) syncer_binlog_file{node=\"syncer\"} ",
-                    "intervalFactor": 10,
-                    "legendFormat": "{{job}}",
-                    "refId": "A",
-                    "step": 50
-                  },
-                  "params": [
-                    "A",
-                    "5m",
-                    "now"
-                  ]
-                },
-                "reducer": {
-                  "params": [],
-                  "type": "avg"
-                },
-                "type": "query"
-              }
-            ],
-            "executionErrorState": "alerting",
-            "frequency": "60s",
-            "handler": 1,
-            "name": "syncer_binlog_file alert",
-            "noDataState": "no_data",
-            "notifications": [
-              {
-                "id": 1
-              }
-            ]
-          },
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,

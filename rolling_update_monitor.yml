@@ -381,55 +381,6 @@
       retries: 12
       delay: 5
 
-    - set_fact:
-        grafana_host: "{{ ansible_host }}"
-
-    - include_tasks: "common_tasks/create_grafana_api_keys.yml"
-
-    - name: import grafana data source
-      shell: >
-        chdir={{ grafana_data_dir }}
-        warn=no
-        curl -q -X POST -d @data_source.json --header 'Content-Type: application/json'
-        "http://{{ grafana_admin_user }}:{{ grafana_admin_password }}@127.0.0.1:{{ grafana_port }}/api/datasources"
-
-    - name: import grafana dashboards - prepare config
-      delegate_to: localhost
-      template: src=grafana.dest.json.j2 dest={{ playbook_dir }}/scripts/dests.json
-      vars:
-        - ansible_become: false
-        - ansible_connection: local
-        - grafana_dest_config:
-            name: "{{ cluster_name | title }}"
-            url: "http://{{ grafana_host }}:{{ grafana_port }}/"
-            user: "{{ grafana_admin_user }}"
-            password: "{{ grafana_admin_password }}"
-            apikey: "{{ lookup('file', grafana_api_keys_dir + '/grafana_apikey.key') }}"
-            datasource: "{{ cluster_name }}"
-            titles:
-              node: "{{ cluster_name | title }}-Node_exporter"
-              pd:   "{{ cluster_name | title }}-PD"
-              tidb: "{{ cluster_name | title }}-TiDB"
-              tidb_summary: "{{ cluster_name | title }}-TiDB-Summary"
-              tikv_summary: "{{ cluster_name | title }}-TiKV-Summary"
-              tikv_details: "{{ cluster_name | title }}-TiKV-Details"
-              tikv_trouble_shot: "{{ cluster_name | title }}-TiKV-Trouble-Shooting"
-              binlog: "{{ cluster_name | title }}-Binlog"
-              overview: "{{ cluster_name | title }}-Overview"
-              disk_performance: "{{ cluster_name | title }}-Disk-Performance"
-              blackbox_exporter: "{{ cluster_name | title }}-Blackbox_exporter"
-              kafka_overview: "{{ cluster_name | title }}-Kafka-Overview"
-              lightning: "{{ cluster_name | title }}-Lightning"
-
-    - name: import grafana dashboards - run import script
-      delegate_to: localhost
-      shell: "python grafana-config-copy.py"
-      args:
-        chdir: "{{ playbook_dir }}/scripts"
-      vars:
-        - ansible_become: false
-        - ansible_connection: local
-
 
 - name: rolling update kafka_exporter
   hosts: kafka_exporter_servers
