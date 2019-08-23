@@ -102,7 +102,7 @@ class CallbackModule(CallbackBase):
     def print_help_message(self):
         self._display.display("Ask TiDB User Group for help:", color=C.COLOR_WARN)
         self._display.display(
-            "It seems that you have encountered some problems, you can describe the operation steps and error information as much as possible on https://asktug.com. We will do our best to help you solve the problem.. Thanks. :-)",
+            "It seems that you have encountered some problem. Please describe your operation steps and provide error information as much as possible on https://asktug.com (in Chinese) or https://stackoverflow.com/questions/tagged/tidb (in English). We will do our best to help solve your problem. Thanks. :-)",
             color=C.COLOR_WARN)
 
     def v2_runner_on_failed(self, result, ignore_errors=False):
