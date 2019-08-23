@@ -20,4 +20,9 @@
     tag: "{{ alertmanager_tag }}"
     load_path: "{{ images_dir }}/alertmanager.tar"
 
-- include_tasks: "{{ process_supervision }}_deployment.yml"
+- name: deploy systemd
+  include_role:
+    name: systemd
+  vars:
+    this_role_name: alertmanager
+    service_name: alertmanager-{{ alertmanager_port }}

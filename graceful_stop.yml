@@ -44,18 +44,8 @@
   tags:
     - node_exporter
   tasks:
-    - name: stop node_exporter by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      with_items:
-        - node_exporter
-      when: process_supervision == 'supervise'
-
-    - name: stop node_exporter by systemd
-      systemd: name={{ item }} state=stopped
-      become: true
-      when: process_supervision == 'systemd'
-      with_items:
-        - node_exporter-{{ node_exporter_port }}.service
+    - name: stop node_exporter
+      shell: cd {{ deploy_dir }}/scripts && ./stop_node_exporter.sh
 
     - name: wait until the node_exporter port is down
       wait_for:
@@ -69,18 +59,8 @@
   tags:
     - blackbox_exporter
   tasks:
-    - name: stop blackbox_exporter by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      with_items:
-        - blackbox_exporter
-      when: process_supervision == 'supervise'
-
-    - name: stop node_exporter/blackbox_exporter by systemd
-      systemd: name={{ item }} state=stopped
-      become: true
-      when: process_supervision == 'systemd'
-      with_items:
-        - blackbox_exporter-{{ blackbox_exporter_port }}.service
+    - name: stop blackbox_exporter
+      shell: cd {{ deploy_dir }}/scripts && ./stop_blackbox_exporter.sh
 
     - name: wait until the blackbox_exporter port is down
       wait_for:
@@ -94,14 +74,8 @@
   tags:
     - alertmanager
   tasks:
-    - name: stop alertmanager by supervise
+    - name: stop alertmanager
       shell: cd {{ deploy_dir }}/scripts && ./stop_alertmanager.sh
-      when: process_supervision == 'supervise'
-
-    - name: stop alertmanager by systemd
-      systemd: name=alertmanager-{{ alertmanager_port }}.service state=stopped
-      become: true
-      when: process_supervision == 'systemd'
 
     - name: wait until the alertmanager port is down
       wait_for:
@@ -115,18 +89,8 @@
   tags:
     - pushgateway
   tasks:
-    - name: stop pushgateway by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      with_items:
-        - pushgateway
-      when: process_supervision == 'supervise'
-
-    - name: stop pushgateway by systemd
-      systemd: name={{ item }} state=stopped
-      when: process_supervision == 'systemd'
-      become: true
-      with_items:
-        - pushgateway-{{ pushgateway_port }}.service
+    - name: stop pushgateway
+      shell: cd {{ deploy_dir }}/scripts && ./stop_pushgateway.sh
 
     - name: wait until the pushgateway port is down
       wait_for:
@@ -140,18 +104,8 @@
   tags:
     - prometheus
   tasks:
-    - name: stop prometheus by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      with_items:
-        - prometheus
-      when: process_supervision == 'supervise'
-
-    - name: stop prometheus by systemd
-      systemd: name={{ item }} state=stopped
-      when: process_supervision == 'systemd'
-      become: true
-      with_items:
-        - prometheus-{{ prometheus_port }}.service
+    - name: stop prometheus
+      shell: cd {{ deploy_dir }}/scripts && ./stop_prometheus.sh
 
     - name: wait until the prometheus port is down
       wait_for:
@@ -165,18 +119,10 @@
   tags:
     - kafka_exporter
   tasks:
-    - name: stop kafka_exporter by supervise
+    - name: stop kafka_exporter
       shell: cd {{ deploy_dir }}/scripts && ./stop_kafka_exporter.sh
       when:
         - enable_binlog|default(false)
-        - process_supervision == 'supervise'
-
-    - name: stop kafka_exporter by systemd
-      become: true
-      systemd: name=kafka_exporter-{{ kafka_exporter_port }}.service state=stopped enabled=no
-      when:
-        - enable_binlog|default(false)
-        - process_supervision == 'systemd'
 
     - name: wait until the kafka_exporter port is down
       wait_for:
@@ -191,16 +137,8 @@
   tags:
     - tidb
   tasks:
-    - name: stop TiDB by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - tidb
-
-    - name: stop TiDB by systemd
-      systemd: name=tidb-{{ tidb_port }}.service state=stopped
-      become: true
-      when: process_supervision == 'systemd'
+    - name: stop TiDB
+      shell: cd {{ deploy_dir }}/scripts && ./stop_tidb.sh
 
     - name: wait until the TiDB port is down
       wait_for:
@@ -214,20 +152,10 @@
   tags:
     - pump
   tasks:
-    - name: stop pump by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+    - name: stop Pump
+      shell: cd {{ deploy_dir }}/scripts && ./stop_pump.sh
       when:
         - enable_binlog|default(false)
-        - process_supervision == 'supervise'
-      with_items:
-        - pump
-
-    - name: stop pump by systemd
-      systemd: name=pump-{{ pump_port }}.service state=stopped
-      become: true
-      when:
-        - enable_binlog|default(false)
-        - process_supervision == 'systemd'
 
     - name: wait until the pump port is down
       wait_for:
@@ -252,14 +180,8 @@
 
     - include_tasks: "common_tasks/add_evict_leader_scheduler.yml"
 
-    - name: stop TiKV by supervise
+    - name: stop TiKV
       shell: cd {{ deploy_dir }}/scripts && ./stop_tikv.sh
-      when: process_supervision == 'supervise'
-
-    - name: stop TiKV by systemd
-      systemd: name=tikv-{{ tikv_port }}.service state=stopped
-      become: true
-      when: process_supervision == 'systemd'
 
     - name: wait until the TiKV port is down
       wait_for:
@@ -267,15 +189,6 @@
         port: "{{ tikv_port }}"
         state: stopped
         msg: "the TiKV port {{ tikv_port }} is not down"
-
-    - command: cat {{ deploy_dir }}/status/tikv.pid
-      register: old_tikv_pid
-      ignore_errors: yes
-      changed_when: false
-
-    - name: display old tikv pid
-      debug:
-        msg: "tikv binary or docker pid: {{ old_tikv_pid.stdout }}"
 
     - include_tasks: "common_tasks/remove_evict_leader_scheduler.yml"
 
@@ -305,14 +218,8 @@
 
     - include_tasks: "common_tasks/transfer_pd_leader.yml"
 
-    - name: stop PD by supervise
+    - name: stop PD
       shell: cd {{ deploy_dir }}/scripts && ./stop_pd.sh
-      when: process_supervision == 'supervise'
-
-    - name: stop PD by systemd
-      systemd: name=pd-{{ pd_client_port }}.service state=stopped
-      become: true
-      when: process_supervision == 'systemd'
 
     - name: wait until the PD port is down
       wait_for:
@@ -326,16 +233,8 @@
   tags:
     - grafana
   tasks:
-    - name: stop grafana by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - grafana
-
-    - name: stop grafana by systemd
-      systemd: name=grafana-{{ grafana_port }}.service state=stopped
-      become: true
-      when: process_supervision == 'systemd'
+    - name: stop grafana
+      shell: cd {{ deploy_dir }}/scripts && ./stop_grafana.sh
 
     - name: wait until the grafana port is down
       wait_for:

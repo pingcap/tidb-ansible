@@ -43,17 +43,9 @@
         path: "{{ deploy_dir }}/bin/node_exporter"
       register: node_exporter_binary_file
 
-    - name: stop node_exporter by supervise
+    - name: stop node_exporter
       shell: cd {{ deploy_dir }}/scripts && ./stop_node_exporter.sh
       when:
-        - process_supervision == 'supervise'
-        - node_exporter_binary_file.stat.exists == True
-
-    - name: stop node_exporter by systemd
-      systemd: name=node_exporter-{{ node_exporter_port }}.service state=stopped
-      become: true
-      when:
-        - process_supervision == 'systemd'
         - node_exporter_binary_file.stat.exists == True
 
     - name: wait until the node_exporter port is down
@@ -67,14 +59,8 @@
     - node_exporter
 
   post_tasks:
-    - name: start node_exporter by supervise
+    - name: start node_exporter
       shell: cd {{ deploy_dir }}/scripts && ./start_node_exporter.sh
-      when: process_supervision == 'supervise'
-
-    - name: start node_exporter by systemd
-      systemd: name=node_exporter-{{ node_exporter_port }}.service state=started
-      become: true
-      when: process_supervision == 'systemd'
 
     - name: wait until the node_exporter port is up
       wait_for:
@@ -104,17 +90,9 @@
         path: "{{ deploy_dir }}/conf/blackbox.yml"
       register:  blackbox_exporter_configure_file
 
-    - name: stop blackbox_exporter by supervise
+    - name: stop blackbox_exporter
       shell: cd {{ deploy_dir }}/scripts && ./stop_blackbox_exporter.sh
       when:
-        - process_supervision == 'supervise'
-        - blackbox_exporter_configure_file.stat.exists == True
-
-    - name: stop blackbox_exporter by systemd
-      systemd: name=blackbox_exporter-{{ blackbox_exporter_port }}.service state=stopped
-      become: true
-      when:
-        - process_supervision == 'systemd'
         - blackbox_exporter_configure_file.stat.exists == True
 
     - name: wait until the blackbox_exporter port is down
@@ -128,14 +106,8 @@
     - blackbox_exporter
 
   post_tasks:
-    - name: start blackbox_exporter by supervise
+    - name: start blackbox_exporter
       shell: cd {{ deploy_dir }}/scripts && ./start_blackbox_exporter.sh
-      when: process_supervision == 'supervise'
-
-    - name: start blackbox_exporter by systemd
-      systemd: name=blackbox_exporter-{{ blackbox_exporter_port }}.service state=started
-      become: true
-      when: process_supervision == 'systemd'
 
     - name: wait until the blackbox_exporter port is up
       wait_for:
@@ -165,17 +137,9 @@
         path: "{{ deploy_dir }}/conf/alertmanager.yml"
       register:  alertmanager_configure_file
 
-    - name: stop alertmanager by supervise
+    - name: stop alertmanager
       shell: cd {{ deploy_dir }}/scripts && ./stop_alertmanager.sh
       when:
-        - process_supervision == 'supervise'
-        - alertmanager_configure_file.stat.exists == True
-
-    - name: stop alertmanager by systemd
-      systemd: name=alertmanager-{{ alertmanager_port }}.service state=stopped
-      become: true
-      when:
-        - process_supervision == 'systemd'
         - alertmanager_configure_file.stat.exists == True
 
     - name: wait until the alertmanager port is down
@@ -189,14 +153,8 @@
     - alertmanager
 
   post_tasks:
-    - name: start alertmanager by supervise
+    - name: start alertmanager
       shell: cd {{ deploy_dir }}/scripts && ./start_alertmanager.sh
-      when: process_supervision == 'supervise'
-
-    - name: start alertmanager by systemd
-      systemd: name=alertmanager-{{ alertmanager_port }}.service state=started
-      become: true
-      when: process_supervision == 'systemd'
 
     - name: wait until the alertmanager port is up
       wait_for:
@@ -213,18 +171,8 @@
     - pushgateway
 
   pre_tasks:
-    - name: stop pushgateway by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      with_items:
-        - pushgateway
-      when: process_supervision == 'supervise'
-
-    - name: stop pushgateway by systemd
-      systemd: name={{ item }} state=stopped
-      when: process_supervision == 'systemd'
-      become: true
-      with_items:
-        - pushgateway-{{ pushgateway_port }}.service
+    - name: stop pushgateway
+      shell: cd {{ deploy_dir }}/scripts && ./stop_pushgateway.sh
 
     - name: wait until the pushgateway port is down
       wait_for:
@@ -237,18 +185,8 @@
     - pushgateway
 
   post_tasks:
-    - name: start pushgateway by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - pushgateway
-
-    - name: start pushgateway by systemd
-      systemd: name={{ item }} state=started enabled=no
-      when: process_supervision == 'systemd'
-      become: true
-      with_items:
-        - pushgateway-{{ pushgateway_port }}.service
+    - name: start pushgateway
+      shell: cd {{ deploy_dir }}/scripts && ./start_pushgateway.sh
 
     - name: wait until the pushgateway port is up
       wait_for:
@@ -273,18 +211,8 @@
     - prometheus
 
   pre_tasks:
-    - name: stop prometheus by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      with_items:
-        - prometheus
-      when: process_supervision == 'supervise'
-
-    - name: stop prometheus by systemd
-      systemd: name={{ item }} state=stopped
-      when: process_supervision == 'systemd'
-      become: true
-      with_items:
-        - prometheus-{{ prometheus_port }}.service
+    - name: stop prometheus
+      shell: cd {{ deploy_dir }}/scripts && ./stop_prometheus.sh
 
     - name: wait until the prometheus port is down
       wait_for:
@@ -297,18 +225,8 @@
     - prometheus
 
   post_tasks:
-    - name: start prometheus by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - prometheus
-
-    - name: start prometheus by systemd
-      systemd: name={{ item }} state=started enabled=no
-      when: process_supervision == 'systemd'
-      become: true
-      with_items:
-        - prometheus-{{ prometheus_port }}.service
+    - name: start prometheus
+      shell: cd {{ deploy_dir }}/scripts && ./start_prometheus.sh
 
     - name: wait until the prometheus port is up
       wait_for:
@@ -333,16 +251,8 @@
     - grafana
 
   pre_tasks:
-    - name: stop grafana by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - grafana
-
-    - name: stop grafana by systemd
-      systemd: name=grafana-{{ grafana_port }}.service state=stopped
-      become: true
-      when: process_supervision == 'systemd'
+    - name: stop grafana
+      shell: cd {{ deploy_dir }}/scripts && ./stop_grafana.sh
 
     - name: wait until the grafana port is down
       wait_for:
@@ -355,16 +265,8 @@
     - grafana
 
   post_tasks:
-    - name: start grafana by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - grafana
-
-    - name: start grafana by systemd
-      systemd: name=grafana-{{ grafana_port }}.service state=started enabled=no
-      when: process_supervision == 'systemd'
-      become: true
+    - name: start grafana
+      shell: cd {{ deploy_dir }}/scripts && ./start_grafana.sh
 
     - name: wait until the grafana port is up
       wait_for:
@@ -444,19 +346,10 @@
       register:  kafka_exporter_binary_file
       when: enable_binlog|default(false)
 
-    - name: stop kafka_exporter by supervise
+    - name: stop kafka_exporter
       shell: cd {{ deploy_dir }}/scripts && ./stop_kafka_exporter.sh
       when:
         - enable_binlog|default(false)
-        - process_supervision == 'supervise'
-        - kafka_exporter_binary_file.stat.exists == True
-
-    - name: stop kafka_exporter by systemd
-      become: true
-      systemd: name=kafka_exporter-{{ kafka_exporter_port }}.service state=stopped enabled=no
-      when:
-        - enable_binlog|default(false)
-        - process_supervision == 'systemd'
         - kafka_exporter_binary_file.stat.exists == True
 
     - name: wait until the kafka_exporter port is down
@@ -471,18 +364,10 @@
     - { role: kafka_exporter, when: 'enable_binlog|default(false) and kafka_addrs|default("") != ""' }
 
   post_tasks:
-    - name: start kafka_exporter by supervise
+    - name: start kafka_exporter
       shell: cd {{ deploy_dir }}/scripts && ./start_kafka_exporter.sh
       when:
         - enable_binlog|default(false)
-        - process_supervision == 'supervise'
-
-    - name: start kafka_exporter by systemd
-      become: true
-      systemd: name=kafka_exporter-{{ kafka_exporter_port }}.service state=started enabled=no
-      when:
-        - enable_binlog|default(false)
-        - process_supervision == 'systemd'
 
     - name: wait until the kafka_exporter port is up
       wait_for:

@@ -180,14 +180,8 @@
 
     - include_tasks: "common_tasks/transfer_pd_leader.yml"
 
-    - name: stop PD by supervise
+    - name: stop PD
       shell: cd {{ deploy_dir }}/scripts && ./stop_pd.sh
-      when: process_supervision == 'supervise'
-
-    - name: stop PD by systemd
-      systemd: name=pd-{{ pd_client_port }}.service state=stopped
-      become: true
-      when: process_supervision == 'systemd'
 
     - name: wait until the PD port is down
       wait_for:
@@ -200,14 +194,8 @@
     - pd
 
   post_tasks:
-    - name: start PD by supervise
+    - name: start PD
       shell: cd {{ deploy_dir }}/scripts && ./start_pd.sh
-      when: process_supervision == 'supervise'
-
-    - name: start PD by systemd
-      systemd: name=pd-{{ pd_client_port }}.service state=started
-      become: true
-      when: process_supervision == 'systemd'
 
     - name: wait until the PD port is up
       wait_for:
@@ -281,14 +269,8 @@
 
     - include_tasks: "common_tasks/add_evict_leader_scheduler.yml"
 
-    - name: stop TiKV by supervise
+    - name: stop TiKV
       shell: cd {{ deploy_dir }}/scripts && ./stop_tikv.sh
-      when: process_supervision == 'supervise'
-
-    - name: stop TiKV by systemd
-      systemd: name=tikv-{{ tikv_port }}.service state=stopped
-      become: true
-      when: process_supervision == 'systemd'
 
     - name: wait until the TiKV port is down
       wait_for:
@@ -297,27 +279,12 @@
         state: stopped
         msg: "the TiKV port {{ tikv_port }} is not down"
 
-    - command: cat {{ deploy_dir }}/status/tikv.pid
-      register: old_tikv_pid
-      ignore_errors: yes
-      changed_when: false
-
-    - name: display old tikv pid
-      debug:
-        msg: "tikv binary or docker pid: {{ old_tikv_pid.stdout }}"
-
   roles:
     - tikv
 
   post_tasks:
-    - name: start TiKV by supervise
+    - name: start TiKV
       shell: cd {{ deploy_dir }}/scripts && ./start_tikv.sh
-      when: process_supervision == 'supervise'
-
-    - name: start TiKV by systemd
-      systemd: name=tikv-{{ tikv_port }}.service state=started
-      become: true
-      when: process_supervision == 'systemd'
 
     - name: wait until the TiKV port is up
       wait_for:
@@ -349,15 +316,6 @@
       delay: 5
       when: enable_tls|default(false)
 
-    - command: cat {{ deploy_dir }}/status/tikv.pid
-      register: new_tikv_pid
-      ignore_errors: yes
-      changed_when: false
-
-    - name: display new tikv pid
-      debug:
-        msg: "tikv binary or docker pid: {{ new_tikv_pid.stdout }}"
-
     - include_tasks: "common_tasks/remove_evict_leader_scheduler.yml"
 
 
@@ -369,20 +327,10 @@
     - pump
 
   pre_tasks:
-    - name: stop pump by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      with_items:
-        - pump
+    - name: stop Pump
+      shell: cd {{ deploy_dir }}/scripts && ./stop_pump.sh
       when:
         - enable_binlog|default(false)
-        - process_supervision == 'supervise'
-
-    - name: stop pump by systemd
-      systemd: name=pump-{{ pump_port }}.service state=stopped
-      become: true
-      when:
-        - enable_binlog|default(false)
-        - process_supervision == 'systemd'
 
     - name: wait until the pump port is down
       wait_for:
@@ -397,20 +345,10 @@
     - { role: pump, when: enable_binlog|default(false) }
 
   post_tasks:
-    - name: start pump by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
+    - name: start Pump
+      shell: cd {{ deploy_dir }}/scripts && ./start_pump.sh
       when:
         - enable_binlog|default(false)
-        - process_supervision == 'supervise'
-      with_items:
-        - pump
-
-    - name: start pump by systemd
-      systemd: name=pump-{{ pump_port }}.service state=started
-      become: true
-      when:
-        - enable_binlog|default(false)
-        - process_supervision == 'systemd'
 
     - name: wait until the pump port is up
       wait_for:
@@ -430,14 +368,8 @@
     - tidb
 
   pre_tasks:
-    - name: stop TiDB by supervise
+    - name: stop TiDB
       shell: cd {{ deploy_dir }}/scripts && ./stop_tidb.sh
-      when: process_supervision == 'supervise'
-
-    - name: stop TiDB by systemd
-      systemd: name=tidb-{{ tidb_port }}.service state=stopped
-      become: true
-      when: process_supervision == 'systemd'
 
     - name: wait until the TiDB port is down
       wait_for:
@@ -450,15 +382,8 @@
     - { role: tidb }
 
   post_tasks:
-
-    - name: start TiDB by supervise
+    - name: start TiDB
       shell: cd {{ deploy_dir }}/scripts && ./start_tidb.sh
-      when: process_supervision == 'supervise'
-
-    - name: start TiDB by systemd
-      systemd: name=tidb-{{ tidb_port }}.service state=started
-      become: true
-      when: process_supervision == 'systemd'
 
     - name: wait until the TiDB port is up
       wait_for:

@@ -24,7 +24,6 @@
     - name: clean systemd config
       file: path="/etc/systemd/system/{{ item }}" state=absent
       become: true
-      when: process_supervision == 'systemd'
       with_items:
         - node_exporter-{{ node_exporter_port }}.service
         - blackbox_exporter-{{ blackbox_exporter_port }}.service
@@ -34,7 +33,6 @@
     - name: clean systemd config
       file: path="/etc/systemd/system/{{ item }}" state=absent
       become: true
-      when: process_supervision == 'systemd'
       with_items:
         - alertmanager-{{ alertmanager_port }}.service
 
@@ -43,7 +41,6 @@
     - name: clean systemd config
       file: path="/etc/systemd/system/{{ item }}" state=absent
       become: true
-      when: process_supervision == 'systemd'
       with_items:
         - pushgateway-{{ pushgateway_port }}.service
         - prometheus-{{ prometheus_port }}.service
@@ -53,7 +50,6 @@
     - name: clean systemd config
       file: path="/etc/systemd/system/{{ item }}" state=absent
       become: true
-      when: process_supervision == 'systemd'
       with_items:
         - kafka_exporter-{{ kafka_exporter_port }}.service
 
@@ -62,7 +58,6 @@
     - name: clean systemd config
       file: path="/etc/systemd/system/{{ item }}" state=absent
       become: true
-      when: process_supervision == 'systemd'
       with_items:
         - tidb-{{ tidb_port }}.service
 
@@ -73,7 +68,6 @@
       become: true
       when:
         - enable_binlog|default(false)
-        - process_supervision == 'systemd'
       with_items:
         - pump-{{ pump_port }}.service
 
@@ -82,7 +76,6 @@
     - name: clean systemd config
       file: path="/etc/systemd/system/{{ item }}" state=absent
       become: true
-      when: process_supervision == 'systemd'
       with_items:
         - tikv-{{ tikv_port }}.service
 
@@ -99,7 +92,6 @@
     - name: clean systemd config
       file: path="/etc/systemd/system/{{ item }}" state=absent
       become: true
-      when: process_supervision == 'systemd'
       with_items:
         - pd-{{ pd_client_port }}.service
 
@@ -108,7 +100,6 @@
     - name: clean systemd config
       file: path="/etc/systemd/system/{{ item }}" state=absent
       become: true
-      when: process_supervision == 'systemd'
       with_items:
         - grafana-{{ grafana_port }}.service
 

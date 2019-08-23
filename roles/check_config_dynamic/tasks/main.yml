@@ -20,18 +20,9 @@
     - deploy_dir_st.stat.roth is defined
     - not deploy_dir_st.stat.roth
 
-- name: environment check (supervise)
-  stat: path={{ deploy_dir }}/bin/supervise get_md5=false get_checksum=false
-  register: supervise_st
-  when:
-    - process_supervision == 'supervise'
-    - deploy_dir_st.stat.isdir is defined
-    - deploy_dir_st.stat.isdir
-
 - name: config skip variables (default)
   set_fact:
     skip_create_deploy_dir: false
-    skip_supervise: false
     firewalld_ports: []
 
 - name: config skip variables
@@ -44,13 +35,3 @@
     - deploy_dir_st.stat.writeable
     - deploy_dir_st.stat.readable
     - deploy_dir_st.stat.isdir
-
-- name: config skip variables
-  set_fact:
-    skip_supervise: true
-  when:
-    - process_supervision == 'supervise'
-    - supervise_st is defined
-    - supervise_st.stat is defined
-    - supervise_st.stat.executable is defined
-    - supervise_st.stat.executable

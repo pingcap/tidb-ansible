@@ -9,6 +9,8 @@ DEPLOY_DIR={{ deploy_dir }}
 
 cd "${DEPLOY_DIR}" || exit 1
 
+echo $$ > "status/{{ role_name }}.pid"
+
 {% set my_ip = hostvars[inventory_hostname].ansible_host | default(hostvars[inventory_hostname].inventory_hostname) -%}
 
 {% set all_pd = [] -%}

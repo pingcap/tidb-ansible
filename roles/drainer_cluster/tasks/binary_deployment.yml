@@ -11,7 +11,11 @@
     backup: yes
   with_items:
     - run
-  vars:
-    role_status_dir: status/drainer
 
-- include_tasks: "{{ process_supervision }}_deployment.yml"
+- name: deploy systemd
+  include_role:
+    name: systemd
+  vars:
+    this_role_name: drainer
+    service_name: drainer-{{ drainer_port }}
+    disable_send_sigkill: true

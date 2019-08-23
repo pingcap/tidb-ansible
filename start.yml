@@ -35,14 +35,8 @@
   tags:
     - node_exporter
   tasks:
-    - name: start node_exporter by supervise
+    - name: start node_exporter
       shell: cd {{ deploy_dir }}/scripts && ./start_node_exporter.sh
-      when: process_supervision == 'supervise'
-
-    - name: start node_exporter by systemd
-      become: true
-      systemd: name=node_exporter-{{ node_exporter_port }}.service state=started enabled=no
-      when: process_supervision == 'systemd'
 
     - name: wait until the node_exporter port is up
       wait_for:
@@ -64,14 +58,8 @@
   tags:
     - blackbox_exporter
   tasks:
-    - name: start blackbox_exporter by supervise
+    - name: start blackbox_exporter
       shell: cd {{ deploy_dir }}/scripts && ./start_blackbox_exporter.sh
-      when: process_supervision == 'supervise'
-
-    - name: start blackbox_exporter by systemd
-      become: true
-      systemd: name=blackbox_exporter-{{ blackbox_exporter_port }}.service state=started enabled=no
-      when: process_supervision == 'systemd'
 
     - name: wait until the blackbox_exporter port is up
       wait_for:
@@ -93,14 +81,8 @@
   tags:
     - alertmanager
   tasks:
-    - name: start alertmanager by supervise
+    - name: start alertmanager
       shell: cd {{ deploy_dir }}/scripts && ./start_alertmanager.sh
-      when: process_supervision == 'supervise'
-
-    - name: start alertmanager by systemd
-      systemd: name=alertmanager-{{ alertmanager_port }}.service state=started
-      become: true
-      when: process_supervision == 'systemd'
 
     - name: wait until the alertmanager port is up
       wait_for:
@@ -114,18 +96,8 @@
   tags:
     - pushgateway
   tasks:
-    - name: start pushgateway by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - pushgateway
-
-    - name: start pushgateway by systemd
-      systemd: name={{ item }} state=started enabled=no
-      when: process_supervision == 'systemd'
-      become: true
-      with_items:
-        - pushgateway-{{ pushgateway_port }}.service
+    - name: start pushgateway
+      shell: cd {{ deploy_dir }}/scripts && ./start_pushgateway.sh
 
     - name: wait until the pushgateway port is up
       wait_for:
@@ -147,18 +119,8 @@
   tags:
     - prometheus
   tasks:
-    - name: start prometheus by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - prometheus
-
-    - name: start prometheus by systemd
-      systemd: name={{ item }} state=started enabled=no
-      when: process_supervision == 'systemd'
-      become: true
-      with_items:
-        - prometheus-{{ prometheus_port }}.service
+    - name: start prometheus
+      shell: cd {{ deploy_dir }}/scripts && ./start_prometheus.sh
 
     - name: wait until the prometheus port is up
       wait_for:
@@ -180,18 +142,10 @@
   tags:
     - kafka_exporter
   tasks:
-    - name: start kafka_exporter by supervise
+    - name: start kafka_exporter
       shell: cd {{ deploy_dir }}/scripts && ./start_kafka_exporter.sh
       when:
         - enable_binlog|default(false)
-        - process_supervision == 'supervise'
-
-    - name: start kafka_exporter by systemd
-      become: true
-      systemd: name=kafka_exporter-{{ kafka_exporter_port }}.service state=started enabled=no
-      when:
-        - enable_binlog|default(false)
-        - process_supervision == 'systemd'
 
     - name: wait until the kafka_exporter port is up
       wait_for:
@@ -206,16 +160,8 @@
   tags:
     - pd
   tasks:
-    - name: start PD by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - pd
-
-    - name: start PD by systemd
-      systemd: name=pd-{{ pd_client_port }}.service state=started enabled=no
-      become: true
-      when: process_supervision == 'systemd'
+    - name: start PD
+      shell: cd {{ deploy_dir }}/scripts && ./start_pd.sh
 
     - name: wait until the PD port is up
       wait_for:
@@ -251,16 +197,8 @@
   tags:
     - tikv
   tasks:
-    - name: start TiKV by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - tikv
-
-    - name: start TiKV by systemd
-      systemd: name=tikv-{{ tikv_port }}.service state=started enabled=no
-      become: true
-      when: process_supervision == 'systemd'
+    - name: start TiKV
+      shell: cd {{ deploy_dir }}/scripts && ./start_tikv.sh
 
     - name: wait until the TiKV port is up
       wait_for:
@@ -292,14 +230,6 @@
       delay: 5
       when: enable_tls|default(false)
 
-    - command: cat {{ deploy_dir }}/status/tikv.pid
-      register: new_tikv_pid
-      ignore_errors: yes
-      changed_when: false
-
-    - name: display new tikv pid
-      debug:
-        msg: "tikv binary or docker pid: {{ new_tikv_pid.stdout }}"
 
 - hosts: pd_servers[0]
   tasks:
@@ -338,20 +268,10 @@
   tags:
     - pump
   tasks:
-    - name: start pump by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
+    - name: start Pump
+      shell: cd {{ deploy_dir }}/scripts && ./start_pump.sh
       when:
         - enable_binlog|default(false)
-        - process_supervision == 'supervise'
-      with_items:
-        - pump
-
-    - name: start pump by systemd
-      systemd: name=pump-{{ pump_port }}.service state=started enabled=no
-      become: true
-      when:
-        - enable_binlog|default(false)
-        - process_supervision == 'systemd'
 
     - name: wait until the pump port is up
       wait_for:
@@ -366,16 +286,8 @@
   tags:
     - tidb
   tasks:
-    - name: start TiDB by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - tidb
-
-    - name: start TiDB by systemd
-      systemd: name=tidb-{{ tidb_port }}.service state=started enabled=no
-      become: true
-      when: process_supervision == 'systemd'
+    - name: start TiDB
+      shell: cd {{ deploy_dir }}/scripts && ./start_tidb.sh
 
     - name: wait until the TiDB port is up
       wait_for:
@@ -414,16 +326,8 @@
   roles:
     - { role: grafana, grafana_exec_vars_only: true }
   tasks:
-    - name: start grafana by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - grafana
-
-    - name: start grafana by systemd
-      systemd: name=grafana-{{ grafana_port }}.service state=started enabled=no
-      when: process_supervision == 'systemd'
-      become: true
+    - name: start grafana
+      shell: cd {{ deploy_dir }}/scripts && ./start_grafana.sh
 
     - name: wait until the grafana port is up
       wait_for:

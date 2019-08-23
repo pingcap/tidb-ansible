@@ -20,4 +20,9 @@
     tag: "{{ prometheus_tag }}"
     load_path: "{{ images_dir }}/prometheus.tar"
 
-- include_tasks: "{{ process_supervision }}_deployment.yml"
+- name: deploy systemd
+  include_role:
+    name: systemd
+  vars:
+    this_role_name: prometheus
+    service_name: prometheus-{{ prometheus_port }}

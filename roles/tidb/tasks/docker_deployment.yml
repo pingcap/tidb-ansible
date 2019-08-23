@@ -25,4 +25,9 @@
     tag: "{{ tidb_version }}"
     load_path: "{{ images_dir }}/tidb.tar"
     
-- include_tasks: "{{ process_supervision }}_deployment.yml"
+- name: deploy systemd
+  include_role:
+    name: systemd
+  vars:
+    this_role_name: tidb
+    service_name: tidb-{{ tidb_port }}

@@ -35,18 +35,9 @@
   tags:
     - drainer
   tasks:
-    - name: start drainer by supervise
+    - name: start Drainer
       shell: cd {{ deploy_dir }}/scripts && ./start_drainer.sh
-      when:
-        - enable_binlog|default(false)
-        - process_supervision == 'supervise'
-
-    - name: start drainer by systemd
-      systemd: name=drainer-{{ drainer_port }}.service state=started enabled=no
-      become: true
-      when:
-        - enable_binlog|default(false)
-        - process_supervision == 'systemd'
+      when: enable_binlog|default(false)
 
     - name: wait until the drainer port is up
       wait_for:

@@ -16,12 +16,15 @@
     backup: yes
   with_items:
     - run
-  vars:
-    role_status_dir: status/{{ role_name }}
   register: tidb_script
 
 - name: backup script file
   command: mv "{{ tidb_script.backup_file }}" "{{ backup_dir }}"
   when: tidb_script.changed and tidb_script.backup_file is defined
 
-- include_tasks: "{{ process_supervision }}_deployment.yml"
+- name: deploy systemd
+  include_role:
+    name: systemd
+  vars:
+    this_role_name: tidb
+    service_name: tidb-{{ tidb_port }}

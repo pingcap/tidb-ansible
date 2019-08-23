@@ -25,4 +25,10 @@
     tag: "{{ tidb_version }}"
     load_path: "{{ images_dir }}/tidb-binlog.tar"
 
-- include_tasks: "{{ process_supervision }}_deployment.yml"
+- name: deploy systemd
+  include_role:
+    name: systemd
+  vars:
+    this_role_name: pump
+    service_name: pump-{{ pump_port }}
+    disable_send_sigkill: true

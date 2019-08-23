@@ -16,7 +16,10 @@
     backup: yes
   with_items:
     - run
-  vars:
-    role_status_dir: status/{{ role_name }}
 
-- include_tasks: "{{ process_supervision }}_deployment.yml"
+- name: deploy systemd
+  include_role:
+    name: systemd
+  vars:
+    this_role_name: kafka_exporter
+    service_name: kafka_exporter-{{ kafka_exporter_port }}

@@ -184,15 +184,6 @@
   with_items:
     - kafka_exporter
 
-- name: cp daemontools binary
-  shell: >
-    cp -v {{ downloads_dir }}/daemontools-*/bin/{{ item }} "{{ resources_dir }}/bin/"
-  with_items:
-    - supervise
-    - svstat
-    - svc
-  when: process_supervision == 'supervise'
-
 - name: cp tidb-insight tarball
   shell: mv {{ downloads_dir }}/tidb-insight-v*.tar.gz {{ downloads_dir }}/tidb-insight.tar.gz
 

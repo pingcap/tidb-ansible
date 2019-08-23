@@ -20,4 +20,9 @@
     tag: "{{ blackbox_exporter_tag }}"
     load_path: "{{ images_dir }}/blackbox-exporter.tar"
 
-- include_tasks: "{{ process_supervision }}_deployment.yml"
+- name: deploy systemd
+  include_role:
+    name: systemd
+  vars:
+    this_role_name: blackbox_exporter
+    service_name: blackbox_exporter-{{ blackbox_exporter_port }}

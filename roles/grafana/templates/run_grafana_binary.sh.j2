@@ -7,6 +7,8 @@ ulimit -n 1000000
 DEPLOY_DIR={{ deploy_dir }}
 cd "${DEPLOY_DIR}" || exit 1
 
+echo $$ > "status/{{ role_name }}.pid"
+
 LANG=en_US.UTF-8 \
 exec opt/grafana/bin/grafana-server \
         --homepath="{{ deploy_dir }}/opt/grafana" \

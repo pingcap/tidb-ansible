@@ -6,6 +6,8 @@ DEPLOY_DIR={{ deploy_dir }}
 
 cd "${DEPLOY_DIR}" || exit 1
 
+echo $$ > "status/{{ role_name }}.pid"
+
 # WARNING: This file was auto-generated. Do not edit!
 #          All your edit might be overwritten!
 {% set my_ip = hostvars[inventory_hostname].ansible_host | default(hostvars[inventory_hostname].inventory_hostname) -%}
