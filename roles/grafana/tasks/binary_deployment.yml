@@ -9,13 +9,13 @@
   unarchive: >
     src={{ downloads_dir }}/grafana-{{ grafana_version }}.tar.gz dest={{ deploy_dir }}/opt/
 
-- name: deploy grafana
+- name: update deploy grafana if exists
   shell: >
     warn=no
     removes="{{ deploy_dir }}/opt/grafana/bin/grafana-server"
     /usr/bin/cp -r -f {{ deploy_dir }}/opt/grafana-{{ grafana_version }}/* {{ deploy_dir }}/opt/grafana/ && rm -rf {{ deploy_dir }}/opt/grafana-{{ grafana_version }}
 
-- name: deploy grafana
+- name: deploy grafana if not exists
   shell: >
     warn=no
     creates="{{ deploy_dir }}/opt/grafana/bin/grafana-server"
