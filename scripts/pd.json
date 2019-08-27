@@ -58,7 +58,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": null,
-  "iteration": 1566379062374,
+  "iteration": 1564738811479,
   "links": [],
   "panels": [
     {
@@ -99,7 +99,7 @@
           "id": 55,
           "interval": null,
           "links": [],
-          "mappingType": 2,
+          "mappingType": 1,
           "mappingTypes": [
             {
               "name": "value to text",
@@ -138,7 +138,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "delta(pd_server_tso{type=\"save\",instance=\"$instance\"}[1m])",
+              "expr": "count(delta(pd_tso_events{type=\"save\",instance=\"$instance\"}[1m]))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "",
@@ -154,8 +154,13 @@
           "valueMaps": [
             {
               "op": "=",
-              "text": "N/A",
+              "text": "Follower",
               "value": "null"
+            },
+            {
+              "op": "=",
+              "text": "Leader",
+              "value": "1"
             }
           ],
           "valueName": "current"
@@ -1602,7 +1607,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 23
+            "y": 16
           },
           "id": 80,
           "legend": {
@@ -1701,7 +1706,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 23
+            "y": 16
           },
           "id": 47,
           "legend": {
@@ -1794,7 +1799,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 30
+            "y": 23
           },
           "id": 67,
           "legend": {
@@ -1885,7 +1890,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 30
+            "y": 23
           },
           "id": 68,
           "legend": {
@@ -1976,7 +1981,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 37
+            "y": 30
           },
           "id": 81,
           "legend": {
@@ -2067,7 +2072,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 37
+            "y": 30
           },
           "id": 82,
           "legend": {
@@ -3229,7 +3234,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 4
+            "y": 83
           },
           "id": 50,
           "legend": {
@@ -3271,7 +3276,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "Hot write Region's leader distribution",
           "tooltip": {
@@ -3304,11 +3308,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "aliasColors": {},
@@ -3323,7 +3323,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 4
+            "y": 83
           },
           "id": 51,
           "legend": {
@@ -3365,7 +3365,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "Hot write Region's peer distribution",
           "tooltip": {
@@ -3398,11 +3397,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "aliasColors": {},
@@ -3417,7 +3412,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 11
+            "y": 90
           },
           "id": 48,
           "legend": {
@@ -3460,7 +3455,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "Hot write Region's leader written bytes",
           "tooltip": {
@@ -3493,11 +3487,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "aliasColors": {},
@@ -3512,7 +3502,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 11
+            "y": 90
           },
           "id": 49,
           "legend": {
@@ -3554,7 +3544,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "Hot Region's peer written bytes",
           "tooltip": {
@@ -3587,11 +3576,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "aliasColors": {},
@@ -3606,7 +3591,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 18
+            "y": 97
           },
           "id": 60,
           "legend": {
@@ -3648,7 +3633,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "Hot read Region's leader distribution",
           "tooltip": {
@@ -3681,11 +3665,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "aliasColors": {},
@@ -3699,7 +3679,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 18
+            "y": 97
           },
           "id": 62,
           "legend": {
@@ -3775,11 +3755,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "aliasColors": {},
@@ -3793,7 +3769,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 25
+            "y": 104
           },
           "id": 61,
           "legend": {
@@ -3835,7 +3811,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "Store write rate bytes",
           "tooltip": {
@@ -3869,11 +3844,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "aliasColors": {},
@@ -3887,7 +3858,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 25
+            "y": 104
           },
           "id": 105,
           "legend": {
@@ -3929,7 +3900,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "Store read rate bytes",
           "tooltip": {
@@ -3962,11 +3932,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "aliasColors": {},
@@ -3980,7 +3946,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 32
+            "y": 111
           },
           "id": 106,
           "legend": {
@@ -4022,7 +3988,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "Store write rate keys",
           "tooltip": {
@@ -4056,11 +4021,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "aliasColors": {},
@@ -4074,7 +4035,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 32
+            "y": 111
           },
           "id": 107,
           "legend": {
@@ -4116,7 +4077,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "Store read rate keys",
           "tooltip": {
@@ -4150,11 +4110,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         }
       ],
       "repeat": null,
@@ -4183,7 +4139,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 5
+            "y": 112
           },
           "id": 46,
           "legend": {
@@ -4224,7 +4180,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "Scheduler is running",
           "tooltip": {
@@ -4257,11 +4212,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "aliasColors": {},
@@ -4275,7 +4226,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 13
+            "y": 120
           },
           "id": 87,
           "legend": {
@@ -4323,7 +4274,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "Balance leader movement",
           "tooltip": {
@@ -4356,11 +4306,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "aliasColors": {},
@@ -4374,7 +4320,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 13
+            "y": 120
           },
           "hideTimeOverride": false,
           "id": 86,
@@ -4423,7 +4369,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "Balance Region movement",
           "tooltip": {
@@ -4456,11 +4401,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "aliasColors": {},
@@ -4474,7 +4415,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 21
+            "y": 128
           },
           "id": 89,
           "legend": {
@@ -4513,7 +4454,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "Balance leader event",
           "tooltip": {
@@ -4546,11 +4486,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "aliasColors": {},
@@ -4564,7 +4500,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 21
+            "y": 128
           },
           "id": 88,
           "legend": {
@@ -4604,7 +4540,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "Balance Region event",
           "tooltip": {
@@ -4637,11 +4572,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "aliasColors": {},
@@ -4655,7 +4586,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 29
+            "y": 136
           },
           "id": 52,
           "legend": {
@@ -4698,7 +4629,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "Balance leader scheduler",
           "tooltip": {
@@ -4731,11 +4661,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "aliasColors": {},
@@ -4749,7 +4675,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 29
+            "y": 136
           },
           "id": 53,
           "legend": {
@@ -4792,7 +4718,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "Balance Region scheduler",
           "tooltip": {
@@ -4825,11 +4750,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "aliasColors": {},
@@ -4843,7 +4764,7 @@
             "h": 8,
             "w": 8,
             "x": 0,
-            "y": 37
+            "y": 144
           },
           "id": 69,
           "legend": {
@@ -4881,7 +4802,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "Namespace checker",
           "tooltip": {
@@ -4914,11 +4834,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "aliasColors": {},
@@ -4932,7 +4848,7 @@
             "h": 8,
             "w": 8,
             "x": 8,
-            "y": 37
+            "y": 144
           },
           "id": 70,
           "legend": {
@@ -4970,7 +4886,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "Replica checker",
           "tooltip": {
@@ -5003,11 +4918,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "aliasColors": {},
@@ -5021,7 +4932,7 @@
             "h": 8,
             "w": 8,
             "x": 16,
-            "y": 37
+            "y": 144
           },
           "id": 71,
           "legend": {
@@ -5059,7 +4970,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "Region merge checker",
           "tooltip": {
@@ -5092,11 +5002,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "aliasColors": {},
@@ -5109,7 +5015,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 45
+            "y": 152
           },
           "id": 110,
           "legend": {
@@ -5152,7 +5058,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "Filter target",
           "tooltip": {
@@ -5185,11 +5090,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "aliasColors": {},
@@ -5202,7 +5103,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 45
+            "y": 152
           },
           "id": 109,
           "legend": {
@@ -5245,7 +5146,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "Filter source",
           "tooltip": {
@@ -5278,11 +5178,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "aliasColors": {},
@@ -5295,7 +5191,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 53
+            "y": 160
           },
           "id": 108,
           "legend": {
@@ -5338,7 +5234,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "Balance Direction",
           "tooltip": {
@@ -5371,11 +5266,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "aliasColors": {},
@@ -5388,7 +5279,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 53
+            "y": 160
           },
           "id": 111,
           "legend": {
@@ -5438,7 +5329,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "Store Limit",
           "tooltip": {
@@ -5471,11 +5361,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         }
       ],
       "repeat": null,
@@ -5540,7 +5426,6 @@
           "targets": [
             {
               "expr": "sum(rate(grpc_server_handling_seconds_count{instance=\"$instance\"}[1m])) by (grpc_method)",
-              "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{grpc_method}}",
               "refId": "A",
@@ -5637,7 +5522,6 @@
           "targets": [
             {
               "expr": "histogram_quantile(0.99, sum(rate(grpc_server_handling_seconds_bucket{instance=\"$instance\"}[5m])) by (grpc_method, le))",
-              "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{grpc_method}}",
               "refId": "A",
@@ -5716,7 +5600,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 7
+            "y": 162
           },
           "id": 5,
           "legend": {
@@ -5746,7 +5630,6 @@
           "targets": [
             {
               "expr": "sum(rate(pd_txn_handle_txns_duration_seconds_count[5m])) by (instance, result)",
-              "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}} : {{result}}",
               "refId": "A",
@@ -5755,7 +5638,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "Handle transactions rate",
           "tooltip": {
@@ -5789,11 +5671,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "aliasColors": {},
@@ -5810,7 +5688,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 15
+            "y": 170
           },
           "id": 6,
           "legend": {
@@ -5840,7 +5718,6 @@
           "targets": [
             {
               "expr": "histogram_quantile(0.99, sum(rate(pd_txn_handle_txns_duration_seconds_bucket[5m])) by (instance, result, le))",
-              "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}} {{result}}",
               "refId": "A",
@@ -5849,7 +5726,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "99% Handle transactions duration",
           "tooltip": {
@@ -5883,11 +5759,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "aliasColors": {},
@@ -5904,7 +5776,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 15
+            "y": 170
           },
           "id": 7,
           "legend": {
@@ -5936,7 +5808,6 @@
           "targets": [
             {
               "expr": "histogram_quantile(0.99, sum(rate(etcd_disk_wal_fsync_duration_seconds_bucket[5m])) by (instance, le))",
-              "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
               "metric": "",
@@ -5946,7 +5817,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "99% WAL fsync duration",
           "tooltip": {
@@ -5955,6 +5825,7 @@
             "sort": 0,
             "value_type": "cumulative"
           },
+          "transparent": false,
           "type": "graph",
           "xaxis": {
             "buckets": null,
@@ -5980,11 +5851,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "aliasColors": {},
@@ -6001,7 +5868,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 23
+            "y": 178
           },
           "id": 34,
           "legend": {
@@ -6031,7 +5898,6 @@
           "targets": [
             {
               "expr": "histogram_quantile(0.99, sum(rate(etcd_network_peer_round_trip_time_seconds_bucket[5m])) by (instance, To, le))",
-              "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}} - {{To}}",
               "metric": "",
@@ -6041,7 +5907,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "99% Peer round trip time seconds",
           "tooltip": {
@@ -6050,6 +5915,7 @@
             "sort": 0,
             "value_type": "cumulative"
           },
+          "transparent": false,
           "type": "graph",
           "xaxis": {
             "buckets": null,
@@ -6075,11 +5941,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "alert": {
@@ -6136,7 +5998,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 23
+            "y": 178
           },
           "id": 44,
           "legend": {
@@ -6180,7 +6042,6 @@
             }
           ],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "etcd disk wal fsync rate",
           "tooltip": {
@@ -6213,11 +6074,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "aliasColors": {},
@@ -6231,7 +6088,7 @@
             "h": 8,
             "w": 8,
             "x": 0,
-            "y": 31
+            "y": 186
           },
           "id": 92,
           "legend": {
@@ -6270,7 +6127,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "Raft term",
           "tooltip": {
@@ -6303,11 +6159,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "aliasColors": {},
@@ -6321,7 +6173,7 @@
             "h": 8,
             "w": 8,
             "x": 8,
-            "y": 31
+            "y": 186
           },
           "id": 93,
           "legend": {
@@ -6393,11 +6245,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "aliasColors": {},
@@ -6411,7 +6259,7 @@
             "h": 8,
             "w": 8,
             "x": 16,
-            "y": 31
+            "y": 186
           },
           "id": 94,
           "legend": {
@@ -6450,7 +6298,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "Raft applied index",
           "tooltip": {
@@ -6483,11 +6330,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         }
       ],
       "repeat": null,
@@ -6549,7 +6392,6 @@
           "targets": [
             {
               "expr": "sum(rate(pd_client_request_handle_requests_duration_seconds_count[1m])) by (type)",
-              "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
               "refId": "A",
@@ -6647,7 +6489,6 @@
           "targets": [
             {
               "expr": "histogram_quantile(0.98, sum(rate(pd_client_request_handle_requests_duration_seconds_bucket[30s])) by (type, le))",
-              "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
               "legendFormat": "{{type}} 98th percentile",
@@ -6656,7 +6497,6 @@
             },
             {
               "expr": "avg(rate(pd_client_request_handle_requests_duration_seconds_sum[30s])) by (type) /  avg(rate(pd_client_request_handle_requests_duration_seconds_count[30s])) by (type)",
-              "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{type}} average",
               "refId": "B",
@@ -7226,7 +7066,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 10
+            "y": 213
           },
           "id": 112,
           "legend": {
@@ -7261,7 +7101,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "Syncer index",
           "tooltip": {
@@ -7294,11 +7133,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         },
         {
           "aliasColors": {},
@@ -7311,7 +7146,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 10
+            "y": 213
           },
           "id": 113,
           "legend": {
@@ -7346,7 +7181,6 @@
           ],
           "thresholds": [],
           "timeFrom": null,
-          "timeRegions": [],
           "timeShift": null,
           "title": "history last index",
           "tooltip": {
@@ -7379,11 +7213,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          ]
         }
       ],
       "repeat": null,
@@ -7475,5 +7305,5 @@
   "timezone": "browser",
   "title": "Test-Cluster-PD",
   "uid": "Q6RuHYIWk",
-  "version": 6
+  "version": 5
 }
