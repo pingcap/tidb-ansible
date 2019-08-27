@@ -110,12 +110,12 @@ groups:
       summary: TiKV coprocessor request wait seconds more than 10s
 
   - alert: TiKV_raftstore_thread_cpu_seconds_total
-    expr: sum(rate(tikv_thread_cpu_seconds_total{name=~"raftstore_.*"}[1m])) by (instance, name)  > 0.8
+    expr: sum(rate(tikv_thread_cpu_seconds_total{name=~"raftstore_.*"}[1m])) by (instance, name)  > 1.6
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: critical
-      expr: sum(rate(tikv_thread_cpu_seconds_total{name=~"raftstore_.*"}[1m])) by (instance, name)  > 0.8
+      expr: sum(rate(tikv_thread_cpu_seconds_total{name=~"raftstore_.*"}[1m])) by (instance, name)  > 1.6
     annotations:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
@@ -158,12 +158,12 @@ groups:
       summary: TiKV scheduler latch wait duration seconds more than 1s
 
   - alert: TiKV_thread_apply_worker_cpu_seconds
-    expr: sum(rate(tikv_thread_cpu_seconds_total{name="apply_worker"}[1m])) by (instance) > 0.9
+    expr: sum(rate(tikv_thread_cpu_seconds_total{name="apply_worker"}[1m])) by (instance) > 1.8
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: critical
-      expr:  sum(rate(tikv_thread_cpu_seconds_total{name="apply_worker"}[1m])) by (instance) > 0.9
+      expr:  sum(rate(tikv_thread_cpu_seconds_total{name="apply_worker"}[1m])) by (instance) > 1.8
     annotations:
       description: 'cluster: ENV_LABELS_ENV, type: {{ $labels.type }}, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
@@ -241,29 +241,17 @@ groups:
       value: '{{ $value }}'
       summary: TiKV scheduler command duration seconds more than 1s
 
-  - alert: TiKV_thread_storage_scheduler_cpu_seconds
-    expr: sum(rate(tikv_thread_cpu_seconds_total{name=~"storage_schedul.*"}[1m])) by (instance) > 0.8
+  - alert: tikv_coprocessor_request_wait_seconds
+    expr: delta( tikv_coprocessor_request_wait_seconds_count[10m] )  > 0
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: warning
-      expr:  sum(rate(tikv_thread_cpu_seconds_total{name=~"storage_schedul.*"}[1m])) by (instance) > 0.8
-    annotations:
-      description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
-      value: '{{ $value }}'
-      summary: TiKV storage scheduler cpu seconds more than 80%
-
-  - alert: TiKV_coprocessor_outdated_request_wait_seconds
-    expr: delta( tikv_coprocessor_outdated_request_wait_seconds_count[10m] )  > 0
-    for: 1m
-    labels:
-      env: ENV_LABELS_ENV
-      level: warning
-      expr:  delta( tikv_coprocessor_outdated_request_wait_seconds_count[10m] )  > 0
+      expr:  delta( tikv_coprocessor_request_wait_seconds_count[10m] )  > 0
     annotations:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
-      summary: TiKV coprocessor outdated request wait seconds
+      summary: TiKV coprocessor request wait seconds
 
   - alert: TiKV_coprocessor_request_error
     expr: increase(tikv_coprocessor_request_error{reason!="lock"}[10m]) > 100
@@ -343,7 +331,7 @@ groups:
     labels:
       env: ENV_LABELS_ENV
       level: warning
-      expr: histogram_quantile(0.99, sum(rate(tikv_raftstore_region_size_bucket[1m])) by (le)) > 1073741824 
+      expr: histogram_quantile(0.99, sum(rate(tikv_raftstore_region_size_bucket[1m])) by (le)) > 1073741824
     annotations:
       description: 'cluster: ENV_LABELS_ENV, type: {{ $labels.type }}, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
