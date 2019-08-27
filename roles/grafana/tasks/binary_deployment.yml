@@ -5,28 +5,29 @@
   with_items:
   - "{{ deploy_dir }}/opt"
 
-- name: deploy grafana binary
+- name: unarchive grafana package
   unarchive: >
     src={{ downloads_dir }}/grafana-{{ grafana_version }}.tar.gz dest={{ deploy_dir }}/opt/
 
-- name: rename grafana deploy dir
+- name: deploy grafana
   shell: >
     warn=no
     removes="{{ deploy_dir }}/opt/grafana/bin/grafana-server"
-    rm -rf {{ deploy_dir }}/opt/grafana && mv {{ deploy_dir }}/opt/grafana-{{ grafana_version }} "{{ deploy_dir }}/opt/grafana"
+    /usr/bin/cp -r -f {{ deploy_dir }}/opt/grafana-{{ grafana_version }}/* {{ deploy_dir }}/opt/grafana/ && rm -rf {{ deploy_dir }}/opt/grafana-{{ grafana_version }}
 
-- name: rename grafana deploy dir
+- name: deploy grafana
   shell: >
+    warn=no
     creates="{{ deploy_dir }}/opt/grafana/bin/grafana-server"
-    mv {{ deploy_dir }}/opt/grafana-{{ grafana_version }} "{{ deploy_dir }}/opt/grafana"
+    mv {{ deploy_dir }}/opt/grafana-{{ grafana_version }} {{ deploy_dir }}/opt/grafana/
 
-- name: create binary deploy directories (2/2)
+- name: create deploy directories
   file: path="{{ item }}" state=directory mode=0755
   with_items:
   - "{{ grafana_provisioning_dir }}/datasources"
   - "{{ grafana_provisioning_dir }}/dashboards"
+  - "{{ grafana_dashboards_dir }}/{{ cluster_name }}"
   - "{{ grafana_datasources_dir }}"
-  - "{{ grafana_dashboards_dir }}"
   - "{{ grafana_plugins_dir }}"
 
 - name: create grafana configuration file
@@ -34,15 +35,15 @@
     src=grafana.ini.j2 dest={{ deploy_dir }}/opt/grafana/conf/grafana.ini mode=0644
 
 - name: push datasource configuration file
-  template: src=datasource.yml.j2 dest={{ deploy_dir }}/opt/grafana/provisioning/datasources/datasource.yml mode=0644
+  template: src=datasource.yml.j2 dest={{ deploy_dir }}/opt/grafana/provisioning/datasources/{{ cluster_name }}.yml mode=0644
 
 - name: push dashboard configuration file
-  template: src=dashboard.yml.j2 dest={{ deploy_dir }}/opt/grafana/provisioning/dashboards/dashboard.yml mode=0644
+  template: src=dashboard.yml.j2 dest={{ deploy_dir }}/opt/grafana/provisioning/dashboards/{{ cluster_name }}.yml mode=0644
 
 - name: push databoard json
   copy:
     src: "{{ playbook_dir }}/scripts/{{ item }}"
-    dest: "{{ grafana_dashboards_dir }}"
+    dest: "{{ grafana_dashboards_dir }}/{{ cluster_name }}"
   with_items:
     - "node_exporter.json"
     - "pd.json"
@@ -60,7 +61,7 @@
 
 - name: Set title for dashboard
   replace:
-    path: "{{ grafana_dashboards_dir }}/{{ item }}"
+    path: "{{ grafana_dashboards_dir }}/{{ cluster_name }}/{{ item }}"
     regexp: "^  \"title\": .*,"
     replace: "  \"title\": \"{{ cluster_name }}-{{ item.split('.')[0] | replace('_', '-') | title | replace('Tidb', 'TiDB') | replace('TiKV', 'TiKV') | replace('Pd', 'PD')}}\","
   with_items:
@@ -78,9 +79,29 @@
     - "kafka_overview.json"
     - "lightning.json"
 
+- name: Set uid for dashboard
+  replace:
+    path: "{{ grafana_dashboards_dir }}/{{ cluster_name }}/{{ item }}"
+    regexp: "^  \"uid\": .*,"
+    replace: "  \"uid\": \"{{ cluster_name }}-{{ item.split('.')[0] }}\","
+  with_items:
+    - "node_exporter.json"
+    - "pd.json"
+    - "tidb.json"
+    - "tidb_summary.json"
+    - "tikv_summary.json"
+    - "tikv_details.json"
+    - "tikv_trouble_shooting.json"
+    - "binlog.json"
+    - "overview.json"
+    - "disk_performance.json"
+    - "blackbox_exporter.json"
+    - "kafka_overview.json"
+    - "lightning.json"
+
 - name: Set datasource for dashboard
   replace:
-    path: "{{ grafana_dashboards_dir }}/{{ item }}"
+    path: "{{ grafana_dashboards_dir }}/{{ cluster_name }}/{{ item }}"
     regexp: "\"datasource\": .*,"
     replace: "\"datasource\": \"{{ cluster_name }}\","
   with_items:
