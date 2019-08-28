@@ -1,0 +1,29 @@
+---
+# default configuration file for pump in yaml format
+
+global:
+  # a integer value to control expiry date of the binlog data, indicates for how long (in days) the binlog data would be stored. 
+  # must bigger than 0
+  # gc: 7
+
+  # number of seconds between heartbeat ticks (in 2 seconds)
+  # heartbeat-interval: 2
+
+security:
+  # Path of file that contains list of trusted SSL CAs for connection with cluster components.
+  # ssl-ca: "/path/to/ca.pem"
+
+  # Path of file that contains X509 certificate in PEM format for connection with cluster components.
+  # ssl-cert: "/path/to/drainer.pem"
+
+  # Path of file that contains X509 key in PEM format for connection with cluster components.
+  # ssl-key: "/path/to/drainer-key.pem"
+
+storage:
+  # Set to true (by default) to guarantee reliability by ensuring binlog data is flushed to the disk.
+  # sync-log: true
+
+  # stop write when disk available space less than the configured size
+  # 42 MB -> 42000000, 42 mib -> 44040192
+  # default: 10 gib
+  # stop-write-at-available-space = "10 gib"
