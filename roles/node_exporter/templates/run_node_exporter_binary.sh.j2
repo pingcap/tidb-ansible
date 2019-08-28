@@ -11,7 +11,8 @@ exec > >(tee -i -a "{{ node_exporter_log_dir }}/{{ node_exporter_log_filename }}
 exec 2>&1
 
 exec bin/node_exporter --web.listen-address=":{{ node_exporter_port }}" \
-    --collector.tcpstat --collector.systemd \
+    --collector.tcpstat \
+    --collector.systemd \
     --collector.mountstats \
     --collector.meminfo_numa \
     --collector.interrupts \
