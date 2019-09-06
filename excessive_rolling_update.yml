@@ -54,6 +54,13 @@
         - current_version.stdout_lines[0].replace(' ','').split(':')[1] < "v2.0.1"
         - tidb_version >= "v2.1.0" or tidb_version == "latest"
 
+- name: Pre-check for configuration
+  hosts: pd_servers[0]
+  tags:
+    - check_config
+  roles:
+    - check_config
+
 - hosts: pd_servers[0]
   any_errors_fatal: true
   serial: 1
