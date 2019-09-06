@@ -1,0 +1,19 @@
+---
+
+- set_fact:
+    tidb_check_dir: "/tmp/tidb_check_config"
+
+- name: Create temporary check directory
+  file: name={{ tidb_check_dir }} state=directory
+
+- name: Check PD config
+  include_tasks: check_pd_config.yml
+
+- name: Check TiKV config
+  include_tasks: check_tikv_config.yml
+
+- name: Check TiDB config
+  include_tasks: check_tidb_config.yml
+
+- name: Delete temporary check directory
+  file: name={{ tidb_check_dir }} state=absent
