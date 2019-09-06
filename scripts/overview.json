@@ -79,6 +79,7 @@
             }
           ],
           "datasource": "${DS_TEST-CLUSTER}",
+          "description": "the online nodes number of each service",
           "fontSize": "100%",
           "gridPos": {
             "h": 8,
@@ -238,7 +239,7 @@
             }
           ],
           "timeFrom": "1s",
-          "title": "",
+          "title": "Services Online",
           "transform": "timeseries_aggregations",
           "type": "table"
         },
@@ -250,6 +251,7 @@
             }
           ],
           "datasource": "${DS_TEST-CLUSTER}",
+          "description": "the offline nodes number of each service",
           "fontSize": "100%",
           "gridPos": {
             "h": 8,
@@ -409,7 +411,7 @@
             }
           ],
           "timeFrom": "1s",
-          "title": "",
+          "title": "Services Offline",
           "transform": "timeseries_aggregations",
           "type": "table"
         }
@@ -522,6 +524,7 @@
           ],
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": null,
+          "description": "the total storage capacity of the TiDB cluster",
           "editable": true,
           "error": false,
           "format": "decbytes",
@@ -606,6 +609,7 @@
           ],
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
+          "description": "the occupied storage capacity of the TiDB cluster",
           "editable": true,
           "error": false,
           "format": "decbytes",
@@ -661,6 +665,7 @@
           "targets": [
             {
               "expr": "pd_cluster_status{instance=\"$instance\",type=\"storage_size\"}",
+              "format": "time_series",
               "intervalFactor": 2,
               "refId": "A",
               "step": 60
@@ -689,6 +694,7 @@
             "rgba(50, 172, 45, 0.97)"
           ],
           "datasource": "${DS_TEST-CLUSTER}",
+          "description": "the total number of Regions of the current cluster",
           "format": "none",
           "gauge": {
             "maxValue": 100,
@@ -741,6 +747,7 @@
           "targets": [
             {
               "expr": "pd_cluster_status{instance=\"$instance\",type=\"region_count\"}",
+              "format": "time_series",
               "intervalFactor": 2,
               "refId": "A",
               "step": 60
@@ -769,6 +776,7 @@
             "#d44a3a"
           ],
           "datasource": "${DS_TEST-CLUSTER}",
+          "description": "the leader ratio difference of the nodes with the biggest leader ratio and the smallest leader ratio",
           "format": "percentunit",
           "gauge": {
             "maxValue": 100,
@@ -850,6 +858,7 @@
             "#d44a3a"
           ],
           "datasource": "${DS_TEST-CLUSTER}",
+          "description": "the Region ratio difference of the nodes with the biggest Region ratio and the smallest Region ratio",
           "format": "percentunit",
           "gauge": {
             "maxValue": 100,
@@ -976,6 +985,7 @@
           "targets": [
             {
               "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_up_count\"}",
+              "format": "table",
               "interval": "",
               "intervalFactor": 2,
               "legendFormat": "Up Stores",
@@ -985,6 +995,7 @@
             },
             {
               "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_disconnected_count\"}",
+              "format": "table",
               "interval": "",
               "intervalFactor": 2,
               "legendFormat": "Disconnect Stores",
@@ -994,6 +1005,7 @@
             },
             {
               "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_low_space_count\"}",
+              "format": "table",
               "interval": "",
               "intervalFactor": 2,
               "legendFormat": "LowSpace Stores",
@@ -1003,6 +1015,7 @@
             },
             {
               "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_down_count\"}",
+              "format": "table",
               "interval": "",
               "intervalFactor": 2,
               "legendFormat": "Down Stores",
@@ -1012,6 +1025,7 @@
             },
             {
               "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_offline_count\"}",
+              "format": "table",
               "interval": "",
               "intervalFactor": 2,
               "legendFormat": "Offline Stores",
@@ -1021,6 +1035,7 @@
             },
             {
               "expr": "pd_cluster_status{instance=\"$instance\",type=\"store_tombstone_count\"}",
+              "format": "table",
               "interval": "",
               "intervalFactor": 2,
               "legendFormat": "Tombstone Stores",
@@ -1039,6 +1054,7 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
+          "description": "the 99th percentile duration to complete a pd-server request",
           "editable": true,
           "error": false,
           "fill": 0,
@@ -1136,6 +1152,7 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
+          "description": "the request duration of a PD request",
           "fill": 1,
           "gridPos": {
             "h": 7,
@@ -1704,6 +1721,7 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
+          "description": "the total number of executed SQL statements, including SELECT, INSERT, UPDATE and so on",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -1802,6 +1820,7 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
+          "description": "the execution time of a SQL statement",
           "fill": 1,
           "gridPos": {
             "h": 7,
@@ -1912,6 +1931,7 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
+          "description": "the QPS on each TiDB instance",
           "fill": 0,
           "gridPos": {
             "h": 7,
@@ -2002,6 +2022,7 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
+          "description": "the number of failed SQL statements, including syntax error and key conflicts and so on",
           "fill": 0,
           "gridPos": {
             "h": 7,
@@ -2091,6 +2112,7 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
+          "description": "the connection number of each TiDB instance",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -2197,6 +2219,7 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
+          "description": "the size of heap memory used by each TiDB instance",
           "fill": 0,
           "gridPos": {
             "h": 7,
@@ -2233,6 +2256,7 @@
           "targets": [
             {
               "expr": "go_memstats_heap_inuse_bytes{job=~\"tidb.*\"}",
+              "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}-{{job}}",
               "metric": "go_memstats_heap_inuse_bytes",
@@ -2287,6 +2311,7 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
+          "description": "the number of executed transactions per second",
           "fill": 1,
           "gridPos": {
             "h": 7,
@@ -2372,6 +2397,7 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
+          "description": "the execution time of a transaction",
           "fill": 1,
           "gridPos": {
             "h": 7,
@@ -2471,6 +2497,7 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
+          "description": " \tthe number of executed KV commands",
           "fill": 1,
           "gridPos": {
             "h": 7,
@@ -2561,6 +2588,7 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
+          "description": "the execution time of the KV command",
           "fill": 1,
           "gridPos": {
             "h": 7,
@@ -2652,6 +2680,7 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
+          "description": "the number of TSO that TiDB obtains from PD",
           "fill": 1,
           "gridPos": {
             "h": 7,
@@ -2747,6 +2776,7 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
+          "description": "the time consumed when TiDB obtains TSO from PD",
           "fill": 1,
           "gridPos": {
             "h": 7,
@@ -2852,6 +2882,7 @@
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 2,
+          "description": "the number of Region related errors returned by TiKV",
           "fill": 0,
           "gridPos": {
             "h": 7,
@@ -2943,6 +2974,7 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
+          "description": "the number of transaction related conflicts",
           "fill": 1,
           "gridPos": {
             "h": 7,
@@ -3035,6 +3067,7 @@
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": null,
+          "description": "the time consumed when TiDB obtains Schema from TiKV",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -3130,6 +3163,7 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
+          "description": "the number of errors returned by TiKV (such as transaction conflicts )",
           "fill": 1,
           "gridPos": {
             "h": 7,
@@ -3236,6 +3270,7 @@
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
+          "description": "the number of leaders on each TiKV node",
           "editable": true,
           "error": false,
           "fill": 0,
@@ -3344,6 +3379,7 @@
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
+          "description": "the number of Regions on each TiKV node",
           "editable": true,
           "error": false,
           "fill": 0,
@@ -3437,6 +3473,7 @@
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
+          "description": "the CPU usage ratio on each TiKV node",
           "fill": 0,
           "gridPos": {
             "h": 8,
@@ -3524,6 +3561,7 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
+          "description": "the memory usage on each TiKV node",
           "fill": 0,
           "gridPos": {
             "h": 8,
@@ -3612,6 +3650,7 @@
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
+          "description": "the data amount on each TiKV node",
           "fill": 5,
           "gridPos": {
             "h": 8,
@@ -3702,6 +3741,7 @@
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
+          "description": "the data amount on different CFs in the cluster",
           "fill": 1,
           "gridPos": {
             "h": 8,
@@ -3790,6 +3830,7 @@
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
+          "description": "No data points is displayed in normal conditions. If a monitoring value displays, it means the corresponding TiKV node fails to handle the messages",
           "editable": true,
           "error": false,
           "fill": 3,
@@ -3887,6 +3928,7 @@
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
+          "description": "No data points is displayed in normal conditions. If Unreachable is displayed, it means TiKV encounters a communication issue.",
           "editable": true,
           "error": false,
           "fill": 0,
@@ -3986,6 +4028,7 @@
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
+          "description": "the number of commits on queue",
           "fill": 1,
           "gridPos": {
             "h": 8,
@@ -4075,6 +4118,7 @@
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
+          "description": "the number of various query operations",
           "fill": 1,
           "gridPos": {
             "h": 8,
@@ -4166,6 +4210,7 @@
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 5,
+          "description": "the time consumed by TiKV queries",
           "fill": 1,
           "gridPos": {
             "h": 8,
@@ -4279,6 +4324,7 @@
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
+          "description": "the CPU usage ratio of the raftstore thread",
           "fill": 0,
           "gridPos": {
             "h": 8,
@@ -4369,6 +4415,7 @@
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
+          "description": "the CPU usage ratio of the TiKV query thread, related to the application; complex queries consume a great deal of CPU",
           "fill": 0,
           "gridPos": {
             "h": 8,
@@ -4471,6 +4518,7 @@
         {
           "columns": [],
           "datasource": "${DS_TEST-CLUSTER}",
+          "description": " \tthe number of CPU cores",
           "fontSize": "100%",
           "gridPos": {
             "h": 5,
@@ -4559,6 +4607,7 @@
         {
           "columns": [],
           "datasource": "${DS_TEST-CLUSTER}",
+          "description": "the total memory",
           "fontSize": "100%",
           "gridPos": {
             "h": 5,
@@ -4675,6 +4724,7 @@
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
+          "description": "the CPU usage ratio, 100% at a maximum",
           "fill": 1,
           "gridPos": {
             "h": 5,
@@ -4765,6 +4815,7 @@
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
+          "description": "the overload within 1 minute",
           "fill": 0,
           "gridPos": {
             "h": 5,
@@ -4852,6 +4903,7 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
+          "description": "the size of the available memory",
           "fill": 0,
           "gridPos": {
             "h": 5,
@@ -4940,6 +4992,7 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
+          "description": "the statistics of the network traffic",
           "fill": 1,
           "gridPos": {
             "h": 5,
@@ -5036,6 +5089,7 @@
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
+          "description": " \tthe statistics about network monitoring and TCP",
           "fill": 1,
           "gridPos": {
             "h": 5,
@@ -5126,6 +5180,7 @@
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 0,
+          "description": "the disk usage ratio, 100% at a maximum; generally you need to consider adding a new node when the usage ratio is up to 80% ~ 90%",
           "fill": 1,
           "gridPos": {
             "h": 7,
