@@ -158,3 +158,10 @@
   become: true
   roles:
     - { role: firewalld, when: enable_firewalld is defined and enable_firewalld }
+
+- name: deploying perf-tools
+  hosts: all
+  tags:
+    - always
+  roles:
+    - perf_tools
