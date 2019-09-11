@@ -1,7 +1,7 @@
 ---
 
 - name: Disk space check - Fail task when disk is full
-  raw: df -h . | tail -n1
+  shell: df -h . | tail -n1
   register: disk_space_st
   failed_when: " '100%' in disk_space_st.stdout "
   changed_when: false
