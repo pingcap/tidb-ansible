@@ -2442,7 +2442,7 @@
               "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_commit_log_duration_seconds_bucket{instance=~\"$instance\"}[1m])) by (le, instance))",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{instance}}",
+              "legendFormat": "{{instance}} 99%",
               "refId": "A"
             }
           ],
@@ -4951,6 +4951,194 @@
           "dashLength": 10,
           "dashes": false,
           "datasource": "${DS_TEST-CLUSTER}",
+          "fill": 1,
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 28
+          },
+          "id": 2830,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_commit_log_duration_seconds_bucket{instance=~\"$instance\"}[1m])) by (le))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "99%",
+              "refId": "A"
+            },
+            {
+              "expr": "histogram_quantile(0.95, sum(rate(tikv_raftstore_commit_log_duration_seconds_bucket{instance=~\"$instance\"}[1m])) by (le))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "95%",
+              "refId": "B"
+            },
+            {
+              "expr": "sum(rate(tikv_raftstore_commit_log_duration_seconds_sum{instance=~\"$instance\"}[1m])) / sum(rate(tikv_raftstore_commit_log_duration_seconds_count{instance=~\"$instance\"}[1m]))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "avg",
+              "refId": "C"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Commit log duration",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "s",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "fill": 1,
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 28
+          },
+          "id": 2831,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_commit_log_duration_seconds_bucket{instance=~\"$instance\"}[1m])) by (le, instance))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "{{instance}} 99%",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Commit log duration per server",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "s",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -4959,7 +5147,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 28
+            "y": 35
           },
           "id": 31,
           "legend": {
@@ -5068,7 +5256,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 28
+            "y": 35
           },
           "id": 32,
           "legend": {
@@ -5160,7 +5348,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 35
+            "y": 42
           },
           "id": 2794,
           "legend": {
@@ -5269,7 +5457,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 35
+            "y": 42
           },
           "id": 2795,
           "legend": {
@@ -5376,7 +5564,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 42
+            "y": 49
           },
           "id": 126,
           "legend": {
@@ -5490,7 +5678,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 42
+            "y": 49
           },
           "id": 2776,
           "legend": {
@@ -5604,7 +5792,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 49
+            "y": 56
           },
           "id": 137,
           "legend": {
@@ -5695,7 +5883,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 49
+            "y": 56
           },
           "id": 135,
           "legend": {
@@ -5810,7 +5998,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 56
+            "y": 63
           },
           "id": 2793,
           "legend": {
@@ -5932,7 +6120,7 @@
             "h": 4,
             "w": 24,
             "x": 0,
-            "y": 63
+            "y": 70
           },
           "id": 2791,
           "legend": {
@@ -6024,7 +6212,7 @@
             "h": 4,
             "w": 24,
             "x": 0,
-            "y": 67
+            "y": 74
           },
           "id": 2818,
           "legend": {
@@ -6112,7 +6300,7 @@
             "h": 4,
             "w": 24,
             "x": 0,
-            "y": 71
+            "y": 78
           },
           "id": 2820,
           "legend": {
@@ -6201,7 +6389,7 @@
             "h": 4,
             "w": 24,
             "x": 0,
-            "y": 75
+            "y": 82
           },
           "id": 2819,
           "legend": {
