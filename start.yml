@@ -251,6 +251,18 @@
   tags:
     - tikv
   tasks:
+    - name: Fail - when tikv_port already in use
+      shell: ss -lnp | grep -w {{ tikv_port }} | wc -l
+      register: tikv_port_check
+      failed_when:
+        - tikv_port_check.stdout | int > 0
+
+    - name: Fail - when tikv_status_port already in use
+      shell: ss -lnp | grep -w {{ tikv_status_port }} | wc -l
+      register: tikv_port_status_check
+      failed_when:
+        - tikv_port_status_check.stdout | int > 0
+
     - name: start TiKV by supervise
       shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
       when: process_supervision == 'supervise'
@@ -366,6 +378,18 @@
   tags:
     - tidb
   tasks:
+    - name: Fail - when tidb_port already in use
+      shell: ss -lnp | grep -w {{ tidb_port }} | wc -l
+      register: tidb_port_check
+      failed_when:
+        - tidb_port_check.stdout | int > 0
+
+    - name: Fail - when tidb_status_port already in use
+      shell: ss -lnp | grep -w {{ tidb_status_port }} | wc -l
+      register: tidb_port_status_check
+      failed_when:
+        - tidb_port_status_check.stdout | int > 0
+
     - name: start TiDB by supervise
       shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
       when: process_supervision == 'supervise'
