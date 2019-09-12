@@ -251,7 +251,7 @@
   tags:
     - tikv
   tasks:
-    - name: Fail - when tikv_port already in use
+    - name: Check if tikv_port already in use
       wait_for:
         host: "{{ ansible_host }}"
         port: "{{ tikv_port }}"
@@ -259,7 +259,7 @@
         timeout: 3
         msg: "{{ tikv_port }} already in use"
 
-    - name: Fail - when tikv_status_port already in use
+    - name: Check if tikv_status_port already in use
       wait_for:
         host: "{{ ansible_host }}"
         port: "{{ tikv_status_port }}"
@@ -382,7 +382,7 @@
   tags:
     - tidb
   tasks:
-    - name: Fail - when tidb_port already in use
+    - name: Check if tidb_port already in use
       wait_for:
         host: "{{ ansible_host }}"
         port: "{{ tidb_port }}"
@@ -390,7 +390,7 @@
         timeout: 3
         msg: "{{ tidb_port }} already in use"
 
-    - name: Fail - when tidb_status_port already in use
+    - name: Check if tidb_status_port already in use
       wait_for:
         host: "{{ ansible_host }}"
         port: "{{ tidb_status_port }}"
