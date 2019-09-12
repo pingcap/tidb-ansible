@@ -1,39 +1,9 @@
 {
-  "__inputs": [
-    {
-      "name": "DS_TEST-CLUSTER",
-      "label": "test-cluster",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "prometheus",
-      "pluginName": "Prometheus"
-    }
-  ],
-  "__requires": [
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "6.1.6"
-    },
-    {
-      "type": "panel",
-      "id": "graph",
-      "name": "Graph",
-      "version": ""
-    },
-    {
-      "type": "datasource",
-      "id": "prometheus",
-      "name": "Prometheus",
-      "version": "1.0.0"
-    }
-  ],
   "annotations": {
     "list": [
       {
         "builtIn": 1,
-        "datasource": "${DS_TEST-CLUSTER}",
+        "datasource": "test-cluster",
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -45,8 +15,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
-  "id": null,
-  "iteration": 1568193010196,
+  "id": 5,
+  "iteration": 1568258597358,
   "links": [],
   "panels": [
     {
@@ -64,8 +34,9 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
+          "description": "总 CPU 使用率",
           "editable": true,
           "error": false,
           "fill": 0,
@@ -115,6 +86,7 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "CPU",
           "tooltip": {
@@ -148,15 +120,20 @@
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
+          "description": "客户端发来的常见请求的 QPS。如果同一类请求在多个机器上分布显著不平均，那么需要考虑热点的问题",
           "editable": true,
           "error": false,
           "fill": 0,
@@ -198,7 +175,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_grpc_msg_duration_seconds_count{instance=~\"$instance\", type!=\"kv_gc\"}[1m])) by (instance,type)",
+              "expr": "sum(rate(tikv_grpc_msg_duration_seconds_count{instance=~\"$instance\", type=~\"coprocessor|kv_get|kv_batch_get|kv_prewrite|kv_commit\"}[1m])) by (instance, type)",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
@@ -209,6 +186,7 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "QPS",
           "tooltip": {
@@ -242,15 +220,20 @@
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
+          "description": "点查会走 Storage ReadPool",
           "editable": true,
           "error": false,
           "fill": 0,
@@ -301,6 +284,7 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Storage ReadPool CPU",
           "tooltip": {
@@ -334,15 +318,20 @@
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
+          "description": "非点查的 SQL 走 Coprocessor Pool",
           "editable": true,
           "error": false,
           "fill": 0,
@@ -392,6 +381,7 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Coprocessor CPU",
           "tooltip": {
@@ -425,15 +415,20 @@
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
+          "description": "gRPC CPU 使用率，如果打满，需要调 TiKV 的 grpc-concurrency 参数",
           "fill": 1,
           "gridPos": {
             "h": 8,
@@ -478,6 +473,7 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "gRPC poll CPU",
           "tooltip": {
@@ -510,15 +506,20 @@
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
+          "description": "I/O util 反应磁盘的繁忙程度。接近 100% 意味着磁盘很忙，虽然未必达到了贷款瓶颈，但是延迟可能会受较大影响。",
           "editable": true,
           "error": false,
           "fill": 0,
@@ -568,6 +569,7 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "IO utilization",
           "tooltip": {
@@ -601,7 +603,11 @@
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         }
       ],
       "repeat": null,
@@ -623,8 +629,9 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
+          "description": "",
           "editable": true,
           "error": false,
           "fill": 0,
@@ -633,7 +640,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 18
+            "y": 2
           },
           "id": 2763,
           "legend": {
@@ -674,6 +681,7 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "CPU",
           "tooltip": {
@@ -707,14 +715,18 @@
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -724,7 +736,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 18
+            "y": 2
           },
           "id": 2764,
           "legend": {
@@ -768,6 +780,7 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "QPS",
           "tooltip": {
@@ -801,14 +814,18 @@
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -818,7 +835,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 26
+            "y": 10
           },
           "id": 2765,
           "legend": {
@@ -859,6 +876,7 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "IO utilization",
           "tooltip": {
@@ -892,21 +910,25 @@
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "fill": 1,
           "gridPos": {
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 26
+            "y": 10
           },
           "id": 2783,
           "legend": {
@@ -945,6 +967,7 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "gRPC poll CPU",
           "tooltip": {
@@ -977,15 +1000,20 @@
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
+          "description": "Raftstore 线程 CPU 使用率，这个线程池用来写 Raft log。",
           "editable": true,
           "error": false,
           "fill": 0,
@@ -994,7 +1022,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 34
+            "y": 18
           },
           "id": 61,
           "legend": {
@@ -1036,6 +1064,7 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Raft store CPU",
           "tooltip": {
@@ -1069,15 +1098,20 @@
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
+          "description": "Apply 线程 CPU，这个线程池用来将写入应用到 kv engine 中。",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -1086,7 +1120,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 34
+            "y": 18
           },
           "id": 79,
           "legend": {
@@ -1126,6 +1160,7 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Async apply CPU",
           "tooltip": {
@@ -1159,14 +1194,19 @@
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
+          "description": "Scheduler worker 线程池的 CPU 使用率。事务会在 Scheduler 中排队，这个线程池接近打满意味着 MVCC 的旧版本太多，事务处理过慢。",
           "editable": true,
           "error": false,
           "fill": 0,
@@ -1175,7 +1215,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 42
+            "y": 26
           },
           "id": 63,
           "legend": {
@@ -1203,7 +1243,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_thread_cpu_seconds_total{instance=~\"$instance\", name=~\"storage_schedul.*\"}[1m])) by (instance)",
+              "expr": "sum(rate(tikv_thread_cpu_seconds_total{instance=~\"$instance\", name=~\"sched_worker.*\"}[1m])) by (instance)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}}",
@@ -1214,6 +1254,7 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Scheduler CPU",
           "tooltip": {
@@ -1247,7 +1288,11 @@
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         }
       ],
       "repeat": null,
@@ -1269,7 +1314,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -1279,7 +1324,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 43
+            "y": 59
           },
           "id": 34,
           "legend": {
@@ -1334,6 +1379,7 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Leader",
           "tooltip": {
@@ -1367,14 +1413,19 @@
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
+          "description": "Append log 时间。过长意味着 Raftstore 线程太忙，有可能心跳处理不过来导致上面的 Leader 被切走。",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -1383,7 +1434,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 43
+            "y": 59
           },
           "id": 2786,
           "legend": {
@@ -1411,10 +1462,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rate(tikv_raftstore_append_log_duration_seconds_bucket{instance=~\"$instance\"}[1m])) by (le))",
+              "expr": "histogram_quantile(0.999999, sum(rate(tikv_raftstore_append_log_duration_seconds_bucket{instance=~\"$instance\"}[1m])) by (le))",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": " 99%",
+              "legendFormat": " 99.9999%",
               "metric": "",
               "refId": "A",
               "step": 4
@@ -1422,10 +1473,9 @@
             {
               "expr": "histogram_quantile(0.95, sum(rate(tikv_raftstore_append_log_duration_seconds_bucket{instance=~\"$instance\"}[1m])) by (le))",
               "format": "time_series",
-              "intervalFactor": 2,
+              "intervalFactor": 1,
               "legendFormat": "95%",
-              "refId": "B",
-              "step": 4
+              "refId": "B"
             },
             {
               "expr": "sum(rate(tikv_raftstore_append_log_duration_seconds_sum{instance=~\"$instance\"}[1m])) / sum(rate(tikv_raftstore_append_log_duration_seconds_count{instance=~\"$instance\"}[1m]))",
@@ -1438,6 +1488,7 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Append log duration",
           "tooltip": {
@@ -1471,14 +1522,19 @@
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
+          "description": "Propose 如果在 Raftstore 中等得太久，则说明 Raftstore 线程很忙，或者被卡住了。",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -1487,7 +1543,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 50
+            "y": 66
           },
           "id": 2787,
           "legend": {
@@ -1515,7 +1571,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99999, sum(rate(tikv_raftstore_append_log_duration_seconds_bucket{instance=~\"$instance\"}[1m])) by (le, instance))",
+              "expr": "histogram_quantile(0.999999, sum(rate(tikv_raftstore_request_wait_time_duration_secs_bucket{instance=~\"$instance\"}[1m])) by (le, instance))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{instance}} ",
@@ -1525,8 +1581,9 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
-          "title": "99.999% Append log duration per server",
+          "title": "Propose 99.9999% wait duration",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -1558,21 +1615,25 @@
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "fill": 0,
           "gridPos": {
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 50
+            "y": 66
           },
           "id": 2789,
           "legend": {
@@ -1635,6 +1696,7 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Raft RocksDB write duration",
           "tooltip": {
@@ -1667,7 +1729,115 @@
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "test-cluster",
+          "decimals": null,
+          "description": "Raftstore 线程需要处理一些周期性任务。如果处理时间过长，则相当于 Raftstore 线程被卡住了。",
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {},
+          "gridPos": {
+            "h": 7,
+            "w": 24,
+            "x": 0,
+            "y": 73
+          },
+          "id": 2829,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.999999, sum(rate(tikv_raftstore_event_duration_bucket{instance=~\"$instance\"}[1m])) by (le, instance, type))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "{{instance}}-{{type}}",
+              "refId": "A",
+              "step": 4
+            }
+          ],
+          "thresholds": [
+            {
+              "colorMode": "critical",
+              "fill": true,
+              "line": true,
+              "op": "gt",
+              "value": 100,
+              "yaxis": "left"
+            }
+          ],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Raft event 99.9999% handle duration",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "s",
+              "label": null,
+              "logBase": 2,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         }
       ],
       "repeat": null,
@@ -1689,8 +1859,9 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
+          "description": "TiKV 的 Raftstore 会在处理不过来消息时发生 channel full，此时后续的消息会被丢弃掉，可能会导致 TiDB 重试或者掉 Leader。",
           "editable": true,
           "error": false,
           "fill": 3,
@@ -1699,7 +1870,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 51
+            "y": 4
           },
           "id": 22,
           "legend": {
@@ -1741,6 +1912,7 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Channel full",
           "tooltip": {
@@ -1774,21 +1946,26 @@
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
+          "description": "RocksDB write stall 说明写入请求被 compaction 或者其他流量控制措施卡住了。",
           "fill": 1,
           "gridPos": {
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 51
+            "y": 4
           },
           "id": 87,
           "legend": {
@@ -1856,6 +2033,7 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Raft RocksDB write stall duration",
           "tooltip": {
@@ -1888,14 +2066,18 @@
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -1904,7 +2086,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 59
+            "y": 12
           },
           "id": 39,
           "legend": {
@@ -1959,6 +2141,7 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Append log duration",
           "tooltip": {
@@ -1992,14 +2175,18 @@
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -2008,7 +2195,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 59
+            "y": 12
           },
           "id": 40,
           "legend": {
@@ -2046,6 +2233,7 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Append log duration per server",
           "tooltip": {
@@ -2079,7 +2267,11 @@
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         }
       ],
       "repeat": null,
@@ -2101,7 +2293,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -2111,7 +2303,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 60
+            "y": 5
           },
           "id": 2777,
           "legend": {
@@ -2178,6 +2370,7 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Server is busy",
           "tooltip": {
@@ -2211,14 +2404,18 @@
               "min": null,
               "show": false
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -2228,7 +2425,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 60
+            "y": 5
           },
           "height": "",
           "id": 193,
@@ -2270,6 +2467,7 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Scheduler pending commands",
           "tooltip": {
@@ -2278,7 +2476,6 @@
             "sort": 0,
             "value_type": "cumulative"
           },
-          "transparent": false,
           "type": "graph",
           "xaxis": {
             "buckets": null,
@@ -2304,14 +2501,18 @@
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -2321,7 +2522,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 68
+            "y": 13
           },
           "id": 2779,
           "legend": {
@@ -2363,6 +2564,7 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Channel full",
           "tooltip": {
@@ -2396,21 +2598,25 @@
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "fill": 1,
           "gridPos": {
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 68
+            "y": 13
           },
           "id": 2785,
           "legend": {
@@ -2478,6 +2684,7 @@
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "RocksDB write stall duration",
           "tooltip": {
@@ -2510,7 +2717,11 @@
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         }
       ],
       "repeat": null,
@@ -2532,7 +2743,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "fill": 1,
           "gridPos": {
@@ -2627,7 +2838,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "fill": 1,
           "gridPos": {
@@ -2717,7 +2928,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -2813,7 +3024,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -2910,7 +3121,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 5,
           "editable": true,
           "error": false,
@@ -3028,7 +3239,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 5,
           "editable": true,
           "error": false,
@@ -3146,7 +3357,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -3267,7 +3478,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 5,
           "editable": true,
           "error": false,
@@ -3362,13 +3573,116 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
+          "decimals": 5,
+          "description": "读请求执行前，都需要拿一个 snapshot",
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {},
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 34
+          },
+          "id": 2828,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sort": null,
+            "sortDesc": null,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.999999, sum(rate(tikv_storage_engine_async_request_duration_seconds_bucket{instance=~\"$instance\", type=\"snapshot\"}[1m])) by (le))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "99.9999%",
+              "refId": "B",
+              "step": 4
+            },
+            {
+              "expr": "sum(rate(tikv_storage_engine_async_request_duration_seconds_sum{instance=~\"$instance\", type=\"snapshot\"}[1m])) / sum(rate(tikv_storage_engine_async_request_duration_seconds_count{instance=~\"$instance\", type=\"snapshot\"}[1m]))",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "average",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Get snapshot duration",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "s",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "test-cluster",
           "decimals": 1,
           "fill": 0,
           "gridPos": {
             "h": 7,
             "w": 12,
-            "x": 0,
+            "x": 12,
             "y": 34
           },
           "id": 82,
@@ -3476,14 +3790,14 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "fill": 0,
           "gridPos": {
             "h": 7,
             "w": 12,
-            "x": 12,
-            "y": 34
+            "x": 0,
+            "y": 41
           },
           "id": 125,
           "legend": {
@@ -3590,7 +3904,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 2,
           "description": "Disk seconds Read Latency.\n- Critical:\n  - Recommended performance value is < 10ms as avg value of the Avg Disk sec/Read,Write.\n  - Critical value of the Avg Disk sec/Read,Write is > 50ms, should not exceed this value.",
           "fill": 1,
@@ -3598,7 +3912,7 @@
             "h": 4,
             "w": 24,
             "x": 0,
-            "y": 41
+            "y": 48
           },
           "id": 2821,
           "legend": {
@@ -3679,7 +3993,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 2,
           "description": "",
           "fill": 1,
@@ -3687,7 +4001,7 @@
             "h": 4,
             "w": 24,
             "x": 0,
-            "y": 45
+            "y": 52
           },
           "id": 2822,
           "legend": {
@@ -3783,7 +4097,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "fill": 1,
           "gridPos": {
@@ -3878,7 +4192,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -3991,7 +4305,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -4106,7 +4420,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -4221,7 +4535,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -4330,7 +4644,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -4422,7 +4736,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -4531,7 +4845,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -4623,7 +4937,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -4732,7 +5046,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -4841,7 +5155,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "fill": 0,
           "gridPos": {
@@ -4955,7 +5269,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "fill": 0,
           "gridPos": {
@@ -5069,7 +5383,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "fill": 1,
           "gridPos": {
@@ -5160,7 +5474,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "fill": 0,
           "gridPos": {
@@ -5275,7 +5589,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "fill": 1,
           "gridPos": {
@@ -5394,7 +5708,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -5490,7 +5804,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "fill": 1,
           "gridPos": {
             "h": 4,
@@ -5577,7 +5891,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "description": "DISK seconds Read/ Write Latency.\n- Critical:\n  - Recommended performance value is < 10ms as avg value of the Avg Disk sec/Read,Write.\n  - Critical value of the Avg Disk sec/Read,Write is > 50ms, should not exceed this value.",
           "fill": 1,
           "gridPos": {
@@ -5665,7 +5979,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 2,
           "description": "",
           "fill": 1,
@@ -5769,7 +6083,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "fill": 1,
           "gridPos": {
@@ -5865,7 +6179,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "fill": 1,
           "gridPos": {
@@ -5961,7 +6275,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "fill": 1,
           "gridPos": {
@@ -6058,7 +6372,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "fill": 1,
           "gridPos": {
@@ -6181,6 +6495,13 @@
         }
       ],
       "repeat": "db",
+      "scopedVars": {
+        "db": {
+          "selected": false,
+          "text": "kv",
+          "value": "kv"
+        }
+      },
       "title": "Write Stall - $db",
       "type": "row"
     },
@@ -6192,6 +6513,457 @@
         "x": 0,
         "y": 8
       },
+      "id": 2823,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "test-cluster",
+          "decimals": 1,
+          "fill": 1,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 8
+          },
+          "id": 2824,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "repeatIteration": 1568258597358,
+          "repeatPanelId": 2810,
+          "repeatedByRow": true,
+          "scopedVars": {
+            "db": {
+              "selected": false,
+              "text": "raft",
+              "value": "raft"
+            }
+          },
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "avg(tikv_engine_num_files_at_level{instance=~\"$instance\", db=\"kv\", level=\"0\"}) by (instance, cf)",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "{{instance}} {{cf}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Level0 SST file number",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "test-cluster",
+          "decimals": 1,
+          "fill": 1,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
+            "y": 8
+          },
+          "id": 2825,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "repeatIteration": 1568258597358,
+          "repeatPanelId": 2811,
+          "repeatedByRow": true,
+          "scopedVars": {
+            "db": {
+              "selected": false,
+              "text": "raft",
+              "value": "raft"
+            }
+          },
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "avg(tikv_engine_num_immutable_mem_table{instance=~\"$instance\", db=\"$db\"}) by (instance, cf)",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "{{instance}} {{cf}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Immutable mem-table number",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "test-cluster",
+          "decimals": 1,
+          "fill": 1,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 15
+          },
+          "id": 2826,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "repeatIteration": 1568258597358,
+          "repeatPanelId": 2808,
+          "repeatedByRow": true,
+          "scopedVars": {
+            "db": {
+              "selected": false,
+              "text": "raft",
+              "value": "raft"
+            }
+          },
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "avg(tikv_engine_pending_compaction_bytes{instance=~\"$instance\", db=\"$db\"}) by (instance, cf)",
+              "format": "time_series",
+              "instant": false,
+              "intervalFactor": 1,
+              "legendFormat": "{{instance}} {{cf}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Pending compaction bytes",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "bytes",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "bytes",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "test-cluster",
+          "decimals": 1,
+          "fill": 1,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
+            "y": 15
+          },
+          "id": 2827,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "repeatIteration": 1568258597358,
+          "repeatPanelId": 2812,
+          "repeatedByRow": true,
+          "scopedVars": {
+            "db": {
+              "selected": false,
+              "text": "raft",
+              "value": "raft"
+            }
+          },
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "avg(tikv_engine_write_stall{instance=~\"$instance\", type=\"write_stall_max\", db=\"$db\"}) by (instance)",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "{{instance}} max",
+              "metric": "",
+              "refId": "A",
+              "step": 10
+            },
+            {
+              "expr": "avg(tikv_engine_write_stall{instance=~\"$instance\", type=\"write_stall_percentile99\", db=\"$db\"}) by (instance)",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "{{instance}} 99%",
+              "metric": "",
+              "refId": "B",
+              "step": 10
+            },
+            {
+              "expr": "avg(tikv_engine_write_stall{instance=~\"$instance\", type=\"write_stall_percentile95\", db=\"$db\"}) by (instance)",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "{{instance}} 95%",
+              "metric": "",
+              "refId": "C",
+              "step": 10
+            },
+            {
+              "expr": "avg(tikv_engine_write_stall{instance=~\"$instance\", type=\"write_stall_average\", db=\"$db\"}) by (instance)",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "{{instance}} avg",
+              "metric": "",
+              "refId": "D",
+              "step": 10
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "RocksDB write stall duration",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "µs",
+              "label": null,
+              "logBase": 10,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "repeat": null,
+      "repeatIteration": 1568258597358,
+      "repeatPanelId": 2806,
+      "scopedVars": {
+        "db": {
+          "selected": false,
+          "text": "raft",
+          "value": "raft"
+        }
+      },
+      "title": "Write Stall - $db",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 9
+      },
       "id": 2803,
       "panels": [
         {
@@ -6199,14 +6971,14 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "fill": 1,
           "gridPos": {
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 8
+            "y": 10
           },
           "id": 102,
           "legend": {
@@ -6289,7 +7061,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -6299,7 +7071,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 8
+            "y": 10
           },
           "id": 2770,
           "legend": {
@@ -6391,7 +7163,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 9
+        "y": 10
       },
       "id": 2804,
       "panels": [
@@ -6400,7 +7172,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -6410,7 +7182,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 17
+            "y": 11
           },
           "id": 1481,
           "legend": {
@@ -6521,7 +7293,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
+          "datasource": "test-cluster",
           "editable": true,
           "error": false,
           "fill": 0,
@@ -6530,7 +7302,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 17
+            "y": 11
           },
           "id": 2792,
           "legend": {
@@ -6623,8 +7395,11 @@
     "list": [
       {
         "allValue": null,
-        "current": {},
-        "datasource": "${DS_TEST-CLUSTER}",
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": "test-cluster",
         "definition": "",
         "hide": 0,
         "includeAll": true,
@@ -6645,8 +7420,11 @@
       },
       {
         "allValue": null,
-        "current": {},
-        "datasource": "${DS_TEST-CLUSTER}",
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": "test-cluster",
         "definition": "",
         "hide": 0,
         "includeAll": true,
@@ -6667,8 +7445,11 @@
       },
       {
         "allValue": ".*",
-        "current": {},
-        "datasource": "${DS_TEST-CLUSTER}",
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": "test-cluster",
         "definition": "",
         "hide": 0,
         "includeAll": true,
@@ -6690,7 +7471,7 @@
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {
@@ -6721,5 +7502,5 @@
   "timezone": "browser",
   "title": "Test-Cluster-TiKV-Trouble-Shooting",
   "uid": "Lg4wiEkZz",
-  "version": 2
+  "version": 4
 }
