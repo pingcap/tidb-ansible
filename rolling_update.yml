@@ -317,6 +317,22 @@
     - tikv
 
   post_tasks:
+    - name: Fail - when tikv_port already in use
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ tikv_port }}"
+        state: stopped
+        timeout: 3
+        msg: "{{ tikv_port }} already in use"
+
+    - name: Fail - when tikv_status_port already in use
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ tikv_status_port }}"
+        state: stopped
+        timeout: 3
+        msg: "{{ tikv_status_port }} already in use"
+
     - name: start TiKV by supervise
       shell: cd {{ deploy_dir }}/scripts && ./start_tikv.sh
       when: process_supervision == 'supervise'
@@ -457,6 +473,21 @@
     - { role: tidb }
 
   post_tasks:
+    - name: Fail - when tidb_port already in use
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ tidb_port }}"
+        state: stopped
+        timeout: 3
+        msg: "{{ tidb_port }} already in use"
+
+    - name: Fail - when tidb_status_port already in use
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ tidb_status_port }}"
+        state: stopped
+        timeout: 3
+        msg: "{{ tidb_status_port }} already in use"
 
     - name: start TiDB by supervise
       shell: cd {{ deploy_dir }}/scripts && ./start_tidb.sh
