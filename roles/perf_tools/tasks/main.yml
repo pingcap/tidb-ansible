@@ -1,0 +1,12 @@
+---
+# tasks file for perf-tools
+
+- name: Deploy iosnoop and funcslower
+  copy:
+    src: "{{ playbook_dir }}/scripts/{{ item }}"
+    dest: "{{ deploy_dir }}/scripts/"
+    mode: 0755
+    backup: yes
+  with_items:
+    - iosnoop
+    - funcslower
