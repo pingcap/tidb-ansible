@@ -1,9 +1,39 @@
 {
+  "__inputs": [
+    {
+      "name": "DS_TEST-CLUSTER",
+      "label": "test-cluster",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+  ],
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "6.1.6"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    }
+  ],
   "annotations": {
     "list": [
       {
         "builtIn": 1,
-        "datasource": "test-cluster",
+        "datasource": "${DS_TEST-CLUSTER}",
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -15,8 +45,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
-  "id": 5,
-  "iteration": 1568258597358,
+  "id": null,
+  "iteration": 1568258597359,
   "links": [],
   "panels": [
     {
@@ -34,7 +64,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "description": "总 CPU 使用率",
           "editable": true,
@@ -131,7 +161,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "description": "客户端发来的常见请求的 QPS。如果同一类请求在多个机器上分布显著不平均，那么需要考虑热点的问题",
           "editable": true,
@@ -231,7 +261,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "description": "点查会走 Storage ReadPool",
           "editable": true,
@@ -329,7 +359,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "description": "非点查的 SQL 走 Coprocessor Pool",
           "editable": true,
@@ -426,7 +456,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "description": "gRPC CPU 使用率，如果打满，需要调 TiKV 的 grpc-concurrency 参数",
           "fill": 1,
@@ -517,7 +547,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "description": "I/O util 反应磁盘的繁忙程度。接近 100% 意味着磁盘很忙，虽然未必达到了贷款瓶颈，但是延迟可能会受较大影响。",
           "editable": true,
@@ -629,7 +659,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "description": "",
           "editable": true,
@@ -726,7 +756,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -825,7 +855,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -921,7 +951,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "fill": 1,
           "gridPos": {
@@ -1011,7 +1041,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "description": "Raftstore 线程 CPU 使用率，这个线程池用来写 Raft log。",
           "editable": true,
@@ -1109,7 +1139,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "description": "Apply 线程 CPU，这个线程池用来将写入应用到 kv engine 中。",
           "editable": true,
@@ -1205,7 +1235,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "description": "Scheduler worker 线程池的 CPU 使用率。事务会在 Scheduler 中排队，这个线程池接近打满意味着 MVCC 的旧版本太多，事务处理过慢。",
           "editable": true,
           "error": false,
@@ -1314,7 +1344,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -1324,7 +1354,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 59
+            "y": 3
           },
           "id": 34,
           "legend": {
@@ -1424,7 +1454,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "description": "Append log 时间。过长意味着 Raftstore 线程太忙，有可能心跳处理不过来导致上面的 Leader 被切走。",
           "editable": true,
           "error": false,
@@ -1434,7 +1464,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 59
+            "y": 3
           },
           "id": 2786,
           "legend": {
@@ -1533,7 +1563,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "description": "Propose 如果在 Raftstore 中等得太久，则说明 Raftstore 线程很忙，或者被卡住了。",
           "editable": true,
           "error": false,
@@ -1543,7 +1573,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 66
+            "y": 10
           },
           "id": 2787,
           "legend": {
@@ -1626,14 +1656,14 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "fill": 0,
           "gridPos": {
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 66
+            "y": 10
           },
           "id": 2789,
           "legend": {
@@ -1740,7 +1770,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": null,
           "description": "Raftstore 线程需要处理一些周期性任务。如果处理时间过长，则相当于 Raftstore 线程被卡住了。",
           "editable": true,
@@ -1751,7 +1781,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 73
+            "y": 17
           },
           "id": 2829,
           "legend": {
@@ -1859,7 +1889,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "description": "TiKV 的 Raftstore 会在处理不过来消息时发生 channel full，此时后续的消息会被丢弃掉，可能会导致 TiDB 重试或者掉 Leader。",
           "editable": true,
@@ -1957,7 +1987,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "description": "RocksDB write stall 说明写入请求被 compaction 或者其他流量控制措施卡住了。",
           "fill": 1,
@@ -2077,7 +2107,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -2186,7 +2216,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -2293,7 +2323,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -2415,7 +2445,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -2512,7 +2542,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -2609,7 +2639,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "fill": 1,
           "gridPos": {
@@ -2743,7 +2773,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "fill": 1,
           "gridPos": {
@@ -2838,7 +2868,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "fill": 1,
           "gridPos": {
@@ -2928,7 +2958,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -3024,7 +3054,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -3121,7 +3151,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 5,
           "editable": true,
           "error": false,
@@ -3239,7 +3269,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 5,
           "editable": true,
           "error": false,
@@ -3357,7 +3387,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -3478,7 +3508,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 5,
           "editable": true,
           "error": false,
@@ -3573,7 +3603,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 5,
           "description": "读请求执行前，都需要拿一个 snapshot",
           "editable": true,
@@ -3676,7 +3706,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "fill": 0,
           "gridPos": {
@@ -3790,7 +3820,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "fill": 0,
           "gridPos": {
@@ -3904,7 +3934,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 2,
           "description": "Disk seconds Read Latency.\n- Critical:\n  - Recommended performance value is < 10ms as avg value of the Avg Disk sec/Read,Write.\n  - Critical value of the Avg Disk sec/Read,Write is > 50ms, should not exceed this value.",
           "fill": 1,
@@ -3993,7 +4023,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 2,
           "description": "",
           "fill": 1,
@@ -4097,7 +4127,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "fill": 1,
           "gridPos": {
@@ -4192,7 +4222,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -4305,7 +4335,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -4420,7 +4450,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -4535,7 +4565,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -4644,7 +4674,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -4736,7 +4766,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -4845,7 +4875,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -4937,7 +4967,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -5046,7 +5076,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -5155,7 +5185,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "fill": 0,
           "gridPos": {
@@ -5269,7 +5299,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "fill": 0,
           "gridPos": {
@@ -5383,7 +5413,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "fill": 1,
           "gridPos": {
@@ -5474,7 +5504,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "fill": 0,
           "gridPos": {
@@ -5589,7 +5619,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "fill": 1,
           "gridPos": {
@@ -5708,7 +5738,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -5804,7 +5834,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "fill": 1,
           "gridPos": {
             "h": 4,
@@ -5891,7 +5921,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "description": "DISK seconds Read/ Write Latency.\n- Critical:\n  - Recommended performance value is < 10ms as avg value of the Avg Disk sec/Read,Write.\n  - Critical value of the Avg Disk sec/Read,Write is > 50ms, should not exceed this value.",
           "fill": 1,
           "gridPos": {
@@ -5979,7 +6009,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 2,
           "description": "",
           "fill": 1,
@@ -6083,7 +6113,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "fill": 1,
           "gridPos": {
@@ -6179,7 +6209,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "fill": 1,
           "gridPos": {
@@ -6275,7 +6305,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "fill": 1,
           "gridPos": {
@@ -6372,7 +6402,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "fill": 1,
           "gridPos": {
@@ -6495,13 +6525,6 @@
         }
       ],
       "repeat": "db",
-      "scopedVars": {
-        "db": {
-          "selected": false,
-          "text": "kv",
-          "value": "kv"
-        }
-      },
       "title": "Write Stall - $db",
       "type": "row"
     },
@@ -6513,457 +6536,6 @@
         "x": 0,
         "y": 8
       },
-      "id": 2823,
-      "panels": [
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "test-cluster",
-          "decimals": 1,
-          "fill": 1,
-          "gridPos": {
-            "h": 7,
-            "w": 12,
-            "x": 0,
-            "y": 8
-          },
-          "id": 2824,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": true,
-            "max": true,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "sideWidth": 300,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "repeatIteration": 1568258597358,
-          "repeatPanelId": 2810,
-          "repeatedByRow": true,
-          "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "raft",
-              "value": "raft"
-            }
-          },
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "avg(tikv_engine_num_files_at_level{instance=~\"$instance\", db=\"kv\", level=\"0\"}) by (instance, cf)",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "legendFormat": "{{instance}} {{cf}}",
-              "refId": "A"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Level0 SST file number",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": "0",
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": "0",
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "test-cluster",
-          "decimals": 1,
-          "fill": 1,
-          "gridPos": {
-            "h": 7,
-            "w": 12,
-            "x": 12,
-            "y": 8
-          },
-          "id": 2825,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": true,
-            "max": true,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "sideWidth": 300,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "repeatIteration": 1568258597358,
-          "repeatPanelId": 2811,
-          "repeatedByRow": true,
-          "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "raft",
-              "value": "raft"
-            }
-          },
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "avg(tikv_engine_num_immutable_mem_table{instance=~\"$instance\", db=\"$db\"}) by (instance, cf)",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "legendFormat": "{{instance}} {{cf}}",
-              "refId": "A"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Immutable mem-table number",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": "0",
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": "0",
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "test-cluster",
-          "decimals": 1,
-          "fill": 1,
-          "gridPos": {
-            "h": 7,
-            "w": 12,
-            "x": 0,
-            "y": 15
-          },
-          "id": 2826,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "sideWidth": 300,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "repeatIteration": 1568258597358,
-          "repeatPanelId": 2808,
-          "repeatedByRow": true,
-          "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "raft",
-              "value": "raft"
-            }
-          },
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "avg(tikv_engine_pending_compaction_bytes{instance=~\"$instance\", db=\"$db\"}) by (instance, cf)",
-              "format": "time_series",
-              "instant": false,
-              "intervalFactor": 1,
-              "legendFormat": "{{instance}} {{cf}}",
-              "refId": "A"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Pending compaction bytes",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "bytes",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": "0",
-              "show": true
-            },
-            {
-              "format": "bytes",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": "0",
-              "show": false
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "test-cluster",
-          "decimals": 1,
-          "fill": 1,
-          "gridPos": {
-            "h": 7,
-            "w": 12,
-            "x": 12,
-            "y": 15
-          },
-          "id": 2827,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": true,
-            "max": true,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "sideWidth": 300,
-            "sortDesc": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "repeatIteration": 1568258597358,
-          "repeatPanelId": 2812,
-          "repeatedByRow": true,
-          "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "raft",
-              "value": "raft"
-            }
-          },
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "avg(tikv_engine_write_stall{instance=~\"$instance\", type=\"write_stall_max\", db=\"$db\"}) by (instance)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "{{instance}} max",
-              "metric": "",
-              "refId": "A",
-              "step": 10
-            },
-            {
-              "expr": "avg(tikv_engine_write_stall{instance=~\"$instance\", type=\"write_stall_percentile99\", db=\"$db\"}) by (instance)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "{{instance}} 99%",
-              "metric": "",
-              "refId": "B",
-              "step": 10
-            },
-            {
-              "expr": "avg(tikv_engine_write_stall{instance=~\"$instance\", type=\"write_stall_percentile95\", db=\"$db\"}) by (instance)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "{{instance}} 95%",
-              "metric": "",
-              "refId": "C",
-              "step": 10
-            },
-            {
-              "expr": "avg(tikv_engine_write_stall{instance=~\"$instance\", type=\"write_stall_average\", db=\"$db\"}) by (instance)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "{{instance}} avg",
-              "metric": "",
-              "refId": "D",
-              "step": 10
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "RocksDB write stall duration",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "µs",
-              "label": null,
-              "logBase": 10,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        }
-      ],
-      "repeat": null,
-      "repeatIteration": 1568258597358,
-      "repeatPanelId": 2806,
-      "scopedVars": {
-        "db": {
-          "selected": false,
-          "text": "raft",
-          "value": "raft"
-        }
-      },
-      "title": "Write Stall - $db",
-      "type": "row"
-    },
-    {
-      "collapsed": true,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 9
-      },
       "id": 2803,
       "panels": [
         {
@@ -6971,7 +6543,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "fill": 1,
           "gridPos": {
@@ -7061,7 +6633,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -7163,7 +6735,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 10
+        "y": 9
       },
       "id": 2804,
       "panels": [
@@ -7172,7 +6744,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -7293,7 +6865,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "test-cluster",
+          "datasource": "${DS_TEST-CLUSTER}",
           "editable": true,
           "error": false,
           "fill": 0,
@@ -7395,11 +6967,8 @@
     "list": [
       {
         "allValue": null,
-        "current": {
-          "text": "All",
-          "value": "$__all"
-        },
-        "datasource": "test-cluster",
+        "current": {},
+        "datasource": "${DS_TEST-CLUSTER}",
         "definition": "",
         "hide": 0,
         "includeAll": true,
@@ -7420,11 +6989,8 @@
       },
       {
         "allValue": null,
-        "current": {
-          "text": "All",
-          "value": "$__all"
-        },
-        "datasource": "test-cluster",
+        "current": {},
+        "datasource": "${DS_TEST-CLUSTER}",
         "definition": "",
         "hide": 0,
         "includeAll": true,
@@ -7445,11 +7011,8 @@
       },
       {
         "allValue": ".*",
-        "current": {
-          "text": "All",
-          "value": "$__all"
-        },
-        "datasource": "test-cluster",
+        "current": {},
+        "datasource": "${DS_TEST-CLUSTER}",
         "definition": "",
         "hide": 0,
         "includeAll": true,
