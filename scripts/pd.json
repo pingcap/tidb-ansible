@@ -5063,10 +5063,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(delta(pd_schedule_filter{store=~\"$store\", action=\"filter-target\"}[1m])) by (store,type)",
+              "expr": "sum(delta(pd_schedule_filter{store=~\"$store\", action=\"filter-target\"}[1m])) by (store, type, acton)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "store-{{store}}-{{type}}",
+              "legendFormat": "{{acton}}-store-{{store}}-{{type}}",
               "metric": "pd_scheduler_event_count",
               "refId": "A",
               "step": 4
@@ -5151,10 +5151,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(delta(pd_schedule_filter{store=~\"$store\", action=\"filter-source\"}[1m])) by (store,type)",
+              "expr": "sum(delta(pd_schedule_filter{store=~\"$store\", action=\"filter-source\"}[1m])) by (store, type, acton)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "store-{{store}}-{{type}}",
+              "legendFormat": "{{acton}}-store-{{store}}-{{type}}",
               "metric": "pd_scheduler_event_count",
               "refId": "A",
               "step": 4
