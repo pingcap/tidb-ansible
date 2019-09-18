@@ -70,9 +70,16 @@ def fill_dashboard_with_dest_config(dashboard, dest, type_='node'):
     dashboard['title'] = dest['titles'][type_]
     dashboard['id'] = None
     # pprint(dashboard)
-    for row in dashboard['rows']:
-        for panel in row['panels']:
-            panel['datasource'] = dest['datasource']
+    if 'rows' in dashboard:
+        panels = dashboard['rows']
+    else:
+        panels = dashboard['panels']
+    for row in panels:
+        if 'panels' in row:
+            for panel in row['panels']:
+                panel['datasource'] = dest['datasource']
+        else:
+            row['datasource'] = dest['datasource']
 
     if 'templating' in dashboard:
         for templating in dashboard['templating']['list']:
@@ -94,7 +101,6 @@ def fill_dashboard_with_dest_config(dashboard, dest, type_='node'):
                 link['targetBlank'] = True
                 link['tooltip'] = "Open a pdf report for the current dashboard"
                 link['type'] = "link"
-                link['url'] = "{0}api/report/{1}?apitoken={2}".format(dest['report_url'], dest['titles'][type_].lower(), dest['apikey'])
 
     return dashboard
 
