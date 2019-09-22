@@ -39,7 +39,9 @@ src = dict(
                 "disk_performance": 'disk_performance.json',
                 "blackbox_exporter": 'blackbox_exporter.json',
                 "kafka_overview": 'kafka.json',
-                "lightning": 'lightning.json'})
+                "lightning": 'lightning.json',
+                "performance_read": 'performance_read.json',
+                "performance_write": 'performance_write.json'})
 
 ############################################################
 ################## CONFIGURATION ENDS ######################
