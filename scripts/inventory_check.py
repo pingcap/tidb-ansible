@@ -1,61 +1,49 @@
 # coding: utf-8
 
 
-import re
 import sys
+from ansible.vars.manager import VariableManager
+from ansible.parsing.dataloader import DataLoader
+from ansible.inventory.manager import InventoryManager
 
 
 def parse_inventory(inventory):
+    loader = DataLoader()
+    inv = InventoryManager(loader=loader, sources=[inventory])
+    vars = VariableManager(loader=loader, inventory=inv)
+    all_groups = inv.get_groups_dict()
+    tidb_nodes = all_groups['tidb_servers']
+    tikv_nodes = all_groups['tikv_servers']
     tidb_servers = {}
     tikv_servers = {}
+    for tidb in tidb_nodes:
+        var = vars.get_vars(host=inv.get_host(hostname=str(tidb)))
+        ip = var['ansible_host'] if 'ansible_host' in var else var['inventory_hostname']
+        tidb_port = var['tidb_port'] \
+            if 'tidb_port' in var else 4000
+        tidb_status_port = var['tidb_status_port'] \
+            if 'tidb_status_port' in var else 10080
+        deploy_dir = var['deploy_dir']
 
-    with open(inventory, 'r') as f:
-        inventory = f.readlines()
+        if ip in tidb_servers:
+            tidb_servers[ip].append([tidb_port, tidb_status_port, deploy_dir])
+        else:
+            tidb_servers[ip] = [[tidb_port, tidb_status_port, deploy_dir]]
 
-    group = ''
-    for line in inventory:
-        line = line.strip()
-        if re.match(r'\[\w+_\w+\]', line):
-            if 'tidb_servers' in line:
-                group = 'tidb_servers'
-            elif 'tikv_servers' in line:
-                group = 'tikv_servers'
-            else:
-                group = ''
-        elif group == 'tidb_servers':
-            if not len(line) or line.startswith('#'):
-                continue
-            ip = re.search(r'(?:(?:25[0-5]|2[0-4][0-9]|[01]?'
-                           r'[0-9][0-9]?)\.){3}(?:25[0-5]|'
-                           r'2[0-4][0-9]|[01]?[0-9][0-9]?)',
-                           line).group()
-            dbport = re.search(r'tidb_port=(\d+)', line)
-            tidb_port = 4000 if not dbport else dbport.group(1)
-            dbstsport = re.search(r'tidb_staus_port=(\d+)', line)
-            tidb_status_port = 10080 if not dbstsport else dbstsport.group(1)
-            deploydir = re.search(r'deploy_dir=([^ ]*)', line)
-            deploy_dir = '/home/tidb/deploy' if not deploydir else deploydir.group(1)
-            if tidb_servers.has_key(ip):
-                tidb_servers[ip].append([tidb_port, tidb_status_port, deploy_dir])
-            else:
-                tidb_servers[ip] = [[tidb_port, tidb_status_port, deploy_dir]]
-        elif group == 'tikv_servers':
-            if not len(line) or line.startswith('#'):
-                continue
-            ip = re.search(r'(?:(?:25[0-5]|2[0-4][0-9]|[01]?'
-                           r'[0-9][0-9]?)\.){3}(?:25[0-5]|'
-                           r'2[0-4][0-9]|[01]?[0-9][0-9]?)',
-                           line).group()
-            kvport = re.search(r'tikv_port=(\d+)', line)
-            tikv_port = 20160 if not kvport else kvport.group(1)
-            kvstsport = re.search(r'tikv_staus_port=(\d+)', line)
-            tikv_status_port = 20180 if not kvstsport else kvstsport.group(1)
-            deploydir = re.search(r'deploy_dir=([^ ]*)', line)
-            deploy_dir = '/home/tidb/deploy' if not deploydir else deploydir.group(1)
-            if tikv_servers.has_key(ip):
-                tikv_servers[ip].append([tikv_port, tikv_status_port, deploy_dir])
-            else:
-                tikv_servers[ip] = [[tikv_port, tikv_status_port, deploy_dir]]
+    for tikv in tikv_nodes:
+        var = vars.get_vars(host=inv.get_host(hostname=str(tikv)))
+        ip = var['ansible_host'] if 'ansible_host' in var else var['inventory_hostname']
+        tikv_port = var['tikv_port'] \
+            if 'tikv_port' in var else 4000
+        tikv_status_port = var['tikv_status_port'] \
+            if 'tikv_status_port' in var else 10080
+        deploy_dir = var['deploy_dir']
+
+        if ip in tikv_servers:
+            tikv_servers[ip].append([tikv_port, tikv_status_port, deploy_dir])
+        else:
+            tikv_servers[ip] = [[tikv_port, tikv_status_port, deploy_dir]]
+
     return [tidb_servers, tikv_servers]
 
 
@@ -105,3 +93,4 @@ if __name__ == '__main__':
                   .format(','.join(tikv_conf_conflict)))
         else:
             print('Check ok.')
+
