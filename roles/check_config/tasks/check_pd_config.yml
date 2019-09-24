@@ -1,0 +1,42 @@
+---
+
+- name: Load PD vars
+  include_vars: file={{ playbook_dir }}/roles/pd/defaults/main.yml name=pd_vars_check
+
+- name: "Load customized config: tidb-ansible/conf/pd.yml"
+  include_vars: file={{ playbook_dir }}/conf/pd.yml name=pd_conf_custom_check
+
+- name: Load default config
+  include_vars: file={{ playbook_dir }}/roles/pd/vars/default.yml name=pd_conf_default_check
+
+- name: Generate dynamic config
+  set_fact:
+    pd_conf_generated_check:
+      replication:
+        location-labels: "{{ pd_vars_check.location_labels }}"
+      security:
+        cacert-path: >-
+          {%- if enable_tls|default(false) -%}{{ pd_cert_dir }}/ca.pem{%- else -%}{%- endif -%}
+        cert-path: >-
+          {%- if enable_tls|default(false) -%}{{ pd_cert_dir }}/pd-server-{{ pd_host }}.pem{%- else -%}{%- endif -%}
+        key-path: >-
+          {%- if enable_tls|default(false) -%}{{ pd_cert_dir }}/pd-server-{{ pd_host }}-key.pem{%- else -%}{%- endif -%}
+
+- name: Generate final config
+  set_fact:
+    pd_conf: "{{ pd_conf_custom_check | with_default_dicts(pd_conf_generated_check, pd_conf_default_check) }}"
+
+- name: Create configuration file
+  template: src={{ playbook_dir }}/roles/pd/templates/pd.toml.j2 dest={{ tidb_check_dir }}/pd.toml mode=0644 backup=yes
+
+- name: Deploy PD binary
+  copy: src="{{ resources_dir }}/bin/pd-server" dest="{{ tidb_check_dir }}/" mode=0755 backup=yes
+
+- name: Check PD config
+  shell: cd {{ tidb_check_dir }} && ./pd-server -config ./pd.toml -config-check
+  register: pd_check_result
+
+- name: Check result
+  fail:
+    msg: "PD config error"
+  when: "'successful' not in pd_check_result.stdout"
