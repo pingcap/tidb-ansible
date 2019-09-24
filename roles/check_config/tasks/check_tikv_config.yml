@@ -1,23 +1,26 @@
 ---
 
+- set_fact:
+    tikv_log_dir: "{{ deploy_dir }}/log"
+
 - name: Load TiKV vars
-  include_vars: file={{ playbook_dir }}/roles/tikv/defaults/main.yml
+  include_vars: file={{ playbook_dir }}/roles/tikv/defaults/main.yml name=tikv_vars_check
 
 - name: "Load customized config: tidb-ansible/conf/tikv.yml"
-  include_vars: file={{ playbook_dir }}/conf/tikv.yml name=tikv_conf_custom
+  include_vars: file={{ playbook_dir }}/conf/tikv.yml name=tikv_conf_custom_check
 
 - name: Load default config
-  include_vars: file={{ playbook_dir }}/roles/tikv/vars/default.yml name=tikv_conf_default
+  include_vars: file={{ playbook_dir }}/roles/tikv/vars/default.yml name=tikv_conf_default_check
 
 - name: generate dynamic config
   set_fact:
-    tikv_conf_generated:
+    tikv_conf_generated_check:
       server:
-        labels: "{{ labels }}"
+        labels: "{{ tikv_vars_check.labels }}"
       rocksdb:
-        wal-dir: "{{ wal_dir }}"
+        wal-dir: "{{ tikv_vars_check.wal_dir }}"
       raftstore:
-        raftdb-path: "{{ raftdb_path }}"
+        raftdb-path: "{{ tikv_vars_check.raftdb_path }}"
       security:
         ca-path: >-
           {%- if enable_tls|default(false) -%}{{ tikv_cert_dir }}/ca.pem{%- else -%}{%- endif -%}
@@ -28,7 +31,7 @@
 
 - name: Generate final config
   set_fact:
-    tikv_conf: "{{ tikv_conf_custom | with_default_dicts(tikv_conf_generated, tikv_conf_default) }}"
+    tikv_conf: "{{ tikv_conf_custom_check | with_default_dicts(tikv_conf_generated_check, tikv_conf_default_check) }}"
 
 - name: Create configuration file
   template: src={{ playbook_dir }}/roles/tikv/templates/tikv.toml.j2 dest={{ tidb_check_dir }}/tikv.toml mode=0644 backup=yes
