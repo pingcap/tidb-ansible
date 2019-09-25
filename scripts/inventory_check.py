@@ -53,10 +53,10 @@ def check_conflict(server_list):
     for ip, nodes in server_list.iteritems():
         length = len(nodes)
         if length > 1:
-            for i in range(length - 1):
-                for j in range(i + 1, length):
-                    for k in nodes[i]:
-                        if k in nodes[j]:
+            for index_i in range(length - 1):
+                for index_j in range(index_i + 1, length):
+                    for node_var in nodes[index_i]:
+                        if node_var in nodes[index_j]:
                             isContinue = True
                             conflict_ip.append(ip)
                             break
@@ -74,23 +74,18 @@ if __name__ == '__main__':
     tidb_conf_conflict = check_conflict(tidb_servers)
     tikv_conf_conflict = check_conflict(tikv_servers)
     if tidb_conf_conflict:
-        if tikv_conf_conflict:
-            print('''
-    TiDB port or deployment directory conflicts on {} machine.
-    TiKV port or deployment directory conflicts on {} machine.
-    Please recheck the port, status_port, deploy_dir or other configuration in inventory.ini.'''
-                  .format(','.join(tidb_conf_conflict), ','.join(tikv_conf_conflict)))
-        else:
-            print('''
-    TiDB port or deployment directory conflicts on {} machine.
-    Please recheck the port, status_port, deploy_dir or other configuration in inventory.ini.'''
-                  .format(','.join(tidb_conf_conflict)))
+        print('\n    TiDB port or deployment directory conflicts on {} machine.'
+              .format(','.join(tidb_conf_conflict)))
+
+    if tikv_conf_conflict and not tidb_conf_conflict:
+        print('\n    TiKV port or deployment directory conflicts on {} machine.'
+              .format(','.join(tikv_conf_conflict)))
+    elif tikv_conf_conflict and tidb_conf_conflict:
+        print('    TiKV port or deployment directory conflicts on {} machine.'
+              .format(','.join(tikv_conf_conflict)))
+
+    if tidb_conf_conflict or tikv_conf_conflict:
+        print('    Please recheck the port, status_port, deploy_dir or other configuration in inventory.ini.')
     else:
-        if tikv_conf_conflict:
-            print('''
-    TiKV port or deployment directory conflicts on {} machine.
-    Please recheck the port, status_port, deploy_dir or other configuration in inventory.ini.'''
-                  .format(','.join(tikv_conf_conflict)))
-        else:
-            print('Check ok.')
+        print('Check ok.')
 
