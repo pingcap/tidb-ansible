@@ -48,8 +48,8 @@ def parse_args():
 def draw(table_regions):
     import matplotlib.pyplot as plt
     ax = plt.gca()
-    ax.set_xlabel('region order')
-    ax.set_ylabel('approximate_size')
+    ax.set_xlabel('Region Order')
+    ax.set_ylabel('Spproximate Size')
     x_list, y_list = [], []
     for i, (_, region_size) in enumerate(table_regions):
         x_list.append(i)
