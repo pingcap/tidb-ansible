@@ -27,7 +27,7 @@ def main():
         for i in range(0, args.group+1):
             steps.append(int(i * max_region_size / args.group))
     else:
-        steps = [0, 2, 20, 96, max_region_size]
+        steps = [0, 2, 20, 96, max_region_size] # 0, empty region, max-merge-region-size, standard region and max region size
     output_simple(table_regions, steps)
 
 
