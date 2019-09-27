@@ -5,34 +5,69 @@ import argparse
 import subprocess
 import json
 import os
+from enum import Enum
+
+
+class Resource(Enum):
+    KEY = 1
+    SIZE = 2
+
+
+def count(table_region_set, all_regions, resource, group):
+    table_regions = filter(lambda region: region["id"] in table_region_set, all_regions["regions"])
+    table_regions = map(lambda region: (region["id"], int(region[get_resource_key(resource)])), table_regions)
+    table_regions = sorted(table_regions, key=lambda region: region[0])
+    try:
+        draw(table_regions, resource)
+    except:
+        pass
+
+    table_regions = sorted(table_regions, key=lambda region: region[1])
+
+    output(table_regions, generate_steps(resource, group=group, max_value=table_regions[-1][1] + 1), resource)
 
 
 def main():
     args = parse_args()
     region_info = get_json("http://{}:{}/tables/{}/{}/regions".format(args.host, args.port, args.database, args.table))
-    region_set = set(map(lambda region: region["region_id"], region_info["record_regions"]))
+    table_region_set = set(map(lambda region: region["region_id"], region_info["record_regions"]))
     all_regions = get_json("http://{}:{}/pd/api/v1/regions".format(args.pd_host, args.pd_port))
-    table_regions = filter(lambda region: region["id"] in region_set, all_regions["regions"])
-    table_regions = map(lambda region: (region["id"], int(region["approximate_size"])), table_regions)
-    table_regions = sorted(table_regions, key=lambda region: region[0])
-    try:
-        draw(table_regions)
-    except:
-        pass
+    count(table_region_set, all_regions, Resource.KEY, args.group)
+    count(table_region_set, all_regions, Resource.SIZE, args.group)
 
-    table_regions = sorted(table_regions, key=lambda region: region[1])
-    max_region_size = table_regions[-1][1] + 1
+
+def generate_steps(resource, group, max_value):
     steps = []
-    if args.group:
-        for i in range(0, args.group+1):
-            steps.append(int(i * max_region_size / args.group))
+    if group:
+        for i in range(0, group + 1):
+            steps.append(int(i * max_value / group))
     else:
-        steps = [0, 2, 20, 96, max_region_size] # 0, empty region, max-merge-region-size, standard region and max region size
-    output_simple(table_regions, steps)
+        if resource == Resource.SIZE:
+            steps = [0, 2, 20, 96, max_value]
+        else:
+            steps = [0, 20000, 200000, 960000, max_value]
+    return steps
+
+
+def format_steps(steps):
+    result = []
+    for step in steps:
+        if step >= 1000:
+            result.append("{}k".format(int(step / 1000)))
+        else:
+            result.append("{}".format(step))
+    return result
+
+
+def get_resource_key(resource):
+    if resource == Resource.KEY:
+        return 'approximate_keys'
+    else:
+        return 'approximate_size'
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Show leader distribution of a TiDB table.")
+    parser = argparse.ArgumentParser(description="Show region size and keys distribution of a TiDB table.")
     parser.add_argument("--host", dest="host", help="tidb-server address, default: 127.0.0.1", default="127.0.0.1")
     parser.add_argument("--port", dest="port", help="tidb-server status port, default: 10080", default="10080")
     parser.add_argument("--pd_host", dest="pd_host", help="pd-server address, default: 127.0.0.1", default="127.0.0.1")
@@ -45,19 +80,20 @@ def parse_args():
     return args
 
 
-def draw(table_regions):
+def draw(table_regions, resource):
     import matplotlib.pyplot as plt
+    label = get_resource_key(resource)
     ax = plt.gca()
-    ax.set_xlabel('Region Order')
-    ax.set_ylabel('Spproximate Size')
+    ax.set_xlabel('region_order')
+    ax.set_ylabel(label)
     x_list, y_list = [], []
     for i, (_, region_size) in enumerate(table_regions):
         x_list.append(i)
         y_list.append(region_size)
 
     plt.scatter(x_list, y_list, color="r", alpha=0.5, s=5)
+    plt.savefig(os.path.join("result_{}.png".format(label)))
     plt.show()
-    plt.savefig(os.path.join("result.png"))
 
 
 def get_json(url):
@@ -66,7 +102,7 @@ def get_json(url):
     return json.loads(web_content)
 
 
-def output_simple(table_regions, steps):
+def output(table_regions, steps, resource):
     counts = [0]
     i = 1
     for region in table_regions:
@@ -75,9 +111,13 @@ def output_simple(table_regions, steps):
         else:
             counts.append(0)
             i += 1
-    print("Region size(MB)\tRegion num")
+
+    output_steps = format_steps(steps)
+    print("Region {}\t\t\tRegion num".format(get_resource_key(resource)).replace("approximate_", ""))
     for i, count in enumerate(counts):
-        print("{}\t~\t{}\t\t{}".format(steps[i], steps[i + 1], count))
+        output_range = "{} ~ {}".format(output_steps[i], output_steps[i + 1]).ljust(16)
+        print("{}\t{}".format(output_range, count))
+    print()
 
 
 if __name__ == "__main__":
