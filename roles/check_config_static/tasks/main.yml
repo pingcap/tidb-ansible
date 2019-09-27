@@ -76,3 +76,12 @@
   fail:
     msg: "Jmespath({{ jmespath_version }}) or jinja2({{ jinja2_version }}) version is too low, Please run `pip install --upgrade -r requirements.txt` to upgrade."
   when: jmespath_version | version_compare('0.9.0', '<') or jinja2_version | version_compare('2.9.6', '<')
+
+- name: Check inventory configuration
+  shell: python2 {{ playbook_dir }}/scripts/inventory_check.py {{ ansible_inventory_sources.0 }}
+  register: inventory_check_result
+
+- name: Preflight check - If the inventory configuration is correct
+  fail:
+    msg: "{{ inventory_check_result.stdout }}"
+  when: "'Check ok' not in inventory_check_result.stdout"
