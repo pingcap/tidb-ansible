@@ -19,10 +19,8 @@ def parse_inventory(inventory):
     for tidb in tidb_nodes:
         var = vars.get_vars(host=inv.get_host(hostname=str(tidb)))
         ip = var['ansible_host'] if 'ansible_host' in var else var['inventory_hostname']
-        tidb_port = var['tidb_port'] \
-            if 'tidb_port' in var else 4000
-        tidb_status_port = var['tidb_status_port'] \
-            if 'tidb_status_port' in var else 10080
+        tidb_port = var.get('tidb_port', 4000)
+        tidb_status_port = var.get('tidb_status_port', 10080)
         deploy_dir = var['deploy_dir']
 
         if ip in tidb_servers:
@@ -33,10 +31,8 @@ def parse_inventory(inventory):
     for tikv in tikv_nodes:
         var = vars.get_vars(host=inv.get_host(hostname=str(tikv)))
         ip = var['ansible_host'] if 'ansible_host' in var else var['inventory_hostname']
-        tikv_port = var['tikv_port'] \
-            if 'tikv_port' in var else 4000
-        tikv_status_port = var['tikv_status_port'] \
-            if 'tikv_status_port' in var else 10080
+        tikv_port = var.get('tikv_port', 20160)
+        tikv_status_port = var.get('tikv_status_port', 20180)
         deploy_dir = var['deploy_dir']
 
         if ip in tikv_servers:
@@ -49,23 +45,16 @@ def parse_inventory(inventory):
 
 def check_conflict(server_list):
     conflict_ip = []
-    isContinue = False
-    for ip, nodes in server_list.iteritems():
-        length = len(nodes)
+    for ip, node_vars in server_list.iteritems():
+        length = len(node_vars)
         if length > 1:
-            for index_i in range(length - 1):
-                for index_j in range(index_i + 1, length):
-                    for node_var in nodes[index_i]:
-                        if node_var in nodes[index_j]:
-                            isContinue = True
-                            conflict_ip.append(ip)
-                            break
-                    if isContinue:
-                        break
-                if isContinue:
-                    break
-            if isContinue:
-                continue
+            port_list = [var[0] for var in node_vars]
+            sts_port_list = [var[1] for var in node_vars]
+            dir_list = [var[2] for var in node_vars]
+            if len(set(port_list)) < length \
+                    or len(set(sts_port_list)) < length \
+                    or len(set(dir_list)) < length:
+                conflict_ip.append(ip)
     return conflict_ip
 
 
