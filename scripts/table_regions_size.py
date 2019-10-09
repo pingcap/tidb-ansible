@@ -70,7 +70,7 @@ def get_resource_key(resource):
 def parse_args():
     parser = argparse.ArgumentParser(description="Show region size and keys distribution of a TiDB table.")
     parser.add_argument("--host", dest="host", help="tidb-server address, default: 127.0.0.1", default="127.0.0.1")
-    parser.add_argument("-d", dest="draw", help="whether to draw pictures", default=False, action='store_true')
+    parser.add_argument("-d", dest="draw", help="whether to draw pictures, default: False", default=False, action='store_true')
     parser.add_argument("--port", dest="port", help="tidb-server status port, default: 10080", default="10080")
     parser.add_argument("--pd_host", dest="pd_host", help="pd-server address, default: 127.0.0.1", default="127.0.0.1")
     parser.add_argument("--pd_port", dest="pd_port", help="pd-server status port, default: 2379", default="2379")
