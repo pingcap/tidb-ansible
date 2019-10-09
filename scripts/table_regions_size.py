@@ -13,14 +13,15 @@ class Resource(Enum):
     SIZE = 2
 
 
-def count(table_region_set, all_regions, resource, group):
+def count(table_region_set, all_regions, resource, group, to_draw):
     table_regions = filter(lambda region: region["id"] in table_region_set, all_regions["regions"])
     table_regions = map(lambda region: (region["id"], int(region[get_resource_key(resource)])), table_regions)
     table_regions = sorted(table_regions, key=lambda region: region[0])
-    try:
-        draw(table_regions, resource)
-    except:
-        pass
+    if to_draw:
+        try:
+            draw(table_regions, resource)
+        except:
+            print("need to install matplotlib")
 
     table_regions = sorted(table_regions, key=lambda region: region[1])
 
@@ -32,8 +33,8 @@ def main():
     region_info = get_json("http://{}:{}/tables/{}/{}/regions".format(args.host, args.port, args.database, args.table))
     table_region_set = set(map(lambda region: region["region_id"], region_info["record_regions"]))
     all_regions = get_json("http://{}:{}/pd/api/v1/regions".format(args.pd_host, args.pd_port))
-    count(table_region_set, all_regions, Resource.KEY, args.group)
-    count(table_region_set, all_regions, Resource.SIZE, args.group)
+    count(table_region_set, all_regions, Resource.KEY, args.group, args.draw)
+    count(table_region_set, all_regions, Resource.SIZE, args.group, args.draw)
 
 
 def generate_steps(resource, group, max_value):
@@ -69,6 +70,7 @@ def get_resource_key(resource):
 def parse_args():
     parser = argparse.ArgumentParser(description="Show region size and keys distribution of a TiDB table.")
     parser.add_argument("--host", dest="host", help="tidb-server address, default: 127.0.0.1", default="127.0.0.1")
+    parser.add_argument("-d", dest="draw", help="whether to draw pictures", default=False, action='store_true')
     parser.add_argument("--port", dest="port", help="tidb-server status port, default: 10080", default="10080")
     parser.add_argument("--pd_host", dest="pd_host", help="pd-server address, default: 127.0.0.1", default="127.0.0.1")
     parser.add_argument("--pd_port", dest="pd_port", help="pd-server status port, default: 2379", default="2379")
@@ -117,7 +119,7 @@ def output(table_regions, steps, resource):
     for i, count in enumerate(counts):
         output_range = "{} ~ {}".format(output_steps[i], output_steps[i + 1]).ljust(16)
         print("{}\t{}".format(output_range, count))
-    print()
+    print("")
 
 
 if __name__ == "__main__":
