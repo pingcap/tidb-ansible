@@ -29,9 +29,12 @@ cd "${DEPLOY_DIR}" || exit 1
   {% endif -%}
 {% endfor -%}
 
+
 {% set numaNodeId = [] -%}
-{% if all_node_on_instance | length == numa_node_count.stdout | int -%}
-  {% set set_numa_bind = 'true' -%}
+{% if numactl_info.failed -%}
+  {% set set_numa_bind = false -%}
+{% elif all_node_on_instance | length == numa_node_count.stdout | int -%}
+  {% set set_numa_bind = true -%}
   {% for inventory_name in all_node_on_instance -%}
     {% if inventory_name == my_name -%}
       {% set _ = numaNodeId.append(loop.index0) -%}

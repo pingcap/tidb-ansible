@@ -8,9 +8,15 @@
   command: mv "{{ tidb_binary.backup_file }}" "{{ backup_dir }}"
   when: tidb_binary.changed and tidb_binary.backup_file is defined
 
+- name: check numactl
+  shell: which numactl
+  ignore_errors: yes
+  register: numactl_info
+
 - name: check numa node
   shell: numactl --hardware | awk 'NR==1{print $2}'
   register: numa_node_count
+  when: not numactl_info.failed
 
 - name: create run script
   template:
