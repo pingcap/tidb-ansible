@@ -8,6 +8,10 @@
   command: mv "{{ tidb_binary.backup_file }}" "{{ backup_dir }}"
   when: tidb_binary.changed and tidb_binary.backup_file is defined
 
+- name: check numa node
+  shell: numactl --hardware | awk 'NR==1{print $2}'
+  register: numa_node_count
+
 - name: create run script
   template:
     src: "{{ item }}_{{ role_name }}_binary.sh.j2"
