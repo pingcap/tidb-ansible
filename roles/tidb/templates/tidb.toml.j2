@@ -5,21 +5,8 @@
 {% endfor %}
 
 [log]
-{% for item, value in tidb_conf.log | dictsort_by_value_type -%}
-{% if value is not mapping -%}
+{% for item, value in tidb_conf.log | dictsort -%}
 {{ item }} = {{ value | to_json}}
-{% else %}
-
-[log.{{ item }}]
-{% for sub_item, sub_value in value | dictsort -%}
-{{ sub_item }} = {{ sub_value | to_json }}
-{% endfor %}
-{% endif %}
-{% endfor %}
-
-[security]
-{% for item, value in tidb_conf.security | dictsort -%}
-{{ item }} = {{ value | to_json }}
 {% endfor %}
 
 [status]
