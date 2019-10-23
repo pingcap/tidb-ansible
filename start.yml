@@ -251,6 +251,22 @@
   tags:
     - tikv
   tasks:
+    - name: Check if tikv_port already in use
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ tikv_port }}"
+        state: stopped
+        timeout: 3
+        msg: "{{ tikv_port }} already in use"
+
+    - name: Check if tikv_status_port already in use
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ tikv_status_port }}"
+        state: stopped
+        timeout: 3
+        msg: "{{ tikv_status_port }} already in use"
+
     - name: start TiKV by supervise
       shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
       when: process_supervision == 'supervise'
@@ -366,6 +382,22 @@
   tags:
     - tidb
   tasks:
+    - name: Check if tidb_port already in use
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ tidb_port }}"
+        state: stopped
+        timeout: 3
+        msg: "{{ tidb_port }} already in use"
+
+    - name: Check if tidb_status_port already in use
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ tidb_status_port }}"
+        state: stopped
+        timeout: 3
+        msg: "{{ tidb_status_port }} already in use"
+
     - name: start TiDB by supervise
       shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
       when: process_supervision == 'supervise'
@@ -479,6 +511,8 @@
               blackbox_exporter: "{{ cluster_name | title }}-Blackbox_exporter"
               kafka_overview: "{{ cluster_name | title }}-Kafka-Overview"
               lightning: "{{ cluster_name | title }}-Lightning"
+              performance_read: "{{ cluster_name | title }}-Performance-Read"
+              performance_write: "{{ cluster_name | title }}-Performance-Write"
 
     - name: import grafana dashboards - run import script
       delegate_to: localhost

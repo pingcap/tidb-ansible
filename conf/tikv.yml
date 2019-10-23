@@ -62,9 +62,6 @@ server:
   ## If not set, `addr` will be used.
   # advertise-addr: ""
 
-  ## Compression type for gRPC channel: none, deflate or gzip.
-  # grpc-compression-type: "none"
-
   ## Size of the thread pool for the gRPC server.
   # grpc-concurrency: 4
 
@@ -163,22 +160,6 @@ metric:
   # job: "tikv"
 
 raftstore:
-  ## Whether to force to flush logs.
-  ## Set to `true` (default) for best reliability, which prevents data loss when there is a power
-  ## failure. Set to `false` for higher performance (ensure that you run multiple TiKV nodes!).
-  # sync-log: true
-
-  ## Whether to enable Raft prevote.
-  ## Prevote minimizes disruption when a partitioned node rejoins the cluster by using a two phase
-  ## election.
-  # prevote: true
-
-  ## The path to RaftDB directory.
-  ## If not set, it will be `{data-dir}/raft`.
-  ## If there are multiple disks on the machine, storing the data of Raft RocksDB on differen disks
-  ## can improve TiKV performance.
-  # raftdb-path: ""
-
   ## Store capacity, i.e. max data size allowed.
   ## If it is not set, disk capacity is used.
   # capacity: 0
@@ -196,31 +177,6 @@ raftstore:
   ## Store heartbeat tick interval for reporting to PD.
   # pd-store-heartbeat-tick-interval: "10s"
 
-  ## The threshold of triggering Region split check.
-  ## When Region size change exceeds this config, TiKV will check whether the Region should be split
-  ## or not. To reduce the cost of scanning data in the checking process, you can set the value to
-  ## 32MB during checking and set it back to the default value in normal operations.
-  # region-split-check-diff: "6MB"
-
-  ## The interval of triggering Region split check.
-  # split-region-check-tick-interval: "10s"
-
-  ## When the number of Raft entries exceeds the max size, TiKV rejects to propose the entry.
-  # raft-entry-max-size: "8MB"
-
-  ## Interval to GC unnecessary Raft log.
-  # raft-log-gc-tick-interval: "10s"
-
-  ## Threshold to GC stale Raft log, must be >= 1.
-  # raft-log-gc-threshold: 50
-
-  ## When the entry count exceeds this value, GC will be forced to trigger.
-  # raft-log-gc-count-limit: 72000
-
-  ## When the approximate size of Raft log entries exceeds this value, GC will be forced trigger.
-  ## It's recommanded to set it to 3/4 of `region-split-size`.
-  # raft-log-gc-size-limit: "72MB"
-
   ## How long the peer will be considered down and reported to PD when it hasn't been active for this
   ## time.
   # max-peer-down-duration: "5m"
@@ -228,32 +184,11 @@ raftstore:
   ## Interval to check whether to start manual compaction for a Region.
   # region-compact-check-interval: "5m"
 
-  ## Number of Regions for each time to check.
-  # region-compact-check-step: 100
-
-  ## The minimum number of delete tombstones to trigger manual compaction.
-  # region-compact-min-tombstones: 10000
-
-  ## The minimum percentage of delete tombstones to trigger manual compaction.
-  ## It should be set between 1 and 100. Manual compaction is only triggered when the number of
-  ## delete tombstones exceeds `region-compact-min-tombstones` and the percentage of delete tombstones
-  ## exceeds `region-compact-tombstones-percent`.
-  # region-compact-tombstones-percent: 30
-
-  ## Interval to check whether to start a manual compaction for Lock Column Family.
-  ## If written bytes reach `lock-cf-compact-bytes-threshold` for Lock Column Family, TiKV will
-  ## trigger a manual compaction for Lock Column Family.
-  # lock-cf-compact-interval: "10m"
-  # lock-cf-compact-bytes-threshold: "256MB"
-
   ## Interval (s) to check Region whether the data are consistent.
   # consistency-check-interval: 0
 
   ## Delay time before deleting a stale peer.
   # clean-stale-peer-delay: "10m"
-
-  ## Interval to clean up import SST files.
-  # cleanup-import-sst-interval: "10m"
 
   ## Use how many threads to handle log apply
   # apply-pool-size: 2
@@ -262,26 +197,6 @@ raftstore:
   # store-pool-size: 2
 
 coprocessor:
-  ## When it is set to `true`, TiKV will try to split a Region with table prefix if that Region
-  ## crosses tables.
-  ## It is recommended to turn off this option if there will be a large number of tables created.
-  # split-region-on-table: true
-
-  ## One split check produces several split keys in batch. This config limits the number of produced
-  ## split keys in one batch.
-  # batch-split-limit: 10
-
-  ## When Region [a,e) size exceeds `region_max_size`, it will be split into several Regions [a,b),
-  ## [b,c), [c,d), [d,e) and the size of [a,b), [b,c), [c,d) will be `region_split_size` (or a
-  ## little larger).
-  # region-max-size: "144MB"
-  # region-split-size: "96MB"
-
-  ## When the number of keys in Region [a,e) exceeds the `region_max_keys`, it will be split into
-  ## several Regions [a,b), [b,c), [c,d), [d,e) and the number of keys in [a,b), [b,c), [c,d) will be
-  ## `region_split_keys`.
-  # region-max-keys: 1440000
-  # region-split-keys: 960000
 
 rocksdb:
   ## Maximum number of threads of RocksDB background jobs.
@@ -303,13 +218,6 @@ rocksdb:
   ## working set. You can estimate the number of files based on `target-file-size-base` and
   ## `target_file_size_multiplier` for level-based compaction.
   # max-open-files: 40960
-
-  ## Max size of RocksDB's MANIFEST file.
-  ## For detailed explanation, please refer to https://github.com/facebook/rocksdb/wiki/MANIFEST
-  # max-manifest-file-size: "128MB"
-
-  ## If the value is `true`, the database will be created if it is missing.
-  # create-if-missing: true
 
   ## RocksDB Write-Ahead Logs (WAL) recovery mode.
   ## 0 : TolerateCorruptedTailRecords, tolerate incomplete record in trailing data on all logs;
@@ -364,70 +272,12 @@ rocksdb:
   ## Use O_DIRECT for both reads and writes in background flush and compactions.
   # use-direct-io-for-flush-and-compaction: false
 
-  ## Limit the disk IO of compaction and flush.
-  ## Compaction and flush can cause terrible spikes if they exceed a certain threshold. Consider
-  ## setting this to 50% ~ 80% of the disk throughput for a more stable result. However, in heavy
-  ## write workload, limiting compaction and flush speed can cause write stalls too.
-  ## 1. rate-bytes-per-sec is the only parameter you want to set most of the time. It controls the
-  ##    total write rate of compaction and flush in bytes per second. Currently, RocksDB does not
-  ##    enforce rate limit for anything other than flush and compaction, e.g. write to WAL.
-  ## 2. rate-limiter-mode indicates which types of operations count against the limit.
-  ##    1 : ReadOnly
-  ##    2 : WriteOnly
-  ##    3 : AllIo
-  ## 3. auto_tuned enables dynamic adjustment of rate limit within the range
-  ##    [rate_bytes_per_sec / 20, rate_bytes_per_sec], according to the recent demand for background I/O.
-  # rate-bytes-per-sec: 0
-  # rate-limiter-mode: 2
-  # auto-tuned: false
-
-  ## Enable or disable the pipelined write.
-  # enable-pipelined-write: true
-
   ## Allows OS to incrementally sync files to disk while they are being written, asynchronously,
   ## in the background.
   # bytes-per-sync: "1MB"
 
   ## Allows OS to incrementally sync WAL to disk while it is being written.
   # wal-bytes-per-sync: "512KB"
-
-  ## Specify the maximal size of the RocksDB info log file.
-  ## If the log file is larger than this config, a new info log file will be created.
-  ## If it is set to 0, all logs will be written to one log file.
-  # info-log-max-size: "1GB"
-
-  ## Time for the RocksDB info log file to roll (in seconds).
-  ## If the log file has been active longer than this config, it will be rolled.
-  ## If it is set to 0, rolling will be disabled.
-  # info-log-roll-time: "0"
-
-  ## Maximal RocksDB info log files to be kept.
-  # info-log-keep-log-file-num: 10
-
-  ## Specifies the RocksDB info log directory.
-  ## If it is empty, the log files will be in the same directory as data.
-  ## If it is not empty, the log files will be in the specified directory, and the DB data directory's
-  ## absolute path will be used as the log file name's prefix.
-  # info-log-dir: ""
-
-  ## Options for "Titan"
-  titan:
-    ## Enables `Titan. Note that Titan is still a experimental feature, once enabled it can't fallback,
-    ## or there will be some data loses.
-    ## default: false
-    # enabled: false
-
-    ## Specifies `Titan` blob files directory
-    ## default: "titandb" (if not specific or empty)
-    # dirname: ""
-
-    ## Disable blob file gc
-    ## default: false
-    # disable-gc: false
-
-    ## Maximum number of threads of `Titan` background gc jobs.
-    ## default: 1
-    # max-background-gc: 1
 
   ## Options for "Default" Column Family, which stores actual user data.
   defaultcf:
@@ -467,10 +317,6 @@ rocksdb:
     ## rate. Larger `bloom-filter-bits-per-key` values will reduce false positive rate, but increase
     ## memory usage and space amplification.
     # bloom-filter-bits-per-key: 10
-
-    ## `false` means one SST file one bloom filter, `true` means every block has a corresponding bloom
-    ## filter.
-    # block-based-bloom-filter: false
 
     # level0-file-num-compaction-trigger: 4
 
@@ -533,14 +379,6 @@ rocksdb:
     ## 3 : MinOverlappingRatio
     # compaction-pri: 3
 
-    ## Indicating if we'd put index/filter blocks to the block cache.
-    ## If not specified, each "table reader" object will pre-load index/filter block during table
-    ## initialization.
-    # cache-index-and-filter-blocks: true
-
-    ## Pin level-0 filter and index blocks in cache.
-    # pin-l0-filter-and-index-blocks: true
-
     ## Enable read amplification statistics.
     ## value  =>  memory usage (percentage of loaded blocks memory)
     ## 1      =>  12.50 %
@@ -549,16 +387,6 @@ rocksdb:
     ## 8      =>  01.56 %
     ## 16     =>  00.78 %
     # read-amp-bytes-per-bit: 0
-
-    ## Pick target size of each level dynamically.
-    # dynamic-level-bytes: true
-
-    ## Optimizes bloom filters. If true, RocksDB won't create bloom filters for the max level of
-    ## the LSM to reduce metadata that should fit in RAM.
-    ## This value is setted to true for `default` cf by default because its kv data could be determined
-    ## whether really exists by upper logic instead of bloom filters. But we suggest to set it to false
-    ## while using `Raw` mode.
-    # optimize-filters-for-hits: true
 
     ## Options for "Titan" for "Default" Column Family
     titan:
@@ -630,7 +458,6 @@ rocksdb:
     # compaction-pri: 3
     # read-amp-bytes-per-bit: 0
     # dynamic-level-bytes: true
-    # optimize-filters-for-hits: false
 
   lockcf:
     # compression-per-level: ["no", "no", "no", "no", "no", "no", "no"]
@@ -640,7 +467,6 @@ rocksdb:
     # min-write-buffer-number-to-merge: 1
     # max-bytes-for-level-base: "128MB"
     # target-file-size-base: "8MB"
-    # level0-file-num-compaction-trigger: 1
     # level0-slowdown-writes-trigger: 20
     # level0-stop-writes-trigger: 36
     # cache-index-and-filter-blocks: true
@@ -648,7 +474,6 @@ rocksdb:
     # compaction-pri: 0
     # read-amp-bytes-per-bit: 0
     # dynamic-level-bytes: true
-    # optimize-filters-for-hits: false
 
 raftdb:
   # max-background-jobs: 4
@@ -699,17 +524,8 @@ raftdb:
     # optimize-filters-for-hits: true
 
 security:
-  ## The path for TLS certificates. Empty string means disabling secure connections.
-  # ca-path: ""
-  # cert-path: ""
-  # key-path: ""
 
 import:
-  ## Number of threads to handle RPC requests.
-  # num-threads: 8
-
-  ## Stream channel window size, stream will be blocked on channel full.
-  # stream-channel-window: 128
 
 pessimistic_txn:
   ## Enable pessimistic transaction

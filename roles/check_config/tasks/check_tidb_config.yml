@@ -1,17 +1,20 @@
 ---
 
-- name: Load TiDB vars
-  include_vars: file={{ playbook_dir }}/roles/tidb/defaults/main.yml
+- name: Load TiDB default vars
+  include_vars: file={{ playbook_dir }}/roles/tidb/defaults/main.yml name=tidb_vars_check
+
+- name: Load TiDB group vars
+  include_vars: file={{ playbook_dir }}/group_vars/tidb_servers.yml name=tidb_vars_check
 
 - name: "Load customized config: tidb-ansible/conf/tidb.yml"
-  include_vars: file={{ playbook_dir }}/conf/tidb.yml name=tidb_conf_custom
+  include_vars: file={{ playbook_dir }}/conf/tidb.yml name=tidb_conf_custom_check
 
 - name: Load default config
-  include_vars: file={{ playbook_dir }}/roles/tidb/vars/default.yml name=tidb_conf_default
+  include_vars: file={{ playbook_dir }}/roles/tidb/vars/default.yml name=tidb_conf_default_check
 
 - name: generate dynamic config
   set_fact:
-    tidb_conf_generated:
+    tidb_conf_generated_check:
       security:
         cluster-ssl-ca: >-
           {%- if enable_tls|default(false) -%}{{ tidb_cert_dir }}/ca.pem{%- else -%}{%- endif -%}
@@ -22,7 +25,7 @@
 
 - name: Generate final config
   set_fact:
-    tidb_conf: "{{ tidb_conf_custom | with_default_dicts(tidb_conf_generated, tidb_conf_default) }}"
+    tidb_conf: "{{ tidb_conf_custom_check | with_default_dicts(tidb_conf_generated_check, tidb_conf_default_check) }}"
 
 - name: Create configuration file
   template: src={{ playbook_dir }}/roles/tidb/templates/tidb.toml.j2 dest={{ tidb_check_dir }}/tidb.toml mode=0644 backup=yes
