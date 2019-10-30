@@ -17,7 +17,7 @@ lightning:
 
   # io-concurrency controls the maximum IO concurrency
   io-concurrency: 5
-  
+
   # logging
   level: "info"
   file: "log/tidb_lightning.log"
@@ -46,8 +46,12 @@ checkpoint:
   # keep-after-success: false
 
 tikv_importer:
-  # the listening address of tikv-importer. Change it to the actual address in tikv-importer.toml.
+  # delivery back end ("tidb" or "importer")
+  backend: "importer"
+  # the listening address of tikv-importer when back end is "importer". Change it to the actual address in tikv-importer.toml.
   # addr: "0.0.0.0:8287"
+  # action on duplicated entry ("error", "ignore" or "replace")
+  # on-duplicate: "replace"
 
 mydumper:
   # block size of file reading
@@ -105,7 +109,7 @@ tidb:
   # status-port: 10080
   # Lightning uses some code of TiDB (used as a library) and the flag controls its log level.
   log-level: "error"
-  
+
   # Set tidb session variables to speed up checksum/analyze table.
   # See https://pingcap.com/docs/sql/statistics/#control-analyze-concurrency for the meaning of each setting
   build-stats-concurrency: 20
