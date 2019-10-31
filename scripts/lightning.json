@@ -761,7 +761,7 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "spaceLength": 10,
-          "span": 6,
+          "span": 5,
           "stack": false,
           "steppedLine": true,
           "targets": [
@@ -837,7 +837,7 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "spaceLength": 10,
-          "span": 6,
+          "span": 5,
           "stack": false,
           "steppedLine": true,
           "targets": [
@@ -899,6 +899,76 @@
               "show": true
             }
           ]
+        },
+        {
+          "columns": [
+            {
+              "text": "Current",
+              "value": "current"
+            }
+          ],
+          "datasource": "${DS_LIGHTNING}",
+          "fontSize": "100%",
+          "id": 21,
+          "links": [],
+          "pageSize": null,
+          "scroll": true,
+          "showHeader": true,
+          "sort": {
+            "col": 0,
+            "desc": true
+          },
+          "span": 2,
+          "styles": [
+            {
+              "alias": "TiKV",
+              "pattern": "Metric"
+            },
+            {
+              "alias": "",
+              "colorMode": "cell",
+              "colors": [
+                "#E0B400",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "decimals": 2,
+              "link": false,
+              "mappingType": 2,
+              "pattern": "Current",
+              "rangeMaps": [
+                {
+                  "from": "0",
+                  "text": "Import",
+                  "to": "0"
+                },
+                {
+                  "from": "1",
+                  "text": "Normal",
+                  "to": "Infinity"
+                }
+              ],
+              "thresholds": [
+                "1",
+                "1"
+              ],
+              "type": "string",
+              "unit": "short"
+            }
+          ],
+          "targets": [
+            {
+              "expr": "min(tikv_config_rocksdb{name=\"hard_pending_compaction_bytes_limit\"}) by (instance)",
+              "format": "time_series",
+              "instant": false,
+              "intervalFactor": 2,
+              "legendFormat": "{{instance}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Import/Normal mode",
+          "transform": "timeseries_aggregations",
+          "type": "table"
         }
       ],
       "repeat": null,
@@ -1216,10 +1286,10 @@
               "refId": "B"
             },
             {
-              "expr": "pd_cluster_status{type=\"storage_size\"} / 3",
+              "expr": "pd_cluster_status{type=\"storage_size\"} / ignoring(type) pd_config_status{type=\"max_replicas\"}",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "storage_size / 3",
+              "legendFormat": "storage_size / replicas",
               "refId": "C"
             }
           ],
