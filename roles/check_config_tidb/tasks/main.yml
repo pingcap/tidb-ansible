@@ -1,5 +1,11 @@
 ---
 
+- set_fact:
+    tidb_check_dir: "/tmp/tidb_check_config"
+
+- name: Create temporary check directory
+  file: name={{ tidb_check_dir }} state=directory
+
 - name: Load TiDB default vars
   include_vars: file={{ playbook_dir }}/roles/tidb/defaults/main.yml name=tidb_vars_check
 
@@ -36,6 +42,9 @@
 - name: Check TiDB config
   shell: cd {{ tidb_check_dir }} && ./tidb-server -config ./tidb.toml -config-check
   register: tidb_check_result
+
+- name: Delete temporary check directory
+  file: name={{ tidb_check_dir }} state=absent
 
 - name: Check result
   fail:
