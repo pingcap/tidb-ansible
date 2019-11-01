@@ -25,7 +25,7 @@
 
 - name: generate tidb-lightning final config
   set_fact:
-    tidb_lightning_conf: "{{ tidb_lightning_conf_custom | with_default_dicts(tidb_lightning_conf_generated, tidb_lightning_conf_default) }}"
+    tidb_lightning_conf: "{{ tidb_lightning_conf_custom | with_default_dicts(tidb_lightning_conf_generated, tidb_lightning_conf_default) | update_default_dicts }}"
 
 - debug: var=tidb_lightning_conf
 
