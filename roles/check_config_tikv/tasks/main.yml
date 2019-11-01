@@ -1,6 +1,12 @@
 ---
 
 - set_fact:
+    tidb_check_dir: "/tmp/tidb_check_config"
+
+- name: Create temporary check directory
+  file: name={{ tidb_check_dir }} state=directory
+
+- set_fact:
     tikv_log_dir: "{{ deploy_dir }}/log"
 
 - name: Load TiKV vars
@@ -31,7 +37,7 @@
 
 - name: Generate final config
   set_fact:
-    tikv_conf: "{{ tikv_conf_custom_check | with_default_dicts(tikv_conf_generated_check, tikv_conf_default_check) }}"
+    tikv_conf: "{{ tikv_conf_custom_check | with_default_dicts(tikv_conf_generated_check, tikv_conf_default_check) | update_default_dicts }}"
 
 - name: Create configuration file
   template: src={{ playbook_dir }}/roles/tikv/templates/tikv.toml.j2 dest={{ tidb_check_dir }}/tikv.toml mode=0644 backup=yes
@@ -42,6 +48,9 @@
 - name: Check TiKV config
   shell: cd {{ tidb_check_dir }} && ./tikv-server --pd-endpoints pd:port --config ./tikv.toml --config-check
   register: tikv_check_result
+
+- name: Delete temporary check directory
+  file: name={{ tidb_check_dir }} state=absent
 
 - name: Check result
   fail:
