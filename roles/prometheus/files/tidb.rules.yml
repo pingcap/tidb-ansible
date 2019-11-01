@@ -26,12 +26,12 @@ groups:
       summary: TiDB tikvclient_backoff_count error
 
   - alert: TiDB_binlog_error_total
-    expr: increase( tidb_server_binlog_error_total[1m] )  > 0
+    expr: increase( tidb_server_critical_error_total[1m] )  > 0
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: emergency
-      expr:  increase( tidb_server_binlog_error_total[1m] )  > 0
+      expr:  increase( tidb_server_critical_error_total[1m] )  > 0
     annotations:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
