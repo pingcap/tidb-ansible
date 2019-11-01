@@ -36,7 +36,7 @@
 
 - name: combine final config
   set_fact:
-    tidb_conf: "{{ tidb_conf_generated | with_default_dicts(tidb_conf_custom, tidb_conf_default) }}"
+    tidb_conf: "{{ tidb_conf_generated | with_default_dicts(tidb_conf_custom, tidb_conf_default) | update_default_dicts }}"
 
 - debug: var=tidb_conf
 

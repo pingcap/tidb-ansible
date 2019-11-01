@@ -49,7 +49,7 @@
 
 - name: generate final config
   set_fact:
-    tikv_conf: "{{ tikv_conf_custom | with_default_dicts(tikv_conf_generated, tikv_conf_default) }}"
+    tikv_conf: "{{ tikv_conf_custom | with_default_dicts(tikv_conf_generated, tikv_conf_default) | update_default_dicts }}"
 
 - debug: var=tikv_conf
 

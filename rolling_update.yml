@@ -55,12 +55,26 @@
         - current_version.stdout_lines[0].replace(' ','').split(':')[1] < "v2.0.1"
         - tidb_version >= "v2.1.0" or tidb_version == "latest"
 
-- name: Pre-check for configuration
+- name: Pre-check PD configuration
   hosts: pd_servers[0]
   tags:
-    - check_config
+    - pd
   roles:
-    - check_config
+    - check_config_pd
+
+- name: Pre-check TiKV configuration
+  hosts: tikv_servers[0]
+  tags:
+    - tikv
+  roles:
+    - check_config_tikv
+
+- name: Pre-check TiDB configuration
+  hosts: tidb_servers[0]
+  tags:
+    - tidb
+  roles:
+    - check_config_tidb
 
 - hosts: pd_servers[0]
   any_errors_fatal: true

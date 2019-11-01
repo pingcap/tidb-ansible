@@ -27,7 +27,7 @@
 
 - name: generate tikv-importer final config
   set_fact:
-    tikv_importer_conf: "{{ tikv_importer_conf_custom | with_default_dicts(tikv_importer_conf_generated, tikv_importer_conf_default) }}"
+    tikv_importer_conf: "{{ tikv_importer_conf_custom | with_default_dicts(tikv_importer_conf_generated, tikv_importer_conf_default) | update_default_dicts }}"
 
 - debug: var=tikv_importer_conf
 
