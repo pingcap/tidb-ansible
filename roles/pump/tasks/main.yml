@@ -36,7 +36,7 @@
 
 - name: generate final config
   set_fact:
-    pump_conf: "{{ pump_conf_custom | with_default_dicts(pump_conf_generated, pump_conf_default) }}"
+    pump_conf: "{{ pump_conf_custom | with_default_dicts(pump_conf_generated, pump_conf_default) | update_default_dicts }}"
 
 - debug: var=pump_conf
 
