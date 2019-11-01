@@ -31,7 +31,7 @@
 
 - name: Generate final config
   set_fact:
-    tidb_conf: "{{ tidb_conf_custom_check | with_default_dicts(tidb_conf_generated_check, tidb_conf_default_check) }}"
+    tidb_conf: "{{ tidb_conf_custom_check | with_default_dicts(tidb_conf_generated_check, tidb_conf_default_check) | update_default_dicts }}"
 
 - name: Create configuration file
   template: src={{ playbook_dir }}/roles/tidb/templates/tidb.toml.j2 dest={{ tidb_check_dir }}/tidb.toml mode=0644 backup=yes

@@ -30,7 +30,7 @@
 
 - name: Generate final config
   set_fact:
-    pd_conf: "{{ pd_conf_custom_check | with_default_dicts(pd_conf_generated_check, pd_conf_default_check) }}"
+    pd_conf: "{{ pd_conf_custom_check | with_default_dicts(pd_conf_generated_check, pd_conf_default_check) | update_default_dicts }}"
 
 - name: Create configuration file
   template: src={{ playbook_dir }}/roles/pd/templates/pd.toml.j2 dest={{ tidb_check_dir }}/pd.toml mode=0644 backup=yes
