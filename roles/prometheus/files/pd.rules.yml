@@ -12,6 +12,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: PD_cluster_offline_tikv_nums
+      for: 1m
 
   - alert: PD_etcd_write_disk_latency
     expr: histogram_quantile(0.99, sum(rate(etcd_disk_wal_fsync_duration_seconds_bucket[1m])) by (instance,job,le) ) > 1
@@ -24,6 +25,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: PD_etcd_write_disk_latency
+      for: 1m
 
   - alert: PD_miss_peer_region_count
     expr: sum( pd_regions_status{type="miss_peer_region_count"} )  > 100
@@ -36,6 +38,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: PD_miss_peer_region_count
+      for: 1m
 
   - alert: PD_cluster_lost_connect_tikv_nums
     expr: sum ( pd_cluster_status{type="store_disconnected_count"} )   > 0
@@ -48,6 +51,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: PD_cluster_lost_connect_tikv_nums
+      for: 1m
 
   - alert: PD_cluster_low_space
     expr: sum ( pd_cluster_status{type="store_low_space_count"} )  > 0
@@ -60,6 +64,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: PD_cluster_low_space
+      for: 1m
 
   - alert: PD_etcd_network_peer_latency
     expr: histogram_quantile(0.99, sum(rate(etcd_network_peer_round_trip_time_seconds_bucket[1m])) by (To,instance,job,le) ) > 1
@@ -72,6 +77,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: PD_etcd_network_peer_latency
+      for: 1m
 
   - alert: PD_tidb_handle_requests_duration
     expr: histogram_quantile(0.99, sum(rate(pd_client_request_handle_requests_duration_seconds_bucket{type="tso"}[1m])) by (instance,job,le) ) > 0.1
@@ -84,6 +90,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: PD_tidb_handle_requests_duration
+      for: 1m
 
   - alert: PD_down_peer_region_nums
     expr: sum ( pd_regions_status{type="down_peer_region_count"} ) > 0
@@ -96,6 +103,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: PD_down_peer_region_nums
+      for: 1m
 
   - alert: PD_incorrect_namespace_region_count
     expr: sum ( pd_regions_status{type="incorrect_namespace_region_count"} ) > 100
@@ -108,6 +116,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: PD_incorrect_namespace_region_count
+      for: 1m
 
   - alert: PD_pending_peer_region_count
     expr: sum( pd_regions_status{type="pending_peer_region_count"} )  > 100
@@ -120,6 +129,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: PD_pending_peer_region_count
+      for: 1m
 
   - alert: PD_leader_change
     expr: count( changes(pd_server_tso{type="save"}[10m]) > 0 )   >= 2
@@ -132,6 +142,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: PD_leader_change
+      for: 1m
 
   - alert: TiKV_space_used_more_than_80%
     expr: sum(pd_cluster_status{type="storage_size"}) / sum(pd_cluster_status{type="storage_capacity"}) * 100  > 80
@@ -144,6 +155,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, type: {{ $labels.type }}, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: TiKV_space_used_more_than_80%
+      for: 1m
 
   - alert: PD_system_time_slow
     expr: changes(pd_server_tso{type="system_time_slow"}[10m]) >= 1
@@ -156,3 +168,4 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: PD_system_time_slow
+      for: 1m

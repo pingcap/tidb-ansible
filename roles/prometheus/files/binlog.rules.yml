@@ -23,6 +23,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: binlog drainer checkpoint delay more than 1 hour
+      for: 1m
 
   - alert: binlog_pump_write_binlog_rpc_duration_seconds_bucket
     expr: histogram_quantile(0.9, rate(binlog_pump_rpc_duration_seconds_bucket{method="WriteBinlog"}[5m])) > 1
@@ -35,6 +36,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: binlog pump write binlog RPC latency is too high
+      for: 1m
 
   - alert: binlog_pump_storage_write_binlog_duration_time_bucket
     expr: histogram_quantile(0.9, rate(binlog_pump_storage_write_binlog_duration_time_bucket{type="batch"}[5m])) > 1
@@ -47,6 +49,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: binlog pump write binlog to disk is too slow
+      for: 1m
 
   - alert: binlog_pump_storage_available_size_less_than_20G
     expr: binlog_pump_storage_storage_size_bytes{type="available"} < 20 * 1024 * 1024 * 1024
@@ -59,6 +62,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: binlog pump storage available size less than 20G
+      for: 10s
 
   - alert: binlog_drainer_execute_duration_time_more_than_10s
     expr: histogram_quantile(0.9, rate(binlog_drainer_execute_duration_time_bucket[1m])) > 10
@@ -71,6 +75,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: binlog binlog drainer execute_duration_time_more_than_10s
+      for: 1m
 
   - alert: binlog_drainer_checkpoint_tso_no_change_for_1m
     expr: changes(binlog_drainer_checkpoint_tso[1m]) < 1
