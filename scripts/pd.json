@@ -2677,6 +2677,22 @@
               "legendFormat": "{{address}}-store-{{store}}",
               "refId": "A",
               "step": 4
+            },
+            {
+              "expr": "pd_scheduler_op_influence{instance=\"$instance\",scheduler=\"balance-region-scheduler\"}",
+              "format": "time_series",
+              "hide": true,
+              "intervalFactor": 1,
+              "legendFormat": "op-influence-{{store}}-{{type}}",
+              "refId": "C"
+            },
+            {
+              "expr": "pd_scheduler_tolerant_resource{instance=\"$instance\",scheduler=\"balance-region-scheduler\"}",
+              "format": "time_series",
+              "hide": true,
+              "intervalFactor": 1,
+              "legendFormat": "tolerant-resource-{{source}}-{{target}}",
+              "refId": "E"
             }
           ],
           "thresholds": [
