@@ -8,7 +8,7 @@
     - name: set authorized key
       authorized_key:
         user: "{{ username }}"
-        key: "{{ lookup('file', '/home/{{ username }}/.ssh/id_rsa.pub') }}"
+        key: "{{ lookup('file', lookup('env','HOME')+ '/.ssh/id_rsa.pub') }}"
         state: present
 
     - name: update sudoers file

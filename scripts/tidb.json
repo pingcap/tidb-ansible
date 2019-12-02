@@ -3013,7 +3013,7 @@
           "timeFrom": null,
           "timeRegions": [],
           "timeShift": null,
-          "title": "Uncommon Error OPM",
+          "title": "Write Binlog Error",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -3371,7 +3371,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tidb_session_transaction_total[1m])) by (type, sql_type)",
+              "expr": "sum(rate(tidb_session_transaction_duration_seconds_count[1m])) by (type, sql_type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{type}}-{{sql_type}}",
@@ -5209,10 +5209,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.9999, sum(rate(tidb_tikvclient_backoff_seconds_bucket[1m])) by (le))",
+              "expr": "histogram_quantile(0.999, sum(rate(tidb_tikvclient_backoff_seconds_bucket[1m])) by (le))",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "9999",
+              "legendFormat": "999",
               "refId": "A",
               "step": 40
             },
@@ -5727,7 +5727,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.9999, sum(rate(tidb_tikvclient_request_seconds_bucket{type!=\"GC\"}[1m])) by (le, store))",
+              "expr": "histogram_quantile(0.999, sum(rate(tidb_tikvclient_request_seconds_bucket{type!=\"GC\"}[1m])) by (le, store))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "store-{{store}}",
@@ -5927,7 +5927,7 @@
           "timeFrom": null,
           "timeRegions": [],
           "timeShift": null,
-          "title": "KV Cmd Duration 9999",
+          "title": "KV Cmd Duration 999",
           "tooltip": {
             "msResolution": false,
             "shared": true,

@@ -483,7 +483,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "count(delta(pd_tso_events{type=\"save\",instance=\"$instance\"}[1m]))",
+              "expr": "delta(pd_tso_events{type=\"save\",instance=\"$instance\"}[1m]) > bool 0",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 2,
@@ -740,7 +740,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "pd_cluster_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"leader_count\"}",
+              "expr": "pd_cluster_status{instance=\"$instance\", type=\"leader_count\"}",
               "intervalFactor": 2,
               "refId": "A",
               "step": 60
@@ -820,7 +820,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "sum(pd_cluster_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"store_up_count\"})",
+              "expr": "sum(pd_cluster_status{instance=\"$instance\", type=\"store_up_count\"})",
               "format": "time_series",
               "interval": "15s",
               "intervalFactor": 2,
@@ -893,7 +893,7 @@
           ],
           "targets": [
             {
-              "expr": "sum(pd_cluster_status{instance=\"$instance\", namespace=~\"$namespace\",type=\"store_disconnected_count\"})",
+              "expr": "sum(pd_cluster_status{instance=\"$instance\", type=\"store_disconnected_count\"})",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "Disconnect Stores",
@@ -901,7 +901,7 @@
               "step": 20
             },
             {
-              "expr": "sum(pd_cluster_status{instance=\"$instance\", namespace=~\"$namespace\",type=\"store_unhealth_count\"})",
+              "expr": "sum(pd_cluster_status{instance=\"$instance\", type=\"store_unhealth_count\"})",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "Unhealth Stores",
@@ -909,7 +909,7 @@
               "step": 20
             },
             {
-              "expr": "sum(pd_cluster_status{instance=\"$instance\", namespace=~\"$namespace\",type=\"store_low_space_count\"})",
+              "expr": "sum(pd_cluster_status{instance=\"$instance\", type=\"store_low_space_count\"})",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "LowSpace Stores",
@@ -917,7 +917,7 @@
               "step": 20
             },
             {
-              "expr": "sum(pd_cluster_status{instance=\"$instance\", namespace=~\"$namespace\",type=\"store_down_count\"})",
+              "expr": "sum(pd_cluster_status{instance=\"$instance\", type=\"store_down_count\"})",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "Down Stores",
@@ -925,7 +925,7 @@
               "step": 20
             },
             {
-              "expr": "sum(pd_cluster_status{instance=\"$instance\", namespace=~\"$namespace\",type=\"store_offline_count\"})",
+              "expr": "sum(pd_cluster_status{instance=\"$instance\", type=\"store_offline_count\"})",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "Offline Stores",
@@ -933,7 +933,7 @@
               "step": 20
             },
             {
-              "expr": "sum(pd_cluster_status{instance=\"$instance\", namespace=~\"$namespace\",type=\"store_tombstone_count\"})",
+              "expr": "sum(pd_cluster_status{instance=\"$instance\", type=\"store_tombstone_count\"})",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "Tombstone Stores",
@@ -5157,28 +5157,6 @@
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
-      },
-      {
-        "allValue": ".*",
-        "current": {},
-        "datasource": "${DS_TEST-CLUSTER}",
-        "definition": "",
-        "hide": 0,
-        "includeAll": true,
-        "label": "namespace",
-        "multi": false,
-        "name": "namespace",
-        "options": [],
-        "query": "label_values(pd_cluster_status{instance=\"$instance\"}, namespace)",
-        "refresh": 1,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 1,
         "tagValuesQuery": "",
         "tags": [],
         "tagsQuery": "",

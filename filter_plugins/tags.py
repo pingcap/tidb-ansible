@@ -16,6 +16,12 @@ def with_default_dicts(d, *args):
             ret.update([(k, arg[k]) for k in arg if k not in ret])
     return ret
 
+def update_default_dicts(d):
+    ret = copy.deepcopy(d) or {}
+    if ret:
+        ret.update([(k, update_default_dicts(ret[k])) for k in ret if isinstance(ret[k], (dict, type(None)))])
+    return ret
+
 def dictsort_by_value_type(d):
     vals = list(d.items())
     return sorted(vals, key=lambda p: (isinstance(p[1], dict), p[0], p[1]))
@@ -37,6 +43,7 @@ class FilterModule(object):
         return {
             'epoch_time_diff': epoch_time_diff,
             'with_default_dicts': with_default_dicts,
+            'update_default_dicts': update_default_dicts,
             'dictsort_by_value_type': dictsort_by_value_type,
             'tikv_server_labels_format': tikv_server_labels_format,
         }

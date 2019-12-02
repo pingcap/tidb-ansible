@@ -38,12 +38,26 @@
   roles:
     - check_config_dynamic
 
-- name: Pre-check for configuration
+- name: Pre-check PD configuration
   hosts: pd_servers[0]
   tags:
-    - check_config
+    - pd
   roles:
-    - check_config
+    - check_config_pd
+
+- name: Pre-check TiKV configuration
+  hosts: tikv_servers[0]
+  tags:
+    - tikv
+  roles:
+    - check_config_tikv
+
+- name: Pre-check TiDB configuration
+  hosts: tidb_servers[0]
+  tags:
+    - tidb
+  roles:
+    - check_config_tidb
 
 - name: deploying node_exporter
   hosts: monitored_servers

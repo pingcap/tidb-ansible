@@ -38,7 +38,7 @@
 
 - name: generate final config
   set_fact:
-    pd_conf: "{{ pd_conf_custom | with_default_dicts(pd_conf_generated, pd_conf_default) }}"
+    pd_conf: "{{ pd_conf_custom | with_default_dicts(pd_conf_generated, pd_conf_default) | update_default_dicts }}"
 
 - debug: var=pd_conf
 
