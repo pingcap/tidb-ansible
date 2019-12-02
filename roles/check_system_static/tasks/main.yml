@@ -36,7 +36,7 @@
     msg: "Current systemd release is {{ systemd_version }} (below 52.el7), there are some memory bugs. Refer to https://access.redhat.com/discussions/3536621"
   when: 
     - ansible_os_family == 'RedHat'
-    - systemd_version.stdout < '52.el7'
+    - systemd_version[0] < '52.el7'
 
 - name: Deploy epollexclusive script
   copy: src="{{ script_dir }}/check/epollexclusive" dest="{{ deploy_dir }}/epollexclusive" mode=0755
