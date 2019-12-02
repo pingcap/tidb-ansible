@@ -14,6 +14,12 @@
 
 # The playbook of TiDB
 
+- hosts: localhost
+  tasks:
+    - name: confirm operation
+      pause:
+        prompt: "The operation will clear the cluster and the data will be deleted (Ctrl-c C or enter to continue, Ctrl-c A to Abort)"
+
 - import_playbook: stop.yml
 
 - import_playbook: unsafe_cleanup_container.yml
