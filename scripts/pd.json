@@ -709,7 +709,7 @@
               "expr": "pd_regions_label_level{instance=\"$instance\"}",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "label_{{type}}",
+              "legendFormat": "{{type}}",
               "refId": "A"
             }
           ],
@@ -4409,7 +4409,7 @@
               "expr": "sum(delta(pd_scheduler_balance_leader{instance=\"$instance\", type!=\"move_leader\"}[30s])) by (type, address, store)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{type}}_store-{{store}}",
+              "legendFormat": "{{type}}-store-{{store}}",
               "refId": "A"
             }
           ],
@@ -4494,7 +4494,7 @@
               "expr": "sum(delta(pd_scheduler_balance_region{instance=\"$instance\", type!=\"move_peer\"}[30s])) by (type, address, store)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{type}}_store-{{store}}",
+              "legendFormat": "{{type}}-store-{{store}}",
               "refId": "A"
             }
           ],
@@ -5002,10 +5002,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(delta(pd_schedule_filter{action=\"filter-target\"}[1m])) by (store,type)",
+              "expr": "sum(delta(pd_schedule_filter{action=\"filter-target\"}[1m])) by (store, type, scope)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{store}}-{{type}}",
+              "legendFormat": "{{scope}}-store-{{store}}-{{type}}",
               "metric": "pd_scheduler_event_count",
               "refId": "A",
               "step": 4
@@ -5090,10 +5090,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(delta(pd_schedule_filter{action=\"filter-source\"}[1m])) by (store,type)",
+              "expr": "sum(delta(pd_schedule_filter{action=\"filter-source\"}[1m])) by (store, type, scope)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{store}}-{{type}}",
+              "legendFormat": "{{scope}}-store-{{store}}-{{type}}",
               "metric": "pd_scheduler_event_count",
               "refId": "A",
               "step": 4
@@ -5178,10 +5178,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(delta(pd_scheduler_balance_region{instance=\"$instance\", type=\"direction\"}[1m])) by (store)",
+              "expr": "sum(delta(pd_scheduler_balance_direction{instance=\"$instance\"}[1m])) by (type, source, target)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{store}}",
+              "legendFormat": "{{source}}-{{target}}-{{type}}",
               "metric": "pd_scheduler_event_count",
               "refId": "A",
               "step": 4
