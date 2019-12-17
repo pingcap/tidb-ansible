@@ -542,7 +542,7 @@
               "refId": "C"
             },
             {
-              "expr": "sum(rate(tidb_server_handle_query_duration_seconds_sum{sql_type!=\"internal\"}[30s])) / sum(rate(tidb_server_handle_query_duration_seconds_count{sql_type!=\"internal\"}[30s]))",
+              "expr": "rate(tidb_server_handle_query_duration_seconds_sum{sql_type!=\"internal\"}[30s]) / rate(tidb_server_handle_query_duration_seconds_count{sql_type!=\"internal\"}[30s])",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "avg",
@@ -751,7 +751,7 @@
               "step": 90
             },
             {
-              "expr": "sum(tidb_server_connections) * sum(rate(tidb_server_handle_query_duration_seconds_count[1m])) / sum(rate(tidb_server_handle_query_duration_seconds_sum[1m]))",
+              "expr": "sum(tidb_server_connections) * rate(tidb_server_handle_query_duration_seconds_count[1m]) / rate(tidb_server_handle_query_duration_seconds_sum[1m])",
               "format": "time_series",
               "hide": true,
               "instant": false,
@@ -2954,7 +2954,7 @@
               "refId": "B"
             },
             {
-              "expr": "sum(rate(tidb_autoid_operation_duration_seconds_sum[1m])) / sum(rate(tidb_autoid_operation_duration_seconds_count[1m]))",
+              "expr": "rate(tidb_autoid_operation_duration_seconds_sum[1m]) / rate(tidb_autoid_operation_duration_seconds_count[1m])",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "avg",
