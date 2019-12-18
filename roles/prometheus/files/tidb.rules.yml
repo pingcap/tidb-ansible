@@ -109,13 +109,13 @@ groups:
       value: '{{ $value }}'
       summary: TiDB server event error
 
-  - alert: tidb_tikvclient_backoff_total
-    expr: increase( tidb_tikvclient_backoff_total[10m] )  > 10
+  - alert: tidb_tikvclient_backoff_seconds_count
+    expr: increase( tidb_tikvclient_backoff_seconds_count[10m] )  > 10
     for: 1m
     labels:
       env: ENV_LABELS_ENV
       level: warning
-      expr:  increase( tidb_tikvclient_backoff_total[10m] )  > 10
+      expr:  increase( tidb_tikvclient_backoff_seconds_count[10m] )  > 10
     annotations:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
