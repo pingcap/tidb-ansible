@@ -276,6 +276,15 @@ rocksdb:
   ## Allows OS to incrementally sync WAL to disk while it is being written.
   # wal-bytes-per-sync: "512KB"
 
+  ## Options for `Titan`.
+  titan:
+  ## Enables or disables `Titan`. Note that Titan is still an experimental feature. Once
+  ## enabled, it can't fall back. Forced fallback may result in data loss.
+  # enabled: false
+
+  ## Maximum number of threads of `Titan` background gc jobs.
+  # max-background-gc: 1
+
   ## Options for "Default" Column Family, which stores actual user data.
   defaultcf:
     ## Compression method (if any) is used to compress a block.
@@ -389,7 +398,6 @@ rocksdb:
     titan:
       ## The smallest value to store in blob files. Value smaller than
       ## this threshold will be inlined in base DB.
-      ## default: 1KB
       # min-blob-size: "1KB"
 
       ## The compression algorithm used to compress data in blob files.
@@ -401,36 +409,23 @@ rocksdb:
       ##   lz4:    kLZ4Compression
       ##   lz4hc:  kLZ4HCCompression
       ##   zstd:   kZSTD
-      ## default: lz4
       # blob-file-compression: "lz4"
 
       ## Specifics cache size for blob records
-      ## default: 0
       # blob-cache-size: "0GB"
-
-      ## The minimum batch size of one gc job. The total blob file size
-      ## of one gc job cannot smaller than this threshold.
-      ## default: 16MB
-      # min-gc-batch-size: "16MB"
-
-      ## The maximum batch size of one gc job. The total blob file size
-      ## of one gc job cannot exceed this threshold.
-      # max-gc-batch-size: "64MB"
 
       ## If the ratio of discardable size of a blob file is larger than
       ## this threshold, the blob file will be GCed out.
-      ## default: 0.5
       # discardable-ratio: 0.5
 
-      ## The gc job will sample the target blob files to see if its
-      ## discardable ratio is smaller than discardable-ratio metioned
-      ## above before gc start, if so the blob file will be exclude.
-      # sample-ratio: 0.1
-
-      ## If the size of the blob file is smaller than this threshold,
-      ## the blob file will be merge.
-      ## default: 8MB
-      # merge-small-file-threshold: "8MB"
+      ## The mode used to process blob files. In read-only mode Titan
+      ## stops writing value into blob log. In fallback mode Titan
+      ## converts blob index into real value on flush and compaction.
+      ## This option is especially useful for downgrading Titan.
+      ##   default:   kNormal
+      ##   read-only: kReadOnly
+      ##   fallback:  kFallback
+      # blob-run-mode: "normal"
 
   ## Options for "Write" Column Family, which stores MVCC commit information
   writecf:
