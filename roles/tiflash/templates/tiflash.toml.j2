@@ -1,14 +1,12 @@
----
-
 {% for item, value in tiflash_conf.global | dictsort -%}
 {{ item }} = {{ value | to_json }}
+{% endfor %}
 tmp_path = "{{ tmp_path }}"
 users_config = "{{ user_conf }}"
 path = "{{ path }}"
 tcp_port = "{{ tcp_port }}"
 http_port = "{{ http_port }}"
 interserver_http_port = "{{ interserver_http_port }}"
-{% endfor %}
 
 [flash]
 {% set all_tidb = [] -%}
@@ -58,7 +56,7 @@ log = "{{ tiflash_server_log }}"
 {% for host in groups.pd_servers -%}
   {% set pd_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
   {% set pd_port = hostvars[host].pd_client_port -%}
-  {% set _ = all_tidb.append("%s:%s" % (pd_ip, pd_port)) -%}
+  {% set _ = all_pd.append("%s:%s" % (pd_ip, pd_port)) -%}
 {% endfor %}
 pd_addr = "{{ all_pd | join(',') }}"
 {% for item, value in tiflash_conf.raft | dictsort -%}

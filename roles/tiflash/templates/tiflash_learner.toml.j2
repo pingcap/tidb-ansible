@@ -1,5 +1,3 @@
----
-
 [readpool]
 {% for item, value in tiflash_learner_conf.readpool | dictsort_by_value_type -%}
 {% if value is not mapping -%}
@@ -16,7 +14,11 @@
 [server]
 engine-addr = "{{ ansible_host | default(inventory_hostname) }}:{{ flash_service_port }}"
 {% for item, value in tiflash_learner_conf.server | dictsort -%}
+{% if item == "labels" %}
+{{ item }} = {{ value | tikv_server_labels_format }}
+{% else %}
 {{ item }} = {{ value | to_json }}
+{% endif %}
 {% endfor %}
 
 [storage]

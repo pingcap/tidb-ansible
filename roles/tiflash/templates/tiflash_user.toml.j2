@@ -1,5 +1,3 @@
----
-
 [quotas]
 {% for item, value in tiflash_user_conf.quotas | dictsort_by_value_type -%}
 {% if value is not mapping -%}
@@ -8,7 +6,7 @@
 
 [quotas.{{ item }}]
 {% for sub_item, sub_value in value | dictsort_by_value_type -%}
-{% if value is not mapping -%}
+{% if sub_value is not mapping -%}
 {{ sub_item }} = {{ sub_value | to_json }}
 {% else %}
 
@@ -29,7 +27,7 @@
 
 [users.{{ item }}]
 {% for sub_item, sub_value in value | dictsort_by_value_type -%}
-{% if value is not mapping -%}
+{% if sub_value is not mapping -%}
 {{ sub_item }} = {{ sub_value | to_json }}
 {% else %}
 
@@ -43,7 +41,7 @@
 {% endfor %}
 
 [profiles]
-{% for item, value in tiflash_user_conf.flash | dictsort_by_value_type -%}
+{% for item, value in tiflash_user_conf.profiles | dictsort_by_value_type -%}
 {% if value is not mapping -%}
 {{ item }} = {{ value | to_json }}
 {% else %}
