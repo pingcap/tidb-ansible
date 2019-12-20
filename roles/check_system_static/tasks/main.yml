@@ -19,7 +19,7 @@
     - ansible_distribution in ['CentOS', 'RedHat']
     - ansible_distribution_major_version != '7'
 
-- name: Get systemd info
+- name: Get kernel version
   yum:
     list: systemd
   register: systemd_info
@@ -28,15 +28,21 @@
 - set_fact:
     systemd_version: "{{ systemd_info.results | json_query(query) }}"
   vars:
+    query: "[?yumstate=='installed'].version"
+  when: ansible_os_family == 'RedHat'
+
+- set_fact:
+    systemd_release: "{{ systemd_info.results | json_query(query) }}"
+  vars:
     query: "[?yumstate=='installed'].release"
   when: ansible_os_family == 'RedHat'
 
 - name: Preflight check - Systemd version
   fail:
-    msg: "Current systemd release is {{ systemd_version }} (below 52.el7), there are some memory bugs. Refer to https://access.redhat.com/discussions/3536621"
+    msg: "Current systemd version is {{ systemd_version.0 }}-{{ systemd_release.0 }} (below 219-52.el7), there are some memory bugs. Refer to https://access.redhat.com/discussions/3536621"
   when: 
     - ansible_os_family == 'RedHat'
-    - systemd_version[0] < '52.el7'
+    - systemd_version[0] < '219' or (systemd_version[0] == '219' and systemd_release[0] < '52.el7')
 
 - name: Deploy epollexclusive script
   copy: src="{{ script_dir }}/check/epollexclusive" dest="{{ deploy_dir }}/epollexclusive" mode=0755
