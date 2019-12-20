@@ -4,9 +4,9 @@
 tmp_path = "{{ tmp_path }}"
 users_config = "{{ user_conf }}"
 path = "{{ path }}"
-tcp_port = "{{ tcp_port }}"
-http_port = "{{ http_port }}"
-interserver_http_port = "{{ interserver_http_port }}"
+tcp_port = {{ tcp_port }}
+http_port = {{ http_port }}
+interserver_http_port = {{ interserver_http_port }}
 
 [flash]
 {% set all_tidb = [] -%}
@@ -23,7 +23,7 @@ service_addr = "{{ ansible_host | default(inventory_hostname) }}:{{ flash_servic
 {% else %}
 
 [flash.{{ item }}]
-{% if item == 'flash_cluster' %}
+{% if item == 'cluster_manager_path' %}
 cluster_manager_path = "{{ cluster_manager_path }}"
 {% endif %}
 {% if item == 'proxy' %}

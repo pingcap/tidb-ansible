@@ -14,9 +14,16 @@
 - name: load tiflash default config
   include_vars: file=tiflash.yml name=tiflash_conf_default
 
+- name: generate tiflash dynamic config
+  set_fact:
+    tiflash_conf_generated:
+      flash:
+        flash_cluster:
+          cluster_manager_path: "{{ cluster_manager_path }}"
+
 - name: combine tiflash config
   set_fact:
-    tiflash_conf: "{{ tiflash_conf_custom | with_default_dicts(tiflash_conf_default) | update_default_dicts }}"
+    tiflash_conf: "{{ tiflash_conf_custom | with_default_dicts(tiflash_conf_generated, tiflash_conf_default) | update_default_dicts }}"
 
 - debug: var=tiflash_conf
 
