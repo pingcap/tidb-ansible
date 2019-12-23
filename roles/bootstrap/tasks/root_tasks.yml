@@ -23,8 +23,6 @@
 - name: disable THP
   shell: echo never > /sys/kernel/mm/transparent_hugepage/enabled && echo never > /sys/kernel/mm/transparent_hugepage/defrag
   when:
-    - ansible_os_family == 'RedHat'
-    - ansible_distribution in ['CentOS', 'RedHat']
     - tuning_kernel_parameters
 
 - name: update /etc/security/limits.conf
