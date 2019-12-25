@@ -20,6 +20,11 @@
     - { name: 'fs.file-max', value: 1000000 }
   when: tuning_kernel_parameters
 
+- name: disable THP
+  shell: echo never > /sys/kernel/mm/transparent_hugepage/enabled && echo never > /sys/kernel/mm/transparent_hugepage/defrag
+  when:
+    - tuning_kernel_parameters
+
 - name: update /etc/security/limits.conf
   blockinfile:
     dest: /etc/security/limits.conf
