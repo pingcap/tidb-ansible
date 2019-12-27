@@ -40,13 +40,13 @@ log-file = "{{ tiflash_tikv_log }}"
 {% endfor %}
 
 [logger]
+errorlog = "{{ tiflash_errlog }}"
+log = "{{ tiflash_server_log }}"
 {% for item, value in tiflash_conf.logger | dictsort -%}
 {{ item }} = {{ value | to_json }}
 {% endfor %}
 
 [application]
-errorlog = "{{ tiflash_errlog }}"
-log = "{{ tiflash_server_log }}"
 {% for item, value in tiflash_conf.application | dictsort -%}
 {{ item }} = {{ value | to_json }}
 {% endfor %}

@@ -86,7 +86,7 @@
   when: not deploy_without_tidb|default(false)
 
 - name: unarchive tiflash
-  shell: tar xzf tics-latest-linux-amd64.tar.gz
+  shell: tar xzf tiflash-latest-linux-amd64.tar.gz
   args:
     chdir: "{{ downloads_dir }}"
     warn: no
@@ -114,5 +114,5 @@
 
 - name: cp tiflash directory
   shell: >
-    cp -rfv {{ downloads_dir }}/tics-{{ item.version }}-linux-amd64 "{{ resources_dir }}/bin/tiflash"
+    cp -rfv {{ downloads_dir }}/tiflash-{{ item.version }}-linux-amd64 "{{ resources_dir }}/bin/tiflash"
   with_items: "{{ tiflash_packages }}"

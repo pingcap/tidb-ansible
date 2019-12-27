@@ -397,6 +397,35 @@
 
     - include_tasks: "common_tasks/remove_evict_leader_scheduler.yml"
 
+- name: rolling update TiFlash cluster
+  hosts: tiflash_servers
+  any_errors_fatal: true
+  serial: 1
+  tags:
+    - tiflash
+
+  pre_tasks:
+    - name: stop TiFlash by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./stop_tiflash.sh
+      when: process_supervision == 'supervise'
+
+    - name: stop TiFlash by systemd
+      systemd: name=tiflash-{{ tcp_port }}.service state=stopped
+      become: true
+      when: process_supervision == 'systemd'
+
+  roles:
+    - tiflash
+
+  post_tasks:
+    - name: start TiFlash by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./start_tiflash.sh
+      when: process_supervision == 'supervise'
+
+    - name: start TiFlash by systemd
+      systemd: name=tiflash-{{ tcp_port }}.service state=started
+      become: true
+      when: process_supervision == 'systemd'
 
 - name: rolling update pump cluster
   hosts: pump_servers
