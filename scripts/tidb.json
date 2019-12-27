@@ -3238,601 +3238,695 @@
         "y": 3
       },
       "id": 141,
-      "panels": [
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
-          "description": "TiDB transaction processing counts by type and source. Internal means TiDB inner transcation calls",
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "grid": {},
-          "gridPos": {
-            "h": 7,
-            "w": 8,
-            "x": 0,
-            "y": 67
-          },
-          "id": 69,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": true,
-            "max": true,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null as zero",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "sum(rate(tidb_session_transaction_duration_seconds_count[1m])) by (type, sql_type)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "{{type}}-{{sql_type}}",
-              "refId": "A",
-              "step": 10
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Transaction OPS",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": "0",
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
-          "description": "Bucketed histogram of transaction execution durations, including retry",
-          "fill": 1,
-          "gridPos": {
-            "h": 7,
-            "w": 8,
-            "x": 8,
-            "y": 67
-          },
-          "id": 72,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "histogram_quantile(0.99, sum(rate(tidb_session_transaction_duration_seconds_bucket[1m])) by (le, sql_type))",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "99-{{sql_type}}",
-              "refId": "A"
-            },
-            {
-              "expr": "histogram_quantile(0.95, sum(rate(tidb_session_transaction_duration_seconds_bucket[1m])) by (le, sql_type))",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "95-{{sql_type}}",
-              "refId": "B"
-            },
-            {
-              "expr": "histogram_quantile(0.80, sum(rate(tidb_session_transaction_duration_seconds_bucket[1m])) by (le, sql_type))",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "80-{{sql_type}}",
-              "refId": "C"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Duration",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "s",
-              "label": null,
-              "logBase": 2,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
-          "description": "TiDB transaction retry histogram bucket statistics",
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "grid": {},
-          "gridPos": {
-            "h": 7,
-            "w": 8,
-            "x": 16,
-            "y": 67
-          },
-          "id": 67,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null as zero",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "histogram_quantile(1.0, sum(rate(tidb_session_retry_num_bucket[30s])) by (le))",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "100",
-              "refId": "A",
-              "step": 10
-            },
-            {
-              "expr": "histogram_quantile(0.99, sum(rate(tidb_session_retry_num_bucket[30s])) by (le))",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "99",
-              "refId": "B"
-            },
-            {
-              "expr": "histogram_quantile(0.90, sum(rate(tidb_session_retry_num_bucket[30s])) by (le))",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "90",
-              "refId": "C"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Transaction Retry Num",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": "0",
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
-          "description": "TiDB statements numbers within one transaction. Internal means TiDB inner transaction",
-          "fill": 1,
-          "gridPos": {
-            "h": 7,
-            "w": 8,
-            "x": 0,
-            "y": 74
-          },
-          "id": 74,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "histogram_quantile(0.99, sum(rate(tidb_session_transaction_statement_num_bucket[30s])) by (le, sql_type))",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "99-{{sql_type}}",
-              "refId": "A"
-            },
-            {
-              "expr": "histogram_quantile(0.80, sum(rate(tidb_session_transaction_statement_num_bucket[30s])) by (le, sql_type))",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "80-{{sql_type}}",
-              "refId": "B"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Transaction Statement Num",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
-          "description": "Error numbers of transaction retry",
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "grid": {},
-          "gridPos": {
-            "h": 7,
-            "w": 8,
-            "x": 8,
-            "y": 74
-          },
-          "id": 36,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null as zero",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "sum(rate(tidb_session_retry_error_total[30s])) by (type, sql_type)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "{{type}}-{{sql_type}}",
-              "refId": "A",
-              "step": 10
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Session Retry Error OPS",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": "0",
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
-          "description": "TiDB transaction latch wait time on key value storage",
-          "fill": 1,
-          "gridPos": {
-            "h": 7,
-            "w": 8,
-            "x": 16,
-            "y": 74
-          },
-          "id": 175,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "histogram_quantile(0.99, sum(rate(tidb_tikvclient_local_latch_wait_seconds_bucket[1m])) by (le))",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "99",
-              "refId": "A"
-            },
-            {
-              "expr": "histogram_quantile(0.95, sum(rate(tidb_tikvclient_local_latch_wait_seconds_bucket[1m])) by (le))",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "95",
-              "refId": "B"
-            },
-            {
-              "expr": "histogram_quantile(0.80, sum(rate(tidb_tikvclient_local_latch_wait_seconds_bucket[1m])) by (le))",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "80",
-              "refId": "C"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Local Latch Wait Duration",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "s",
-              "label": null,
-              "logBase": 2,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        }
-      ],
+      "panels": [],
       "repeat": null,
       "title": "Transaction",
       "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_TEST-CLUSTER}",
+      "description": "TiDB transaction processing counts by type and source. Internal means TiDB inner transcation calls",
+      "editable": true,
+      "error": false,
+      "fill": 1,
+      "grid": {},
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 0,
+        "y": 4
+      },
+      "id": 69,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": true,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null as zero",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum(rate(tidb_session_transaction_duration_seconds_count[1m])) by (type, sql_type)",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "{{type}}-{{sql_type}}",
+          "refId": "A",
+          "step": 10
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Transaction OPS",
+      "tooltip": {
+        "msResolution": false,
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_TEST-CLUSTER}",
+      "description": "Bucketed histogram of transaction execution durations, including retry",
+      "fill": 1,
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 8,
+        "y": 4
+      },
+      "id": 72,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(tidb_session_transaction_duration_seconds_bucket[1m])) by (le, sql_type))",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "99-{{sql_type}}",
+          "refId": "A"
+        },
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(tidb_session_transaction_duration_seconds_bucket[1m])) by (le, sql_type))",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "95-{{sql_type}}",
+          "refId": "B"
+        },
+        {
+          "expr": "histogram_quantile(0.80, sum(rate(tidb_session_transaction_duration_seconds_bucket[1m])) by (le, sql_type))",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "80-{{sql_type}}",
+          "refId": "C"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Duration",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "s",
+          "label": null,
+          "logBase": 2,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_TEST-CLUSTER}",
+      "description": "TiDB transaction retry histogram bucket statistics",
+      "editable": true,
+      "error": false,
+      "fill": 1,
+      "grid": {},
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 16,
+        "y": 4
+      },
+      "id": 67,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null as zero",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "histogram_quantile(1.0, sum(rate(tidb_session_retry_num_bucket[30s])) by (le))",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "100",
+          "refId": "A",
+          "step": 10
+        },
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(tidb_session_retry_num_bucket[30s])) by (le))",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "99",
+          "refId": "B"
+        },
+        {
+          "expr": "histogram_quantile(0.90, sum(rate(tidb_session_retry_num_bucket[30s])) by (le))",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "90",
+          "refId": "C"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Transaction Retry Num",
+      "tooltip": {
+        "msResolution": false,
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_TEST-CLUSTER}",
+      "description": "TiDB statements numbers within one transaction. Internal means TiDB inner transaction",
+      "fill": 1,
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 0,
+        "y": 11
+      },
+      "id": 74,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(tidb_session_transaction_statement_num_bucket[30s])) by (le, sql_type))",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "99-{{sql_type}}",
+          "refId": "A"
+        },
+        {
+          "expr": "histogram_quantile(0.80, sum(rate(tidb_session_transaction_statement_num_bucket[30s])) by (le, sql_type))",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "80-{{sql_type}}",
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Transaction Statement Num",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_TEST-CLUSTER}",
+      "description": "Error numbers of transaction retry",
+      "editable": true,
+      "error": false,
+      "fill": 1,
+      "grid": {},
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 8,
+        "y": 11
+      },
+      "id": 36,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null as zero",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum(rate(tidb_session_retry_error_total[30s])) by (type, sql_type)",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "{{type}}-{{sql_type}}",
+          "refId": "A",
+          "step": 10
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Session Retry Error OPS",
+      "tooltip": {
+        "msResolution": false,
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_TEST-CLUSTER}",
+      "description": "TiDB transaction latch wait time on key value storage",
+      "fill": 1,
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 16,
+        "y": 11
+      },
+      "id": 175,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(tidb_tikvclient_local_latch_wait_seconds_bucket[1m])) by (le))",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "99",
+          "refId": "A"
+        },
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(tidb_tikvclient_local_latch_wait_seconds_bucket[1m])) by (le))",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "95",
+          "refId": "B"
+        },
+        {
+          "expr": "histogram_quantile(0.80, sum(rate(tidb_tikvclient_local_latch_wait_seconds_bucket[1m])) by (le))",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "80",
+          "refId": "C"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Local Latch Wait Duration",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "s",
+          "label": null,
+          "logBase": 2,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_TEST-CLUSTER}",
+      "description": "TiDB lock keys duration for pessimistic transactions with lock waited",
+      "fill": 1,
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 0,
+        "y": 18
+      },
+      "id": 189,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(tidb_tikvclient_pessimistic_lock_keys_duration_bucket[1m])) by (le))",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "99",
+          "refId": "A"
+        },
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(tidb_tikvclient_pessimistic_lock_keys_duration_bucket[1m])) by (le))",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "95",
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Lock keys duration",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "s",
+          "label": null,
+          "logBase": 2,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "collapsed": true,
@@ -3840,7 +3934,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 4
+        "y": 25
       },
       "id": 142,
       "panels": [
@@ -4354,7 +4448,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 5
+        "y": 26
       },
       "id": 143,
       "panels": [
@@ -5071,7 +5165,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 6
+        "y": 27
       },
       "id": 144,
       "panels": [
@@ -5589,7 +5683,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 7
+        "y": 28
       },
       "id": 145,
       "panels": [
@@ -5982,7 +6076,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 8
+        "y": 29
       },
       "id": 146,
       "panels": [
@@ -6654,7 +6748,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 9
+        "y": 30
       },
       "id": 147,
       "panels": [
@@ -7374,7 +7468,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 10
+        "y": 31
       },
       "id": 148,
       "panels": [
@@ -7778,7 +7872,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 11
+        "y": 32
       },
       "id": 149,
       "panels": [
@@ -7923,7 +8017,7 @@
               "legendFormat": "{{type}}",
               "refId": "A"
             },
-	    {
+            {
               "expr": "sum(rate(tidb_ddl_add_index_total[1m])) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
@@ -8515,7 +8609,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 12
+        "y": 33
       },
       "id": 150,
       "panels": [
@@ -9335,7 +9429,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 13
+        "y": 34
       },
       "id": 161,
       "panels": [
@@ -9615,7 +9709,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 14
+        "y": 35
       },
       "id": 151,
       "panels": [
@@ -9988,7 +10082,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 15
+        "y": 36
       },
       "id": 152,
       "panels": [
@@ -10806,7 +10900,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 37
       },
       "id": 178,
       "panels": [
