@@ -58,7 +58,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": null,
-  "iteration": 1577417748686,
+  "iteration": 1577417748692,
   "links": [],
   "panels": [
     {
@@ -20153,6 +20153,110 @@
             "x": 0,
             "y": 51
           },
+          "id": 3746,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sort": "current",
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "paceLength": 10,
+          "percentage": false,
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "scopedVars": {
+            "db": {
+              "selected": false,
+              "text": "kv",
+              "value": "kv"
+            },
+            "titan_db": {
+              "selected": false,
+              "text": "kv",
+              "value": "kv"
+            }
+          },
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(tikv_engine_blob_locate{instance=~\"$instance\", db=\"$db\", type=\"number_blob_get\"}[2m]))",
+              "format": "time_series",
+              "hide": false,
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "get",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Blob get operations",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "fill": 1,
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 12,
+            "y": 51
+          },
           "id": 3655,
           "legend": {
             "alignAsTable": true,
@@ -20271,10 +20375,10 @@
           "gridPos": {
             "h": 6,
             "w": 12,
-            "x": 12,
-            "y": 51
+            "x": 0,
+            "y": 57
           },
-          "id": 3746,
+          "id": 3338,
           "legend": {
             "alignAsTable": true,
             "avg": false,
@@ -20283,8 +20387,6 @@
             "min": false,
             "rightSide": true,
             "show": true,
-            "sort": "current",
-            "sortDesc": true,
             "total": false,
             "values": true
           },
@@ -20315,20 +20417,36 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_blob_locate{instance=~\"$instance\", db=\"$db\", type=\"number_blob_get\"}[2m]))",
+              "expr": "sum(rate(tikv_engine_blob_locate{instance=~\"$instance\", db=\"$db\", type=\"number_blob_seek\"}[2m]))",
               "format": "time_series",
               "hide": false,
               "interval": "",
               "intervalFactor": 2,
               "legendFormat": "seek",
               "refId": "A"
+            },
+            {
+              "expr": "sum(rate(tikv_engine_blob_locate{instance=~\"$instance\", db=\"$db\", type=\"number_blob_prev\"}[2m]))",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 1,
+              "legendFormat": "prev",
+              "refId": "B"
+            },
+            {
+              "expr": "sum(rate(tikv_engine_blob_locate{instance=~\"$instance\", db=\"$db\", type=\"number_blob_next\"}[2m]))",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 1,
+              "legendFormat": "next",
+              "refId": "C"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeRegions": [],
           "timeShift": null,
-          "title": "Blob get operations",
+          "title": "Blob iter operations",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -20375,7 +20493,7 @@
           "gridPos": {
             "h": 6,
             "w": 12,
-            "x": 0,
+            "x": 12,
             "y": 57
           },
           "id": 3412,
@@ -20498,10 +20616,10 @@
           "gridPos": {
             "h": 6,
             "w": 12,
-            "x": 12,
-            "y": 57
+            "x": 0,
+            "y": 63
           },
-          "id": 3338,
+          "id": 4092,
           "legend": {
             "alignAsTable": true,
             "avg": false,
@@ -20510,6 +20628,8 @@
             "min": false,
             "rightSide": true,
             "show": true,
+            "sort": "current",
+            "sortDesc": true,
             "total": false,
             "values": true
           },
@@ -20540,36 +20660,39 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_blob_locate{instance=~\"$instance\", db=\"$db\", type=\"number_blob_seek\"}[2m]))",
+              "expr": "avg(tikv_engine_blob_next_micros_seconds{instance=~\"$instance\", db=\"$db\", type=~\".*_average\"}) by (type)",
               "format": "time_series",
-              "hide": false,
-              "interval": "",
               "intervalFactor": 2,
-              "legendFormat": "seek",
+              "legendFormat": "avg",
               "refId": "A"
             },
             {
-              "expr": "sum(rate(tikv_engine_blob_locate{instance=~\"$instance\", db=\"$db\", type=\"number_blob_prev\"}[2m]))",
+              "expr": "avg(tikv_engine_blob_next_micros_seconds{instance=~\"$instance\", db=\"$db\", type=~\".*_percentile95\"}) by (type)",
               "format": "time_series",
-              "hide": false,
-              "intervalFactor": 1,
-              "legendFormat": "prev",
+              "intervalFactor": 2,
+              "legendFormat": "95%",
               "refId": "B"
             },
             {
-              "expr": "sum(rate(tikv_engine_blob_locate{instance=~\"$instance\", db=\"$db\", type=\"number_blob_next\"}[2m]))",
+              "expr": "avg(tikv_engine_blob_next_micros_seconds{instance=~\"$instance\", db=\"$db\", type=~\".*_percentile99\"}) by (type)",
               "format": "time_series",
-              "hide": false,
-              "intervalFactor": 1,
-              "legendFormat": "next",
+              "intervalFactor": 2,
+              "legendFormat": "99%",
               "refId": "C"
+            },
+            {
+              "expr": "max(tikv_engine_blob_next_micros_seconds{instance=~\"$instance\", db=\"$db\", type=~\".*_max\"}) by (type)",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "max",
+              "refId": "D"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeRegions": [],
           "timeShift": null,
-          "title": "Blob seek operations",
+          "title": "Blob next duration",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -20585,9 +20708,132 @@
           },
           "yaxes": [
             {
-              "format": "ops",
+              "format": "µs",
+              "label": null,
+              "logBase": 2,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
               "label": null,
               "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "fill": 1,
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 12,
+            "y": 63
+          },
+          "id": 4093,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sort": "current",
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "paceLength": 10,
+          "percentage": false,
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "scopedVars": {
+            "db": {
+              "selected": false,
+              "text": "kv",
+              "value": "kv"
+            },
+            "titan_db": {
+              "selected": false,
+              "text": "kv",
+              "value": "kv"
+            }
+          },
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "avg(tikv_engine_blob_prev_micros_seconds{instance=~\"$instance\", db=\"$db\", type=~\".*_average\"}) by (type)",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "avg",
+              "refId": "A"
+            },
+            {
+              "expr": "avg(tikv_engine_blob_prev_micros_seconds{instance=~\"$instance\", db=\"$db\", type=~\".*_percentile95\"}) by (type)",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "95%",
+              "refId": "B"
+            },
+            {
+              "expr": "avg(tikv_engine_blob_prev_micros_seconds{instance=~\"$instance\", db=\"$db\", type=~\".*_percentile99\"}) by (type)",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "99%",
+              "refId": "C"
+            },
+            {
+              "expr": "max(tikv_engine_blob_prev_micros_seconds{instance=~\"$instance\", db=\"$db\", type=~\".*_max\"}) by (type)",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "max",
+              "refId": "D"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Blob prev duration",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "µs",
+              "label": null,
+              "logBase": 2,
               "max": null,
               "min": null,
               "show": true
@@ -20617,7 +20863,7 @@
             "h": 6,
             "w": 12,
             "x": 0,
-            "y": 63
+            "y": 69
           },
           "id": 3643,
           "legend": {
@@ -20717,7 +20963,7 @@
             "h": 6,
             "w": 12,
             "x": 12,
-            "y": 63
+            "y": 69
           },
           "id": 3645,
           "legend": {
@@ -20817,7 +21063,7 @@
             "h": 6,
             "w": 12,
             "x": 0,
-            "y": 69
+            "y": 75
           },
           "id": 3657,
           "legend": {
@@ -20938,7 +21184,7 @@
             "h": 6,
             "w": 12,
             "x": 12,
-            "y": 69
+            "y": 75
           },
           "id": 3408,
           "legend": {
@@ -21059,7 +21305,7 @@
             "h": 6,
             "w": 12,
             "x": 0,
-            "y": 75
+            "y": 81
           },
           "id": 3651,
           "legend": {
@@ -21159,7 +21405,7 @@
             "h": 6,
             "w": 12,
             "x": 12,
-            "y": 75
+            "y": 81
           },
           "id": 3653,
           "legend": {
@@ -21280,7 +21526,7 @@
             "h": 6,
             "w": 12,
             "x": 0,
-            "y": 81
+            "y": 87
           },
           "id": 4018,
           "legend": {
@@ -21381,7 +21627,7 @@
             "h": 6,
             "w": 12,
             "x": 12,
-            "y": 81
+            "y": 87
           },
           "id": 3410,
           "legend": {
@@ -21502,7 +21748,7 @@
             "h": 6,
             "w": 12,
             "x": 0,
-            "y": 87
+            "y": 93
           },
           "id": 4021,
           "legend": {
@@ -21623,7 +21869,7 @@
             "h": 6,
             "w": 12,
             "x": 12,
-            "y": 87
+            "y": 93
           },
           "id": 4022,
           "legend": {
@@ -21744,7 +21990,7 @@
             "h": 6,
             "w": 12,
             "x": 0,
-            "y": 93
+            "y": 99
           },
           "id": 3340,
           "legend": {
@@ -21844,7 +22090,7 @@
             "h": 6,
             "w": 12,
             "x": 12,
-            "y": 93
+            "y": 99
           },
           "id": 3649,
           "legend": {
@@ -21944,7 +22190,7 @@
             "h": 6,
             "w": 12,
             "x": 0,
-            "y": 99
+            "y": 105
           },
           "id": 3344,
           "legend": {
@@ -23520,6 +23766,6 @@
   },
   "timezone": "browser",
   "title": "Test-Cluster-TiKV-Details",
-  "uid": "RDVQiEzZz2",
-  "version": 44
+  "uid": "FWRio7LZk",
+  "version": 2
 }
