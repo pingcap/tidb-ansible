@@ -58,7 +58,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": null,
-  "iteration": 1577417748692,
+  "iteration": 1577421994335,
   "links": [],
   "panels": [
     {
@@ -19280,11 +19280,6 @@
           "points": false,
           "renderer": "flot",
           "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "kv",
-              "value": "kv"
-            },
             "titan_db": {
               "selected": false,
               "text": "kv",
@@ -19297,14 +19292,14 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(tikv_engine_titandb_num_live_blob_file{instance=~\"$instance\", db=\"$db\"})",
+              "expr": "sum(tikv_engine_titandb_num_live_blob_file{instance=~\"$instance\", db=\"$titan_db\"})",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "live blob file num",
               "refId": "A"
             },
             {
-              "expr": "sum(tikv_engine_titandb_num_obsolete_blob_file{instance=~\"$instance\", db=\"$db\"})",
+              "expr": "sum(tikv_engine_titandb_num_obsolete_blob_file{instance=~\"$instance\", db=\"$titan_db\"})",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 1,
@@ -19388,11 +19383,6 @@
           "points": false,
           "renderer": "flot",
           "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "kv",
-              "value": "kv"
-            },
             "titan_db": {
               "selected": false,
               "text": "kv",
@@ -19405,14 +19395,14 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(tikv_engine_titandb_live_blob_file_size{instance=~\"$instance\", db=\"$db\"})",
+              "expr": "sum(tikv_engine_titandb_live_blob_file_size{instance=~\"$instance\", db=\"$titan_db\"})",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "live blob file size",
               "refId": "A"
             },
             {
-              "expr": "sum(tikv_engine_titandb_obsolete_blob_file_size{instance=~\"$instance\", db=\"$db\"})",
+              "expr": "sum(tikv_engine_titandb_obsolete_blob_file_size{instance=~\"$instance\", db=\"$titan_db\"})",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "obsolete blob file size",
@@ -19495,11 +19485,6 @@
           "points": false,
           "renderer": "flot",
           "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "kv",
-              "value": "kv"
-            },
             "titan_db": {
               "selected": false,
               "text": "kv",
@@ -19512,7 +19497,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(tikv_engine_titandb_live_blob_size{instance=~\"$instance\", db=\"$db\"})",
+              "expr": "sum(tikv_engine_titandb_live_blob_size{instance=~\"$instance\", db=\"$titan_db\"})",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "live blob size",
@@ -19600,11 +19585,6 @@
           "points": false,
           "renderer": "flot",
           "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "kv",
-              "value": "kv"
-            },
             "titan_db": {
               "selected": false,
               "text": "kv",
@@ -19617,7 +19597,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_blob_cache_efficiency{instance=~\"$instance\", db=\"$db\", type=\"blob_cache_hit\"}[1m])) / (sum(rate(tikv_engine_blob_cache_efficiency{db=\"$db\", type=\"blob_cache_hit\"}[1m])) + sum(rate(tikv_engine_blob_cache_efficiency{db=\"$db\", type=\"blob_cache_miss\"}[1m])))",
+              "expr": "sum(rate(tikv_engine_blob_cache_efficiency{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_cache_hit\"}[1m])) / (sum(rate(tikv_engine_blob_cache_efficiency{db=\"$titan_db\", type=\"blob_cache_hit\"}[1m])) + sum(rate(tikv_engine_blob_cache_efficiency{db=\"$titan_db\", type=\"blob_cache_miss\"}[1m])))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "all",
@@ -19704,11 +19684,6 @@
           "points": false,
           "renderer": "flot",
           "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "kv",
-              "value": "kv"
-            },
             "titan_db": {
               "selected": false,
               "text": "kv",
@@ -19721,7 +19696,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(tikv_engine_blob_iter_touch_blob_file_count{instance=~\"$instance\", db=\"$db\", type=\"blob_iter_touch_blob_file_count_average\"})",
+              "expr": "avg(tikv_engine_blob_iter_touch_blob_file_count{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_iter_touch_blob_file_count_average\"})",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
@@ -19729,14 +19704,14 @@
               "refId": "A"
             },
             {
-              "expr": "avg(tikv_engine_blob_iter_touch_blob_file_count{instance=~\"$instance\", db=\"$db\", type=\"blob_iter_touch_blob_file_count_percentile95\"})",
+              "expr": "avg(tikv_engine_blob_iter_touch_blob_file_count{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_iter_touch_blob_file_count_percentile95\"})",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "95%",
               "refId": "C"
             },
             {
-              "expr": "avg(tikv_engine_blob_iter_touch_blob_file_count{instance=~\"$instance\", db=\"$db\", type=\"blob_iter_touch_blob_file_count_percentile99\"})",
+              "expr": "avg(tikv_engine_blob_iter_touch_blob_file_count{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_iter_touch_blob_file_count_percentile99\"})",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 1,
@@ -19744,7 +19719,7 @@
               "refId": "D"
             },
             {
-              "expr": "max(tikv_engine_blob_iter_touch_blob_file_count{instance=~\"$instance\", db=\"$db\", type=\"blob_iter_touch_blob_file_count_max\"})",
+              "expr": "max(tikv_engine_blob_iter_touch_blob_file_count{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_iter_touch_blob_file_count_max\"})",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 1,
@@ -19828,11 +19803,6 @@
           "points": false,
           "renderer": "flot",
           "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "kv",
-              "value": "kv"
-            },
             "titan_db": {
               "selected": false,
               "text": "kv",
@@ -19845,7 +19815,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(tikv_engine_titandb_blob_file_discardable_ratio{instance=~\"$instance\", db=\"$db\"}) by (ratio)",
+              "expr": "sum(tikv_engine_titandb_blob_file_discardable_ratio{instance=~\"$instance\", db=\"$titan_db\"}) by (ratio)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{ratio}}",
@@ -19930,11 +19900,6 @@
           "points": false,
           "renderer": "flot",
           "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "kv",
-              "value": "kv"
-            },
             "titan_db": {
               "selected": false,
               "text": "kv",
@@ -19947,7 +19912,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(tikv_engine_blob_key_size{instance=~\"$instance\", db=\"$db\", type=\"blob_key_size_average\"})",
+              "expr": "avg(tikv_engine_blob_key_size{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_key_size_average\"})",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
@@ -19955,14 +19920,14 @@
               "refId": "A"
             },
             {
-              "expr": "avg(tikv_engine_blob_key_size{instance=~\"$instance\", db=\"$db\", type=\"blob_key_size_percentile95\"})",
+              "expr": "avg(tikv_engine_blob_key_size{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_key_size_percentile95\"})",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "95%",
               "refId": "C"
             },
             {
-              "expr": "avg(tikv_engine_blob_key_size{instance=~\"$instance\", db=\"$db\", type=\"blob_key_size_percentile99\"})",
+              "expr": "avg(tikv_engine_blob_key_size{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_key_size_percentile99\"})",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 1,
@@ -19970,7 +19935,7 @@
               "refId": "D"
             },
             {
-              "expr": "max(tikv_engine_blob_key_size{instance=~\"$instance\", db=\"$db\", type=\"blob_key_size_max\"})",
+              "expr": "max(tikv_engine_blob_key_size{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_key_size_max\"})",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 1,
@@ -20054,11 +20019,6 @@
           "points": false,
           "renderer": "flot",
           "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "kv",
-              "value": "kv"
-            },
             "titan_db": {
               "selected": false,
               "text": "kv",
@@ -20071,28 +20031,28 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(tikv_engine_blob_value_size{instance=~\"$instance\", db=\"$db\", type=\"blob_value_size_average\"})",
+              "expr": "avg(tikv_engine_blob_value_size{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_value_size_average\"})",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "avg",
               "refId": "A"
             },
             {
-              "expr": "avg(tikv_engine_blob_value_size{instance=~\"$instance\", db=\"$db\", type=\"blob_value_size_percentile95\"})",
+              "expr": "avg(tikv_engine_blob_value_size{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_value_size_percentile95\"})",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "95%",
               "refId": "B"
             },
             {
-              "expr": "avg(tikv_engine_blob_value_size{instance=~\"$instance\", db=\"$db\", type=\"blob_value_size_percentile99\"})",
+              "expr": "avg(tikv_engine_blob_value_size{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_value_size_percentile99\"})",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "99%",
               "refId": "C"
             },
             {
-              "expr": "max(tikv_engine_blob_value_size{instance=~\"$instance\", db=\"$db\", type=\"blob_value_size_max\"})",
+              "expr": "max(tikv_engine_blob_value_size{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_value_size_max\"})",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "max",
@@ -20177,11 +20137,6 @@
           "points": false,
           "renderer": "flot",
           "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "kv",
-              "value": "kv"
-            },
             "titan_db": {
               "selected": false,
               "text": "kv",
@@ -20194,7 +20149,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_blob_locate{instance=~\"$instance\", db=\"$db\", type=\"number_blob_get\"}[2m]))",
+              "expr": "sum(rate(tikv_engine_blob_locate{instance=~\"$instance\", db=\"$titan_db\", type=\"number_blob_get\"}[2m]))",
               "format": "time_series",
               "hide": false,
               "interval": "",
@@ -20279,11 +20234,6 @@
           "points": false,
           "renderer": "flot",
           "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "kv",
-              "value": "kv"
-            },
             "titan_db": {
               "selected": false,
               "text": "kv",
@@ -20296,28 +20246,28 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(tikv_engine_blob_get_micros_seconds{instance=~\"$instance\", db=\"$db\", type=~\".*_average\"}) by (type)",
+              "expr": "avg(tikv_engine_blob_get_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=~\".*_average\"}) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "A"
             },
             {
-              "expr": "avg(tikv_engine_blob_get_micros_seconds{instance=~\"$instance\", db=\"$db\", type=~\".*_percentile95\"}) by (type)",
+              "expr": "avg(tikv_engine_blob_get_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=~\".*_percentile95\"}) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "B"
             },
             {
-              "expr": "avg(tikv_engine_blob_get_micros_seconds{instance=~\"$instance\", db=\"$db\", type=~\".*_percentile99\"}) by (type)",
+              "expr": "avg(tikv_engine_blob_get_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=~\".*_percentile99\"}) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "99%",
               "refId": "C"
             },
             {
-              "expr": "max(tikv_engine_blob_get_micros_seconds{instance=~\"$instance\", db=\"$db\", type=~\".*_max\"}) by (type)",
+              "expr": "max(tikv_engine_blob_get_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=~\".*_max\"}) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "max",
@@ -20400,11 +20350,6 @@
           "points": false,
           "renderer": "flot",
           "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "kv",
-              "value": "kv"
-            },
             "titan_db": {
               "selected": false,
               "text": "kv",
@@ -20417,7 +20362,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_blob_locate{instance=~\"$instance\", db=\"$db\", type=\"number_blob_seek\"}[2m]))",
+              "expr": "sum(rate(tikv_engine_blob_locate{instance=~\"$instance\", db=\"$titan_db\", type=\"number_blob_seek\"}[2m]))",
               "format": "time_series",
               "hide": false,
               "interval": "",
@@ -20426,7 +20371,7 @@
               "refId": "A"
             },
             {
-              "expr": "sum(rate(tikv_engine_blob_locate{instance=~\"$instance\", db=\"$db\", type=\"number_blob_prev\"}[2m]))",
+              "expr": "sum(rate(tikv_engine_blob_locate{instance=~\"$instance\", db=\"$titan_db\", type=\"number_blob_prev\"}[2m]))",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 1,
@@ -20434,7 +20379,7 @@
               "refId": "B"
             },
             {
-              "expr": "sum(rate(tikv_engine_blob_locate{instance=~\"$instance\", db=\"$db\", type=\"number_blob_next\"}[2m]))",
+              "expr": "sum(rate(tikv_engine_blob_locate{instance=~\"$instance\", db=\"$titan_db\", type=\"number_blob_next\"}[2m]))",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 1,
@@ -20520,11 +20465,6 @@
           "points": false,
           "renderer": "flot",
           "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "kv",
-              "value": "kv"
-            },
             "titan_db": {
               "selected": false,
               "text": "kv",
@@ -20537,28 +20477,28 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(tikv_engine_blob_seek_micros_seconds{instance=~\"$instance\", db=\"$db\", type=~\".*_average\"}) by (type)",
+              "expr": "avg(tikv_engine_blob_seek_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=~\".*_average\"}) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "A"
             },
             {
-              "expr": "avg(tikv_engine_blob_seek_micros_seconds{instance=~\"$instance\", db=\"$db\", type=~\".*_percentile95\"}) by (type)",
+              "expr": "avg(tikv_engine_blob_seek_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=~\".*_percentile95\"}) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "B"
             },
             {
-              "expr": "avg(tikv_engine_blob_seek_micros_seconds{instance=~\"$instance\", db=\"$db\", type=~\".*_percentile99\"}) by (type)",
+              "expr": "avg(tikv_engine_blob_seek_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=~\".*_percentile99\"}) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "99%",
               "refId": "C"
             },
             {
-              "expr": "max(tikv_engine_blob_seek_micros_seconds{instance=~\"$instance\", db=\"$db\", type=~\".*_max\"}) by (type)",
+              "expr": "max(tikv_engine_blob_seek_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=~\".*_max\"}) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "max",
@@ -20643,11 +20583,6 @@
           "points": false,
           "renderer": "flot",
           "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "kv",
-              "value": "kv"
-            },
             "titan_db": {
               "selected": false,
               "text": "kv",
@@ -20660,28 +20595,28 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(tikv_engine_blob_next_micros_seconds{instance=~\"$instance\", db=\"$db\", type=~\".*_average\"}) by (type)",
+              "expr": "avg(tikv_engine_blob_next_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=~\".*_average\"}) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "A"
             },
             {
-              "expr": "avg(tikv_engine_blob_next_micros_seconds{instance=~\"$instance\", db=\"$db\", type=~\".*_percentile95\"}) by (type)",
+              "expr": "avg(tikv_engine_blob_next_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=~\".*_percentile95\"}) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "B"
             },
             {
-              "expr": "avg(tikv_engine_blob_next_micros_seconds{instance=~\"$instance\", db=\"$db\", type=~\".*_percentile99\"}) by (type)",
+              "expr": "avg(tikv_engine_blob_next_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=~\".*_percentile99\"}) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "99%",
               "refId": "C"
             },
             {
-              "expr": "max(tikv_engine_blob_next_micros_seconds{instance=~\"$instance\", db=\"$db\", type=~\".*_max\"}) by (type)",
+              "expr": "max(tikv_engine_blob_next_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=~\".*_max\"}) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "max",
@@ -20766,11 +20701,6 @@
           "points": false,
           "renderer": "flot",
           "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "kv",
-              "value": "kv"
-            },
             "titan_db": {
               "selected": false,
               "text": "kv",
@@ -20783,28 +20713,28 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(tikv_engine_blob_prev_micros_seconds{instance=~\"$instance\", db=\"$db\", type=~\".*_average\"}) by (type)",
+              "expr": "avg(tikv_engine_blob_prev_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=~\".*_average\"}) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "A"
             },
             {
-              "expr": "avg(tikv_engine_blob_prev_micros_seconds{instance=~\"$instance\", db=\"$db\", type=~\".*_percentile95\"}) by (type)",
+              "expr": "avg(tikv_engine_blob_prev_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=~\".*_percentile95\"}) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "95%",
               "refId": "B"
             },
             {
-              "expr": "avg(tikv_engine_blob_prev_micros_seconds{instance=~\"$instance\", db=\"$db\", type=~\".*_percentile99\"}) by (type)",
+              "expr": "avg(tikv_engine_blob_prev_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=~\".*_percentile99\"}) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "99%",
               "refId": "C"
             },
             {
-              "expr": "max(tikv_engine_blob_prev_micros_seconds{instance=~\"$instance\", db=\"$db\", type=~\".*_max\"}) by (type)",
+              "expr": "max(tikv_engine_blob_prev_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=~\".*_max\"}) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "max",
@@ -20865,7 +20795,7 @@
             "x": 0,
             "y": 69
           },
-          "id": 3643,
+          "id": 3645,
           "legend": {
             "alignAsTable": true,
             "avg": false,
@@ -20887,11 +20817,6 @@
           "points": false,
           "renderer": "flot",
           "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "kv",
-              "value": "kv"
-            },
             "titan_db": {
               "selected": false,
               "text": "kv",
@@ -20904,7 +20829,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_blob_flow_bytes{instance=~\"$instance\", db=\"$db\", type=~\"bytes.*\"}[2m])) by (type)",
+              "expr": "sum(rate(tikv_engine_blob_flow_bytes{instance=~\"$instance\", db=\"$titan_db\", type=~\"keys.*\"}[30s])) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
@@ -20915,7 +20840,7 @@
           "timeFrom": null,
           "timeRegions": [],
           "timeShift": null,
-          "title": "Blob bytes flow",
+          "title": "Blob keys flow",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -20965,7 +20890,7 @@
             "x": 12,
             "y": 69
           },
-          "id": 3645,
+          "id": 3643,
           "legend": {
             "alignAsTable": true,
             "avg": false,
@@ -20987,11 +20912,6 @@
           "points": false,
           "renderer": "flot",
           "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "kv",
-              "value": "kv"
-            },
             "titan_db": {
               "selected": false,
               "text": "kv",
@@ -21004,7 +20924,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_blob_flow_bytes{instance=~\"$instance\", db=\"$db\", type=~\"keys.*\"}[30s])) by (type)",
+              "expr": "sum(rate(tikv_engine_blob_flow_bytes{instance=~\"$instance\", db=\"$titan_db\", type=~\"bytes.*\"}[2m])) by (type)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{type}}",
@@ -21015,7 +20935,7 @@
           "timeFrom": null,
           "timeRegions": [],
           "timeShift": null,
-          "title": "Blob keys flow",
+          "title": "Blob bytes flow",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -21087,11 +21007,6 @@
           "points": false,
           "renderer": "flot",
           "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "kv",
-              "value": "kv"
-            },
             "titan_db": {
               "selected": false,
               "text": "kv",
@@ -21104,28 +21019,28 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(tikv_engine_blob_file_read_micros_seconds{instance=~\"$instance\", db=\"$db\", type=\"blob_file_read_micros_average\"})",
+              "expr": "avg(tikv_engine_blob_file_read_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_file_read_micros_average\"})",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "avg",
               "refId": "A"
             },
             {
-              "expr": "avg(tikv_engine_blob_file_read_micros_seconds{instance=~\"$instance\", db=\"$db\", type=\"blob_file_read_micros_percentile99\"})",
+              "expr": "avg(tikv_engine_blob_file_read_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_file_read_micros_percentile99\"})",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "99%",
               "refId": "B"
             },
             {
-              "expr": "avg(tikv_engine_blob_file_read_micros_seconds{instance=~\"$instance\", db=\"$db\", type=\"blob_file_read_micros_percentile95\"})",
+              "expr": "avg(tikv_engine_blob_file_read_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_file_read_micros_percentile95\"})",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "95%",
               "refId": "C"
             },
             {
-              "expr": "max(tikv_engine_blob_file_read_micros_seconds{instance=~\"$instance\", db=\"$db\", type=\"blob_file_read_micros_max\"})",
+              "expr": "max(tikv_engine_blob_file_read_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_file_read_micros_max\"})",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "max",
@@ -21208,11 +21123,6 @@
           "points": false,
           "renderer": "flot",
           "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "kv",
-              "value": "kv"
-            },
             "titan_db": {
               "selected": false,
               "text": "kv",
@@ -21225,28 +21135,28 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(tikv_engine_blob_file_write_micros_seconds{instance=~\"$instance\", db=\"$db\", type=\"blob_file_write_micros_average\"})",
+              "expr": "avg(tikv_engine_blob_file_write_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_file_write_micros_average\"})",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "avg",
               "refId": "A"
             },
             {
-              "expr": "avg(tikv_engine_blob_file_write_micros_seconds{instance=~\"$instance\", db=\"$db\", type=\"blob_file_write_micros_percentile99\"})",
+              "expr": "avg(tikv_engine_blob_file_write_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_file_write_micros_percentile99\"})",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "99%",
               "refId": "B"
             },
             {
-              "expr": "avg(tikv_engine_blob_file_write_micros_seconds{instance=~\"$instance\", db=\"$db\", type=\"blob_file_write_micros_percentile95\"})",
+              "expr": "avg(tikv_engine_blob_file_write_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_file_write_micros_percentile95\"})",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "95%",
               "refId": "C"
             },
             {
-              "expr": "max(tikv_engine_blob_file_write_micros_seconds{instance=~\"$instance\", db=\"$db\", type=\"blob_file_write_micros_max\"})",
+              "expr": "max(tikv_engine_blob_file_write_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_file_write_micros_max\"})",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "max",
@@ -21329,11 +21239,6 @@
           "points": false,
           "renderer": "flot",
           "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "kv",
-              "value": "kv"
-            },
             "titan_db": {
               "selected": false,
               "text": "kv",
@@ -21346,7 +21251,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_blob_file_synced{instance=~\"$instance\", db=\"$db\"}[2m]))",
+              "expr": "sum(rate(tikv_engine_blob_file_synced{instance=~\"$instance\", db=\"$titan_db\"}[2m]))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "sync",
@@ -21429,11 +21334,6 @@
           "points": false,
           "renderer": "flot",
           "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "kv",
-              "value": "kv"
-            },
             "titan_db": {
               "selected": false,
               "text": "kv",
@@ -21446,28 +21346,28 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(tikv_engine_blob_file_sync_micros_seconds{instance=~\"$instance\", db=\"$db\", type=\"blob_file_sync_micros_average\"})",
+              "expr": "avg(tikv_engine_blob_file_sync_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_file_sync_micros_average\"})",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "A"
             },
             {
-              "expr": "avg(tikv_engine_blob_file_sync_micros_seconds{instance=~\"$instance\", db=\"$db\", type=\"blob_file_sync_micros_percentile95\"})",
+              "expr": "avg(tikv_engine_blob_file_sync_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_file_sync_micros_percentile95\"})",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "95%",
               "refId": "B"
             },
             {
-              "expr": "avg(tikv_engine_blob_file_sync_micros_seconds{instance=~\"$instance\", db=\"$db\", type=\"blob_file_sync_micros_percentile99\"})",
+              "expr": "avg(tikv_engine_blob_file_sync_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_file_sync_micros_percentile99\"})",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "99%",
               "refId": "C"
             },
             {
-              "expr": "max(tikv_engine_blob_file_sync_micros_seconds{instance=~\"$instance\", db=\"$db\", type=\"blob_file_sync_micros_max\"})",
+              "expr": "max(tikv_engine_blob_file_sync_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_file_sync_micros_max\"})",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "max",
@@ -21550,11 +21450,6 @@
           "points": false,
           "renderer": "flot",
           "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "kv",
-              "value": "kv"
-            },
             "titan_db": {
               "selected": false,
               "text": "kv",
@@ -21567,7 +21462,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_blob_gc_action_count{instance=~\"$instance\", db=\"$db\"}[2m])) by (type)",
+              "expr": "sum(rate(tikv_engine_blob_gc_action_count{instance=~\"$instance\", db=\"$titan_db\"}[2m])) by (type)",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
@@ -21651,11 +21546,6 @@
           "points": false,
           "renderer": "flot",
           "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "kv",
-              "value": "kv"
-            },
             "titan_db": {
               "selected": false,
               "text": "kv",
@@ -21668,28 +21558,28 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(tikv_engine_blob_gc_micros_seconds{instance=~\"$instance\", db=\"$db\", type=\"blob_gc_micros_average\"})",
+              "expr": "avg(tikv_engine_blob_gc_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_gc_micros_average\"})",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "A"
             },
             {
-              "expr": "avg(tikv_engine_blob_gc_micros_seconds{instance=~\"$instance\", db=\"$db\", type=\"blob_gc_micros_percentile95\"})",
+              "expr": "avg(tikv_engine_blob_gc_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_gc_micros_percentile95\"})",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "95%",
               "refId": "B"
             },
             {
-              "expr": "avg(tikv_engine_blob_gc_micros_seconds{instance=~\"$instance\", db=\"$db\", type=\"blob_gc_micros_percentile99\"})",
+              "expr": "avg(tikv_engine_blob_gc_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_gc_micros_percentile99\"})",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "99%",
               "refId": "C"
             },
             {
-              "expr": "avg(tikv_engine_blob_gc_micros_seconds{instance=~\"$instance\", db=\"$db\", type=\"blob_gc_micros_max\"})",
+              "expr": "avg(tikv_engine_blob_gc_micros_seconds{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_gc_micros_max\"})",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "max",
@@ -21750,6 +21640,196 @@
             "x": 0,
             "y": 93
           },
+          "id": 3649,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "paceLength": 10,
+          "percentage": false,
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "scopedVars": {
+            "titan_db": {
+              "selected": false,
+              "text": "kv",
+              "value": "kv"
+            }
+          },
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(tikv_engine_blob_gc_flow_bytes{instance=~\"$instance\", db=\"$titan_db\", type=~\"keys.*\"}[30s])) by (type)",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "{{type}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Blob GC keys flow",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "Bps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "decbytes",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "fill": 1,
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 12,
+            "y": 93
+          },
+          "id": 3340,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "paceLength": 10,
+          "percentage": false,
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "scopedVars": {
+            "titan_db": {
+              "selected": false,
+              "text": "kv",
+              "value": "kv"
+            }
+          },
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(tikv_engine_blob_gc_flow_bytes{instance=~\"$instance\", db=\"$titan_db\", type=~\"bytes.*\"}[30s])) by (type)",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "{{type}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Blob GC bytes flow",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "Bps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "decbytes",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_TEST-CLUSTER}",
+          "fill": 1,
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 0,
+            "y": 99
+          },
           "id": 4021,
           "legend": {
             "alignAsTable": true,
@@ -21772,11 +21852,6 @@
           "points": false,
           "renderer": "flot",
           "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "kv",
-              "value": "kv"
-            },
             "titan_db": {
               "selected": false,
               "text": "kv",
@@ -21789,28 +21864,28 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(tikv_engine_blob_gc_input_file{instance=~\"$instance\", db=\"$db\", type=\"blob_gc_input_file_average\"})",
+              "expr": "avg(tikv_engine_blob_gc_input_file{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_gc_input_file_average\"})",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "A"
             },
             {
-              "expr": "avg(tikv_engine_blob_gc_input_file{instance=~\"$instance\", db=\"$db\", type=\"blob_gc_input_file_percentile95\"})",
+              "expr": "avg(tikv_engine_blob_gc_input_file{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_gc_input_file_percentile95\"})",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "95%",
               "refId": "B"
             },
             {
-              "expr": "avg(tikv_engine_blob_gc_input_file{instance=~\"$instance\", db=\"$db\", type=\"blob_gc_input_file_percentile99\"})",
+              "expr": "avg(tikv_engine_blob_gc_input_file{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_gc_input_file_percentile99\"})",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "99%",
               "refId": "C"
             },
             {
-              "expr": "max(tikv_engine_blob_gc_input_file{instance=~\"$instance\", db=\"$db\", type=\"blob_gc_input_file_max\"})",
+              "expr": "max(tikv_engine_blob_gc_input_file{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_gc_input_file_max\"})",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "max",
@@ -21869,7 +21944,7 @@
             "h": 6,
             "w": 12,
             "x": 12,
-            "y": 93
+            "y": 99
           },
           "id": 4022,
           "legend": {
@@ -21893,11 +21968,6 @@
           "points": false,
           "renderer": "flot",
           "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "kv",
-              "value": "kv"
-            },
             "titan_db": {
               "selected": false,
               "text": "kv",
@@ -21910,28 +21980,28 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(tikv_engine_blob_gc_output_file{instance=~\"$instance\", db=\"$db\", type=\"blob_gc_output_file_average\"})",
+              "expr": "avg(tikv_engine_blob_gc_output_file{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_gc_output_file_average\"})",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "avg",
               "refId": "A"
             },
             {
-              "expr": "avg(tikv_engine_blob_gc_output_file{instance=~\"$instance\", db=\"$db\", type=\"blob_gc_output_file_percentile95\"})",
+              "expr": "avg(tikv_engine_blob_gc_output_file{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_gc_output_file_percentile95\"})",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "95%",
               "refId": "B"
             },
             {
-              "expr": "avg(tikv_engine_blob_gc_output_file{instance=~\"$instance\", db=\"$db\", type=\"blob_gc_output_file_percentile99\"})",
+              "expr": "avg(tikv_engine_blob_gc_output_file{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_gc_output_file_percentile99\"})",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "99%",
               "refId": "C"
             },
             {
-              "expr": "max(tikv_engine_blob_gc_outputt_file{instance=~\"$instance\", db=\"$db\", type=\"blob_gc_output_file_max\"})",
+              "expr": "max(tikv_engine_blob_gc_outputt_file{instance=~\"$instance\", db=\"$titan_db\", type=\"blob_gc_output_file_max\"})",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "max",
@@ -21990,206 +22060,6 @@
             "h": 6,
             "w": 12,
             "x": 0,
-            "y": 99
-          },
-          "id": 3340,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": true,
-            "max": true,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "paceLength": 10,
-          "percentage": false,
-          "pointradius": 2,
-          "points": false,
-          "renderer": "flot",
-          "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "kv",
-              "value": "kv"
-            },
-            "titan_db": {
-              "selected": false,
-              "text": "kv",
-              "value": "kv"
-            }
-          },
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "sum(rate(tikv_engine_blob_gc_flow_bytes{instance=~\"$instance\", db=\"$db\", type=~\"bytes.*\"}[30s])) by (type)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "{{type}}",
-              "refId": "A"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Blob GC bytes flow",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "Bps",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "decbytes",
-              "label": "",
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
-          "fill": 1,
-          "gridPos": {
-            "h": 6,
-            "w": 12,
-            "x": 12,
-            "y": 99
-          },
-          "id": 3649,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": true,
-            "max": true,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "paceLength": 10,
-          "percentage": false,
-          "pointradius": 2,
-          "points": false,
-          "renderer": "flot",
-          "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "kv",
-              "value": "kv"
-            },
-            "titan_db": {
-              "selected": false,
-              "text": "kv",
-              "value": "kv"
-            }
-          },
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "sum(rate(tikv_engine_blob_gc_flow_bytes{instance=~\"$instance\", db=\"$db\", type=~\"keys.*\"}[30s])) by (type)",
-              "format": "time_series",
-              "intervalFactor": 2,
-              "legendFormat": "{{type}}",
-              "refId": "A"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Blob GC keys flow",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "Bps",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "decbytes",
-              "label": "",
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_TEST-CLUSTER}",
-          "fill": 1,
-          "gridPos": {
-            "h": 6,
-            "w": 12,
-            "x": 0,
             "y": 105
           },
           "id": 3344,
@@ -22214,11 +22084,6 @@
           "points": false,
           "renderer": "flot",
           "scopedVars": {
-            "db": {
-              "selected": false,
-              "text": "kv",
-              "value": "kv"
-            },
             "titan_db": {
               "selected": false,
               "text": "kv",
@@ -22231,7 +22096,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(tikv_engine_blob_gc_file_count{instance=~\"$instance\", db=\"$db\"}[2m])) by (type)",
+              "expr": "sum(rate(tikv_engine_blob_gc_file_count{instance=~\"$instance\", db=\"$titan_db\"}[2m])) by (type)",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
@@ -23767,5 +23632,5 @@
   "timezone": "browser",
   "title": "Test-Cluster-TiKV-Details",
   "uid": "FWRio7LZk",
-  "version": 2
+  "version": 6
 }
