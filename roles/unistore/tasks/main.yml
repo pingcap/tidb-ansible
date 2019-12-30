@@ -1,0 +1,63 @@
+---
+# tasks file for unistore
+
+- name: create deploy directories
+  file: path={{ item }} state=directory mode=0755
+  with_items:
+  - "{{ unistore_log_dir }}"
+  - "{{ unistore_data_dir }}"
+  - "{{ unistore_conf_dir }}"
+
+- include_tasks: check_filesystem.yml
+
+- include_tasks: check_certs.yml
+  when: enable_tls|default(false)
+
+- include_tasks: gen_certs.yml
+  when: enable_tls|default(false)
+
+- include_tasks: install_certs.yml
+  when: enable_tls|default(false)
+
+- name: "load customized config: tidb-ansible/conf/unistore.yml"
+  include_vars: file={{ playbook_dir }}/conf/unistore.yml name=unistore_conf_custom
+
+- name: load default config
+  include_vars: file=default.yml name=unistore_conf_default
+
+- name: generate dynamic config
+  set_fact:
+    unistore_conf_generated:
+      server:
+        labels: "{{ labels }}"
+      rocksdb:
+        wal-dir: "{{ wal_dir }}"
+      raftstore:
+        raftdb-path: "{{ raftdb_path }}"
+      security:
+        ca-path: >-
+          {%- if enable_tls|default(false) -%}{{ unistore_cert_dir }}/ca.pem{%- else -%}{%- endif -%}
+        cert-path: >-
+          {%- if enable_tls|default(false) -%}{{ unistore_cert_dir }}/unistore-server-{{ unistore_host }}.pem{%- else -%}{%- endif -%}
+        key-path: >-
+          {%- if enable_tls|default(false) -%}{{ unistore_cert_dir }}/unistore-server-{{ unistore_host }}-key.pem{%- else -%}{%- endif -%}
+
+- name: generate final config
+  set_fact:
+    unistore_conf: "{{ unistore_conf_custom | with_default_dicts(unistore_conf_generated, unistore_conf_default) | update_default_dicts }}"
+
+- debug: var=unistore_conf
+
+- name: create config file
+  template: src=unistore.toml.j2 dest={{ deploy_dir }}/conf/unistore.toml mode=0644 backup=yes
+  register: unistore_conf_st
+
+- name: backup conf file
+  command: mv "{{ unistore_conf_st.backup_file }}" "{{ backup_dir }}"
+  when: unistore_conf_st.changed and unistore_conf_st.backup_file is defined
+
+- include_tasks: "{{ deployment_method }}_deployment.yml"
+
+- name: prepare firewalld white list
+  set_fact:
+    firewalld_ports: "{{ [unistore_port ~ '/tcp'] + firewalld_ports }}"

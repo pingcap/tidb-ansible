@@ -14,8 +14,10 @@ def parse_inventory(inventory):
     all_groups = inv.get_groups_dict()
     tidb_nodes = all_groups['tidb_servers']
     tikv_nodes = all_groups['tikv_servers']
+    unistore_nodes = all_groups['unistore_servers']
     tidb_servers = {}
     tikv_servers = {}
+    unistore_servers = {}
     for tidb in tidb_nodes:
         var = vars.get_vars(host=inv.get_host(hostname=str(tidb)))
         ip = var['ansible_host'] if 'ansible_host' in var else var['inventory_hostname']
@@ -40,7 +42,19 @@ def parse_inventory(inventory):
         else:
             tikv_servers[ip] = [[tikv_port, tikv_status_port, deploy_dir]]
 
-    return [tidb_servers, tikv_servers]
+    for unistore in unistore_nodes:
+        var = vars.get_vars(host=inv.get_host(hostname=str(unistore)))
+        ip = var['ansible_host'] if 'ansible_host' in var else var['inventory_hostname']
+        unistore_port = var.get('unistore_port', 20160)
+        unistore_status_port = var.get('unistore_status_port', 20180)
+        deploy_dir = var['deploy_dir']
+
+        if ip in unistore_servers:
+            unistore_servers[ip].append([unistore_port, unistore_status_port, deploy_dir])
+        else:
+            unistore_servers[ip] = [[unistore_port, unistore_status_port, deploy_dir]]
+
+    return [tidb_servers, tikv_servers, unistore_servers]
 
 
 def check_conflict(server_list):
@@ -59,9 +73,10 @@ def check_conflict(server_list):
 
 
 if __name__ == '__main__':
-    tidb_servers, tikv_servers = parse_inventory(sys.argv[1])
+    tidb_servers, tikv_servers, unistore_servers = parse_inventory(sys.argv[1])
     tidb_conf_conflict = check_conflict(tidb_servers)
     tikv_conf_conflict = check_conflict(tikv_servers)
+    unistore_conf_conflict = check_conflict(unistore_servers)
     if tidb_conf_conflict:
         print('\n    TiDB port or deployment directory conflicts on {} machine.'
               .format(','.join(tidb_conf_conflict)))
@@ -73,7 +88,7 @@ if __name__ == '__main__':
         print('    TiKV port or deployment directory conflicts on {} machine.'
               .format(','.join(tikv_conf_conflict)))
 
-    if tidb_conf_conflict or tikv_conf_conflict:
+    if tidb_conf_conflict or tikv_conf_conflict or unistore_conf_conflict:
         print('    Please recheck the port, status_port, deploy_dir or other configuration in inventory.ini.')
     else:
         print('Check ok.')

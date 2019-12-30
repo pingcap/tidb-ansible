@@ -1,0 +1,48 @@
+#!/bin/bash
+set -e
+ulimit -n 1000000
+
+# WARNING: This file was auto-generated. Do not edit!
+#          All your edit might be overwritten!
+cd "{{ deploy_dir }}" || exit 1
+
+{% set my_ip = hostvars[inventory_hostname].ansible_host | default(hostvars[inventory_hostname].inventory_hostname) -%}
+
+{% set all_pd = [] -%}
+{% set pd_hosts = groups.pd_servers %}
+{% for host in pd_hosts -%}
+  {% set pd_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
+  {% set pd_port = hostvars[host].pd_client_port -%}
+  {% set _ = all_pd.append("%s:%s" % (pd_ip, pd_port)) -%}
+{% endfor -%}
+
+export RUST_BACKTRACE=1
+
+export TZ=${TZ:-/etc/localtime}
+
+echo -n 'sync ... '
+stat=$(time sync)
+echo ok
+echo $stat
+
+echo $$ > "status/{{ role_name }}.pid"
+
+# TODO
+#  --advertise-addr="{{ my_ip }}:{{ unistore_port }}" \
+#  --status-addr "{{ my_ip }}:{{ unistore_status_port }}" \
+#  --data-dir=/data \
+#  --log-file="/var/log/{{ unistore_log_filename }}" \
+#  -p {{ unistore_port }}:20160 \
+#  -v /etc/localtime:/etc/localtime:ro \
+#  -v "{{ unistore_conf_dir }}/unistore.toml:/etc/unistore.toml:ro" \
+#  -v "{{ unistore_data_dir }}:/data" \
+#  -v "{{ unistore_docker_log_dir }}:/var/log" \
+#  -u `id -u {{ deploy_user }}` \
+#  --ulimit nofile=1000000:1000000 \
+#  --hostname "unistore-{{ unistore_port }}" \
+#  --name "unistore-{{ unistore_port }}" \
+#  pingcap/unistore:{{ tidb_version }} \
+exec docker run \
+  --addr="0.0.0.0:20160" \
+  --pd={{ all_pd | join(',') }} \
+  --config=/etc/unistore.toml

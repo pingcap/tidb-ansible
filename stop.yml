@@ -260,6 +260,36 @@
       debug:
         msg: "tikv binary or docker pid: {{ old_tikv_pid.stdout }}"
 
+- hosts: unistore_servers
+  tags:
+    - unistore
+  tasks:
+    - name: stop unistore by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      when: process_supervision == 'supervise'
+      with_items:
+        - unistore
+
+    - name: stop unistore by systemd
+      systemd: name=unistore-{{ unistore_port }}.service state=stopped
+      become: true
+      when: process_supervision == 'systemd'
+
+    - name: wait until the unistore port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ unistore_port }}"
+        state: stopped
+        msg: "the unistore port {{ unistore_port }} is not down"
+
+    - command: cat {{ deploy_dir }}/status/unistore.pid
+      register: old_unistore_pid
+      ignore_errors: yes
+      changed_when: false
+
+    - name: display old unistore pid
+      debug:
+        msg: "unistore binary or docker pid: {{ old_unistore_pid.stdout }}"
 
 - hosts: pd_servers
   tags:
