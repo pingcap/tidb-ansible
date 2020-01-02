@@ -40,6 +40,7 @@ src = dict(
                 "blackbox_exporter": 'blackbox_exporter.json',
                 "kafka_overview": 'kafka.json',
                 "lightning": 'lightning.json',
+                "br": "br.json",
                 "performance_read": 'performance_read.json',
                 "performance_write": 'performance_write.json'})
 
