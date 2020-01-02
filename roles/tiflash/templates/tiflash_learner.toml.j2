@@ -12,7 +12,7 @@
 {% endfor %}
 
 [server]
-labels = { "tiflash_http_port" = {{ http_port }} }
+labels = { "tiflash_http_port" = "{{ http_port }}" }
 engine-addr = "{{ ansible_host | default(inventory_hostname) }}:{{ flash_service_port }}"
 {% for item, value in tiflash_learner_conf.server | dictsort -%}
 {% if item == "labels" %}
