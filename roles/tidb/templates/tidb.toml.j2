@@ -57,6 +57,13 @@
 
 [tikv-client]
 {% for item, value in tidb_conf.tikv_client | dictsort -%}
+{% if value is not mapping -%}
+{{ item }} = {{ value | to_json }}
+{% endif %}
+{% endfor %}
+
+[tikv-client.copr-cache]
+{% for item, value in tidb_conf.tikv_client.copr_cache | dictsort -%}
 {{ item }} = {{ value | to_json }}
 {% endfor %}
 
