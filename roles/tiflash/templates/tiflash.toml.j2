@@ -30,8 +30,8 @@ cluster_manager_path = "{{ cluster_manager_path }}"
 addr = "{{ ansible_host | default(inventory_hostname) }}:{{ flash_proxy_port }}"
 advertise-addr = "{{ ansible_host | default(inventory_hostname) }}:{{ flash_proxy_port }}"
 data-dir = "{{ data_dir }}"
-config = "{{ flash_proxy_config }}"
-log-file = "{{ tiflash_tikv_log }}"
+config = "{{ tiflash_conf_dir }}/tiflash-learner.toml"
+log-file = "{{ tiflash_log_dir }}/tiflash_tikv.log"
 {% endif %}
 {% for sub_item, sub_value in value | dictsort -%}
 {{ sub_item }} = {{ sub_value | to_json }}
@@ -40,8 +40,8 @@ log-file = "{{ tiflash_tikv_log }}"
 {% endfor %}
 
 [logger]
-errorlog = "{{ tiflash_errlog }}"
-log = "{{ tiflash_server_log }}"
+errorlog = "{{ tiflash_log_dir }}/tiflash_error.log"
+log = "{{ tiflash_log_dir }}/tiflash.log"
 {% for item, value in tiflash_conf.logger | dictsort -%}
 {{ item }} = {{ value | to_json }}
 {% endfor %}
