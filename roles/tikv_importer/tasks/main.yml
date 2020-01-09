@@ -5,6 +5,8 @@
   file: path="{{ item }}" state=directory mode=0755
   with_items:
   - "{{ import_dir }}"
+  - "{{ importer_log_dir }}"
+  - "{{ importer_conf_dir }}"
 
 - name: "load tikv-importer customized config: tidb-ansible/conf/tikv-importer.yml"
   include_vars: file={{ playbook_dir }}/conf/tikv-importer.yml name=tikv_importer_conf_custom
@@ -15,6 +17,8 @@
 - name: generate tikv-importer dynamic config
   set_fact:
     tikv_importer_conf_generated:
+      global:
+        log-file: "{{ importer_log_dir }}/{{ importer_log_file }}"
       server:
         addr: "{{ hostvars[groups.importer_server[0]].ansible_host | default(hostvars[groups.importer_server[0]].inventory_hostname) }}:{{ tikv_importer_port }}"
       import:
