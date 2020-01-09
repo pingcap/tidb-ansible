@@ -22,6 +22,23 @@ def update_default_dicts(d):
         ret.update([(k, update_default_dicts(ret[k])) for k in ret if isinstance(ret[k], (dict, type(None)))])
     return ret
 
+def ansible_version_compare(d, *args):
+    if args[1] == '<=':
+        if str(d) <= args[0]:
+            return True
+    elif args[1] == '<':
+        if str(d) < args[0]:
+            return True
+    elif args[1] == '>=':
+        if str(d) >= args[0]:
+            return True
+    elif args[1] == '>':
+        if str(d) > args[0]:
+            return True
+    elif args[1] == '==':
+        if str(d) == args[0]:
+            return True
+
 def dictsort_by_value_type(d):
     vals = list(d.items())
     return sorted(vals, key=lambda p: (isinstance(p[1], dict), p[0], p[1]))
@@ -44,6 +61,7 @@ class FilterModule(object):
             'epoch_time_diff': epoch_time_diff,
             'with_default_dicts': with_default_dicts,
             'update_default_dicts': update_default_dicts,
+            'ansible_version_compare': ansible_version_compare,
             'dictsort_by_value_type': dictsort_by_value_type,
             'tikv_server_labels_format': tikv_server_labels_format,
         }
