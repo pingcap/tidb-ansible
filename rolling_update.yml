@@ -414,6 +414,13 @@
       become: true
       when: process_supervision == 'systemd'
 
+    - name: wait until the TiFlash port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ http_port }}"
+        state: stopped
+        msg: "the TiFlash port {{ http_port }} is not down"
+
   roles:
     - tiflash
 
@@ -426,6 +433,23 @@
       systemd: name=tiflash-{{ tcp_port }}.service state=started
       become: true
       when: process_supervision == 'systemd'
+
+    - name: wait until the TiFlash port is up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ http_port }}"
+        state: started
+        msg: "the TiFlash port {{ http_port }} is not up"
+
+    - name: wait until the TiFlash status page is available
+      uri:
+        url: "http://{{ ansible_host }}:{{ http_port }}/?query=select%20version()"
+        return_content: yes
+      register: tiflash_http_result
+      until: tiflash_http_result.status == 200
+      retries: 12
+      delay: 5
+      when: not enable_tls|default(false)
 
 - name: rolling update pump cluster
   hosts: pump_servers

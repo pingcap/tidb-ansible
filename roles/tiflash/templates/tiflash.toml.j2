@@ -2,7 +2,6 @@
 {{ item }} = {{ value | to_json }}
 {% endfor %}
 tmp_path = "{{ tmp_path }}"
-users_config = "{{ user_conf }}"
 path = "{{ path }}"
 tcp_port = {{ tcp_port }}
 http_port = {{ http_port }}
@@ -23,9 +22,6 @@ service_addr = "{{ ansible_host | default(inventory_hostname) }}:{{ flash_servic
 {% else %}
 
 [flash.{{ item }}]
-{% if item == 'cluster_manager_path' %}
-cluster_manager_path = "{{ cluster_manager_path }}"
-{% endif %}
 {% if item == 'proxy' %}
 addr = "{{ ansible_host | default(inventory_hostname) }}:{{ flash_proxy_port }}"
 advertise-addr = "{{ ansible_host | default(inventory_hostname) }}:{{ flash_proxy_port }}"
@@ -61,4 +57,59 @@ log = "{{ tiflash_server_log }}"
 pd_addr = "{{ all_pd | join(',') }}"
 {% for item, value in tiflash_conf.raft | dictsort -%}
 {{ item }} = {{ value | to_json }}
+{% endfor %}
+
+[quotas]
+{% for item, value in tiflash_conf.quotas | dictsort_by_value_type -%}
+{% if value is not mapping -%}
+{{ item }} = {{ value | to_json }}
+{% else %}
+
+[quotas.{{ item }}]
+{% for sub_item, sub_value in value | dictsort_by_value_type -%}
+{% if sub_value is not mapping -%}
+{{ sub_item }} = {{ sub_value | to_json }}
+{% else %}
+
+[quotas.{{ item }}.{{ sub_item }}]
+{% for sub_sub_item, sub_sub_value in sub_value | dictsort -%}
+{{ sub_sub_item }} = {{ sub_sub_value | to_json }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+
+[users]
+{% for item, value in tiflash_conf.users | dictsort_by_value_type -%}
+{% if value is not mapping -%}
+{{ item }} = {{ value | to_json }}
+{% else %}
+
+[users.{{ item }}]
+{% for sub_item, sub_value in value | dictsort_by_value_type -%}
+{% if sub_value is not mapping -%}
+{{ sub_item }} = {{ sub_value | to_json }}
+{% else %}
+
+[users.{{ item }}.{{ sub_item }}]
+{% for sub_sub_item, sub_sub_value in sub_value | dictsort -%}
+{{ sub_sub_item }} = {{ sub_sub_value | to_json }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+
+[profiles]
+{% for item, value in tiflash_conf.profiles | dictsort_by_value_type -%}
+{% if value is not mapping -%}
+{{ item }} = {{ value | to_json }}
+{% else %}
+
+[profiles.{{ item }}]
+{% for sub_item, sub_value in value | dictsort -%}
+{{ sub_item }} = {{ sub_value | to_json }}
+{% endfor %}
+{% endif %}
 {% endfor %}

@@ -23,6 +23,7 @@
       flash:
         flash_cluster:
           cluster_manager_path: "{{ cluster_manager_path }}"
+          cluster_manager_log: "{{ cluster_manager_log }}"
 
 - name: combine tiflash config
   set_fact:
@@ -38,30 +39,10 @@
   command: mv "{{ tiflash_conf_st.backup_file }}" "{{ backup_dir }}"
   when: tiflash_conf_st.changed and tiflash_conf_st.backup_file is defined
 
-- name: "load tiflash user config: tidb-ansible/conf/tiflash-user.yml"
-  include_vars: file={{ playbook_dir }}/conf/tiflash-user.yml name=tiflash_user_conf_custom
-
-- name: load tiflash user default config
-  include_vars: file=tiflash-user.yml name=tiflash_user_conf_default
-
-- name: combine tiflash user config
-  set_fact:
-    tiflash_user_conf: "{{ tiflash_user_conf_custom | with_default_dicts(tiflash_user_conf_default) | update_default_dicts }}"
-
-- debug: var=tiflash_user_conf
-
-- name: create tiflash user config file
-  template: src=tiflash_user.toml.j2 dest={{ deploy_dir }}/conf/tiflash-user.toml mode=0644 backup=yes
-  register: tiflash_user_conf_st
-
-- name: backup tiflash user conf file
-  command: mv "{{ tiflash_user_conf_st.backup_file }}" "{{ backup_dir }}"
-  when: tiflash_user_conf_st.changed and tiflash_user_conf_st.backup_file is defined
-
-- name: "load tiflash user config: tidb-ansible/conf/tiflash-learner.yml"
+- name: "load tiflash learner config: tidb-ansible/conf/tiflash-learner.yml"
   include_vars: file={{ playbook_dir }}/conf/tiflash-learner.yml name=tiflash_learner_conf_custom
 
-- name: load tiflash user default config
+- name: load tiflash learner default config
   include_vars: file=tiflash-learner.yml name=tiflash_learner_conf_default
 
 - name: generate tiflash learner config
