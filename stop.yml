@@ -243,6 +243,13 @@
       become: true
       when: process_supervision == 'systemd'
 
+    - name: wait until the TiFlash port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ http_port }}"
+        state: stopped
+        msg: "the TiFlash port {{ http_port }} is not down"
+
 - hosts: tikv_servers
   tags:
     - tikv
