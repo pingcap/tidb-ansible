@@ -1,6 +1,12 @@
 ---
 # tasks file for tidb-lightning
 
+- name: create deploy directories
+  file: path="{{ item }}" state=directory mode=0755
+  with_items:
+  - "{{ lightning_log_dir }}"
+  - "{{ lightning_conf_dir }}"
+
 - name: "load lightning customized config: tidb-ansible/conf/tidb-lightning.yml"
   include_vars: file={{ playbook_dir }}/conf/tidb-lightning.yml name=tidb_lightning_conf_custom
 
@@ -12,8 +18,7 @@
     tidb_lightning_conf_generated:
       lightning:
         pprof-port: "{{ tidb_lightning_pprof_port }}"
-      tikv_importer:
-        addr: "{{ hostvars[groups.importer_server[0]].ansible_host | default(hostvars[groups.importer_server[0]].inventory_hostname) }}:{{ tikv_importer_port }}"
+        file: "{{ lightning_log_dir }}/{{ lightning_log_file }}"
       mydumper:
         data-source-dir: "{{ data_source_dir }}"
       tidb:

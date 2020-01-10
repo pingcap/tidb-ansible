@@ -17,6 +17,10 @@
 {% endfor %}
 
 [tikv-importer]
+{% set tikv_importer_node = groups.importer_server[0] -%}
+{% set tikv_importer_ip = hostvars[tikv_importer_node].ansible_host | default(hostvars[tikv_importer_node].inventory_hostname) -%}
+{% set tikv_importer_port = hostvars[tikv_importer_node].tikv_importer_port %}
+addr = "{{ tikv_importer_ip }}:{{ tikv_importer_port }}"
 {% for item, value in tidb_lightning_conf.tikv_importer | dictsort -%}
 {{ item }} = {{ value | to_json }}
 {% endfor %}
