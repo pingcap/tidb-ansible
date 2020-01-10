@@ -22,7 +22,15 @@
 
 - name: Ensure TiKV host exists
   fail: msg="One, or more tikv hosts should be specified."
-  when: groups['tikv_servers'] | length < 1
+  when: 
+    - use_unistore|default(False)|bool == False
+    - groups['tikv_servers'] | length < 1
+
+- name: Ensure unistore host exists
+  fail: msg="One, or more unistore hosts should be specified."
+  when: 
+    - use_unistore|default(False)|bool == True
+    - groups['unistore_servers'] | length < 1
 
 - name: Check ansible_user variable
   fail: msg="ansible_user == 'root' is not supported, please ssh via normal user"

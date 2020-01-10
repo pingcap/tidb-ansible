@@ -50,7 +50,14 @@
   tags:
     - tikv
   roles:
-    - check_config_tikv
+    - { role: check_config_tikv, when: use_unistore|default(False)|bool == False }
+
+- name: Pre-check unistore configuration
+  hosts: unistore_servers[0]
+  tags:
+    - unistore
+  roles:
+    - { role: check_config_unistore, when: use_unistore|default(False)|bool == True }
 
 - name: Pre-check TiDB configuration
   hosts: tidb_servers[0]
@@ -129,7 +136,14 @@
   tags:
     - tikv
   roles:
-    - tikv
+    - {role: tikv, when: use_unistore|default(False)|bool == False }
+
+- name: deploying unistore cluster
+  hosts: unistore_servers
+  tags:
+    - unistore
+  roles:
+    - {role: unistore, when: use_unistore|default(True)|bool == True }
 
 - name: deploying pump cluster
   hosts: pump_servers

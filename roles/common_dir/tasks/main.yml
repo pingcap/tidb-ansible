@@ -12,7 +12,7 @@
   file: path={{ item }} state=directory mode=0755
   with_items:
     - "{{ status_dir }}"
-  when: deployment_method == 'supervise' or 'tikv_servers' in group_names
+  when: deployment_method == 'supervise' or 'tikv_servers' in group_names or 'unistore_servers' in group_names
 
 - name: create deploy binary directory
   file: path={{ item }} state=directory mode=0755

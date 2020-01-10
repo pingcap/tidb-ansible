@@ -1,0 +1,27 @@
+# unistore config template
+#  Human-readable big numbers:
+#   Time(based on ms): ms, s, m, h
+#    e.g.: 78_000 = "1.3m"
+#  TODO:
+#   File size(based on byte): KB, MB, GB, TB, PB
+#    e.g.: 1_048_576 = "1MB"
+
+[server]
+{% for item, value in unistore_conf.server | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+
+[raftstore]
+{% for item, value in unistore_conf.raftstore | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+
+[engine]
+{% for item, value in unistore_conf.engine | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+
+[coprocessor]
+{% for item, value in unistore_conf.coprocessor | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
