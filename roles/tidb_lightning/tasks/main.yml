@@ -19,8 +19,6 @@
       lightning:
         pprof-port: "{{ tidb_lightning_pprof_port }}"
         file: "{{ lightning_log_dir }}/{{ lightning_log_file }}"
-      tikv_importer:
-        addr: "{{ hostvars[groups.importer_server[0]].ansible_host | default(hostvars[groups.importer_server[0]].inventory_hostname) }}:{{ tikv_importer_port }}"
       mydumper:
         data-source-dir: "{{ data_source_dir }}"
       tidb:
