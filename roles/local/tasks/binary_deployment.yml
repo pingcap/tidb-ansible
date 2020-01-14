@@ -51,7 +51,7 @@
 - name: download TiFlash packages
   get_url:
     url: "{{ item.url }}"
-    dest: "{{ downloads_dir }}/{{ item.name }}"
+    dest: "{{ downloads_dir }}/{{ item.name }}-{{ item.version }}.tar.gz"
     checksum: "{{ item.checksum | default(omit) }}"
     force: yes
     validate_certs: no
@@ -62,7 +62,6 @@
   with_items: "{{ tiflash_packages }}"
   when:
     - has_outbound_network
-    - not deploy_without_tidb|default(false)
 
 - name: unarchive third party binary
   shell: ls -1 {{ item.name }}-{{ item.version }}.tar.gz | xargs -n1 tar xzf
@@ -86,11 +85,11 @@
   when: not deploy_without_tidb|default(false)
 
 - name: unarchive tiflash
-  shell: tar xzf tiflash-latest-linux-amd64.tar.gz
+  shell: ls -1 {{ item.name }}-{{ item.version }}.tar.gz | xargs tar xzf
   args:
     chdir: "{{ downloads_dir }}"
     warn: no
-  when: not deploy_without_tidb|default(false)
+  with_items: "{{ tiflash_packages }}"
 
 - name: cp monitoring binary
   shell: >
@@ -114,5 +113,5 @@
 
 - name: cp tiflash directory
   shell: >
-    cp -rfv {{ downloads_dir }}/tiflash-{{ item.version }}-linux-amd64 "{{ resources_dir }}/bin/tiflash"
+    cp -rfv {{ downloads_dir }}/{{ item.name }}-{{ item.version }}-linux-amd64 "{{ resources_dir }}/bin/tiflash"
   with_items: "{{ tiflash_packages }}"
