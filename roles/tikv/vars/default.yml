@@ -69,7 +69,7 @@ server:
   # grpc-concurrent-stream: 1024
 
   ## The number of connections with each TiKV server to send Raft messages.
-  # grpc-raft-conn-num: 10
+  # grpc-raft-conn-num: 1
 
   ## Amount to read ahead on individual gRPC streams.
   # grpc-stream-initial-window-size: "2MB"
@@ -103,8 +103,8 @@ server:
 storage:
   ## The number of slots in Scheduler latches, which controls write concurrency.
   ## In most cases you can use the default value. When importing data, you can set it to a larger
-  ## value.
-  # scheduler-concurrency: 2048000
+  ## value, but no more than 2097152.
+  # scheduler-concurrency: 524288
 
   ## Scheduler's worker pool size, i.e. the number of write threads.
   ## It should be less than total CPU cores. When there are frequent write operations, set it to a
@@ -114,6 +114,12 @@ storage:
 
   ## When the pending write bytes exceeds this threshold, the "scheduler too busy" error is displayed.
   # scheduler-pending-write-threshold: "100MB"
+
+  ## TiKV will create a temporary file in {{data-dir}} to reserve some space, which is named 'space_placeholder_file'.
+  ## When the disk has no free space you could remove this temporary file so that TiKV can execute compaction
+  ## job to reclaim disk space, which requires some extra temporary space.
+  # reserve-space: "2GB"
+
 
   block-cache:
     ## Whether to create a shared block cache for all RocksDB column families.
