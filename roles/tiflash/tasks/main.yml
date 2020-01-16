@@ -1,0 +1,66 @@
+---
+
+- name: create tiflash directories
+  file: path={{ item }} state=directory mode=0755
+  with_items:
+  - "{{ tiflash_dir }}"
+  - "{{ tmp_path }}"
+  - "{{ path }}"
+  - "{{ data_dir }}"
+  - "{{ tiflash_conf_dir }}"
+  - "{{ tiflash_log_dir }}"
+  - "{{ tiflash_scripts_dir }}"
+
+- name: "load tiflash config: tidb-ansible/conf/tiflash.yml"
+  include_vars: file={{ playbook_dir }}/conf/tiflash.yml name=tiflash_conf_custom
+
+- name: load tiflash default config
+  include_vars: file=tiflash.yml name=tiflash_conf_default
+
+- name: generate tiflash dynamic config
+  set_fact:
+    tiflash_conf_generated:
+      flash:
+        flash_cluster:
+          cluster_manager_path: "{{ cluster_manager_path }}"
+          log: "{{ cluster_manager_log }}"
+
+- name: combine tiflash config
+  set_fact:
+    tiflash_conf: "{{ tiflash_conf_custom | with_default_dicts(tiflash_conf_generated, tiflash_conf_default) | update_default_dicts }}"
+
+- debug: var=tiflash_conf
+
+- name: create tiflash config file
+  template: src=tiflash.toml.j2 dest={{ deploy_dir }}/conf/tiflash.toml mode=0644 backup=yes
+  register: tiflash_conf_st
+
+- name: backup tiflash conf file
+  command: mv "{{ tiflash_conf_st.backup_file }}" "{{ backup_dir }}"
+  when: tiflash_conf_st.changed and tiflash_conf_st.backup_file is defined
+
+- name: "load tiflash learner config: tidb-ansible/conf/tiflash-learner.yml"
+  include_vars: file={{ playbook_dir }}/conf/tiflash-learner.yml name=tiflash_learner_conf_custom
+
+- name: load tiflash learner default config
+  include_vars: file=tiflash-learner.yml name=tiflash_learner_conf_default
+
+- name: generate tiflash learner config
+  set_fact:
+    tiflash_learner_conf: "{{ tiflash_learner_conf_custom | with_default_dicts(tiflash_learner_conf_default) | update_default_dicts }}"
+
+- debug: var=tiflash_learner_conf
+
+- name: create tiflash learner config file
+  template: src=tiflash_learner.toml.j2 dest={{ deploy_dir }}/conf/tiflash-learner.toml mode=0644 backup=yes
+  register: tiflash_learner_conf_st
+
+- name: backup tiflash conf file
+  command: mv "{{ tiflash_learner_conf_st.backup_file }}" "{{ backup_dir }}"
+  when: tiflash_learner_conf_st.changed and tiflash_learner_conf_st.backup_file is defined
+
+- include_tasks: "binary_deployment.yml"
+
+- name: prepare firewalld white list
+  set_fact:
+    firewalld_ports: "{{ [tcp_port ~ '/tcp', http_port ~ '/tcp', interserver_http_port ~ '/tcp', flash_service_port ~ '/tcp', flash_proxy_port ~ '/tcp'] + firewalld_ports }}"

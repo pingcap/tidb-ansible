@@ -228,6 +228,27 @@
         msg: "the pump port {{ pump_port }} is not down"
       when: enable_binlog|default(false)
 
+- hosts: tiflash_servers
+  tags:
+    - tiflash
+  tasks:
+    - name: stop TiFlash by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+      when: process_supervision == 'supervise'
+      with_items:
+        - tiflash
+
+    - name: stop TiFlash by systemd
+      systemd: name=tiflash-{{ tcp_port }}.service state=stopped
+      become: true
+      when: process_supervision == 'systemd'
+
+    - name: wait until the TiFlash port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ http_port }}"
+        state: stopped
+        msg: "the TiFlash port {{ http_port }} is not down"
 
 - hosts: tikv_servers
   tags:

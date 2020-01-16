@@ -350,6 +350,38 @@
         - enable_tls|default(false)
         - wait_replication|default(false)
 
+- hosts: tiflash_servers
+  tags:
+    - tiflash
+  tasks:
+    - name: start TiFlash by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
+      when: process_supervision == 'supervise'
+      with_items:
+        - tiflash
+
+    - name: start TiFlash by systemd
+      systemd: name=tiflash-{{ tcp_port }}.service state=started enabled=no
+      become: true
+      when: process_supervision == 'systemd'
+
+    - name: wait until the TiFlash port is up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ http_port }}"
+        state: started
+        msg: "the TiFlash port {{ http_port }} is not up"
+
+    - name: wait until the TiFlash status page is available
+      uri:
+        url: "http://{{ ansible_host }}:{{ http_port }}/?query=select%20version()"
+        return_content: yes
+      register: tiflash_http_result
+      until: tiflash_http_result.status == 200
+      retries: 12
+      delay: 5
+      when: not enable_tls|default(false)
+
 - hosts: pump_servers
   tags:
     - pump
