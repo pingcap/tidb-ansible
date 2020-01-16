@@ -1,0 +1,84 @@
+[readpool]
+{% for item, value in tiflash_learner_conf.readpool | dictsort_by_value_type -%}
+{% if value is not mapping -%}
+{{ item }} = {{ value | to_json }}
+{% else %}
+
+[readpool.{{ item }}]
+{% for sub_item, sub_value in value | dictsort -%}
+{{ sub_item }} = {{ sub_value | to_json }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+
+[server]
+labels = { "tiflash_http_port" = "{{ http_port }}" }
+engine-addr = "{{ ansible_host | default(inventory_hostname) }}:{{ flash_service_port }}"
+{% for item, value in tiflash_learner_conf.server | dictsort -%}
+{% if item == "labels" %}
+{{ item }} = {{ value | tikv_server_labels_format }}
+{% else %}
+{{ item }} = {{ value | to_json }}
+{% endif %}
+{% endfor %}
+
+[storage]
+{% for item, value in tiflash_learner_conf.storage | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+
+[pd]
+{% for item, value in tiflash_learner_conf.pd | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+
+[metric]
+{% for item, value in tiflash_learner_conf.metric | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+
+[raftstore]
+{% for item, value in tiflash_learner_conf.raftstore | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+
+[coprocessor]
+{% for item, value in tiflash_learner_conf.coprocessor | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+
+[rocksdb]
+{% for item, value in tiflash_learner_conf.rocksdb | dictsort_by_value_type -%}
+{% if value is not mapping -%}
+{{ item }} = {{ value | to_json }}
+{% else %}
+
+[rocksdb.{{ item }}]
+{% for sub_item, sub_value in value | dictsort -%}
+{{ sub_item }} = {{ sub_value | to_json }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+
+[raftdb]
+{% for item, value in tiflash_learner_conf.raftdb | dictsort_by_value_type -%}
+{% if value is not mapping -%}
+{{ item }} = {{ value | to_json }}
+{% else %}
+
+[raftdb.{{ item }}]
+{% for sub_item, sub_value in value | dictsort -%}
+{{ sub_item }} = {{ sub_value | to_json }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+
+[security]
+{% for item, value in tiflash_learner_conf.security | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+
+[import]
+{% for item, value in tiflash_learner_conf.import | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}

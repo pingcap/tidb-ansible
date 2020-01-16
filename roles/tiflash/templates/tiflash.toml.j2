@@ -1,0 +1,115 @@
+{% for item, value in tiflash_conf.global | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+tmp_path = "{{ tmp_path }}"
+path = "{{ path }}"
+tcp_port = {{ tcp_port }}
+http_port = {{ http_port }}
+interserver_http_port = {{ interserver_http_port }}
+
+[flash]
+{% set all_tidb = [] -%}
+{% for host in groups.tidb_servers -%}
+  {% set tidb_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
+  {% set tidb_port = hostvars[host].tidb_status_port -%}
+  {% set _ = all_tidb.append("%s:%s" % (tidb_ip, tidb_port)) -%}
+{% endfor %}
+tidb_status_addr = "{{ all_tidb | join(',') }}"
+service_addr = "{{ ansible_host | default(inventory_hostname) }}:{{ flash_service_port }}"
+{% for item, value in tiflash_conf.flash | dictsort_by_value_type -%}
+{% if value is not mapping -%}
+{{ item }} = {{ value | to_json }}
+{% else %}
+
+[flash.{{ item }}]
+{% if item == 'proxy' %}
+addr = "{{ ansible_host | default(inventory_hostname) }}:{{ flash_proxy_port }}"
+advertise-addr = "{{ ansible_host | default(inventory_hostname) }}:{{ flash_proxy_port }}"
+data-dir = "{{ data_dir }}"
+config = "{{ flash_proxy_config }}"
+log-file = "{{ tiflash_tikv_log }}"
+{% endif %}
+{% for sub_item, sub_value in value | dictsort -%}
+{{ sub_item }} = {{ sub_value | to_json }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+
+[logger]
+errorlog = "{{ tiflash_errlog }}"
+log = "{{ tiflash_server_log }}"
+{% for item, value in tiflash_conf.logger | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+
+[application]
+{% for item, value in tiflash_conf.application | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+
+[raft]
+{% set all_pd = [] -%}
+{% for host in groups.pd_servers -%}
+  {% set pd_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
+  {% set pd_port = hostvars[host].pd_client_port -%}
+  {% set _ = all_pd.append("%s:%s" % (pd_ip, pd_port)) -%}
+{% endfor %}
+pd_addr = "{{ all_pd | join(',') }}"
+{% for item, value in tiflash_conf.raft | dictsort -%}
+{{ item }} = {{ value | to_json }}
+{% endfor %}
+
+[quotas]
+{% for item, value in tiflash_conf.quotas | dictsort_by_value_type -%}
+{% if value is not mapping -%}
+{{ item }} = {{ value | to_json }}
+{% else %}
+
+[quotas.{{ item }}]
+{% for sub_item, sub_value in value | dictsort_by_value_type -%}
+{% if sub_value is not mapping -%}
+{{ sub_item }} = {{ sub_value | to_json }}
+{% else %}
+
+[quotas.{{ item }}.{{ sub_item }}]
+{% for sub_sub_item, sub_sub_value in sub_value | dictsort -%}
+{{ sub_sub_item }} = {{ sub_sub_value | to_json }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+
+[users]
+{% for item, value in tiflash_conf.users | dictsort_by_value_type -%}
+{% if value is not mapping -%}
+{{ item }} = {{ value | to_json }}
+{% else %}
+
+[users.{{ item }}]
+{% for sub_item, sub_value in value | dictsort_by_value_type -%}
+{% if sub_value is not mapping -%}
+{{ sub_item }} = {{ sub_value | to_json }}
+{% else %}
+
+[users.{{ item }}.{{ sub_item }}]
+{% for sub_sub_item, sub_sub_value in sub_value | dictsort -%}
+{{ sub_sub_item }} = {{ sub_sub_value | to_json }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+
+[profiles]
+{% for item, value in tiflash_conf.profiles | dictsort_by_value_type -%}
+{% if value is not mapping -%}
+{{ item }} = {{ value | to_json }}
+{% else %}
+
+[profiles.{{ item }}]
+{% for sub_item, sub_value in value | dictsort -%}
+{{ sub_item }} = {{ sub_value | to_json }}
+{% endfor %}
+{% endif %}
+{% endfor %}

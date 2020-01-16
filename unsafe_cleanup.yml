@@ -77,6 +77,15 @@
       with_items:
         - pump-{{ pump_port }}.service
 
+- hosts: tiflash_servers
+  tasks:
+    - name: clean systemd config
+      file: path="/etc/systemd/system/{{ item }}" state=absent
+      become: true
+      when: process_supervision == 'systemd'
+      with_items:
+        - tiflash-{{ tcp_port }}.service
+
 - hosts: tikv_servers
   tasks:
     - name: clean systemd config
