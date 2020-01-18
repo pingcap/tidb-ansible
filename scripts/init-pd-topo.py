@@ -25,8 +25,6 @@ def parse_opts():
         parser.add_argument(
             "--{}_host".format(target), help="the host of {}".format(target))
     args, unknown = parser.parse_known_args()
-    print(args)
-    print(unknown)
     return args
 
 
@@ -37,7 +35,6 @@ def etcd_write(etcd_url, key, value):
         "key": encoded_key,
         "value": encoded_value,
     })
-    print(data)
     req = urllib2.Request(
         'http://' + etcd_url + '/v3/kv/put',
         data=data,
