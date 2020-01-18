@@ -247,6 +247,19 @@
       delay: 5
       when: enable_tls|default(false)
 
+    - name: init pd cluster topology
+      delegate_to: localhost
+      shell: "python init-pd-topo.py"
+      args:
+        chdir: "{{ playbook_dir }}/scripts"
+      vars:
+        - tidb_host: {{ tidb_host }}
+        - tidb_port: {{ tidb_port }}
+        - alertmanager_host: {{ alertmanager_host }}
+        - alertmanager_port: {{ alertmanager_port }}
+        - grafana_host: {{ grafana_host }}
+        - grafana_port: {{ grafana_port }}
+
 - hosts: tikv_servers
   tags:
     - tikv
