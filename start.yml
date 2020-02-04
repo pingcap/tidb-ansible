@@ -332,12 +332,6 @@
         - not enable_tls|default(false)
         - wait_replication|default(false)
     
-    - name: init pd cluster topology
-      delegate_to: localhost
-      shell: "python init-pd-topo.py --pd_host {{ ansible_host }} --pd_port {{ pd_client_port }} --tidb_host {{ tidb_host }} --tidb_port {{ tidb_port }} --grafana_host {{ grafana_host }} --grafana_port {{ grafana_port }} --alertmanager_host {{ alertmanager_host }} --alertmanager_port {{ alertmanager_port }}"
-      args:
-        chdir: "{{ playbook_dir }}/scripts"
-
 - hosts: pd_servers[0]
   tasks:
     - name: wait for region replication complete with tls enabled
@@ -561,3 +555,10 @@
       vars:
         - ansible_become: false
         - ansible_connection: local
+
+- hosts: localhost
+  tags:
+    - always
+  tasks:
+    - name: init pd topo
+      shell: "./init-pd-topo.sh"

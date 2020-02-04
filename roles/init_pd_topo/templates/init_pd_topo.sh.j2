@@ -1,0 +1,40 @@
+#!/bin/bash
+set -e
+
+{% set pd_host = groups.pd_servers[0] %}
+{% set pd_ip = hostvars[pd_host].ansible_host | default(hostvars[pd_host].inventory_hostname) -%}
+{% set pd_port = hostvars[pd_host].pd_client_port -%}
+{% set pd_address = "%s:%s" % (pd_ip, pd_port) %}
+{% set all_tidb = [] -%}
+{% set tidb_hosts = groups.tidb_servers %}
+{% for host in tidb_hosts -%}
+  {% set tidb_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
+  {% set tidb_port = hostvars[host].tidb_port -%}
+  {% set _ = all_tidb.append("%s:%s" % (tidb_ip, tidb_port)) -%}
+{% endfor -%}
+{% set all_grafana = [] -%}
+{% set grafana_hosts = groups.grafana_servers %}
+{% for host in grafana_hosts -%}
+  {% set grafana_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
+  {% set grafana_port = hostvars[host].grafana_port -%}
+  {% set _ = all_grafana.append("%s:%s" % (grafana_ip, grafana_port)) -%}
+{% endfor -%}
+{% set all_alertmanager = [] -%}
+{% set alertmanager_hosts = groups.alertmanager_servers %}
+{% for host in alertmanager_hosts -%}
+  {% set alertmanager_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
+  {% set alertmanager_port = hostvars[host].alertmanager_port -%}
+  {% set _ = all_alertmanager.append("%s:%s" % (alertmanager_ip, alertmanager_port)) -%}
+{% endfor -%}
+{% set flag = "" %}
+{% if all_tidb -%}
+  {% set flag = flag + "--tidb " + ','.join(all_tidb) -%}
+{% endif -%}
+{% if all_grafana -%}
+  {% set flag = flag + " --grafana " + ','.join(all_grafana) -%}
+{% endif -%}
+{% if all_alertmanager -%}
+  {% set flag = flag + " --alertmanager " + ','.join(all_alertmanager) -%}
+{% endif -%}
+
+python2 init-pd-topo.py --pd {{ pd_address }} {{ flag }}

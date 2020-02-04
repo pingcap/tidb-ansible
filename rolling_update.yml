@@ -168,12 +168,6 @@
         pd_cert_dir: "{{ pd_cert_dir }}"
       when: pd_leader_name == pd_name
 
-    - name: init pd cluster topology
-      delegate_to: localhost
-      shell: "python init-pd-topo.py --pd_host {{ pd_host }} --pd_port {{ pd_port }} --tidb_host {{ tidb_host }} --tidb_port {{ tidb_port }} --grafana_host {{ grafana_host }} --grafana_port {{ grafana_port }} --alertmanager_host {{ alertmanager_host }} --alertmanager_port {{ alertmanager_port }}"
-      args:
-        chdir: "{{ playbook_dir }}/scripts"
-
 - name: rolling update PD cluster
   hosts: pd_servers_followers, pd_servers_leader
   any_errors_fatal: true
@@ -600,3 +594,10 @@
       retries: 10
       delay: 5
       when: enable_tls|default(false)
+
+- hosts: localhost
+  tags:
+    - always
+  tasks:
+    - name: init pd topo
+      shell: "./init-pd-topo.sh"

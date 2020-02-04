@@ -20,7 +20,7 @@ def parse_opts():
     # pd is involved because we need to send http request
     involve = ComponentToRegister + ('pd', )
     for target in involve:
-        parser.add_argument("--{}_port".format(target),
+        parser.add_argument("--{}".format(target),
                             help="the address list of {}".format(target))
     args, unknown = parser.parse_known_args()
     return args
