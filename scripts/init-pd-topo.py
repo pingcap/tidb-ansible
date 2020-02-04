@@ -18,12 +18,10 @@ def parse_opts():
     """
     parser = argparse.ArgumentParser(description="Parse output.")
     # pd is involved because we need to send http request
-    involve = ComponentToRegister + ('pd',)
+    involve = ComponentToRegister + ('pd', )
     for target in involve:
-        parser.add_argument(
-            "--{}_port".format(target), help="the port of {}".format(target))
-        parser.add_argument(
-            "--{}_host".format(target), help="the host of {}".format(target))
+        parser.add_argument("--{}_port".format(target),
+                            help="the address list of {}".format(target))
     args, unknown = parser.parse_known_args()
     return args
 
@@ -35,15 +33,14 @@ def etcd_write(etcd_url, key, value):
         "key": encoded_key,
         "value": encoded_value,
     })
-    req = urllib2.Request(
-        'http://' + etcd_url + '/v3/kv/put',
-        data=data,
-        headers={'Content-Type': 'application/json'})
+    req = urllib2.Request('http://' + etcd_url + '/v3/kv/put',
+                          data=data,
+                          headers={'Content-Type': 'application/json'})
     try:
         resp = urllib2.urlopen(req)
         data = json.load(resp)
         return data
-    except urllib2.HTTPError, error:
+    except urllib2.HTTPError as error:
         data = json.load(error)
         return data
 
@@ -81,11 +78,17 @@ if __name__ == '__main__':
     args = parse_opts()
 
     # parse from args
-    pd_address = concat_to_address(args.pd_host, args.pd_port)
-    tidb_address = concat_to_address(args.tidb_host, args.tidb_port)
-    alertmanager_address = concat_to_address(args.alertmanager_host,
-                                             args.alertmanager_port)
-    grafana_address = concat_to_address(args.grafana_host, args.grafana_port)
+    # pd_address = concat_to_address(args.pd_host, args.pd_port)
+    # tidb_address = concat_to_address(args.tidb_host, args.tidb_port)
+    # alertmanager_address = concat_to_address(args.alertmanager_host,
+    #                                          args.alertmanager_port)
+    # grafana_address = concat_to_address(args.grafana_host, args.grafana_port)
+    pd_address = args.pd
+    pd_address_zero = pd_address.split(',')[0]
+
+    tidb_address = args.tidb
+    alertmanager_address = args.alertmanager
+    grafana_address = args.grafana
 
     mapping = {
         'tidb': tidb_address,
@@ -94,4 +97,4 @@ if __name__ == '__main__':
     }
 
     for comp in ComponentToRegister:
-        request_topo(comp, mapping[comp], pd_address)
+        request_topo(comp, mapping[comp], pd_address_zero)
