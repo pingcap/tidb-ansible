@@ -58,7 +58,7 @@ def request_topo(comp, topo, etcd_target):
     if topo is None:
         # if topo is None, do nothing
         return
-    return etcd_write(etcd_target, comp, topo)
+    return etcd_write(etcd_target, "/topo/" + comp, topo)
 
 
 def concat_to_address(ip, port):
