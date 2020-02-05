@@ -4055,9 +4055,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(increase(tidb_session_statement_lock_keys_count[1m]))",
+              "expr": "sum(increase(tidb_session_statement_lock_keys_count[30s]))",
               "format": "time_series",
               "intervalFactor": 1,
+              "legendFormat": "30s",
               "refId": "A"
             }
           ],
@@ -4101,6 +4102,106 @@
             "align": false,
             "alignLevel": null
           }
+        },
+        {
+           "aliasColors": {},
+           "bars": false,
+           "dashLength": 10,
+           "dashes": false,
+           "datasource": "rnew_3_0",
+           "description": "Bucketed historgram of statement pessimistic retry count",
+           "fill": 1,
+           "gridPos": {
+             "h": 8,
+             "w": 8,
+             "x": 0,
+             "y": 25
+           },
+           "id": 199,
+           "legend": {
+             "avg": false,
+             "current": false,
+             "max": false,
+             "min": false,
+             "show": true,
+             "total": false,
+             "values": false
+           },
+           "lines": true,
+           "linewidth": 1,
+           "links": [],
+           "nullPointMode": "null",
+           "percentage": false,
+           "pointradius": 2,
+           "points": false,
+           "renderer": "flot",
+           "seriesOverrides": [],
+           "spaceLength": 10,
+           "stack": false,
+           "steppedLine": false,
+           "targets": [
+             {
+               "expr": "histogram_quantile(0.99, sum(rate(tidb_session_statement_pessimistic_retry_count_bucket[30s])) by (le))",
+               "format": "time_series",
+               "intervalFactor": 1,
+               "legendFormat": "99",
+               "refId": "A"
+             },
+             {
+               "expr": "histogram_quantile(0.95, sum(rate(tidb_session_statement_pessimistic_retry_count_bucket[30s])) by (le))",
+               "format": "time_series",
+               "intervalFactor": 1,
+               "legendFormat": "95",
+               "refId": "B"
+             },
+             {
+               "expr": "histogram_quantile(0.90, sum(rate(tidb_session_statement_pessimistic_retry_count_bucket[30s])) by (le))",
+               "format": "time_series",
+               "intervalFactor": 1,
+               "legendFormat": "90",
+               "refId": "C"
+             }
+           ],
+           "thresholds": [],
+           "timeFrom": null,
+           "timeRegions": [],
+           "timeShift": null,
+           "title": "Statement Pessimistic Retry Count",
+           "tooltip": {
+             "shared": true,
+             "sort": 0,
+             "value_type": "individual"
+           },
+           "type": "graph",
+           "xaxis": {
+             "buckets": null,
+             "mode": "time",
+             "name": null,
+             "show": true,
+             "values": []
+           },
+           "yaxes": [
+             {
+               "format": "short",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+             },
+             {
+               "format": "short",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+             }
+           ],
+           "yaxis": {
+             "align": false,
+             "alignLevel": null
+           }
         }
       ],
       "repeat": null,
