@@ -43,6 +43,13 @@ def etcd_write(etcd_url, key, value):
         data = json.load(error)
         return data
 
+def parse_address(con):
+    """
+    con: str for argument like "127.0.0.1:2379/deploy"
+    return: Tuple[str, str] like ("127.0.0.1:2379", "/deploy")
+    """
+    pos = con.find('/')
+    return (con[:pos], con[pos:])
 
 def request_topo(comp, topo, etcd_target):
     """
@@ -57,7 +64,9 @@ def request_topo(comp, topo, etcd_target):
     if topo is None:
         # if topo is None, do nothing
         return
-    return etcd_write(etcd_target, "/topo/" + comp, topo)
+    ip, add = parse_address(topo)
+    etcd_write(etcd_target, "/topo/net/" + comp, ip)
+    etcd_write(etcd_target, "/topo/deploy/" + comp, add)
 
 
 def concat_to_address(ip, port):
