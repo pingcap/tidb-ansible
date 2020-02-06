@@ -10,21 +10,24 @@ set -e
 {% for host in tidb_hosts -%}
   {% set tidb_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
   {% set tidb_port = hostvars[host].tidb_port -%}
-  {% set _ = all_tidb.append("%s:%s" % (tidb_ip, tidb_port)) -%}
+  {% set tidb_path = hostvars[host].deploy_dir -%}
+  {% set _ = all_tidb.append("%s:%s%s" % (tidb_ip, tidb_port, tidb_path)) -%}
 {% endfor -%}
 {% set all_grafana = [] -%}
 {% set grafana_hosts = groups.grafana_servers %}
 {% for host in grafana_hosts -%}
   {% set grafana_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
   {% set grafana_port = hostvars[host].grafana_port -%}
-  {% set _ = all_grafana.append("%s:%s" % (grafana_ip, grafana_port)) -%}
+  {% set grafana_path = hostvars[host].deploy_dir -%}
+  {% set _ = all_grafana.append("%s:%s%s" % (grafana_ip, grafana_port, grafana_path)) -%}
 {% endfor -%}
 {% set all_alertmanager = [] -%}
 {% set alertmanager_hosts = groups.alertmanager_servers %}
 {% for host in alertmanager_hosts -%}
   {% set alertmanager_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
   {% set alertmanager_port = hostvars[host].alertmanager_port -%}
-  {% set _ = all_alertmanager.append("%s:%s" % (alertmanager_ip, alertmanager_port)) -%}
+  {% set alertmanager_path = hostvars[host].deploy_dir -%}
+  {% set _ = all_alertmanager.append("%s:%s%s" % (alertmanager_ip, alertmanager_port, alertmanager_path)) -%}
 {% endfor -%}
 {% set flag = "" %}
 {% if all_tidb -%}
