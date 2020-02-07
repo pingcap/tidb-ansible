@@ -1,10 +1,14 @@
 #!/bin/bash
 set -e
 
-{% set pd_host = groups.pd_servers[0] %}
-{% set pd_ip = hostvars[pd_host].ansible_host | default(hostvars[pd_host].inventory_hostname) -%}
-{% set pd_port = hostvars[pd_host].pd_client_port -%}
-{% set pd_address = "%s:%s" % (pd_ip, pd_port) %}
+{% set all_pd = [] -%}
+{% set pd_hosts = groups.pd_servers %}
+{% for host in pd_hosts -%}
+  {% set pd_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
+  {% set pd_port = hostvars[host].pd_client_port -%}
+  {% set pd_path = hostvars[host].deploy_dir -%}
+  {% set _ = all_pd.append("%s:%s%s" % (pd_ip, pd_port, pd_path)) -%}
+{% endfor -%}
 {% set all_tidb = [] -%}
 {% set tidb_hosts = groups.tidb_servers %}
 {% for host in tidb_hosts -%}
@@ -40,4 +44,4 @@ set -e
   {% set flag = flag + " --alertmanager " + ','.join(all_alertmanager) -%}
 {% endif -%}
 
-python2 init-pd-topo.py --pd {{ pd_address }} {{ flag }}
+python2 init-pd-topo.py --pd {{ all_pd | join(',') }} {{ flag }}
