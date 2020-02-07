@@ -9,7 +9,7 @@ import base64
 import json
 import argparse
 
-ComponentToRegister = ('alertmanager', 'tidb', 'grafana')
+ComponentToRegister = ('alertmanager', 'tidb', 'grafana', 'tikv', 'pd')
 
 
 def parse_opts():
@@ -18,8 +18,7 @@ def parse_opts():
     """
     parser = argparse.ArgumentParser(description="Parse output.")
     # pd is involved because we need to send http request
-    involve = ComponentToRegister + ('pd', )
-    for target in involve:
+    for target in ComponentToRegister:
         parser.add_argument("--{}".format(target),
                             help="the address list of {}".format(target))
     args, unknown = parser.parse_known_args()
@@ -44,6 +43,13 @@ def etcd_write(etcd_url, key, value):
         data = json.load(error)
         return data
 
+def parse_address(con):
+    """
+    con: str for argument like "127.0.0.1:2379/deploy"
+    return: Tuple[str, str] like ("127.0.0.1:2379", "/deploy")
+    """
+    pos = con.find('/')
+    return (con[:pos], con[pos:])
 
 def request_topo(comp, topo, etcd_target):
     """
@@ -58,7 +64,9 @@ def request_topo(comp, topo, etcd_target):
     if topo is None:
         # if topo is None, do nothing
         return
-    return etcd_write(etcd_target, "/topo/" + comp, topo)
+    ip, add = parse_address(topo)
+    etcd_write(etcd_target, "/topo/net/" + comp, ip)
+    etcd_write(etcd_target, "/topo/deploy/" + comp, add)
 
 
 def concat_to_address(ip, port):
@@ -89,11 +97,15 @@ if __name__ == '__main__':
     tidb_address = args.tidb
     alertmanager_address = args.alertmanager
     grafana_address = args.grafana
+    pd_address = args.pd
+    tikv_address = args.tikv
 
     mapping = {
         'tidb': tidb_address,
         'alertmanager': alertmanager_address,
         'grafana': grafana_address,
+        'pd': pd_address,
+        'tikv': tikv_address
     }
 
     for comp in ComponentToRegister:
