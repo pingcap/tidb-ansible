@@ -23,7 +23,7 @@ cd "${DEPLOY_DIR}" || exit 1
 {% endfor -%}
 
 exec bin/pump \
-    --addr="0.0.0.0:{{ pump_port }}" \
+    --addr="{{ my_ip }}:{{ pump_port }}" \
     --advertise-addr="{{ my_ip }}:{{ pump_port }}" \
     --pd-urls="{{ all_pd | join(',') }}" \
     --data-dir="{{ pump_data_dir }}" \

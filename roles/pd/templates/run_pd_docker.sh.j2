@@ -32,9 +32,9 @@ exec docker run \
   --name "{{ pd_name_prefix }}" \
   pingcap/pd:{{ tidb_version }} \
   --name="{{ pd_name_prefix }}{{ my_peer_id }}" \
-  --client-urls=http://0.0.0.0:2379 \
+  --client-urls=http://{{my_ip}}:2379 \
   --advertise-client-urls=http://{{my_ip}}:2379 \
-  --peer-urls=http://0.0.0.0:2380 \
+  --peer-urls=http://{{my_ip}}:2380 \
   --advertise-peer-urls=http://{{my_ip}}:2380 \
   --initial-cluster="{{ all_pd | join(',') }}" \
   --data-dir=/data \
