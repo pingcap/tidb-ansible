@@ -395,7 +395,7 @@
 
     - name: import grafana dashboards - prepare config
       delegate_to: localhost
-      template: src=grafana.dest.json.j2 dest={{ playbook_dir }}/scripts/dests.json
+      template: src=grafana.dest.json.j2 dest={{ playbook_dir }}/scripts/dests-{{ inventory_hostname }}.json
       vars:
         - ansible_become: false
         - ansible_connection: local
