@@ -1,5 +1,16 @@
-{% set metric_host = hostvars[groups.monitoring_servers[0]].ansible_host | default(hostvars[groups.monitoring_servers[0]].inventory_hostname) if groups.monitoring_servers else "" -%}
-{% set metric_port = hostvars[groups.monitoring_servers[0]].prometheus_port if groups.monitoring_servers else ''-%}
+{% if groups.monitoring_servers | length == groups.grafana_servers | length -%}
+  {% set index = [] -%}
+  {% for host in groups.monitoring_servers -%}
+    {% if inventory_hostname == hostvars[host].inventory_hostname -%}
+      {% set _ = index.append(loop.index0) -%}
+    {% endif -%}
+  {% endfor -%}
+  {% set metric_host = hostvars[groups.monitoring_servers[index.0]].ansible_host | default(hostvars[groups.monitoring_servers[index.0]].inventory_hostname) -%}
+  {% set metric_port = hostvars[groups.monitoring_servers[index.0]].prometheus_port -%}
+{% else -%}
+  {% set metric_host = hostvars[groups.monitoring_servers[0]].ansible_host | default(hostvars[groups.monitoring_servers[0]].inventory_hostname) -%}
+  {% set metric_port = hostvars[groups.monitoring_servers[0]].prometheus_port -%}
+{% endif -%}
 {
     "name":"{{ cluster_name }}",
     "type":"prometheus",

@@ -1,9 +1,9 @@
 ---
 # Common Tasks
 
-- name: Ensure only one monitoring host exists
-  fail: msg="One monitoring host should be specified."
-  when: groups['monitoring_servers'] | length != 1
+- name: Ensure monitoring_servers exists
+  fail: msg="monitoring_servers should be specified."
+  when: groups['monitoring_servers'] | length < 1
 
 - name: Ensure monitored_servers exists
   fail: msg="monitored_servers should be specified."
