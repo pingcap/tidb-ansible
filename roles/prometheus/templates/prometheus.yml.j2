@@ -31,37 +31,49 @@ rule_files:
   - 'lightning.rules.yml'
 {% endif %}
 
-{% set alertmanager_host = hostvars[groups.alertmanager_servers[0]].ansible_host | default(hostvars[groups.alertmanager_servers[0]].inventory_hostname)
-    if groups.get('alertmanager_servers', []) else '' -%}
-{% set alertmanager_port = hostvars[groups.alertmanager_servers[0]].alertmanager_port if alertmanager_host else '' -%}
-
-{% if alertmanager_target|default("") %}
+{% if alertmanager_target|default("") -%}
 alerting:
  alertmanagers:
  - static_configs:
    - targets:
      - '{{ alertmanager_target }}'
-{% elif alertmanager_host %}
+{% elif groups.alertmanager_servers -%}
+{% if groups.monitoring_servers | length == groups.alertmanager_servers | length -%}
+  {% set index = [] -%}
+  {% for host in groups.monitoring_servers -%}
+    {% if inventory_hostname == hostvars[host].inventory_hostname -%}
+      {% set _ = index.append(loop.index0) -%}
+    {% endif -%}
+  {% endfor -%}
+  {% set alertmanager_host = hostvars[groups.alertmanager_servers[index.0]].ansible_host | default(hostvars[groups.alertmanager_servers[index.0]].inventory_hostname) -%}
+  {% set alertmanager_port = hostvars[groups.alertmanager_servers[index.0]].alertmanager_port -%}
 alerting:
  alertmanagers:
  - static_configs:
    - targets:
      - '{{ alertmanager_host }}:{{ alertmanager_port }}'
-{% else %}
+{% endif -%}
+{% else -%}
 # alerting:
 #  alertmanagers:
 #  - static_configs:
 #    - targets:
 #      - 'alertmanager_host:9093'
-{% endif %}
+{% endif -%}
 
-{% set pushgateway_host = hostvars[groups.monitoring_servers[0]].ansible_host | default(hostvars[groups.monitoring_servers[0]].inventory_hostname)
-    if groups.get('monitoring_servers', []) else '' -%}
-{% set pushgateway_port = hostvars[groups.monitoring_servers[0]].pushgateway_port if pushgateway_host else '' -%}
+{% set pushgateway_addrs = [] -%}
+{% for host in groups.monitoring_servers -%}
+  {% set pushgateway_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
+  {% set pushgateway_port = hostvars[host].pushgateway_port -%}
+  {% set _ = pushgateway_addrs.append("%s:%s" % (pushgateway_ip, pushgateway_port)) -%}
+{% endfor -%}
 
-{% set grafana_host = hostvars[groups.grafana_servers[0]].ansible_host | default(hostvars[groups.grafana_servers[0]].inventory_hostname)
-    if groups.get('grafana_servers', []) else '' -%}
-{% set grafana_port = hostvars[groups.grafana_servers[0]].grafana_port if grafana_host else '' -%}
+{% set grafana_addrs = [] -%}
+{% for host in groups.grafana_servers -%}
+  {% set grafana_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
+  {% set grafana_port = hostvars[host].grafana_port -%}
+  {% set _ = grafana_addrs.append("%s:%s" % (grafana_ip, grafana_port)) -%}
+{% endfor -%}
 
 {% set blackbox_host = hostvars[groups.monitored_servers[0]].ansible_host | default(hostvars[groups.monitored_servers[0]].inventory_hostname) if groups.get('monitored_servers', []) else '' -%}
 {% set blackbox_port = hostvars[groups.monitored_servers[0]].blackbox_exporter_port if blackbox_host else '' -%}
@@ -109,12 +121,15 @@ alerting:
 {% endfor -%}
 
 scrape_configs:
-{% if pushgateway_host %}
+{% if pushgateway_addrs %}
   - job_name: 'overwritten-cluster'
     scrape_interval: 15s
     honor_labels: true # don't overwrite job & instance labels
     static_configs:
-      - targets: ['{{ pushgateway_host }}:{{ pushgateway_port }}']
+    - targets:
+{% for pushgateway_addr in pushgateway_addrs %}
+      - '{{ pushgateway_addr }}'
+{% endfor %}
 
   - job_name: "blackbox_exporter_http"
     scrape_interval: 30s
@@ -123,7 +138,9 @@ scrape_configs:
       module: [http_2xx]
     static_configs:
     - targets:
-      - 'http://{{ pushgateway_host }}:{{ pushgateway_port }}/metrics'
+{% for pushgateway_addr in pushgateway_addrs %}
+      - 'http://{{ pushgateway_addr }}/metrics'
+{% endfor %}
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
@@ -287,11 +304,15 @@ scrape_configs:
       labels:
         group: 'pd'
     - targets:
-      - '{{ pushgateway_host }}:{{ pushgateway_port }}'
+{% for pushgateway_addr in pushgateway_addrs %}
+      - '{{ pushgateway_addr }}'
+{% endfor %}
       labels:
         group: 'pushgateway'
     - targets:
-      - '{{ grafana_host }}:{{ grafana_port }}'
+{% for grafana_addr in grafana_addrs %}
+      - '{{ grafana_addr }}'
+{% endfor %}
       labels:
         group: 'grafana'
     - targets:
