@@ -3,6 +3,7 @@
 from __future__ import print_function, \
     unicode_literals
 
+import sys
 import urllib
 import urllib2
 import base64
@@ -23,7 +24,7 @@ dests = [
 ]
 
 if not dests:
-    with open("./dests.json") as fp:
+    with open(sys.argv[1]) as fp:
         dests = json.load(fp)
 
 src = dict(
