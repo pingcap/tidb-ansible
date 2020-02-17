@@ -30,6 +30,14 @@ config = "{{ flash_proxy_config }}"
 {% endif %}
 {% endfor %}
 
+[status]
+metrics_port = {{ metrics_port }}
+{% for item, value in tiflash_conf.profiles | dictsort_by_value_type -%}
+{% if value is not mapping -%}
+{{ item }} = {{ value | to_json }}
+{% endif %}
+{% endfor %}
+
 [logger]
 errorlog = "{{ tiflash_errlog }}"
 log = "{{ tiflash_server_log }}"
