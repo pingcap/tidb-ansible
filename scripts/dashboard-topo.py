@@ -43,6 +43,7 @@ def etcd_write(etcd_url, key, value):
         data = json.load(error)
         return data
 
+
 def parse_address(con):
     """
     con: str for argument like "127.0.0.1:2379/deploy"
@@ -51,11 +52,12 @@ def parse_address(con):
     pos = con.find('/')
     return (con[:pos], con[pos:])
 
+
 def request_topo(comp, topo, etcd_target):
     """
     Sending request to etcd v3, and leave:
     under {pd_target}:
-    write: /topo/{comp}: {topo}
+    write: /topology/{comp}: {ip: ip, address: address}
 
     comp: str for component name, which will be like "tidb"
     topo: str for topology address, like "127.0.0.1:4000"
@@ -65,8 +67,11 @@ def request_topo(comp, topo, etcd_target):
         # if topo is None, do nothing
         return
     ip, add = parse_address(topo)
-    etcd_write(etcd_target, "/topo/net/" + comp, ip)
-    etcd_write(etcd_target, "/topo/deploy/" + comp, add)
+    message = json.dumps({
+        'ip': ip,
+        'binary_path': add,
+    })
+    etcd_write(etcd_target, "/topology/" + comp, message)
 
 
 def concat_to_address(ip, port):
