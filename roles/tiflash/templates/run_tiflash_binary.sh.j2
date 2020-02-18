@@ -1,0 +1,21 @@
+#!/bin/bash
+set -e
+ulimit -n 1000000
+
+# WARNING: This file was auto-generated. Do not edit!
+#          All your edit might be overwritten!
+cd "{{ deploy_dir }}" || exit 1
+
+export RUST_BACKTRACE=1
+
+export TZ=${TZ:-/etc/localtime}
+export LD_LIBRARY_PATH={{ deploy_dir }}/bin/tiflash:$LD_LIBRARY_PATH
+
+echo -n 'sync ... '
+stat=$(time sync)
+echo ok
+echo $stat
+
+echo $$ > "status/{{ role_name }}.pid"
+
+exec bin/tiflash/tiflash server --config-file conf/tiflash.toml

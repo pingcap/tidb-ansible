@@ -1,0 +1,55 @@
+---
+
+global:
+  display_name: "TiFlash"
+  default_profile: "default"
+  mark_cache_size: 5368709120
+  listen_host: "0.0.0.0"
+flash:
+  flash_cluster:
+    refresh_interval: 20
+    update_rule_interval: 5
+    master_ttl: 60
+  proxy:
+
+status:
+
+logger:
+  count: 20
+  size: "1000M"
+  level: "debug"
+application:
+  runAsDaemon: true
+
+raft:
+  storage_engine: "tmt"
+
+quotas:
+  default:
+    interval:
+      result_rows: 0
+      read_rows: 0
+      execution_time: 0
+      queries: 0
+      errors: 0
+      duration: 3600
+users:
+  readonly:
+    quota: "default"
+    profile: "readonly"
+    password: ""
+    networks:
+      ip: "::/0"
+  default:
+    quota: "default"
+    profile: "default"
+    password: ""
+    networks:
+      ip: "::/0"
+profiles:
+  readonly:
+    readonly: 1
+  default:
+    load_balancing: "random"
+    use_uncompressed_cache: 0
+    max_memory_usage: 10000000000
