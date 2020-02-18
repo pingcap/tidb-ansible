@@ -109,6 +109,18 @@ alerting:
   {% set _ = tikv_status_addrs.append("%s:%s" % (tikv_ip, tikv_status_port)) -%}
 {% endfor -%}
 
+{% set tiflash_metrics_addrs = [] -%}
+{% set tiflash_http_addrs = [] -%}
+{% for host in groups.tiflash_servers -%}
+  {% set tiflash_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
+  {% set tiflash_metrics_port = hostvars[host].metrics_port -%}
+  {% set tiflash_proxy_status_port = hostvars[host].flash_proxy_status_port -%}
+  {% set tiflash_http_port = hostvars[host].http_port -%}
+  {% set _ = tiflash_metrics_addrs.append("%s:%s" % (tiflash_ip, tiflash_metrics_port)) -%}
+  {% set _ = tiflash_metrics_addrs.append("%s:%s" % (tiflash_ip, tiflash_proxy_status_port)) -%}
+  {% set _ = tiflash_http_addrs.append("%s:%s" % (tiflash_ip, tiflash_http_port)) -%}
+{% endfor -%}
+
 {% set pd_addrs = [] -%}
 {% for host in groups.pd_servers -%}
   {% set pd_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
@@ -175,6 +187,16 @@ scrape_configs:
 {% for tikv_status_addr in tikv_status_addrs %}
       - '{{ tikv_status_addr }}'
 {% endfor %}
+
+{% if tiflash_metrics_addrs %}
+  - job_name: 'tiflash'
+    honor_labels: true # don't overwrite job & instance labels
+    static_configs:
+    - targets:
+{% for tiflash_metrics_addr in tiflash_metrics_addrs %}
+      - '{{ tiflash_metrics_addr }}'
+{% endfor %}
+{% endif %}
 
   - job_name: "pd"
     honor_labels: true # don't overwrite job & instance labels
@@ -291,6 +313,12 @@ scrape_configs:
 {% endfor %}
       labels:
         group: 'tikv'
+    - targets:
+{% for tiflash_http_addr in tiflash_http_addrs %}
+      - '{{ tiflash_http_addr }}'
+{% endfor %}
+      labels:
+        group: 'tiflash'
     - targets:
 {% for pd_addr in pd_addrs %}
       - '{{ pd_addr }}'
