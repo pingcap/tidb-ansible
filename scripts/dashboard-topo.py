@@ -9,7 +9,7 @@ import base64
 import json
 import argparse
 
-ComponentToRegister = ('alertmanager', 'tidb', 'grafana', 'tikv', 'pd')
+ComponentToRegister = ('alertmanager', 'grafana', 'pd')
 
 
 def parse_opts():
@@ -111,4 +111,6 @@ if __name__ == '__main__':
     }
 
     for comp in ComponentToRegister:
+        if comp == 'pd':
+            continue
         request_topo(comp, mapping[comp], pd_address_zero)
