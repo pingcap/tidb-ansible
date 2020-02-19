@@ -67,9 +67,12 @@ def request_topo(comp, topo, etcd_target):
         # if topo is None, do nothing
         return
     ip, add = parse_address(topo)
+    ip, port = ip.split(':')
+
     message = json.dumps({
         'ip': ip,
         'binary_path': add,
+        'port': port,
     })
     etcd_write(etcd_target, "/topology/" + comp, message)
 
@@ -99,18 +102,12 @@ if __name__ == '__main__':
     pd_address = args.pd
     pd_address_zero = pd_address.split(',')[0]
 
-    tidb_address = args.tidb
     alertmanager_address = args.alertmanager
     grafana_address = args.grafana
-    pd_address = args.pd
-    tikv_address = args.tikv
 
     mapping = {
-        'tidb': tidb_address,
         'alertmanager': alertmanager_address,
         'grafana': grafana_address,
-        'pd': pd_address,
-        'tikv': tikv_address
     }
 
     for comp in ComponentToRegister:
