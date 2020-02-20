@@ -35,6 +35,8 @@ src = dict(
                 "tikv_summary": 'tikv_summary.json',
                 "tikv_details": 'tikv_details.json',
                 "tikv_trouble_shot": 'tikv_trouble_shooting.json',
+                "tiflash_summary": 'tiflash_summary.json',
+                "tiflash_proxy_summary": 'tiflash_proxy_summary.json',
                 "binlog": "binlog.json",
                 "overview": 'overview.json',
                 "disk_performance": 'disk_performance.json',

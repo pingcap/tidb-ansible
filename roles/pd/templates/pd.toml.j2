@@ -34,6 +34,9 @@ initial-cluster-state = "new"
 {% endfor %}
 
 [replication]
+{% if groups.tiflash_servers | length | default(0) > 0 -%}
+enable-placement-rules = true
+{% endif -%}
 {% for item, value in pd_conf.replication | dictsort -%}
 {{ item }} = {{ value | to_json}}
 {% endfor %}
