@@ -9,14 +9,6 @@ set -e
   {% set pd_path = hostvars[host].deploy_dir -%}
   {% set _ = all_pd.append("%s:%s%s" % (pd_ip, pd_port, pd_path)) -%}
 {% endfor -%}
-{% set all_tidb = [] -%}
-{% set tidb_hosts = groups.tidb_servers %}
-{% for host in tidb_hosts -%}
-  {% set tidb_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
-  {% set tidb_port = hostvars[host].tidb_port -%}
-  {% set tidb_path = hostvars[host].deploy_dir -%}
-  {% set _ = all_tidb.append("%s:%s%s" % (tidb_ip, tidb_port, tidb_path)) -%}
-{% endfor -%}
 {% set all_grafana = [] -%}
 {% set grafana_hosts = groups.grafana_servers %}
 {% for host in grafana_hosts -%}
@@ -34,9 +26,6 @@ set -e
   {% set _ = all_alertmanager.append("%s:%s%s" % (alertmanager_ip, alertmanager_port, alertmanager_path)) -%}
 {% endfor -%}
 {% set flag = "" %}
-{% if all_tidb -%}
-  {% set flag = flag + "--tidb " + ','.join(all_tidb) -%}
-{% endif -%}
 {% if all_grafana -%}
   {% set flag = flag + " --grafana " + ','.join(all_grafana) -%}
 {% endif -%}
@@ -44,4 +33,4 @@ set -e
   {% set flag = flag + " --alertmanager " + ','.join(all_alertmanager) -%}
 {% endif -%}
 
-python2 dashboard-topo.py --pd {{ all_pd | join(',') }} {{ flag }}
+python2 dashboard_topo.py --pd {{ all_pd | join(',') }} {{ flag }}
