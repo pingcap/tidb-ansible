@@ -40,8 +40,7 @@ def etcd_write(etcd_url, key, value):
         data = json.load(resp)
         return data
     except urllib2.HTTPError as error:
-        data = json.load(error)
-        return data
+        raise error
 
 
 def parse_address(con):
@@ -100,7 +99,7 @@ if __name__ == '__main__':
     #                                          args.alertmanager_port)
     # grafana_address = concat_to_address(args.grafana_host, args.grafana_port)
     pd_address = args.pd
-    pd_address_zero = pd_address.split(',')[0]
+    pd_address_zero, _ = parse_address(pd_address.split(',')[0])
 
     alertmanager_address = args.alertmanager
     grafana_address = args.grafana
