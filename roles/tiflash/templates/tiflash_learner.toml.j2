@@ -1,3 +1,5 @@
+log-file = "{{ tiflash_tikv_log }}"
+
 [readpool]
 {% for item, value in tiflash_learner_conf.readpool | dictsort_by_value_type -%}
 {% if value is not mapping -%}
@@ -12,8 +14,10 @@
 {% endfor %}
 
 [server]
-labels = { "tiflash_http_port" = "{{ http_port }}" }
 engine-addr = "{{ ansible_host | default(inventory_hostname) }}:{{ flash_service_port }}"
+addr = "{{ ansible_host | default(inventory_hostname) }}:{{ flash_proxy_port }}"
+advertise-addr = "{{ ansible_host | default(inventory_hostname) }}:{{ flash_proxy_port }}"
+status-addr = "{{ ansible_host | default(inventory_hostname) }}:{{ flash_proxy_status_port }}"
 {% for item, value in tiflash_learner_conf.server | dictsort -%}
 {% if item == "labels" %}
 {{ item }} = {{ value | tikv_server_labels_format }}
@@ -23,6 +27,7 @@ engine-addr = "{{ ansible_host | default(inventory_hostname) }}:{{ flash_service
 {% endfor %}
 
 [storage]
+data-dir = "{{ data_dir }}"
 {% for item, value in tiflash_learner_conf.storage | dictsort -%}
 {{ item }} = {{ value | to_json }}
 {% endfor %}

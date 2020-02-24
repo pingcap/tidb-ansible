@@ -395,7 +395,7 @@
 
     - name: import grafana dashboards - prepare config
       delegate_to: localhost
-      template: src=grafana.dest.json.j2 dest={{ playbook_dir }}/scripts/dests.json
+      template: src=grafana.dest.json.j2 dest={{ playbook_dir }}/scripts/dests-{{ inventory_hostname }}.json
       vars:
         - ansible_become: false
         - ansible_connection: local
@@ -415,6 +415,8 @@
               tikv_summary: "{{ cluster_name | title }}-TiKV-Summary"
               tikv_details: "{{ cluster_name | title }}-TiKV-Details"
               tikv_trouble_shot: "{{ cluster_name | title }}-TiKV-Trouble-Shooting"
+              tiflash_summary: "{{ cluster_name | title }}-TiFlash-Summary"
+              tiflash_proxy_summary: "{{ cluster_name | title }}-TiFlash-Proxy-Summary"
               binlog: "{{ cluster_name | title }}-Binlog"
               overview: "{{ cluster_name | title }}-Overview"
               disk_performance: "{{ cluster_name | title }}-Disk-Performance"
@@ -426,7 +428,7 @@
 
     - name: import grafana dashboards - run import script
       delegate_to: localhost
-      shell: "python grafana-config-copy.py"
+      shell: "python grafana-config-copy.py dests-{{ inventory_hostname }}.json"
       args:
         chdir: "{{ playbook_dir }}/scripts"
       vars:

@@ -350,37 +350,6 @@
         - enable_tls|default(false)
         - wait_replication|default(false)
 
-- hosts: tiflash_servers
-  tags:
-    - tiflash
-  tasks:
-    - name: start TiFlash by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - tiflash
-
-    - name: start TiFlash by systemd
-      systemd: name=tiflash-{{ tcp_port }}.service state=started enabled=no
-      become: true
-      when: process_supervision == 'systemd'
-
-    - name: wait until the TiFlash port is up
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ http_port }}"
-        state: started
-        msg: "the TiFlash port {{ http_port }} is not up"
-
-    - name: wait until the TiFlash status page is available
-      uri:
-        url: "http://{{ ansible_host }}:{{ http_port }}/?query=select%20version()"
-        return_content: yes
-      register: tiflash_http_result
-      until: tiflash_http_result.status == 200
-      retries: 12
-      delay: 5
-      when: not enable_tls|default(false)
 
 - hosts: pump_servers
   tags:
@@ -472,6 +441,39 @@
       when: enable_tls|default(false)
 
 
+- hosts: tiflash_servers
+  tags:
+    - tiflash
+  tasks:
+    - name: start TiFlash by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
+      when: process_supervision == 'supervise'
+      with_items:
+        - tiflash
+
+    - name: start TiFlash by systemd
+      systemd: name=tiflash-{{ tcp_port }}.service state=started enabled=no
+      become: true
+      when: process_supervision == 'systemd'
+
+    - name: wait until the TiFlash port is up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ http_port }}"
+        state: started
+        msg: "the TiFlash port {{ http_port }} is not up"
+
+    - name: wait until the TiFlash status page is available
+      uri:
+        url: "http://{{ ansible_host }}:{{ http_port }}/?query=select%20version()"
+        return_content: yes
+      register: tiflash_http_result
+      until: tiflash_http_result.status == 200
+      retries: 12
+      delay: 5
+      when: not enable_tls|default(false)
+
+
 - hosts: grafana_servers
   tags:
     - grafana
@@ -518,7 +520,7 @@
 
     - name: import grafana dashboards - prepare config
       delegate_to: localhost
-      template: src=grafana.dest.json.j2 dest={{ playbook_dir }}/scripts/dests.json
+      template: src=grafana.dest.json.j2 dest={{ playbook_dir }}/scripts/dests-{{ inventory_hostname }}.json
       vars:
         - ansible_become: false
         - ansible_connection: local
@@ -538,6 +540,8 @@
               tikv_summary: "{{ cluster_name | title }}-TiKV-Summary"
               tikv_details: "{{ cluster_name | title }}-TiKV-Details"
               tikv_trouble_shot: "{{ cluster_name | title }}-TiKV-Trouble-Shooting"
+              tiflash_summary: "{{ cluster_name | title }}-TiFlash-Summary"
+              tiflash_proxy_summary: "{{ cluster_name | title }}-TiFlash-Proxy-Summary"
               binlog: "{{ cluster_name | title }}-Binlog"
               overview: "{{ cluster_name | title }}-Overview"
               disk_performance: "{{ cluster_name | title }}-Disk-Performance"
@@ -549,7 +553,7 @@
 
     - name: import grafana dashboards - run import script
       delegate_to: localhost
-      shell: "python grafana-config-copy.py"
+      shell: "python grafana-config-copy.py dests-{{ inventory_hostname }}.json"
       args:
         chdir: "{{ playbook_dir }}/scripts"
       vars:

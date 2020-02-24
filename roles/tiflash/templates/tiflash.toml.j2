@@ -5,7 +5,6 @@ tmp_path = "{{ tmp_path }}"
 path = "{{ path }}"
 tcp_port = {{ tcp_port }}
 http_port = {{ http_port }}
-interserver_http_port = {{ interserver_http_port }}
 
 [flash]
 {% set all_tidb = [] -%}
@@ -23,15 +22,19 @@ service_addr = "{{ ansible_host | default(inventory_hostname) }}:{{ flash_servic
 
 [flash.{{ item }}]
 {% if item == 'proxy' %}
-addr = "{{ ansible_host | default(inventory_hostname) }}:{{ flash_proxy_port }}"
-advertise-addr = "{{ ansible_host | default(inventory_hostname) }}:{{ flash_proxy_port }}"
-data-dir = "{{ data_dir }}"
 config = "{{ flash_proxy_config }}"
-log-file = "{{ tiflash_tikv_log }}"
 {% endif %}
 {% for sub_item, sub_value in value | dictsort -%}
 {{ sub_item }} = {{ sub_value | to_json }}
 {% endfor %}
+{% endif %}
+{% endfor %}
+
+[status]
+metrics_port = {{ metrics_port }}
+{% for item, value in tiflash_conf.profiles | dictsort_by_value_type -%}
+{% if value is not mapping -%}
+{{ item }} = {{ value | to_json }}
 {% endif %}
 {% endfor %}
 
