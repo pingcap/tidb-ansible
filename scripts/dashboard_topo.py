@@ -72,7 +72,7 @@ def request_topo(comp, topo, etcd_target):
     message = json.dumps({
         'ip': ip,
         'binary_path': add,
-        'port': port,
+        'port': int(port),
     })
     etcd_write(etcd_target, "/topology/" + comp, message)
 
