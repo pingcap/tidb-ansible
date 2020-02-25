@@ -559,3 +559,10 @@
       vars:
         - ansible_become: false
         - ansible_connection: local
+
+- hosts: localhost
+  tags:
+    - always
+  tasks:
+    - name: init dashboard topology
+      shell: "cd {{ playbook_dir }}/scripts && ./dashboard_topo.sh"
