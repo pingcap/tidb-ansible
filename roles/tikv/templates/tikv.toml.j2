@@ -9,14 +9,17 @@
 {{ item }} = {{ value | to_json }}
 {% endfor %}
 
-[readpool.storage]
-{% for item, value in tikv_conf.readpool.storage | dictsort -%}
+[readpool]
+{% for item, value in tikv_conf.readpool | dictsort_by_value_type -%}
+{% if value is not mapping -%}
 {{ item }} = {{ value | to_json }}
-{% endfor %}
+{% else %}
 
-[readpool.coprocessor]
-{% for item, value in tikv_conf.readpool.coprocessor | dictsort -%}
-{{ item }} = {{ value | to_json }}
+[readpool.{{ item }}]
+{% for sub_item, sub_value in value | dictsort -%}
+{{ sub_item }} = {{ sub_value | to_json }}
+{% endfor %}
+{% endif %}
 {% endfor %}
 
 [server]
