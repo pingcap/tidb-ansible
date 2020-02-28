@@ -135,6 +135,43 @@
     file: path={{ raftdb_path }} state=directory mode=0755
     when: raftdb_path is defined
 
+- name: TiFlash cluster
+  hosts: tiflash_servers
+  tasks:
+  - name: stop TiFlash by supervise
+    shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
+    when: process_supervision == 'supervise'
+    with_items:
+      - tiflash
+
+  - name: stop TiFlash by systemd
+    systemd: name=tiflash-{{ tcp_port }}.service state=stopped
+    become: true
+    when: process_supervision == 'systemd'
+
+  - name: wait until the TiFlash port is down
+    wait_for:
+      host: "{{ ansible_host }}"
+      port: "{{ http_port }}"
+      state: stopped
+      msg: "the TiFlash port {{ http_port }} is not down"
+
+  - name: clean TiFlash raft data dir
+    file: path={{ raft_data_dir }} state=absent
+    when: raft_data_dir is defined
+
+  - name: create new TiFlash raft data dir
+    file: path={{ raft_data_dir }} state=directory mode=0755
+    when: raft_data_dir is defined
+
+  - name: clean TiFlash data dir
+    file: path={{ item }} state=absent
+    with_items: "{{ data_dir | split_string(',') }}"
+    when: data_dir is defined
+
+  - name: create new TiFlash data dir
+    file: path={{ data_dir }} state=directory mode=0755
+    when: data_dir is defined
 
 - name: PD cluster
   hosts: pd_servers
