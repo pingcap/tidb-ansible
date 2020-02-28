@@ -103,6 +103,24 @@
       file: path={{ raftdb_path }} state=absent
       when: "raftdb_path is defined"
 
+- hosts: tiflash_servers
+  tasks:
+    - name: clean systemd config
+      file: path="/etc/systemd/system/{{ item }}" state=absent
+      become: true
+      when: process_supervision == 'systemd'
+      with_items:
+        - tiflash-{{ tcp_port }}.service
+
+    - name: cleaning up raft dir
+      file: path={{ raft_data_dir }} state=absent
+      when: "raft_data_dir is defined"
+
+    - name: cleaning up data dir
+      file: path={{ item }} state=absent
+      with_items: "{{ data_dir | split_string(',') }}"
+      when: "data_dir is defined"
+
 - hosts: pd_servers
   tasks:
     - name: clean systemd config

@@ -27,7 +27,7 @@ status-addr = "{{ ansible_host | default(inventory_hostname) }}:{{ flash_proxy_s
 {% endfor %}
 
 [storage]
-data-dir = "{{ data_dir }}"
+data-dir = "{{ raft_data_dir }}"
 {% for item, value in tiflash_learner_conf.storage | dictsort -%}
 {{ item }} = {{ value | to_json }}
 {% endfor %}

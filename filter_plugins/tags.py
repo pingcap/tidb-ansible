@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import re
 import time
 import copy
 import json
@@ -15,6 +16,18 @@ def with_default_dicts(d, *args):
                         for k in arg if k in ret and isinstance(ret[k], (dict, type(None)))])
             ret.update([(k, arg[k]) for k in arg if k not in ret])
     return ret
+
+def split_string(d, seperator=None, maxsplit=-1):
+    try:
+        return d.split(seperator, maxsplit)
+    except:
+        return list(d)
+
+def split_regex(d, seperator_pattern):
+    try:
+        return re.split(seperator_pattern, string)
+    except:
+        return list(string)
 
 def update_default_dicts(d):
     ret = copy.deepcopy(d) or {}
@@ -46,4 +59,6 @@ class FilterModule(object):
             'update_default_dicts': update_default_dicts,
             'dictsort_by_value_type': dictsort_by_value_type,
             'tikv_server_labels_format': tikv_server_labels_format,
+            'split_string': split_string,
+            'split_regex': split_regex,
         }
