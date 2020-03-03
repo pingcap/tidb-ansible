@@ -1,6 +1,6 @@
 {% if groups.monitoring_servers | length == groups.grafana_servers | length -%}
   {% set index = [] -%}
-  {% for host in groups.monitoring_servers -%}
+  {% for host in groups.grafana_servers -%}
     {% if inventory_hostname == hostvars[host].inventory_hostname -%}
       {% set _ = index.append(loop.index0) -%}
     {% endif -%}
