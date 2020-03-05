@@ -65,6 +65,8 @@ def request_topo(comp, topo, etcd_target):
     if topo is None:
         # if topo is None, do nothing
         return
+    if ',' in topo:
+        topo = topo.split(',')[0]
     ip, add = parse_address(topo)
     ip, port = ip.split(':')
 
