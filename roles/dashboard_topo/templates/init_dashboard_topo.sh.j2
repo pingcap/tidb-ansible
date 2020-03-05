@@ -25,12 +25,23 @@ set -e
   {% set alertmanager_path = hostvars[host].deploy_dir -%}
   {% set _ = all_alertmanager.append("%s:%s%s" % (alertmanager_ip, alertmanager_port, alertmanager_path)) -%}
 {% endfor -%}
+{% set all_prometheus = [] -%}
+{% set prometheus_hosts = groups.monitoring_servers %}
+{% for host in prometheus_hosts -%}
+  {% set prometheus_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}
+  {% set prometheus_port = hostvars[host].prometheus_port -%}
+  {% set prometheus_path = hostvars[host].deploy_dir -%}
+  {% set _ = all_prometheus.append("%s:%s%s" % (prometheus_ip, prometheus_port, prometheus_path)) -%}
+{% endfor -%}
 {% set flag = "" %}
 {% if all_grafana -%}
   {% set flag = flag + " --grafana " + ','.join(all_grafana) -%}
 {% endif -%}
 {% if all_alertmanager -%}
   {% set flag = flag + " --alertmanager " + ','.join(all_alertmanager) -%}
+{% endif -%}
+{% if all_prometheus %}
+  {% set flag = flag + " --prometheus " + ','.join(all_prometheus) -%}
 {% endif -%}
 
 python2 dashboard_topo.py --pd {{ all_pd | join(',') }} {{ flag }}

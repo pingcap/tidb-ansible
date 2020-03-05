@@ -9,7 +9,7 @@ import base64
 import json
 import argparse
 
-ComponentToRegister = ('alertmanager', 'grafana', 'pd')
+ComponentToRegister = ('alertmanager', 'grafana', 'pd', 'prometheus')
 
 
 def parse_opts():
@@ -65,6 +65,8 @@ def request_topo(comp, topo, etcd_target):
     if topo is None:
         # if topo is None, do nothing
         return
+    if ',' in topo:
+        topo = topo.split(',')[0]
     ip, add = parse_address(topo)
     ip, port = ip.split(':')
 
@@ -93,20 +95,17 @@ if __name__ == '__main__':
     args = parse_opts()
 
     # parse from args
-    # pd_address = concat_to_address(args.pd_host, args.pd_port)
-    # tidb_address = concat_to_address(args.tidb_host, args.tidb_port)
-    # alertmanager_address = concat_to_address(args.alertmanager_host,
-    #                                          args.alertmanager_port)
-    # grafana_address = concat_to_address(args.grafana_host, args.grafana_port)
     pd_address = args.pd
     pd_address_zero, _ = parse_address(pd_address.split(',')[0])
 
     alertmanager_address = args.alertmanager
     grafana_address = args.grafana
+    prometheus_address = args.prometheus
 
     mapping = {
         'alertmanager': alertmanager_address,
         'grafana': grafana_address,
+        'prometheus': prometheus_address,
     }
 
     for comp in ComponentToRegister:
