@@ -9,7 +9,8 @@ import base64
 import json
 import argparse
 
-ComponentToRegister = ('alertmanager', 'grafana', 'pd', 'prometheus')
+ComponentToRegister = ('alertmanager', 'grafana', 'prometheus')
+Components = ComponentToRegister + ('pd', )
 
 
 def parse_opts():
@@ -18,7 +19,7 @@ def parse_opts():
     """
     parser = argparse.ArgumentParser(description="Parse output.")
     # pd is involved because we need to send http request
-    for target in ComponentToRegister:
+    for target in Components:
         parser.add_argument("--{}".format(target),
                             help="the address list of {}".format(target))
     args, unknown = parser.parse_known_args()
@@ -108,7 +109,5 @@ if __name__ == '__main__':
         'prometheus': prometheus_address,
     }
 
-    for comp in ComponentToRegister:
-        if comp == 'pd':
-            continue
+    for comp in Components:
         request_topo(comp, mapping[comp], pd_address_zero)

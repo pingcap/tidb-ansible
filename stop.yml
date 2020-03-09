@@ -326,3 +326,11 @@
         port: "{{ grafana_port }}"
         state: stopped
         msg: "the grafana port {{ grafana_port }} is not down"
+
+
+- hosts: localhost
+  tags:
+    - always
+  tasks:
+    - name: init pd topo
+      shell: "cd {{ playbook_dir }}/scripts && ./dashboard_topo.sh"
