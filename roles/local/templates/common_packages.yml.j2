@@ -1,5 +1,6 @@
 ---
 
+{% if cpu_architecture == 'amd64' -%}
 tidb_packages:
   - name: tidb
     version: {{ tidb_version }}
@@ -22,7 +23,7 @@ common_packages:
 {% if process_supervision == 'supervise' %}
   - name: daemontools
     version: 0.53
-    url: http://download.pingcap.org/daemontools-0.53.tar.gz
+    url: http://download.pingcap.org/daemontools-0.53-linux-amd64.tar.gz
     checksum: "sha256:a4abd491cf185aef5644be5a4e1ed52c8f458802178d4c0efcc8178a5ca67fb7"
 {% endif %}
 
@@ -31,3 +32,36 @@ diagnosis_packages:
     version: v0.2.5-1-g99b8fea
     url: http://download.pingcap.org/tidb-insight-v0.2.5-1-g99b8fea.tar.gz
     checksum: "sha256:26034435d1b088529c300d5a8145758e68a6ef8000e3eeb6ce027a3ce56ebe45"
+
+{% elif cpu_architecture == 'arm64' -%}
+tidb_packages:
+  - name: tidb
+    version: {{ tidb_version }}
+    url: http://download.pingcap.org/tidb-{{ tidb_version }}-linux-arm64.tar.gz
+
+tidb_toolkit_packages:
+  - name: tidb-toolkit
+    version: {{ tidb_version }}
+    url: http://download.pingcap.org/tidb-toolkit-{{ tidb_version }}-linux-arm64.tar.gz
+
+common_packages:
+  - name: fio
+    version: 3.8
+    url: "http://download.pingcap.org/fio-3.8-linux-arm64.tar.gz"
+    checksum: "sha256:8d086512b26d19229d6b1631db749880ed5a581c42e3bbb7e8d6a2f7155f4c9c"
+  - name: kafka_exporter
+    version: 1.1.0
+    url: http://download.pingcap.org/kafka_exporter-1.1.0.linux-arm64.tar.gz
+    checksum: "sha256:68a130c00dbd13a530b1ea6b7661427b6af32716ee12c02bab52fdd9e280aec0"
+{% if process_supervision == 'supervise' %}
+  - name: daemontools
+    version: 0.53
+    url: http://download.pingcap.org/daemontools-0.53-linux-arm64.tar.gz
+    checksum: "sha256:39884c7b714b1eff52e2acce0378c8200eb221174796fa54af6a1567f582938b"
+{% endif %}
+
+diagnosis_packages:
+  - name: tidb-insight
+    version: v0.2.5-1-g99b8fea
+    url: http://download.pingcap.org/tidb-insight-v0.2.5-4-linux-arm64.tar.gz
+{% endif -%}
