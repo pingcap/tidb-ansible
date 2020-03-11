@@ -44,8 +44,9 @@ def delete_tidb_topo(tidb_list, pd_address):
             # tidb is ip:port
             etcd_delete(pd_address, '/topology/tidb/' + tidb + '/info')
             etcd_delete(pd_address, '/topology/tidb/' + tidb + '/ttl')
+        return False
     except:
-        return
+        return True
 
 
 if __name__ == '__main__':
@@ -56,4 +57,6 @@ if __name__ == '__main__':
 
     tidb_list = args.tidb
 
-    delete_tidb_topo(tidb_list, pd_address_zero)
+    for pd in pd_address.split(','):
+        if delete_tidb_topo(tidb_list, pd):
+            return
