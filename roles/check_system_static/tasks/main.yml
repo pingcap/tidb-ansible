@@ -45,14 +45,14 @@
     - systemd_version[0] < '219' or (systemd_version[0] == '219' and systemd_release[0] < '52.el7')
 
 - name: Deploy epollexclusive script
-  copy: src="{{ script_dir }}/check/epollexclusive" dest="{{ deploy_dir }}/epollexclusive" mode=0755
+  copy: src="{{ script_dir }}/check/epollexclusive-{{ cpu_architecture }}" dest="{{ deploy_dir }}/epollexclusive-{{ cpu_architecture }}" mode=0755
 
 - name: Preflight check - Check if the operating system supports EPOLLEXCLUSIVE
-  shell: "{{ deploy_dir }}/epollexclusive"
+  shell: "{{ deploy_dir }}/epollexclusive-{{ cpu_architecture }}"
   register: epollexclusive_check
 
 - name: Clean epollexclusive script
-  file: path={{ deploy_dir }}/epollexclusive state=absent
+  file: path={{ deploy_dir }}/epollexclusive-{{ cpu_architecture }} state=absent
 
 - name: Preflight check - Fail when epollexclusive is unavailable
   fail:
