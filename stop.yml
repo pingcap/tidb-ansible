@@ -200,6 +200,9 @@
         state: stopped
         msg: "the TiDB port {{ tidb_port }} is not down"
 
+    - roles: 
+        -  tidb_offline
+
 
 - hosts: pump_servers
   tags:
@@ -327,10 +330,3 @@
         state: stopped
         msg: "the grafana port {{ grafana_port }} is not down"
 
-
-- hosts: localhost
-  tags:
-    - always
-  tasks:
-    - name: init pd topo
-      shell: "cd {{ playbook_dir }}/scripts && ./delete_tidb_topo.sh"
