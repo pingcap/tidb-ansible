@@ -559,12 +559,12 @@
   pre_tasks:
     - name: stop TiFlash by supervise
       shell: cd {{ deploy_dir }}/scripts && ./stop_tiflash.sh
-      when: process_supervision == 'supervise'
+      when: process_supervision == 'supervise' and cpu_architecture == 'amd64'
 
     - name: stop TiFlash by systemd
       systemd: name=tiflash-{{ tcp_port }}.service state=stopped
       become: true
-      when: process_supervision == 'systemd'
+      when: process_supervision == 'systemd' and cpu_architecture == 'amd64'
 
     - name: wait until the TiFlash port is down
       wait_for:
@@ -572,19 +572,20 @@
         port: "{{ http_port }}"
         state: stopped
         msg: "the TiFlash port {{ http_port }} is not down"
+      when: cpu_architecture == 'amd64'
 
   roles:
-    - tiflash
+    - { role:  tiflash, when: cpu_architecture == 'amd64' }
 
   post_tasks:
     - name: start TiFlash by supervise
       shell: cd {{ deploy_dir }}/scripts && ./start_tiflash.sh
-      when: process_supervision == 'supervise'
+      when: process_supervision == 'supervise' and cpu_architecture == 'amd64'
 
     - name: start TiFlash by systemd
       systemd: name=tiflash-{{ tcp_port }}.service state=started
       become: true
-      when: process_supervision == 'systemd'
+      when: process_supervision == 'systemd' and cpu_architecture == 'amd64'
 
     - name: wait until the TiFlash port is up
       wait_for:
@@ -592,6 +593,7 @@
         port: "{{ http_port }}"
         state: started
         msg: "the TiFlash port {{ http_port }} is not up"
+      when: cpu_architecture == 'amd64'
 
     - name: wait until the TiFlash status page is available
       uri:
@@ -601,4 +603,11 @@
       until: tiflash_http_result.status == 200
       retries: 12
       delay: 5
-      when: not enable_tls|default(false)
+      when: not enable_tls|default(false) and cpu_architecture == 'amd64'
+
+- hosts: localhost
+  tags:
+    - always
+  tasks:
+    - name: init pd topo
+      shell: "cd {{ playbook_dir }}/scripts && ./dashboard_topo.sh"

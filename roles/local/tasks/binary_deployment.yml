@@ -62,6 +62,7 @@
 #  with_items: "{{ tiflash_packages }}"
 #  when:
 #    - has_outbound_network
+#    - cpu_architecture == 'amd64'
 
 - name: unarchive third party binary
   shell: ls -1 {{ item.name }}-{{ item.version }}.tar.gz | xargs -n1 tar xzf
@@ -90,6 +91,8 @@
 #    chdir: "{{ downloads_dir }}"
 #    warn: no
 #  with_items: "{{ tiflash_packages }}"
+#  when:
+#    - cpu_architecture == 'amd64'
 
 - name: cp monitoring binary
   shell: >
@@ -115,3 +118,5 @@
 #  shell: >
 #    cp -rfv {{ downloads_dir }}/{{ item.name }}-{{ item.version }}-linux-amd64 "{{ resources_dir }}/bin/tiflash"
 #  with_items: "{{ tiflash_packages }}"
+#  when:
+#    - cpu_architecture == 'amd64'
