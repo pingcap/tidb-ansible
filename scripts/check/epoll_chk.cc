@@ -94,7 +94,7 @@ int main() {
         printf("True: epollexclusive is available\n");
         return 0;
     } else {
-        printf("False: epollexclusive is NOT available\n");
+        printf("False: epollexclusive is NOT available, please upgrade the Linux kernel\n");
         return 1;
     }
 }

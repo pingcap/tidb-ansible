@@ -40,7 +40,7 @@
 - name: Preflight check - Systemd version
   fail:
     msg: "Current systemd version is {{ systemd_version.0 }}-{{ systemd_release.0 }} (below 219-52.el7), there are some memory bugs. Refer to https://access.redhat.com/discussions/3536621"
-  when: 
+  when:
     - ansible_os_family == 'RedHat'
     - systemd_version[0] < '219' or (systemd_version[0] == '219' and systemd_release[0] < '52.el7')
 
@@ -56,7 +56,7 @@
 
 - name: Preflight check - Fail when epollexclusive is unavailable
   fail:
-    msg: "The current machine may be a docker virtual machine, and the corresponding physical machine operating system does not support epollexclusive"
+    msg: "The current machine may be a docker virtual machine, and the corresponding physical machine operating system does not support epollexclusive, please upgrade the Linux kernel"
   when: epollexclusive_check.stdout.find("True") == -1
 
 - name: Deploy check_cpufreq script
