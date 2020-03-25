@@ -56,7 +56,7 @@
 
 - name: Preflight check - Fail when epollexclusive is unavailable
   fail:
-    msg: "The current machine may be a docker virtual machine, and the corresponding physical machine operating system does not support epollexclusive, please upgrade the Linux kernel"
+    msg: "The current machine may be a docker virtual machine, and the corresponding physical machine operating system does not support epollexclusive, please upgrade the Linux kernel (the minimum version is 3.10.0-386.el7)"
   when: epollexclusive_check.stdout.find("True") == -1
 
 - name: Deploy check_cpufreq script
