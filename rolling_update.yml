@@ -601,6 +601,8 @@
 - hosts: localhost
   tags:
     - always
-  tasks:
+  roles:
+    - { role: dashboard_topo }
+  post_tasks:
     - name: init pd topo
       shell: "cd {{ playbook_dir }}/scripts && ./dashboard_topo.sh"

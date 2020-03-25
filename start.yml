@@ -563,6 +563,9 @@
 - hosts: localhost
   tags:
     - always
-  tasks:
-    - name: init dashboard topology
+  roles:
+    - { role: dashboard_topo }
+  post_tasks:
+    - name: init pd topo
       shell: "cd {{ playbook_dir }}/scripts && ./dashboard_topo.sh"
+
