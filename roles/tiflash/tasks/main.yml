@@ -1,7 +1,8 @@
 ---
 
 - name: create tiflash directories
-  file: path={{ item }} state=directory mode=0755
+  become: true
+  file: path={{ item }} state=directory mode=0755 owner={{ deploy_user }} group={{ deploy_user }}
   with_items:
   - "{{ tiflash_dir }}"
   - "{{ tmp_path }}"
