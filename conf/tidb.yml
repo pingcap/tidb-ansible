@@ -35,6 +35,12 @@ global:
   # the data type of its primary key column is an integer, the primary key cannot be dropped.
   # alter-primary-key: false
 
+  # server-version is used to change the version string of TiDB in the following scenarios:
+  # 1. the server version returned by builtin-function `VERSION()`.
+  # 2. the server version filled in handshake packets of MySQL Connection Protocol, see https://dev.mysql.com/doc/internals/en/connection-phase-packets.html#packet-Protocol::Handshake for more details.
+  # if server-version = "", the default value(original TiDB version string) is used.
+  server-version: ""
+
   # Whether new collations are enabled, as indicated by its name, this configuration entry take effect ONLY when a TiDB cluster bootstraps for the first time.
   new_collations_enabled_on_first_bootstrap: false
 
