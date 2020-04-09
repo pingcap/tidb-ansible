@@ -542,13 +542,6 @@
       delay: 5
       when: enable_tls|default(false)
 
-- hosts: localhost
-  tags:
-    - always
-  tasks:
-    - name: init pd topo
-      shell: "cd {{ playbook_dir }}/scripts && ./dashboard_topo.sh"
-
 - name: rolling update TiFlash cluster
   hosts: tiflash_servers
   any_errors_fatal: true
