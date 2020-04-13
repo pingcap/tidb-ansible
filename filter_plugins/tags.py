@@ -51,6 +51,9 @@ def tikv_server_labels_format(label_str):
 
     return "{ %s }" % (', '.join(["%s = %s" % (k, json.dumps(v)) for (k,v) in labels]))
 
+def get_element_by_index(d, index):
+    return d[index]
+
 class FilterModule(object):
     def filters(self):
         return {
@@ -61,4 +64,5 @@ class FilterModule(object):
             'tikv_server_labels_format': tikv_server_labels_format,
             'split_string': split_string,
             'split_regex': split_regex,
+            'get_element_by_index': get_element_by_index,
         }
