@@ -4,23 +4,23 @@
   shell: "{{ bootstrap_script_dir }}/pypy/bin/python --version"
   register: pypy_st
 
-- name: CoreOS - detect outbound network
+- name: CoreOS - detect outbound network[1]
   shell: curl -s --connect-timeout 4 baidu.com 2>/dev/null >/dev/null; echo $?
   changed_when: false
   register: outbound_network_st
 
-- name: CoreOS - set outbound network fact
+- name: CoreOS - set outbound network fact[1]
   set_fact: has_outbound_network={{ outbound_network_st.stdout.strip() == '0' }}
 
-- name: CoreOS - detect GFW
+- name: CoreOS - detect outbound network[2]
   shell: curl -s --connect-timeout 2 google.com 2>/dev/null >/dev/null; echo $?
   changed_when: false
   register: gfw_st
 
-- name: CoreOS - set GFW fact
+- name: CoreOS - set outbound network fact[2]
   set_fact: under_gfw={{ gfw_st.stdout.strip() != '0' }}
 
-- name: CoreOS - use mirror if under GFW
+- name: CoreOS - use mirror if detect outbound network
   set_fact:
     pypy_download_url: "{{ pypy_download_url_under_gfw }}"
 
