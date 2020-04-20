@@ -28,28 +28,28 @@
 - include_vars: file={{ playbook_dir }}/conf/{{ deployment_method }}_packages.yml
 
 # preflight checks
-- name: detect outbound network
+- name: detect outbound network[1]
   shell: >
     warn=no
     curl -s --connect-timeout 10 www.baidu.com 2>/dev/null >/dev/null; echo $?
   changed_when: false
   register: outbound_network_st
 
-- name: set outbound network fact
+- name: set outbound network fact[1]
   set_fact: has_outbound_network={{ outbound_network_st.stdout.strip() == '0' }}
 
 - fail:
     msg: "The Control Machine must have access to the Internet in order to download TiDB and related packages."
   when: not has_outbound_network
 
-- name: detect GFW
+- name: detect outbound network[2]
   shell: >
     warn=no
     curl -s --connect-timeout 10 google.com 2>/dev/null >/dev/null; echo $?
   changed_when: false
   register: gfw_st
 
-- name: set GFW fact
+- name: set outbound network fact[2]
   set_fact: under_gfw={{ gfw_st.stdout.strip() != '0' }}
 
 # do actual downloading
