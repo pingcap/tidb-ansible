@@ -15,14 +15,14 @@
 - name: CoreOS - detect outbound network[2]
   shell: curl -s --connect-timeout 2 google.com 2>/dev/null >/dev/null; echo $?
   changed_when: false
-  register: gfw_st
+  register: outbound_st
 
 - name: CoreOS - set outbound network fact[2]
-  set_fact: under_gfw={{ gfw_st.stdout.strip() != '0' }}
+  set_fact: under_outbound={{ outbound_st.stdout.strip() != '0' }}
 
 - name: CoreOS - use mirror if detect outbound network
   set_fact:
-    pypy_download_url: "{{ pypy_download_url_under_gfw }}"
+    pypy_download_url: "{{ pypy_download_url_under_outbound }}"
 
 - name: CoreOS | Create bootstrap directory
   shell: sudo mkdir -p {{ bootstrap_script_dir }}
