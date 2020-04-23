@@ -14,9 +14,9 @@
   with_items: "{{ third_party_packages }}"
   when:
     - has_outbound_network
-    - not under_gfw
+    - not under_outbound
 
-- name: download other binary under gfw
+- name: download other binary under outbound
   get_url:
     url: "{{ item.url }}"
     dest: "{{ downloads_dir }}/{{ item.name }}-{{ item.version }}.tar.gz"
@@ -27,10 +27,10 @@
   until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
   retries: 4
   delay: "{{ retry_stagger | random + 3 }}"
-  with_items: "{{ third_party_packages_under_gfw }}"
+  with_items: "{{ third_party_packages_under_outbound }}"
   when:
     - has_outbound_network
-    - under_gfw
+    - under_outbound
 
 - name: download TiSpark packages
   get_url:
