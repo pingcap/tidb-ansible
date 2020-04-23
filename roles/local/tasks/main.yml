@@ -47,10 +47,10 @@
     warn=no
     curl -s --connect-timeout 10 google.com 2>/dev/null >/dev/null; echo $?
   changed_when: false
-  register: gfw_st
+  register: outbound_st
 
 - name: set outbound network fact[2]
-  set_fact: under_gfw={{ gfw_st.stdout.strip() != '0' }}
+  set_fact: under_outbound={{ outbound_st.stdout.strip() != '0' }}
 
 # do actual downloading
 - name: download tidb binary
