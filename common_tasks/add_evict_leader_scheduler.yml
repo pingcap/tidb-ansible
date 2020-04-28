@@ -4,7 +4,7 @@
   uri:
     url: "http://{{ pd_addr }}/pd/api/v1/schedulers/evict-leader-scheduler-{{ store_id }}"
     method: DELETE
-    status_code: 200,500
+    status_code: 200,500,404
     return_content: yes
   register: scheduler_info
   until: "'scheduler not found' in scheduler_info.content"
@@ -19,7 +19,7 @@
     client_cert: "{{ tikv_cert_dir }}/tikv-server-{{ ansible_host }}.pem"
     client_key: "{{ tikv_cert_dir }}/tikv-server-{{ ansible_host }}-key.pem"
     method: DELETE
-    status_code: 200,500
+    status_code: 200,500,404
     return_content: yes
   register: scheduler_info_tls
   until: "'scheduler not found' in scheduler_info_tls.content"
