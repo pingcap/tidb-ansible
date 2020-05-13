@@ -547,17 +547,17 @@ raftdb:
 
 security:
   ## The path for TLS certificates. Empty string means disabling secure connections.
-  # ca-path = ""
-  # cert-path = ""
-  # key-path = ""
-  # cert-allowed-cn = []
+  # ca-path: ""
+  # cert-path: ""
+  # key-path: ""
+  # cert-allowed-cn: []
 
   ## Configurations for encryption at rest. Experimental.
   encryption:
     ## Encryption method to use for data files.
     ## Possible values are "plaintext", "aes128-ctr", "aes192-ctr" and "aes256-ctr". Value other than
     ## "plaintext" means encryption is enabled, in which case master key must be specified.
-    # data-encryption-method = "plaintext"
+    # data-encryption-method: "plaintext"
     
     ## Specifies how often TiKV rotates data encryption key.
     # data-key-rotation-period = "7d"
@@ -570,24 +570,24 @@ security:
     ##     encryption is not enabled, i.e. data-encryption-method = "plaintext". This type doesn't
     ##     have sub-config items. Example:
     ##     
-    ##     [security.encryption.master-key]
-    ##     type = "plaintext"
+    ##     master-key:
+    ##       type: "plaintext"
     ##
     ##   * "kms":
     ##
     ##     Use a KMS service to supply master key. Currently only AWS KMS is supported. This type of
     ##     master key is recommended for production use. Example:
     ##
-    ##     [security.encryption.master-key]
-    ##     type = "kms"
-    ##     ## KMS CMK key id. Must be a valid KMS CMK where the TiKV process has access to.
-    ##     ## In production is recommended to grant access of the CMK to TiKV using IAM.
-    ##     key-id = "1234abcd-12ab-34cd-56ef-1234567890ab"
-    ##     ## AWS region of the KMS CMK.
-    ##     region = "us-west-2"
-    ##     ## (Optional) AWS KMS service endpoint. Only required when non-default KMS endpoint is
-    ##     ## desired.
-    ##     endpoint = "https://kms.us-west-2.amazonaws.com"
+    ##     master-key:
+    ##       type: "kms"
+    ##       ## KMS CMK key id. Must be a valid KMS CMK where the TiKV process has access to.
+    ##       ## In production is recommended to grant access of the CMK to TiKV using IAM.
+    ##       key-id = "1234abcd-12ab-34cd-56ef-1234567890ab"
+    ##       ## AWS region of the KMS CMK.
+    ##       region: "us-west-2"
+    ##       ## (Optional) AWS KMS service endpoint. Only required when non-default KMS endpoint is
+    ##       ## desired.
+    ##       endpoint: "https://kms.us-west-2.amazonaws.com"
     ##
     ##   * "file":
     ##
@@ -596,9 +596,9 @@ security:
     ##     The file must contain a 256-bits (32 bytes, regardless of key length implied by 
     ##     data-encryption-method) key encoded as hex string and end with newline ("\n"). Example:
     ##
-    ##     [security.encryption.master-key]
-    ##     type = "file"
-    ##     path = "/path/to/master/key/file"
+    ##     master-key:
+    ##       type: "file"
+    ##       path: "/path/to/master/key/file"
     ##
     master-key:
       # type = "plaintext"
@@ -607,7 +607,7 @@ security:
     ## The key is only access once during TiKV startup, after that TiKV do not need access to the key.
     ## And it is okay to leave the stale previous-master-key config after master key rotation.
     previous-master-key:
-      # type = "plaintext"
+      # type: "plaintext"
 
 import:
 
