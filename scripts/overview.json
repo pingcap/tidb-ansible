@@ -57,8 +57,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
-  "id": null,
-  "iteration": 1564756163207,
+  "id": 14,
+  "iteration": 1589954721269,
   "links": [],
   "panels": [
     {
@@ -762,14 +762,14 @@
         {
           "cacheTimeout": null,
           "colorBackground": false,
-          "colorValue": true,
+          "colorValue": false,
           "colors": [
             "#299c46",
             "rgba(237, 129, 40, 0.89)",
             "#d44a3a"
           ],
           "datasource": "${DS_TEST-CLUSTER}",
-          "format": "percentunit",
+          "format": "none",
           "gauge": {
             "maxValue": 100,
             "minValue": 0,
@@ -779,7 +779,7 @@
           },
           "gridPos": {
             "h": 7,
-            "w": 2,
+            "w": 4,
             "x": 16,
             "y": 2
           },
@@ -820,7 +820,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "1 - min(pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"leader_score\"}) / max(pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"leader_score\"})",
+              "expr": "sum(pd_cluster_status{instance=\"$instance\", type=\"store_up_count\"})",
               "format": "time_series",
               "interval": "15s",
               "intervalFactor": 2,
@@ -828,88 +828,7 @@
             }
           ],
           "thresholds": "0.01,0.5",
-          "title": "Leader Balance Ratio",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "current"
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": true,
-          "colors": [
-            "#299c46",
-            "rgba(237, 129, 40, 0.89)",
-            "#d44a3a"
-          ],
-          "datasource": "${DS_TEST-CLUSTER}",
-          "format": "percentunit",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "gridPos": {
-            "h": 7,
-            "w": 2,
-            "x": 18,
-            "y": 2
-          },
-          "id": 65,
-          "interval": null,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": true,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": true
-          },
-          "tableColumn": "",
-          "targets": [
-            {
-              "expr": "1 - min(pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"region_score\"}) / max(pd_scheduler_store_status{instance=\"$instance\", namespace=~\"$namespace\", type=\"region_score\"})",
-              "format": "time_series",
-              "interval": "15s",
-              "intervalFactor": 2,
-              "refId": "A"
-            }
-          ],
-          "thresholds": "0.05,0.5",
-          "title": "Region Balance Ratio",
+          "title": "Normal stores",
           "type": "singlestat",
           "valueFontSize": "80%",
           "valueMaps": [
@@ -1069,6 +988,7 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null as zero",
+          "paceLength": 10,
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -1162,6 +1082,7 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null as zero",
+          "paceLength": 10,
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -1258,6 +1179,7 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null",
+          "paceLength": 10,
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -1355,6 +1277,7 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null",
+          "paceLength": 10,
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -1445,6 +1368,7 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null",
+          "paceLength": 10,
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -1534,6 +1458,7 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null as zero",
+          "paceLength": 10,
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -1625,6 +1550,7 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null as zero",
+          "paceLength": 10,
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -5222,7 +5148,10 @@
     "list": [
       {
         "allValue": null,
-        "current": {},
+        "current": {
+          "text": "r1-pd-0",
+          "value": "r1-pd-0"
+        },
         "datasource": "${DS_TEST-CLUSTER}",
         "definition": "",
         "hide": 0,
@@ -5244,7 +5173,10 @@
       },
       {
         "allValue": ".*",
-        "current": {},
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
         "datasource": "${DS_TEST-CLUSTER}",
         "definition": "",
         "hide": 0,
@@ -5297,6 +5229,6 @@
   },
   "timezone": "browser",
   "title": "Test-Cluster-Overview",
-  "uid": "eDbRZpnWk",
-  "version": 11
+  "uid": "MSPSZXgGz",
+  "version": 1
 }
