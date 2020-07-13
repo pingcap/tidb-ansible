@@ -38,7 +38,6 @@ src = dict(
                 "tiflash_summary": 'tiflash_summary.json',
                 "tiflash_proxy_summary": 'tiflash_proxy_summary.json',
                 "tiflash_proxy_details": 'tiflash_proxy_details.json',
-                "tiflash_proxy_trouble_shot": 'tiflash_proxy_trouble_shooting.json',
                 "binlog": "binlog.json",
                 "overview": 'overview.json',
                 "disk_performance": 'disk_performance.json',
