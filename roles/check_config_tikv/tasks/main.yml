@@ -2,6 +2,7 @@
 
 - set_fact:
     tidb_check_dir: "/tmp/tidb_check_config"
+    tikv_host: "{{ hostvars[groups.tikv_servers[0]].ansible_host | default(hostvars[groups.tikv_servers[0]].inventory_hostname) }}"
 
 - name: Create temporary check directory
   file: name={{ tidb_check_dir }} state=directory
