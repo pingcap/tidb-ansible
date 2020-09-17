@@ -12,8 +12,9 @@ def main():
 
     webContent = subprocess.check_output(["curl", "-sl", httpAPI])
     region_infos = json.loads(webContent)
-    if not isinstance(region_infos, list): # no partition
+    if not isinstance(region_infos, list): # without partition
         region_infos = [region_infos]
+        
     for region_info in region_infos:
         table_region_leaders = parse_regions(region_info["record_regions"])
         table_region_peers = parse_region_peers(region_info["record_regions"])
@@ -37,7 +38,6 @@ def main():
     for index_region_info in indices_region_peers:
         print("[INDEX - {}] - Peers Distribution:".format(index_region_info["name"]))
         print_peers(index_region_info["peers"])
-
 
 
 def parse_args():
