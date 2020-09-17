@@ -4,24 +4,27 @@
 import argparse
 import subprocess
 import json
+from collections import Iterable
 
 def main():
     args = parse_args()
     httpAPI = "http://{}:{}/tables/{}/{}/regions".format(args.host, args.port, args.database, args.table)
 
     webContent = subprocess.check_output(["curl", "-sl", httpAPI])
-    region_info = json.loads(webContent)
-
-    table_region_leaders = parse_regions(region_info["record_regions"])
-    table_region_peers = parse_region_peers(region_info["record_regions"])
-    indices_region_leaders = []
-    indices_region_peers = []
-    for index_info in region_info["indices"]:
-        index_name = index_info["name"]
-        index_region_leaders = parse_regions(index_info["regions"])
-        indices_region_leaders.append({"name": index_name, "leader": index_region_leaders})
-        index_region_peers = parse_region_peers(index_info["regions"])
-        indices_region_peers.append({"name": index_name, "peers": index_region_peers})
+    region_infos = json.loads(webContent)
+    if not isinstance(region_infos, list): # no partition
+        region_infos = [region_infos]
+    for region_info in region_infos:
+        table_region_leaders = parse_regions(region_info["record_regions"])
+        table_region_peers = parse_region_peers(region_info["record_regions"])
+        indices_region_leaders = []
+        indices_region_peers = []
+        for index_info in region_info["indices"]:
+            index_name = index_info["name"]
+            index_region_leaders = parse_regions(index_info["regions"])
+            indices_region_leaders.append({"name": index_name, "leader": index_region_leaders})
+            index_region_peers = parse_region_peers(index_info["regions"])
+            indices_region_peers.append({"name": index_name, "peers": index_region_peers})
     # print record
     print("[RECORD - {}.{}] - Leaders Distribution:".format(args.database, args.table))
     print_leaders(table_region_leaders)
@@ -34,6 +37,7 @@ def main():
     for index_region_info in indices_region_peers:
         print("[INDEX - {}] - Peers Distribution:".format(index_region_info["name"]))
         print_peers(index_region_info["peers"])
+
 
 
 def parse_args():
