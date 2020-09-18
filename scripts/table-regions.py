@@ -6,6 +6,8 @@ import subprocess
 import json
 from collections import Iterable
 
+# sql: select count(s.region_id) cnt, s.index_name, p.store_id from INFORMATION_SCHEMA.TIKV_REGION_STATUS s join INFORMATION_SCHEMA.tikv_region_peers p on s.region_id = p.region_id where s.table_name = 'table_name' and p.is_leader = 1 group by index_name, p.store_id order by index_name,cnt desc;
+
 def main():
     args = parse_args()
     httpAPI = "http://{}:{}/tables/{}/{}/regions".format(args.host, args.port, args.database, args.table)
