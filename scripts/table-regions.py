@@ -4,24 +4,30 @@
 import argparse
 import subprocess
 import json
+from collections import Iterable
+
+# sql: select count(s.region_id) cnt, s.index_name, p.store_id from INFORMATION_SCHEMA.TIKV_REGION_STATUS s join INFORMATION_SCHEMA.tikv_region_peers p on s.region_id = p.region_id where s.table_name = 'table_name' and p.is_leader = 1 group by index_name, p.store_id order by index_name,cnt desc;
 
 def main():
     args = parse_args()
     httpAPI = "http://{}:{}/tables/{}/{}/regions".format(args.host, args.port, args.database, args.table)
 
     webContent = subprocess.check_output(["curl", "-sl", httpAPI])
-    region_info = json.loads(webContent)
-
-    table_region_leaders = parse_regions(region_info["record_regions"])
-    table_region_peers = parse_region_peers(region_info["record_regions"])
-    indices_region_leaders = []
-    indices_region_peers = []
-    for index_info in region_info["indices"]:
-        index_name = index_info["name"]
-        index_region_leaders = parse_regions(index_info["regions"])
-        indices_region_leaders.append({"name": index_name, "leader": index_region_leaders})
-        index_region_peers = parse_region_peers(index_info["regions"])
-        indices_region_peers.append({"name": index_name, "peers": index_region_peers})
+    region_infos = json.loads(webContent)
+    if not isinstance(region_infos, list): # without partition
+        region_infos = [region_infos]
+        
+    for region_info in region_infos:
+        table_region_leaders = parse_regions(region_info["record_regions"])
+        table_region_peers = parse_region_peers(region_info["record_regions"])
+        indices_region_leaders = []
+        indices_region_peers = []
+        for index_info in region_info["indices"]:
+            index_name = index_info["name"]
+            index_region_leaders = parse_regions(index_info["regions"])
+            indices_region_leaders.append({"name": index_name, "leader": index_region_leaders})
+            index_region_peers = parse_region_peers(index_info["regions"])
+            indices_region_peers.append({"name": index_name, "peers": index_region_peers})
     # print record
     print("[RECORD - {}.{}] - Leaders Distribution:".format(args.database, args.table))
     print_leaders(table_region_leaders)
