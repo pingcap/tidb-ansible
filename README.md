@@ -2,9 +2,9 @@
 
 [![development](https://img.shields.io/badge/development-halted-red.svg)](https://github.com/pingcap/tidb-ansible/issues/1365)
 
-This project [has ended](https://github.com/pingcap/tidb-ansible/issues/1365), and **all development/maintenance activities have halted**.
+**Ansible Playbook for TiDB is superseded by [TiUP](https://tiup.io/), a powerful tool to manage a TiDB cluster.**
 
-Ansible Playbook for TiDB is superseded by [TiUP](https://tiup.io/), a powerful tool to manage a TiDB cluster.
+And this project [has ended](https://github.com/pingcap/tidb-ansible/issues/1365). All development/maintenance activities have halted.
 
 As it is free software, people are free and welcome to fork and develop the codebase on their own.
 However, to avoid any confusion, the original repository is archived and we recommend any further fork/development to proceed with an explicit rename and rebranding first.
