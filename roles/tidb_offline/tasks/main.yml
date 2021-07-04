@@ -1,0 +1,17 @@
+---
+
+- name: generate delete_tidb_topo script
+  template:
+  src: "delete_tidb_topo.sh.j2"
+  dest: "{{ deploy_dir }}/scripts/delete_tidb_topo.sh"
+  mode: "0755"
+
+- name: delete stopped tidb information from dashboard
+  shell: ./delete_tidb_topo.sh
+  args:
+    chdir: "{{ deploy_dir }}/scripts"
+
+- name: delete delete_tidb_topo scripts
+  file:
+    path: "{{ deploy_dir }}/scripts/delete_tidb_topo.sh"
+    state: absent
