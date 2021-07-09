@@ -44,4 +44,8 @@ set -e
   {% set flag = flag + " --prometheus " + ','.join(all_prometheus) -%}
 {% endif -%}
 
+{% if enable_tls|default(false) %}
+  {% set flag = flag + " --cacert_file %s/ca.pem --cert_file %s/client.pem --key_file %s/client-key.pem" %(cert_dir, cert_dir, cert_dir) -%}
+{% endif %}
+
 python2 dashboard_topo.py --pd {{ all_pd | join(',') }} {{ flag }}
