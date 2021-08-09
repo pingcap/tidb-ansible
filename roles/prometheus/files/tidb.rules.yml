@@ -12,6 +12,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiDB schema error
+      for: 1m
 
   - alert: TiDB_tikvclient_region_err_total
     expr: increase( tidb_tikvclient_region_err_total[10m] )  > 6000
@@ -24,6 +25,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiDB tikvclient_backoff_count error
+      for: 1m
 
   - alert: TiDB_binlog_error_total
     expr: increase( tidb_server_critical_error_total[5m] )  > 0
@@ -48,6 +50,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiDB domain_load_schema_total error
+      for: 1m
 
   - alert: TiDB_monitor_keep_alive
     expr: increase(tidb_monitor_keep_alive_total{job="tidb"}[10m]) < 100
@@ -60,6 +63,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiDB monitor_keep_alive error
+      for: 1m
 
   - alert: TiDB_server_panic_total
     expr: increase(tidb_server_panic_total[10m]) > 0
@@ -72,6 +76,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiDB server panic total
+      for: 1m
 
   - alert: TiDB_memory_abnormal
     expr: go_memstats_heap_inuse_bytes{job="tidb"} > 1e+10
@@ -84,6 +89,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiDB heap memory usage is over 10 GB
+      for: 1m
 
   - alert: TiDB_query_duration
     expr: histogram_quantile(0.99, sum(rate(tidb_server_handle_query_duration_seconds_bucket[1m])) BY (le, instance)) > 1
@@ -96,6 +102,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiDB query duration 99th percentile is above 1s
+      for: 1m
 
   - alert: TiDB_server_event_error
     expr: increase(tidb_server_event_total{type=~"server_start|server_hang"}[15m])  > 0
@@ -108,6 +115,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiDB server event error
+      for: 1m
 
   - alert: tidb_tikvclient_backoff_total
     expr: increase( tidb_tikvclient_backoff_total[10m] )  > 10
@@ -120,6 +128,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiDB tikvclient_backoff_count error
+      for: 1m
 
   - alert: TiDB_monitor_time_jump_back_error
     expr: increase(tidb_monitor_time_jump_back_total[10m])  > 0
@@ -132,6 +141,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiDB monitor time_jump_back error
+      for: 1m
 
   - alert: TiDB_ddl_waiting_jobs
     expr: sum(tidb_ddl_waiting_jobs) > 5
@@ -144,3 +154,4 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values:{{ $value }}'
       value: '{{ $value }}'
       summary: TiDB ddl waiting_jobs too much
+      for: 1m

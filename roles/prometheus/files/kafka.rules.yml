@@ -12,6 +12,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}'
       value: '{{ $value }}'
       summary: Kafka is down
+      for: 1m
 
   - alert: kafka_brokers
     expr: kafka_brokers < 3
@@ -24,6 +25,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: One or more kafka brokers are down
+      for: 1m
 
   - alert: Zookeeper_is_down
     expr: probe_success{group="zookeeper"} == 0
@@ -36,6 +38,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, instance: {{ $labels.instance }}'
       value: '{{ $value }}'
       summary: Zookeeper is down
+      for: 1m
 
   - alert: kafka_topic_partition_in_sync_replica
     expr: kafka_topic_partition_in_sync_replica != 3
@@ -48,6 +51,7 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, topic: {{ $labels.topic }}, partition: {{ $labels.partition }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: kafka topic partition in sync replica is missing
+      for: 1m
 
   - alert: kafka_topic_partition_leader_change
     expr: changes(kafka_topic_partition_leader[10m]) >= 1
@@ -60,3 +64,4 @@ groups:
       description: 'cluster: ENV_LABELS_ENV, topic: {{ $labels.topic }}, partition: {{ $labels.partition }}, values: {{ $value }}'
       value: '{{ $value }}'
       summary: kafka topic partition leader change
+      for: 1m
